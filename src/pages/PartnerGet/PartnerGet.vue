@@ -3,12 +3,12 @@
     <div class="tables-basic">
       <v-row>
         <v-col cols="12">
-          <v-card class="employee-list mb-1">
+          <v-card class="products-list mb-1">
             <v-card-title class="pa-6 pb-3">
               <p>产品信息</p>
               <v-spacer></v-spacer>
               <v-text-field
-                v-model="mock.employeeTable.search"
+                v-model="mock.productsTable.search"
                 append-icon="mdi-magnify"
                 label="Search"
                 clearable
@@ -17,10 +17,10 @@
               ></v-text-field>
             </v-card-title>
             <v-data-table
-              v-model="mock.employeeTable.selected"
-              :headers="mock.employeeTable.headers"
-              :items="mock.employeeTable.employee"
-              :search="mock.employeeTable.search"
+              v-model="mock.productsTable.selected"
+              :headers="mock.productsTable.headers"
+              :items="mock.productsTable.products"
+              :search="mock.productsTable.search"
               item-key="name"
               show-select>
             </v-data-table>
