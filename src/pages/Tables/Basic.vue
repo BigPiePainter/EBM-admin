@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import mock from './mock'
+import mock from '../PartnerGet/mock'
 
 export default {
   name: 'Tables',
