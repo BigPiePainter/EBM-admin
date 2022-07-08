@@ -10,10 +10,6 @@
     :mini-variant-width="sidebarMinWidth"
     :class="{'drawer-mini': !DRAWER_STATE}">
 
-    <div class="v-list">
-      <a class="v-list-item v-list-item--link grey--text text-sm-h6" target="_blank" href="https://flatlogic.com/generator">Generate App</a>
-    </div>
-
     <v-list>
       <template v-for="(item, i) in items">
         <v-row
@@ -115,7 +111,7 @@ import {mapActions, mapState} from 'vuex'
             link: '/icons',
             model: false,
             children: [
-              { title: '录入产品信息', icon: 'mdi-format-size', link: '/typography' },
+              { title: '录入供应商信息', icon: 'mdi-format-size', link: '/partnerget' },
               { title: '浏览产品信息', icon: 'mdi-grid-large', link: '/tables' },
             ],
           },

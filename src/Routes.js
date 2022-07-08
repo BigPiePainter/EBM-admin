@@ -5,7 +5,8 @@ import Layout from '@/components/Layout/Layout';
 
 // Pages
 import Dashboard from '@/pages/Dashboard/Dashboard';
-import Typography from '@/pages/Typography/Typography'
+import PartnerGet from '@/pages/PartnerGet/PartnerGet'
+import PartnerPut from '@/pages/PartnerPut/PartnerPut'
 import Tables from '@/pages/Tables/Basic'
 import Test from '@/pages/Test/Test'
 import Notifications from '@/pages/Notifications/Notifications'
@@ -36,9 +37,14 @@ export default new Router({
         component: Dashboard,
       },
       {
-        path: 'typography',
-        name: 'Typography',
-        component: Typography,
+        path: 'partnerget',
+        name: 'PartnerGet',
+        component: PartnerGet,
+      },      
+      {
+        path: 'partnerput',
+        name: 'PartnerPut',
+        component: PartnerPut,
       },
       {
         path: 'tables',
