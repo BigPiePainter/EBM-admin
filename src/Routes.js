@@ -6,7 +6,6 @@ import Layout from '@/components/Layout/Layout';
 // Pages
 import Dashboard from '@/pages/Dashboard/Dashboard';
 import PartnerGet from '@/pages/PartnerGet/PartnerGet'
-import PartnerPut from '@/pages/PartnerPut/PartnerPut'
 import ProductsGet from '@/pages/ProductsGet/ProductsGet'
 import ProductsPut from '@/pages/ProductsPut/ProductsPut'
 import Tables from '@/pages/Tables/Basic'
@@ -42,12 +41,7 @@ export default new Router({
         path: 'partnerget',
         name: 'PartnerGet',
         component: PartnerGet,
-      },      
-      {
-        path: 'partnerput',
-        name: 'PartnerPut',
-        component: PartnerPut,
-      },
+      },     
       {
         path: 'productsget',
         name: 'PRoductsGet',
