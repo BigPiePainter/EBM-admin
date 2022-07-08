@@ -11,9 +11,7 @@
     :class="{'drawer-mini': !DRAWER_STATE}">
 
     <v-list>
-
       <template v-for="(item, i) in items">
-        
         <v-row
           v-if="item.heading"
           :key="item.heading"
@@ -31,25 +29,21 @@
             class="text-center">
           </v-col>
         </v-row>
-
         <v-divider
           v-else-if="item.divider"
           :key="i"
           dark
           class="my-4"
         ></v-divider>
-
         <v-list-group
           color="primary"
           v-else-if="item.children && DRAWER_STATE"
           :key="item.title"
           v-model="item.model"
           append-icon="">
-
             <template v-slot:prependIcon>
-              <v-icon size="24">mdi-image-filter-none</v-icon>
+              <v-icon size="28">mdi-image-filter-none</v-icon>
             </template>
-
             <template v-slot:activator >
               <v-list-item-content >
                 <v-list-item-title
@@ -58,7 +52,6 @@
                 </v-list-item-title>
               </v-list-item-content>
             </template>
-            
             <v-list-item
               v-for="(child, i) in item.children"
               :key="i"
@@ -74,7 +67,6 @@
                 </v-list-item-content>
             </v-list-item>
         </v-list-group>
-
         <v-list-item
           color="primary"
           v-else
@@ -84,7 +76,7 @@
           link>
           <v-list-item-action>
             <v-icon
-              size="24"
+              size="28"
               :color="item.color ? item.color : ''"
             >{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -97,8 +89,6 @@
             </v-list-item-content>
         </v-list-item>
       </template>
-
-
     </v-list>
     </v-navigation-drawer>
 </template>
@@ -115,6 +105,7 @@ import {mapActions, mapState} from 'vuex'
         items: [
           { title: 'Test', icon: 'mdi-book-variant-multiple', link: '/Test' },
           { title: '主页', icon: 'mdi-home', link: '/dashboard' },
+
           {
             title: '产品信息',
             model: false,
@@ -123,6 +114,7 @@ import {mapActions, mapState} from 'vuex'
               { title: '浏览产品信息', link: '/partnerget' },
             ],
           },
+          
           { title: '录入SKU信息',icon: 'mdi-book-variant-multiple', link: '/productsput'},
 
           { title: '系统信息', icon: 'mdi-bell-outline', link: '/notifications' },
