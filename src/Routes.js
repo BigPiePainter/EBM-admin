@@ -7,6 +7,8 @@ import Layout from '@/components/Layout/Layout';
 import Dashboard from '@/pages/Dashboard/Dashboard';
 import PartnerGet from '@/pages/PartnerGet/PartnerGet'
 import PartnerPut from '@/pages/PartnerPut/PartnerPut'
+import ProductsGet from '@/pages/ProductsGet/ProductsGet'
+import ProductsPut from '@/pages/ProductsPut/ProductsPut'
 import Tables from '@/pages/Tables/Basic'
 import Test from '@/pages/Test/Test'
 import Notifications from '@/pages/Notifications/Notifications'
@@ -45,6 +47,16 @@ export default new Router({
         path: 'partnerput',
         name: 'PartnerPut',
         component: PartnerPut,
+      },
+      {
+        path: 'productsget',
+        name: 'PRoductsGet',
+        component: ProductsGet,
+      },      
+      {
+        path: 'productsput',
+        name: 'ProductsPut',
+        component: ProductsPut,
       },
       {
         path: 'tables',

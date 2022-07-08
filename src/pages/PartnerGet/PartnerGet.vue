@@ -5,7 +5,7 @@
         <v-col cols="12">
           <v-card class="employee-list mb-1">
             <v-card-title class="pa-6 pb-3">
-              <p>产品信息</p>
+              <p>供应商信息</p>
               <v-spacer></v-spacer>
               <v-text-field
                 v-model="mock.employeeTable.search"
