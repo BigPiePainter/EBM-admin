@@ -11,6 +11,8 @@
   }
 
   .v-data-table {
+    white-space: nowrap;
+
     .v-text-field > .v-input__control > .v-input__slot {
       &:after, &:before {
         border: none !important;
