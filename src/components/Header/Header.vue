@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
     class="main-header"
-    height="64"
+    height="55"
     fixed
     color='primary'
     dark>
@@ -13,14 +13,8 @@
         <v-icon style="font-size: 28px">mdi-menu</v-icon>
       </template>
     </v-btn>
-    <v-toolbar-title>Vue Material Admin</v-toolbar-title>
+    <v-toolbar-title>浙江泼发进出口贸易有限公司EBC</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn
-      href="https://flatlogic.com/templates/vue-material-template-full/demo"
-      class="d-none d-sm-flex mr-5"
-      outlined
-      color="error">
-      Unlock Full Version</v-btn>
     <Search />
 
     <v-menu

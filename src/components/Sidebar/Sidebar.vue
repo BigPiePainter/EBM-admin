@@ -11,7 +11,9 @@
     :class="{'drawer-mini': !DRAWER_STATE}">
 
     <v-list>
+
       <template v-for="(item, i) in items">
+        
         <v-row
           v-if="item.heading"
           :key="item.heading"
@@ -29,21 +31,25 @@
             class="text-center">
           </v-col>
         </v-row>
+
         <v-divider
           v-else-if="item.divider"
           :key="i"
           dark
           class="my-4"
         ></v-divider>
+
         <v-list-group
           color="primary"
           v-else-if="item.children && DRAWER_STATE"
           :key="item.title"
           v-model="item.model"
           append-icon="">
+
             <template v-slot:prependIcon>
-              <v-icon size="28">mdi-image-filter-none</v-icon>
+              <v-icon size="24">mdi-image-filter-none</v-icon>
             </template>
+
             <template v-slot:activator >
               <v-list-item-content >
                 <v-list-item-title
@@ -52,6 +58,7 @@
                 </v-list-item-title>
               </v-list-item-content>
             </template>
+            
             <v-list-item
               v-for="(child, i) in item.children"
               :key="i"
@@ -67,6 +74,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-list-group>
+
         <v-list-item
           color="primary"
           v-else
@@ -76,7 +84,7 @@
           link>
           <v-list-item-action>
             <v-icon
-              size="28"
+              size="24"
               :color="item.color ? item.color : ''"
             >{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -89,6 +97,8 @@
             </v-list-item-content>
         </v-list-item>
       </template>
+
+
     </v-list>
     </v-navigation-drawer>
 </template>
