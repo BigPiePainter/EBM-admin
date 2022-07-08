@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="productsput-page">
-    <h1 class="page-title mt-10 mb-6">录入产品信息</h1>
+    <h1 class="page-title mt-10 mb-6">录入SKU信息</h1>
 
     <v-card class="mx-1 mb-1">
       <v-card-title class="pa-6 pb-3"> </v-card-title>

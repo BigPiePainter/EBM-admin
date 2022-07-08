@@ -103,24 +103,18 @@ import {mapActions, mapState} from 'vuex'
     data(){
       return {
         items: [
-          { title: 'Test', icon: 'Cubes', link: '/Test' },
+          { title: 'Test', icon: 'mdi-book-variant-multiple', link: '/Test' },
           { title: '主页', icon: 'mdi-home', link: '/dashboard' },
-          {
-            title: '供应商信息',
-            model: false,
-            children: [
-              { title: '录入供应商信息', link: '/partnerput' },
-              { title: '浏览供应商信息', link: '/partnerget' },
-            ],
-          },
           {
             title: '产品信息',
             model: false,
             children: [
-              { title: '录入产品信息', link: '/productsput'},
-              { title: '浏览产品信息', link: '/productsget'},
+              { title: '录入产品信息', link: '/partnerput' },
+              { title: '浏览产品信息', link: '/partnerget' },
             ],
           },
+          { title: '录入SKU信息',icon: 'mdi-book-variant-multiple', link: '/productsput'},
+
           { title: '系统信息', icon: 'mdi-bell-outline', link: '/notifications' },
           
           { divider: true },
