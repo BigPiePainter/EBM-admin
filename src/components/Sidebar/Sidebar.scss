@@ -1,8 +1,11 @@
 @import "src/styles/variables";
 
+
 .v-navigation-drawer {
   top: 55px!important;
   height: calc(100vh - 55px)!important;
+
+
 
   .v-navigation-drawer__content {
     &::-webkit-scrollbar {
