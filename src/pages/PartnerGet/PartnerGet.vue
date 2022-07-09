@@ -14,13 +14,22 @@
   <v-data-table
     :headers="headers"
     :items="products"
+    :single-expand="singleExpand"
+    :expanded.sync="expanded"
+    item-key="name"
+    show-expand
     sort-by="name"
     class="elevation-1"
   >
+
+    <template v-slot:expanded-item="{ headers, item }">
+      <td :colspan="headers.length">
+        More info about {{ item.name }}
+      </td>
+    </template>
+
     <template v-slot:top>
-      <v-toolbar
-        flat
-      >
+      <v-toolbar flat>
         <v-toolbar-title>产品信息</v-toolbar-title>
         <v-divider
           class="mx-4"
@@ -28,10 +37,18 @@
           vertical
         ></v-divider>
         <v-spacer></v-spacer>
+<!--sigle chose-->
+        <v-switch
+          v-model="singleExpand"
+          label="Single expand"
+          class="mt-2"
+        ></v-switch>
+
         <v-dialog
           v-model="dialog"
           max-width="500px"
         >
+<!--new item buttom-->
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               color="primary"
@@ -43,14 +60,16 @@
               新增商品信息
             </v-btn>
           </template>
+
           <v-card>
             <v-card-title>
               <span class="text-h5">{{ formTitle }}</span>
             </v-card-title>
-
+<!-- dialog of new input-->
             <v-card-text>
               <v-container>
                 <v-row>
+
                   <v-col
                     cols="12"
                     sm="6"
@@ -58,52 +77,234 @@
                   >
                     <v-text-field
                       v-model="editedItem.name"
-                      label="Dessert name"
+                      label="id"
                     ></v-text-field>
                   </v-col>
+
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.name"
-                      label="Name"
+                      v-model="editedItem.company"
+                      label="事业部"
                     ></v-text-field>
                   </v-col>
+
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.fat"
-                      label="Fat (g)"
+                      v-model="editedItem.city"
+                      label="组别"
                     ></v-text-field>
                   </v-col>
+
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.carbs"
-                      label="Carbs (g)"
+                      v-model="editedItem.state"
+                      label="持品人"
                     ></v-text-field>
                   </v-col>
+
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
                     <v-text-field
-                      v-model="editedItem.protein"
-                      label="Protein (g)"
+                      v-model="editedItem.aaaaa"
+                      label="店铺名"
                     ></v-text-field>
                   </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.s"
+                      label="产品名"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.d"
+                      label="一级类目"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.f"
+                      label="品类扣点"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.g"
+                      label="品类运费险"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.h"
+                      label="每单运费"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.j"
+                      label="子/主订单附带比"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.k"
+                      label="运费/总货款"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.l"
+                      label="发货方式"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.q"
+                      label="聚水潭仓库"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.w"
+                      label="厂家名"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.e"
+                      label="厂家群名"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.r"
+                      label="厂家收款账户"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.t"
+                      label="厂家账户号码"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.y"
+                      label="厂家退货-收件人"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.u"
+                      label="厂家退货-收件手机号"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.i"
+                      label="厂家退货-收件地址"
+                    ></v-text-field>
+                  </v-col>
+
                 </v-row>
               </v-container>
             </v-card-text>
+<!-- until there is dialog of new input-->
 
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -112,30 +313,32 @@
                 text
                 @click="close"
               >
-                Cancel
+                取消
               </v-btn>
               <v-btn
                 color="blue darken-1"
                 text
                 @click="save"
               >
-                Save
+                保存
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
+
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+            <v-card-title class="text-h5">是否确定删除？</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+              <v-btn color="blue darken-1" text @click="closeDelete">取消</v-btn>
+              <v-btn color="blue darken-1" text @click="deleteItemConfirm">完成</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
         </v-dialog>
       </v-toolbar>
+      
     </template>
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon
@@ -169,6 +372,8 @@ export default {
     data: () => ({
       dialog: false,
       dialogDelete: false,
+      expanded: [],
+      singleExpand: false,
       headers: [
         {
           text: '商品ID',
@@ -176,7 +381,7 @@ export default {
           sortable: true,
           value: 'name',
         },
-        { text: '事业部', value: 'company' },
+        { text: '部门', value: 'company' },
             { text: '组别', value: 'city' },
             { text: '持品人', value: 'state' },
             { text: '店铺名', value: 'aaaaa' },
@@ -295,7 +500,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455451868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -318,7 +523,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455861868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -341,7 +546,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455761868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -364,7 +569,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455061868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -387,7 +592,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334452461868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -410,7 +615,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '336455461868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -433,7 +638,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455462868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -456,7 +661,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455431868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -479,7 +684,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455461468',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
