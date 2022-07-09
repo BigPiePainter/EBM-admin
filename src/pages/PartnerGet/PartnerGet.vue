@@ -294,6 +294,7 @@ export default {
       { text: "厂家退货-收件人", value: "y" },
       { text: "厂家退货-收件手机号", value: "u" },
       { text: "厂家退货-收件地址", value: "i" },
+      { text: 'Actions', value: 'actions', sortable: false },
     ],
     products: [],
     editedIndex: -1,
