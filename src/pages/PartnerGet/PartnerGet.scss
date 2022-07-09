@@ -23,5 +23,20 @@
         color: $primary;
       }
     }
+  
+  }
+
+}
+
+.sub-table{
+  
+  .sub-table-container{
+    width: fit-content;
+    background-color: transparent;
+    transform: translateY(-5px);
+    border-radius: 5px;
   }
 }
+
+
+
