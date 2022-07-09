@@ -5,7 +5,6 @@
     <v-card>
       <v-card-title class="pa-6 pb-3">
         <p>商品：某某某某床垫</p>
-        
       </v-card-title>
 
       <div class="dropbox pa-16 mb-5">
