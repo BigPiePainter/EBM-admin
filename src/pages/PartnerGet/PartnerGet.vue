@@ -1,4 +1,4 @@
- <!--
+ <!--useless data-table set, but it's still possible to be use.
     <template v-slot:top>
     <v-data-table
       v-model="mock.productsTable.selected"
@@ -366,6 +366,16 @@
   </v-data-table>
   </v-card>
 </template>
+
+
+
+
+
+
+
+
+
+
 
 <script>
 export default {
