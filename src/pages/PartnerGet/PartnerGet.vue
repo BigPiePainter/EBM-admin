@@ -14,9 +14,20 @@
   <v-data-table
     :headers="headers"
     :items="products"
+    :single-expand="singleExpand"
+    :expanded.sync="expanded"
+    item-key="name"
+    show-expand
     sort-by="name"
     class="elevation-1"
   >
+
+    <template v-slot:expanded-item="{ headers, item }">
+      <td :colspan="headers.length">
+        More info about {{ item.name }}
+      </td>
+    </template>
+
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>产品信息</v-toolbar-title>
@@ -54,7 +65,7 @@
             <v-card-title>
               <span class="text-h5">{{ formTitle }}</span>
             </v-card-title>
-
+<!-- dialog of new input-->
             <v-card-text>
               <v-container>
                 <v-row>
@@ -293,6 +304,7 @@
                 </v-row>
               </v-container>
             </v-card-text>
+<!-- until there is dialog of new input-->
 
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -313,6 +325,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="text-h5">是否确定删除？</v-card-title>
@@ -325,6 +338,7 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
+      
     </template>
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon
@@ -358,6 +372,8 @@ export default {
     data: () => ({
       dialog: false,
       dialogDelete: false,
+      expanded: [],
+      singleExpand: false,
       headers: [
         {
           text: '商品ID',
@@ -484,7 +500,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455451868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -507,7 +523,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455861868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -530,7 +546,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455761868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -553,7 +569,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455061868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -576,7 +592,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334452461868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -599,7 +615,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '336455461868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -622,7 +638,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455462868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -645,7 +661,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455431868',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
@@ -668,7 +684,7 @@ export default {
                 i: 'null',
           },
           {
-                name: '334455461868',
+                name: '334455461468',
                 company: '某某部',
                 city: '某某组',
                 state: '王毅',
