@@ -18,9 +18,7 @@
     class="elevation-1"
   >
     <template v-slot:top>
-      <v-toolbar
-        flat
-      >
+      <v-toolbar flat>
         <v-toolbar-title>产品信息</v-toolbar-title>
         <v-divider
           class="mx-4"
@@ -28,10 +26,18 @@
           vertical
         ></v-divider>
         <v-spacer></v-spacer>
+<!--sigle chose-->
+        <v-switch
+          v-model="singleExpand"
+          label="Single expand"
+          class="mt-2"
+        ></v-switch>
+
         <v-dialog
           v-model="dialog"
           max-width="500px"
         >
+<!--new item buttom-->
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               color="primary"
@@ -43,6 +49,7 @@
               新增商品信息
             </v-btn>
           </template>
+
           <v-card>
             <v-card-title>
               <span class="text-h5">{{ formTitle }}</span>
@@ -358,7 +365,7 @@ export default {
           sortable: true,
           value: 'name',
         },
-        { text: '事业部', value: 'company' },
+        { text: '部门', value: 'company' },
             { text: '组别', value: 'city' },
             { text: '持品人', value: 'state' },
             { text: '店铺名', value: 'aaaaa' },
