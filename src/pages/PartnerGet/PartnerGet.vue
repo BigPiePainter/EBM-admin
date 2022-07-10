@@ -1,14 +1,3 @@
- <!--useless data-table set, but it's still possible to be use.
-    <template v-slot:top>
-    <v-data-table
-      v-model="mock.productsTable.selected"
-      :headers="mock.productsTable.headers"
-      :items="mock.productsTable.products"
-      :search="mock.productsTable.search"
-      item-key="name"
-      show-select>
--->
-
 <template>
   <v-card class="products-list mb-1">
     <v-card-title>
@@ -42,7 +31,7 @@
               loading
               loading-text="加载中... 请稍后"
               :headers="sheaders"
-              :items="desserts"
+              :items="subTableItems[products.indexOf(item)]"
               :b="item"
               class="elevation-1 mb-1"
               @click:row="sclickRow"
@@ -222,7 +211,7 @@
               </template>
 
               <template v-slot:no-data>
-                <v-btn color="primary" @click="sinitialize"> Reset </v-btn>
+                <v-btn color="primary" @click="holdini"> Reset </v-btn>
               </template>
             </v-data-table>
           </div>
@@ -553,7 +542,7 @@ export default {
       { text: "Actions", value: "actions", sortable: false },
     ],
 
-    desserts: [],
+    subTableItems: [],
 
     seditedIndex: -1,
 
@@ -584,12 +573,6 @@ export default {
     },
   },
 
-  scomputed: {
-    sformTitle() {
-      return this.seditedIndex === -1 ? "New" : "Edit";
-    },
-  },
-
   watch: {
     dialog(val) {
       val || this.close();
@@ -607,8 +590,10 @@ export default {
   },
 
   created() {
+    console.log("123123");
     this.initialize();
-    this.sinitialize();
+    console.log("123123123123123");
+    this.holdini();
   },
 
   methods: {
@@ -631,7 +616,6 @@ export default {
     },
 
     initialize() {
-      this.products = [];
       this.products = [
         {
           name: "334455461868",
@@ -794,78 +778,9 @@ export default {
           u: "",
           i: "",
         },
-        {
-          name: "334455462868",
-          company: "某某部",
-          city: "某某组",
-          state: "王毅",
-          aaaaa: "李宁",
-          s: "书包",
-          d: "箱包皮具/热销女包",
-          f: "0.11",
-          g: "0.15",
-          h: "0",
-          j: "",
-          k: "",
-          l: "聚水潭/手动/其它",
-          q: "",
-          w: "A",
-          e: "",
-          r: "支付宝/某某银行",
-          t: "",
-          y: "",
-          u: "",
-          i: "",
-        },
-        {
-          name: "334455431868",
-          company: "某某部",
-          city: "某某组",
-          state: "王毅",
-          aaaaa: "李宁",
-          s: "书包",
-          d: "箱包皮具/热销女包",
-          f: "0.11",
-          g: "0.15",
-          h: "0",
-          j: "",
-          k: "",
-          l: "聚水潭/手动/其它",
-          q: "",
-          w: "A",
-          e: "",
-          r: "支付宝/某某银行",
-          t: "",
-          y: "",
-          u: "",
-          i: "",
-        },
-        {
-          name: "334455461468",
-          company: "某某部",
-          city: "某某组",
-          state: "王毅",
-          aaaaa: "李宁",
-          s: "书包",
-          d: "箱包皮具/热销女包",
-          f: "0.11",
-          g: "0.15",
-          h: "0",
-          j: "",
-          k: "",
-          l: "聚水潭/手动/其它",
-          q: "",
-          w: "A",
-          e: "",
-          r: "支付宝/某某银行",
-          t: "",
-          y: "",
-          u: "",
-          i: "",
-        },
       ];
 
-      for (let index = 0; index < 1000; index++) {
+      for (let index = 0; index < 100; index++) {
         this.products.push({
           name: (Math.random() * 10000000000).toString(),
           company: "某某部",
@@ -934,206 +849,39 @@ export default {
       this.close();
     },
 
-    sinitialize() {
-      this.desserts = [];
-      this.desserts = [
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: "尺寸:20寸【直接登机】送运费险*不满意包退;颜色分类:【商务黑】直角拉链款",
-          price: 108,
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-      ];
-    },
+    holdini() {
 
+      for (let i = 0; i < this.products.length; i++) {
+        this.subTableItems[i] = []
+        
+        for (let index = 0; index < 3; index++) {
+          this.subTableItems[i].push({
+            name: i,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "2022-07-09",
+            orderNum: "100",
+            seleNum: "80",
+          });
+        }
+      }
+    },
+    
     secondeditItem(item) {
-      this.seditedIndex = this.$data.desserts.indexOf(item);
+      this.seditedIndex = this.subTableItems.indexOf(item);
       this.secondeditedItem = Object.assign({}, item);
       this.sdialog = true;
     },
 
     seconddeleteItem(item) {
-      this.seditedIndex = this.desserts.indexOf(item);
+      this.seditedIndex = this.subTableItems.indexOf(item);
       this.secondeditedItem = Object.assign({}, item);
       this.sdialogDelete = true;
     },
 
     seconddeleteItemConfirm() {
-      this.desserts.splice(this.seditedIndex, 1);
+      this.subTableItems.splice(this.seditedIndex, 1);
       this.secondcloseDelete();
     },
 
@@ -1155,12 +903,13 @@ export default {
 
     secondsave() {
       if (this.seditedIndex > -1) {
-        Object.assign(this.desserts[this.seditedIndex], this.secondeditedItem);
+        Object.assign(this.subTableItems[this.seditedIndex], this.secondeditedItem);
       } else {
-        this.desserts.push(this.secondeditedItem);
+        this.subTableItems.push(this.secondeditedItem);
       }
       this.secondclose();
     },
+    
   },
 };
 </script>
