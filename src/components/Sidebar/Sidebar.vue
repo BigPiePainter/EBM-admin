@@ -106,12 +106,12 @@ export default {
           link: "/partnerget",
         },
 
-        {
+/*        {
           title: "录入SKU信息",
           icon: "mdi-book-variant-multiple",
           link: "/productsput",
         },
-
+*/
         { title: "系统信息", icon: "mdi-bell-outline", link: "/notifications" },
 
         { divider: true },
