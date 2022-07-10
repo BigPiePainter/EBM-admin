@@ -19,7 +19,8 @@ import Login from "@/pages/Login/Login";
 
 Vue.use(Router);
 
-export default new Router({
+
+var routerConfig = {
   routes: [
     {
       path: '/login',
@@ -27,67 +28,77 @@ export default new Router({
       component: Login
     },
     {
-    path: '/',
-    redirect: 'login',
-    name: 'Layout',
-    component: Layout,
-    children: [
-      {
-        path: 'dashboard',
-        name: 'Dashboard',
-        component: Dashboard,
-      },
-      {
-        path: 'partnerget',
-        name: 'PartnerGet',
-        component: PartnerGet,
-      },     
-      {
-        path: 'productsget',
-        name: 'PRoductsGet',
-        component: ProductsGet,
-      },      
-      {
-        path: 'productsput',
-        name: 'ProductsPut',
-        component: ProductsPut,
-      },
-      {
-        path: 'tables',
-        name: 'Tables',
-        component: Tables
-      },
-      {
-        path: 'notifications',
-        name: 'Notifications',
-        component: Notifications
-      },
-      {
-        path: 'icons',
-        name: 'Icons',
-        component: Icons
-      },
-      {
-        path: 'charts',
-        name: 'Charts',
-        component: Charts
-      },
-      {
-        path: 'maps',
-        name: 'Maps',
-        component: Maps
-      },
-      {
-        path: 'test',
-        name: 'Test',
-        component: Test
-      },
-    ],
-  },
+      path: '/',
+      redirect: 'login',
+      name: 'Layout',
+      component: Layout,
+      children: [
+        {
+          path: 'dashboard',
+          name: 'Dashboard',
+          component: Dashboard,
+        },
+        {
+          path: 'partnerget',
+          name: 'PartnerGet',
+          component: PartnerGet,
+        },
+        {
+          path: 'productsget',
+          name: 'PRoductsGet',
+          component: ProductsGet,
+        },
+        {
+          path: 'productsput',
+          name: 'ProductsPut',
+          component: ProductsPut,
+        },
+        {
+          path: 'tables',
+          name: 'Tables',
+          component: Tables
+        },
+        {
+          path: 'notifications',
+          name: 'Notifications',
+          component: Notifications
+        },
+        {
+          path: 'icons',
+          name: 'Icons',
+          component: Icons
+        },
+        {
+          path: 'charts',
+          name: 'Charts',
+          component: Charts
+        },
+        {
+          path: 'maps',
+          name: 'Maps',
+          component: Maps
+        },
+        {
+          path: 'test',
+          name: 'Test',
+          component: Test
+        },
+      ],
+    },
     {
       path: '*',
       name: 'Error',
-      component: Error
+      component: Error,
     }
   ],
+}
+
+var router = new Router(routerConfig)
+
+router.beforeEach((to, from, next) => {
+  console.log("？？？？？？？？？")
+  next();
 });
+
+
+export default router;

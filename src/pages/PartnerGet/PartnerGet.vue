@@ -5,6 +5,7 @@
     </v-card-title>
 
     <v-data-table
+      height="calc(100vh - 280px)"
       single-expand
       show-expand
       loading
