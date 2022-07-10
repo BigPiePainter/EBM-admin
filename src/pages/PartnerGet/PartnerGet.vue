@@ -127,7 +127,7 @@
 
                             <v-col cols="12" sm="6" md="4">
                               <v-text-field
-                                v-model="secondeditedItem.cost"
+                                v-model='secondeditedItem.cost'
                                 label="成本"
                               ></v-text-field>
                             </v-col>
@@ -590,9 +590,7 @@ export default {
   },
 
   created() {
-    console.log("123123");
     this.initialize();
-    console.log("123123123123123");
     this.holdini();
   },
 
@@ -903,9 +901,10 @@ export default {
 
     secondsave() {
       if (this.seditedIndex > -1) {
+        console.log('444444444');
         Object.assign(this.subTableItems[this.seditedIndex], this.secondeditedItem);
       } else {
-        this.subTableItems.push(this.secondeditedItem);
+        this.subTableItems[].push(this.secondeditedItem);
       }
       this.secondclose();
     },
