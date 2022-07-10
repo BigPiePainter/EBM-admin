@@ -35,7 +35,6 @@
               :items="subTableItems[products.indexOf(item)]"
               :b="item"
               class="elevation-1 mb-1"
-              @click:row="sclickRow"
             >
               <template v-slot:top>
                 <v-toolbar flat>
@@ -43,7 +42,7 @@
                   <v-divider class="mx-4" inset vertical></v-divider>
                   <v-spacer></v-spacer>
 
-                  <v-dialog v-model="ssdialog" width="500">
+                  <v-dialog v-model="ssdialogs[products.indexOf(item)]" width="500">
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         color="red lighten-2"
@@ -93,13 +92,8 @@
                         <v-btn color="blue lighten-2" text @click="none">
                           下载SKU导入模板
                         </v-btn>
-                      </v-card-actions>
-
-                      <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="primary" text @click="ssdialog = false">
-                          OK
-                        </v-btn>
+                        
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
@@ -128,7 +122,7 @@
 
                             <v-col cols="12" sm="6" md="4">
                               <v-text-field
-                                v-model='secondeditedItem.cost'
+                                v-model="secondeditedItem.cost"
                                 label="成本"
                               ></v-text-field>
                             </v-col>
@@ -225,7 +219,7 @@
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
 
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialog" max-width="1000px">
             <!--new item buttom-->
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
@@ -251,7 +245,7 @@
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
                         v-model="editedItem.company"
-                        label="事业部"
+                        label="部门"
                       ></v-text-field>
                     </v-col>
 
@@ -443,7 +437,7 @@ export default {
     dialogDelete: false,
     sdialog: false,
     sdialogDelete: false,
-    ssdialog: false,
+    ssdialogs: [],
     status: "松开上传",
     progress: false,
     expanded: [],
@@ -544,7 +538,6 @@ export default {
     ],
 
     subTableItems: [],
-
     seditedIndex: -1,
 
     secondeditedItem: {
@@ -582,6 +575,7 @@ export default {
       val || this.closeDelete();
     },
 
+
     sdialog(val) {
       val || this.secondclose();
     },
@@ -593,6 +587,7 @@ export default {
   created() {
     this.initialize();
     this.holdini();
+    this.buttonBoolean();
   },
 
   methods: {
@@ -602,15 +597,6 @@ export default {
         this.expanded.splice(index, 1);
       } else {
         this.expanded.push(item);
-      }
-    },
-
-    sclickRow(item, event) {
-      if (event.isExpanded) {
-        const index = this.sexpanded.findIndex((i) => i === item);
-        this.sexpanded.splice(index, 1);
-      } else {
-        this.sexpanded.push(item);
       }
     },
 
@@ -866,7 +852,13 @@ export default {
         }
       }
     },
-    
+
+    buttonBoolean() {
+      for (let j = 0; j < this.products.length; j++){
+        this.ssdialogs[j] = false;
+      }
+    },
+
     secondeditItem(item) {
       this.seditedIndex = this.subTableItems.indexOf(item);
       this.secondeditedItem = Object.assign({}, item);
