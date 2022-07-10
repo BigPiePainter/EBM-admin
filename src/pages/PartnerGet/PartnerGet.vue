@@ -16,6 +16,7 @@
     </v-card-title>
 
     <v-data-table
+      height="calc(100vh - 280px)"
       single-expand
       show-expand
       loading
@@ -27,7 +28,10 @@
       sort-by="name"
       class="elevation-1"
       :items-per-page="50"
-      :footer-props="{'items-per-page-options': [10, 20, 50, 100], 'items-per-page-text' : '每页显示条数'}"
+      :footer-props="{
+        'items-per-page-options': [10, 20, 50, 100],
+        'items-per-page-text': '每页显示条数',
+      }"
       @click:row="clickRow"
     >
       <template v-slot:expanded-item="{ headers, item }">
@@ -295,7 +299,7 @@ export default {
       { text: "厂家退货-收件人", value: "y" },
       { text: "厂家退货-收件手机号", value: "u" },
       { text: "厂家退货-收件地址", value: "i" },
-      { text: 'Actions', value: 'actions', sortable: false },
+      { text: "Actions", value: "actions", sortable: false },
     ],
     products: [],
     editedIndex: -1,

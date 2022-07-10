@@ -5,137 +5,77 @@
         <v-col cols="7" class="main-part d-none d-md-none d-lg-flex">
           <div class="d-flex">
             <v-img src="@/assets/logo.svg" contain></v-img>
-            <p>Vue Material Admin</p>
+            <p>POFA EBC</p>
           </div>
         </v-col>
-        <v-col cols="12" lg="5" class="login-part d-flex align-center justify-center">
+        <v-col
+          cols="12"
+          lg="5"
+          class="login-part d-flex align-center justify-center"
+        >
           <v-row no-gutters class="align-start">
-            <v-col cols="12" class="login-part d-flex align-center justify-center flex-column">
+            <v-col
+              cols="12"
+              class="login-part d-flex align-center justify-center flex-column"
+            >
               <div class="login-wrapper pt-md-4 pt-0">
                 <v-tabs grow>
                   <v-tabs-slider></v-tabs-slider>
-                  <v-tab :href="`#tab-login`">
-                    LOGIN
-                  </v-tab>
-                  <v-tab :href="`#tab-newUser`">
-                    New User
-                  </v-tab>
+                  <v-tab :href="`#tab-login`"> 登陆 </v-tab>
 
-                  <v-tab-item :value="'tab-login'" >
+                  <v-tab-item :value="'tab-login'">
                     <v-form>
                       <v-container>
                         <v-row class="flex-column">
-                          <v-col>
-                            <p class="login-slogan display-2 text-center font-weight-medium my-10">Good Morning, User</p>
-                            <v-btn height="45" block color="white" elevation="0" class="google text-capitalize">
-                              <v-img src="@/assets/google.svg" max-width="30" class="mr-4"></v-img>
-                              Sign in with Google</v-btn>
-                          </v-col>
-                          <v-col cols="12" class="d-flex align-center my-8">
-                            <v-divider></v-divider>
-                            <span class="px-5"> or </span>
-                            <v-divider></v-divider>
-                          </v-col>
                           <v-form>
-                            <v-col>
+                            <v-col class="mt-8">
                               <v-text-field
-                                  v-model="email"
-                                  :rules="emailRules"
-                                  value="admin@flatlogic.com"
-                                  label="Email Address"
-                                  required
+                                v-model="email"
+                                :rules="emailRules"
+                                value=""
+                                label="账号"
+                                required
                               ></v-text-field>
                               <v-text-field
-                                  v-model="password"
-                                  :rules="passRules"
-                                  type="password"
-                                  label="Password"
-                                  hint="At least 6 characters"
-                                  required
+                                v-model="password"
+                                :rules="passRules"
+                                type="password"
+                                label="密码"
+                                hint="6-30个字符"
+                                required
+                                class="mt-6"
                               ></v-text-field>
-
                             </v-col>
                             <v-col class="d-flex justify-space-between">
                               <v-btn
-                                  class="text-capitalize"
-                                  large
-                                  :disabled="password.length === 0 || email.length === 0"
-                                  color="primary"
-                                  @click="login"
+                                class="text-capitalize"
+                                large
+                                :disabled="
+                                  password.length === 0 || email.length === 0
+                                "
+                                color="primary"
+                                @click="login"
                               >
-                                Login</v-btn>
-                              <v-btn large text class="text-capitalize primary--text">Forget Password</v-btn>
+                                登陆</v-btn
+                              >
+                              <v-btn
+                                large
+                                text
+                                class="text-capitalize primary--text"
+                                >忘记密码</v-btn
+                              >
                             </v-col>
                           </v-form>
                         </v-row>
                       </v-container>
                     </v-form>
                   </v-tab-item>
-
-                  <v-tab-item :value="'tab-newUser'" >
-                    <v-form>
-                      <v-container>
-                        <v-row class="flex-column">
-
-                          <v-col>
-                            <p class="login-slogan display-2 text-center font-weight-medium mt-10">Welcome!</p>
-                            <p class="login-slogan display-1 text-center font-weight-medium mb-10">Create your account</p>
-                          </v-col>
-
-                          <v-form>
-                            <v-col>
-                              <v-text-field
-                                  v-model="createFullName"
-                                  label="Full Name"
-                                  required
-                              ></v-text-field>
-                              <v-text-field
-                                  v-model="createEmail"
-                                  :rules="emailRules"
-                                  label="Email Address"
-                                  required
-                              ></v-text-field>
-                              <v-text-field
-                                  v-model="createPassword"
-                                  :rules="passRules"
-                                  type="password"
-                                  label="Password"
-                                  hint="At least 6 characters"
-                                  required
-                              ></v-text-field>
-                            </v-col>
-                            <v-col class="d-flex justify-space-between">
-                              <v-btn
-                                  large
-                                  block
-                                  :disabled="createFullName.length === 0 || createEmail.length === 0 || createPassword === 0"
-                                  color="primary"
-                                  @click="login"
-                              >
-                                Create your account</v-btn>
-                            </v-col>
-                          </v-form>
-
-                          <v-col cols="12" class="d-flex align-center my-4">
-                            <v-divider></v-divider>
-                            <span class="px-5"> or </span>
-                            <v-divider></v-divider>
-                          </v-col>
-
-                          <v-btn height="45" block color="white" elevation="0" class="google text-capitalize">
-                            <v-img src="@/assets/google.svg" max-width="30" class="mr-4"></v-img>
-                            Sign in with Google</v-btn>
-                        </v-row>
-                      </v-container>
-                    </v-form>
-                  </v-tab-item>
-
                 </v-tabs>
               </div>
             </v-col>
             <v-col cols="12" class="d-flex justify-center">
               <v-footer>
-                <div class="primary--text">© 2014-2020 <a href="https://flatlogic.com/" class="text-decoration-none">Flatlogic</a>, LLC. All rights reserved.</div>
+                <div class="primary--text">© 浙江泼发进出口贸易有限公司</div>
               </v-footer>
             </v-col>
           </v-row>
@@ -146,39 +86,67 @@
 </template>
 
 <script>
+import { userLogin } from "@/settings/user";
 
-  export default {
-    name: 'Login',
-    data() {
-      return {
-        email: 'admin@flatlogic.com',
-        emailRules: [
-          v => !!v || 'E-mail is required',
-          v => /.+@.+/.test(v) || 'E-mail must be valid',
-        ],
-        createFullName: 'John Smith',
-        createEmail: 'john@flatlogic.com',
-        createPassword: '123456',
-        password: '123456',
-        passRules: [
-          v => !!v || 'Password is required',
-          v => v.length >= 6 || 'Min 6 characters'
-        ]
-      }
-    },
-    methods: {
-      login(){
-        window.localStorage.setItem('authenticated', true);
-        this.$router.push('/dashboard');
-      }
-    },
-    created() {
-      if (window.localStorage.getItem('authenticated') === 'true') {
-        this.$router.push('/dashboard');
-      }
-    }
-  }
+export default {
+  name: "Login",
+  data() {
+    return {
+      email: "",
+      emailRules: [
+        (v) => !!v || "账号不能为空",
+        (v) => v.length >= 2 || "账号不能少于2个字符",
+        (v) => v.length <= 30 || "账号不能多于30个字符",
+        (v) => /^[0-9a-zA-Z]+$/.test(v) || "账号不能包含特殊符号",
+      ],
+      password: "",
+      passRules: [
+        (v) => !!v || "密码不能为空",
+        (v) => v.length >= 6 || "密码不能少于6个字符",
+        (v) => v.length <= 30 || "密码不能多于30个字符",
+      ],
+    };
+  },
+  methods: {
+    login() {
+      userLogin({ username: this.email, password: this.password }).then(
+        (res) => {
+          try {
+            if (res && res.data && res.data.isLogin) {
+              this.$router.push("/dashboard");
+              this.infoAlert("泼发EBC：登陆成功");
+              return;
+            }
 
+            this.infoAlert("泼发EBC：" + res.data);
+          } catch (error) {
+            this.infoAlert("泼发EBC：登陆失败");
+          }
+        }
+      );
+    },
+
+    infoAlert(message) {
+      this.$toast.info(message, {
+        position: "top-right",
+        timeout: 6000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: false,
+        hideProgressBar: true,
+        closeButton: "button",
+        icon: true,
+      });
+    },
+  },
+  created() {
+    //if (window.localStorage.getItem("authenticated") === "true") {
+    //  this.$router.push("/dashboard");
+    //}
+  },
+};
 </script>
 
 <style src="./Login.scss" lang="scss"/>
