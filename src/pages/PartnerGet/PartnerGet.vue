@@ -904,7 +904,7 @@ export default {
         console.log('444444444');
         Object.assign(this.subTableItems[this.seditedIndex], this.secondeditedItem);
       } else {
-        this.subTableItems[].push(this.secondeditedItem);
+        this.subTableItems.push(this.secondeditedItem);
       }
       this.secondclose();
     },
