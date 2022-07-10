@@ -42,3 +42,26 @@ varchar(200) COMMENT '厂家收款账户号码'
 varchar(200) COMMENT '厂家退货-收件人'
 varchar(200) COMMENT '厂家退货-收件手机号'
 varchar(200) COMMENT '厂家退货-收件地址'
+
+
+
+-- 用户
+drop table if exists users;
+CREATE TABLE users (
+  uid bigint NOT NULL AUTO_INCREMENT COMMENT 'id' ,
+  username varchar(100) NOT NULL COMMENT '用户名',
+  password varchar(100) NOT NULL COMMENT '密码',
+
+  primary key (uid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统用户';
+
+
+
+-- 测试数据
+insert into users(username, password) values('zqy', '123456');
+insert into users(username, password) values('554', '12345');
+
+
+
+
+
