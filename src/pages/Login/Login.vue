@@ -4,7 +4,7 @@
       <v-row no-gutters>
         <v-col cols="7" class="main-part d-none d-md-none d-lg-flex">
           <div class="d-flex">
-            <v-img src="@/assets/logo.svg" contain></v-img>
+            <v-img src="@/assets/logo3.svg" contain></v-img>
             <p>POFA EBC</p>
           </div>
         </v-col>
@@ -21,7 +21,7 @@
               <div class="login-wrapper pt-md-4 pt-0">
                 <v-tabs grow>
                   <v-tabs-slider></v-tabs-slider>
-                  <v-tab :href="`#tab-login`"> 登陆 </v-tab>
+                  <v-tab :href="`#tab-login`" loading> 登陆 </v-tab>
 
                   <v-tab-item :value="'tab-login'">
                     <v-form>
@@ -35,6 +35,7 @@
                                 value=""
                                 label="账号"
                                 required
+                                :loading="loading"
                               ></v-text-field>
                               <v-text-field
                                 v-model="password"
@@ -43,6 +44,7 @@
                                 label="密码"
                                 hint="6-30个字符"
                                 required
+                                :loading="loading"
                                 class="mt-6"
                               ></v-text-field>
                             </v-col>
@@ -105,25 +107,35 @@ export default {
         (v) => v.length >= 6 || "密码不能少于6个字符",
         (v) => v.length <= 30 || "密码不能多于30个字符",
       ],
+      loading: false,
     };
   },
   methods: {
     login() {
-      userLogin({ username: this.email, password: this.password }).then(
-        (res) => {
-          try {
-            if (res && res.data && res.data.isLogin) {
-              this.$router.push("/dashboard");
-              this.infoAlert("泼发EBC：登陆成功");
-              return;
-            }
+      this.loading = true;
+      setTimeout(() => {
+        userLogin({ username: this.email, password: this.password })
+          .then((res) => {
+            this.loading = false;
+            try {
+              if (res && res.data && res.data.isLogin) {
+                this.$router.push("/dashboard");
+                this.infoAlert("泼发EBC：登陆成功");
+                return;
+              }
 
-            this.infoAlert("泼发EBC：" + res.data);
-          } catch (error) {
-            this.infoAlert("泼发EBC：登陆失败");
-          }
-        }
-      );
+              this.infoAlert("泼发EBC：" + res.data);
+            } catch (error) {
+              this.infoAlert("泼发EBC：登陆失败");
+            }
+          })
+          .catch(() => {
+            this.loading = false;
+            setTimeout(() => {
+              this.infoAlert("泼发EBC：登陆失败");
+            }, 100);
+          });
+      }, 1500);
     },
 
     infoAlert(message) {
