@@ -48,20 +48,68 @@ varchar(200) COMMENT '厂家退货-收件地址'
 -- 用户
 drop table if exists users;
 CREATE TABLE users (
-  uid bigint NOT NULL AUTO_INCREMENT COMMENT 'id' ,
+  uid bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  creator_id bigint NOT NULL COMMENT '用户创建人',
+
+  permission bigint NOT NULL COMMENT '权限',
+
   username varchar(100) NOT NULL COMMENT '用户名',
   password varchar(100) NOT NULL COMMENT '密码',
-
+  
   primary key (uid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统用户';
 
 
 
 -- 测试数据
-insert into users(username, password) values('zqy', '123456');
-insert into users(username, password) values('554', '12345');
+insert into users(uid, creator_id, permission, username, password) values(0, 0, 1048575, 'admin', '88888888');
+insert into users(creator_id, permission, username, password) values(0, 1048575, 'zqy', '123456');
+insert into users(creator_id, permission, username, password) values(0, 1048575, '556', '654321');
 
 
 
+-- 商品信息
+drop table if exists products;
+CREATE TABLE products (
+  uid bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  creator_id bigint COMMENT '商品创建人'
+
+  id varchar(200) NOT NULL COMMENT '商品ID'
+  department varchar(200) COMMENT '事业部'
+  group varchar(200) COMMENT '组别'
+  
+  shop_name varchar(200) COMMENT '店铺名'
+
+  first_category varchar(200) COMMENT '一级类目'
+  product_name varchar(200) COMMENT '产品名'
+  product_deduction varchar(200) COMMENT '品类扣点'
+  product_freight varchar(200) COMMENT '每单运费'
+  product_insurance varchar(200) COMMENT '品类运费险'
+  
+  varchar(200) COMMENT '子/主订单附带比'
+  varchar(200) COMMENT '运费/总货款'
+  varchar(200) COMMENT '发货方式'
+  varchar(200) COMMENT '聚水潭仓库'
+
+  manufacturer bigint COMMENT '厂家'
+
+  primary key (uid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品信息';
 
 
+-- 厂家信息表
+drop table if exists manufacturer;
+CREATE TABLE manufacturer (
+  uid bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  creator_id bigint COMMENT '厂家创建人'
+
+  name varchar(200) COMMENT '厂家名'
+  group varchar(200) COMMENT '厂家群名'
+  payment varchar(200) COMMENT '厂家收款账户'
+  payment_id varchar(200) COMMENT '厂家收款账户号码'
+  recipient varchar(200) COMMENT '厂家退货-收件人'
+  phone varchar(200) COMMENT '厂家退货-收件手机号'
+  address varchar(200) COMMENT '厂家退货-收件地址'
+
+  primary key (uid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='厂家';
