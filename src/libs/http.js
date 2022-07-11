@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import Vue from 'vue'
 import {
   queryStringify
 } from '@/libs/utils'
@@ -48,21 +48,31 @@ class Http {
     }, (error) => {
       const response = error.response
       if (response) {
-        this._errorHandle(response.data, response.status)
+        this._errorHandle(error, response.status)
       } else {
+
         this._errorHandle('服务器无响应', 500)
       }
+
       return Promise.reject(error)
     })
     return instance(options)
   }
 
-  _errorHandle(res, status = 500) {
-    let msg = res && res.msg
-    if (res.msg === 'success') return
-    if (status === 401 && msg) msg = '参数验证出错,传入的参数不符合API的要求'
-    if (status === 404 && msg) msg = '您访问的资源未找到'
-    
+  _errorHandle(error) {
+    Vue.prototype.$toast.error(error.code, {
+      position: "top-right",
+      timeout: 6000,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      draggablePercent: 0.6,
+      showCloseButtonOnHover: false,
+      hideProgressBar: true,
+      closeButton: "button",
+      icon: true,
+    });
+
     //调用vuetify的错误消息弹框
     //Message.error(msg || '服务器无响应')
   }
