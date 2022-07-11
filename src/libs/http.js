@@ -59,22 +59,22 @@ class Http {
     return instance(options)
   }
 
-  _errorHandle(error) {
-    Vue.prototype.$toast.error(error.code, {
-      position: "top-right",
-      timeout: 6000,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      draggablePercent: 0.6,
-      showCloseButtonOnHover: false,
-      hideProgressBar: true,
-      closeButton: "button",
-      icon: true,
-    });
-
-    //调用vuetify的错误消息弹框
-    //Message.error(msg || '服务器无响应')
+  _errorHandle(data) {
+    console.log(data)
+    if (data.constructor.name == "AxiosError") {
+      Vue.prototype.$toast.error(data.code.toString(), {
+        position: "top-right",
+        timeout: 6000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: false,
+        hideProgressBar: true,
+        closeButton: "button",
+        icon: true,
+      });
+    }
   }
 }
 
