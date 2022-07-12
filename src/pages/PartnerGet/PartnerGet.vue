@@ -8,8 +8,10 @@
       height="calc(100vh - 280px)"
       single-expand
       show-expand
+      fixed-header
       :loading="loading"
       loading-text="加载中... 请稍后"
+      no-data-text="空"
       :headers="headers"
       :items="products"
       :expanded.sync="expanded"
@@ -23,6 +25,7 @@
       }"
       @click:row="clickRow"
     >
+
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
           <div class="sub-table-container elevation-20 ml-2 mb-3">
@@ -265,7 +268,6 @@ export default {
     status: "松开上传",
     progress: false,
     expanded: [],
-    sexpanded: [],
 
     loading: false,
 
@@ -418,6 +420,7 @@ export default {
           { text: "厂家退货-收件地址", value: "manufacturer_address" },
           { text: "Actions", value: "actions", sortable: false },
         ];
+
         //加载数据
         for (let index = 0; index < 1000; index++) {
           this.products.push({

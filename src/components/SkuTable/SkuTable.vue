@@ -1,11 +1,17 @@
 <template>
   <v-data-table
     calculate-widths
-    dense
-    loading
+    :dense="dense"
+    :loading="loading"
     loading-text="加载中... 请稍后"
-    :headers="sheaders"
+    no-data-text="空"
+    :headers="headers"
     :items="check ? validSkuInfo : skuInfo"
+    :items-per-page="50"
+    :footer-props="{
+      'items-per-page-options': [10, 20, 50, 100],
+      'items-per-page-text': '每页显示条数',
+    }"
     class="elevation-1 mb-1"
   >
     <template v-slot:top>
@@ -177,88 +183,112 @@ export default {
 
   created() {
     //从数据库中获取skuInfo
-    this.skuInfo = [
-      {
-        name: this.productId.name,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "2022-07-09",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId.name,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "至今",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId.name,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "2022-07-09",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId.name,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "至今",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId.name,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "2022-07-09",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId.name,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "至今",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId.name,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "至今",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId.name,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "2022-07-09",
-        orderNum: "100",
-        seleNum: "80",
-      },
-    ];
+    (this.loading = true),
+      setTimeout(() => {
+        //加载表头
+        (this.loading = false),
+          (this.headers = [
+            {
+              text: "SKU名称",
+              align: "start",
+              sortable: false,
+              value: "name",
+            },
+            { text: "售卖价", align: "start", value: "price" },
+            { text: "成本", align: "start", value: "cost" },
+            { text: "价格开始时间", align: "start", value: "start" },
+            { text: "价格截止时间", align: "start", value: "end" },
+            { text: "销售子订单条数", align: "start", value: "orderNum" },
+            { text: "销售数", align: "start", value: "seleNum" },
+            { text: "Actions", value: "actions", sortable: false },
+          ]);
 
-    console.log(this.skuInfo);
-    this.validSkuInfo = [];
-    this.skuInfo.forEach((item) => {
-      if (item.end == "至今") {
-        this.validSkuInfo.push(item);
-      }
-    });
+        //加载数据
+        this.skuInfo = [
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "2022-07-09",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "至今",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "2022-07-09",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "至今",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "2022-07-09",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "至今",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "至今",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "2022-07-09",
+            orderNum: "100",
+            seleNum: "80",
+          },
+        ];
+
+
+        this.skuInfo = []
+
+        this.validSkuInfo = [];
+        this.skuInfo.forEach((item) => {
+          if (item.end == "至今") {
+            this.validSkuInfo.push(item);
+          }
+        });
+      }, 500);
   },
 
   data() {
@@ -270,26 +300,14 @@ export default {
       status: "松开上传",
       progress: false,
 
+      headers: [],
       skuInfo: [],
       validSkuInfo: [],
 
-      check: false,
+      dense: false,
+      loading: false,
 
-      sheaders: [
-        {
-          text: "SKU名称",
-          align: "start",
-          sortable: false,
-          value: "name",
-        },
-        { text: "售卖价", align: "start", value: "price" },
-        { text: "成本", align: "start", value: "cost" },
-        { text: "价格开始时间", align: "start", value: "start" },
-        { text: "价格截止时间", align: "start", value: "end" },
-        { text: "销售子订单条数", align: "start", value: "orderNum" },
-        { text: "销售数", align: "start", value: "seleNum" },
-        { text: "Actions", value: "actions", sortable: false },
-      ],
+      check: true,
 
       subTableEdited: [],
       seditedIndex: -1,
@@ -377,7 +395,7 @@ export default {
       //worksheet["!cols"] = [{ wch: 60 }, { wch: 5 }, { wch: 5 }];
 
       /* create an XLSX file and try to save to Presidents.xlsx */
-      XLSX.writeFile(workbook, `${this.productsInfo.owner} + "-" + ${this.productsInfo.product_name} + "-" + ${this.productsInfo.id}.xlsx`);
+      XLSX.writeFile(workbook, `${this.productsInfo.owner}-${this.productsInfo.product_name}-${this.productsInfo.id}.xlsx`);
     },
 
     secondeditItem(item) {
