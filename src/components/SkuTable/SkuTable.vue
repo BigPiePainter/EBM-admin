@@ -1,11 +1,17 @@
 <template>
   <v-data-table
     calculate-widths
-    dense
-    loading
+    :dense="dense"
+    :loading="loading"
     loading-text="加载中... 请稍后"
-    :headers="sheaders"
+    no-data-text="空"
+    :headers="headers"
     :items="check ? validSkuInfo : skuInfo"
+    :items-per-page="50"
+    :footer-props="{
+      'items-per-page-options': [10, 20, 50, 100],
+      'items-per-page-text': '每页显示条数',
+    }"
     class="elevation-1 mb-1"
   >
     <template v-slot:top>
@@ -15,7 +21,9 @@
 
         <v-spacer></v-spacer>
         <v-switch v-model="check" label="有效SKU" class="pr-5 pt-6"></v-switch>
-        <v-btn color="green lighten-2" dark @click="download" class="mr-3"> 导出 </v-btn>
+        <v-btn color="green lighten-2" dark @click="download" class="mr-3">
+          导出
+        </v-btn>
 
         <v-dialog v-model="ssdialogs" width="500">
           <template v-slot:activator="{ on, attrs }">
@@ -175,88 +183,112 @@ export default {
 
   created() {
     //从数据库中获取skuInfo
-    this.skuInfo = [
-      {
-        name: this.productId,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "2022-07-09",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "至今",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "2022-07-09",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "至今",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "2022-07-09",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "至今",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "至今",
-        orderNum: "100",
-        seleNum: "80",
-      },
-      {
-        name: this.productId,
-        price: Math.floor(Math.random() * 1000),
-        cost: 68,
-        start: "2022-07-09",
-        end: "2022-07-09",
-        orderNum: "100",
-        seleNum: "80",
-      },
-    ];
+    (this.loading = true),
+      setTimeout(() => {
+        //加载表头
+        (this.loading = false),
+          (this.headers = [
+            {
+              text: "SKU名称",
+              align: "start",
+              sortable: false,
+              value: "name",
+            },
+            { text: "售卖价", align: "start", value: "price" },
+            { text: "成本", align: "start", value: "cost" },
+            { text: "价格开始时间", align: "start", value: "start" },
+            { text: "价格截止时间", align: "start", value: "end" },
+            { text: "销售子订单条数", align: "start", value: "orderNum" },
+            { text: "销售数", align: "start", value: "seleNum" },
+            { text: "Actions", value: "actions", sortable: false },
+          ]);
 
-    console.log(this.skuInfo);
-    this.validSkuInfo = [];
-    this.skuInfo.forEach((item) => {
-      if (item.end == "至今") {
-        this.validSkuInfo.push(item);
-      }
-    });
+        //加载数据
+        this.skuInfo = [
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "2022-07-09",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "至今",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "2022-07-09",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "至今",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "2022-07-09",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "至今",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "至今",
+            orderNum: "100",
+            seleNum: "80",
+          },
+          {
+            name: this.productId,
+            price: Math.floor(Math.random() * 1000),
+            cost: 68,
+            start: "2022-07-09",
+            end: "2022-07-09",
+            orderNum: "100",
+            seleNum: "80",
+          },
+        ];
+
+
+        this.skuInfo = []
+
+        this.validSkuInfo = [];
+        this.skuInfo.forEach((item) => {
+          if (item.end == "至今") {
+            this.validSkuInfo.push(item);
+          }
+        });
+      }, 500);
   },
 
   data() {
@@ -268,26 +300,14 @@ export default {
       status: "松开上传",
       progress: false,
 
+      headers: [],
       skuInfo: [],
       validSkuInfo: [],
 
-      check: false,
+      dense: false,
+      loading: false,
 
-      sheaders: [
-        {
-          text: "SKU名称",
-          align: "start",
-          sortable: false,
-          value: "name",
-        },
-        { text: "售卖价", align: "start", value: "price" },
-        { text: "成本", align: "start", value: "cost" },
-        { text: "价格开始时间", align: "start", value: "start" },
-        { text: "价格截止时间", align: "start", value: "end" },
-        { text: "销售子订单条数", align: "start", value: "orderNum" },
-        { text: "销售数", align: "start", value: "seleNum" },
-        { text: "Actions", value: "actions", sortable: false },
-      ],
+      check: true,
 
       subTableEdited: [],
       seditedIndex: -1,

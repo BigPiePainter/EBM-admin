@@ -72,7 +72,8 @@ insert into users(creator_id, permission, username, password) values(0, 1048575,
 drop table if exists products;
 CREATE TABLE products (
   uid bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
-  creator_id bigint COMMENT '商品创建人'
+
+  owner_id bigint COMMENT '持品人'
 
   id varchar(200) NOT NULL COMMENT '商品ID'
   department varchar(200) COMMENT '事业部'
@@ -81,6 +82,7 @@ CREATE TABLE products (
   shop_name varchar(200) COMMENT '店铺名'
 
   first_category varchar(200) COMMENT '一级类目'
+
   product_name varchar(200) COMMENT '产品名'
   product_deduction varchar(200) COMMENT '品类扣点'
   product_freight varchar(200) COMMENT '每单运费'
@@ -91,15 +93,21 @@ CREATE TABLE products (
   varchar(200) COMMENT '发货方式'
   varchar(200) COMMENT '聚水潭仓库'
 
-  manufacturer bigint COMMENT '厂家'
+  manufacturer_name varchar(200) COMMENT '厂家名'
+  manufacturer_group varchar(200) COMMENT '厂家群名'
+  manufacturer_payment varchar(200) COMMENT '厂家收款账户'
+  manufacturer_payment_id varchar(200) COMMENT '厂家收款账户号码'
+  manufacturer_recipient varchar(200) COMMENT '厂家退货-收件人'
+  manufacturer_phone varchar(200) COMMENT '厂家退货-收件手机号'
+  manufacturer_address varchar(200) COMMENT '厂家退货-收件地址'
 
   primary key (uid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='商品信息';
 
 
--- 厂家信息表
-drop table if exists manufacturer;
-CREATE TABLE manufacturer (
+-- SKU
+drop table if exists sku;
+CREATE TABLE sku (
   uid bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
 
   product_id bigint NOT NULL COMMENT '商品id'
@@ -113,24 +121,4 @@ CREATE TABLE manufacturer (
 
 
   primary key (uid)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='厂家';
-
-
-
--- SKU信息表
-drop table if exists sku;
-CREATE TABLE sku (
-  uid bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
-
-  creator_id bigint COMMENT '厂家创建人'
-
-  name varchar(200) COMMENT '厂家名'
-  group varchar(200) COMMENT '厂家群名'
-  payment varchar(200) COMMENT '厂家收款账户'
-  payment_id varchar(200) COMMENT '厂家收款账户号码'
-  recipient varchar(200) COMMENT '厂家退货-收件人'
-  phone varchar(200) COMMENT '厂家退货-收件手机号'
-  address varchar(200) COMMENT '厂家退货-收件地址'
-
-  primary key (uid)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='SKU信息';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='SKU';
