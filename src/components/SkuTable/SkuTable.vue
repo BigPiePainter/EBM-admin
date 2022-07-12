@@ -14,7 +14,8 @@
         <v-divider class="mx-4" inset vertical></v-divider>
 
         <v-spacer></v-spacer>
-        <v-switch v-model="check" label="有效SKU" class="pr-10 pt-5"></v-switch>
+        <v-switch v-model="check" label="有效SKU" class="pr-5 pt-6"></v-switch>
+        <v-btn color="green lighten-2" dark @click="download" class="mr-3"> 导出 </v-btn>
 
         <v-dialog v-model="ssdialogs" width="500">
           <template v-slot:activator="{ on, attrs }">
@@ -168,11 +169,88 @@
 <script>
 export default {
   props: {
-    skuInfo: Array,
+    //skuInfo: Array,
+    productId: String,
   },
 
   created() {
-    console.log(this.skuInfo)
+    //从数据库中获取skuInfo
+    this.skuInfo = [
+      {
+        name: this.productId,
+        price: Math.floor(Math.random() * 1000),
+        cost: 68,
+        start: "2022-07-09",
+        end: "2022-07-09",
+        orderNum: "100",
+        seleNum: "80",
+      },
+      {
+        name: this.productId,
+        price: Math.floor(Math.random() * 1000),
+        cost: 68,
+        start: "2022-07-09",
+        end: "至今",
+        orderNum: "100",
+        seleNum: "80",
+      },
+      {
+        name: this.productId,
+        price: Math.floor(Math.random() * 1000),
+        cost: 68,
+        start: "2022-07-09",
+        end: "2022-07-09",
+        orderNum: "100",
+        seleNum: "80",
+      },
+      {
+        name: this.productId,
+        price: Math.floor(Math.random() * 1000),
+        cost: 68,
+        start: "2022-07-09",
+        end: "至今",
+        orderNum: "100",
+        seleNum: "80",
+      },
+      {
+        name: this.productId,
+        price: Math.floor(Math.random() * 1000),
+        cost: 68,
+        start: "2022-07-09",
+        end: "2022-07-09",
+        orderNum: "100",
+        seleNum: "80",
+      },
+      {
+        name: this.productId,
+        price: Math.floor(Math.random() * 1000),
+        cost: 68,
+        start: "2022-07-09",
+        end: "至今",
+        orderNum: "100",
+        seleNum: "80",
+      },
+      {
+        name: this.productId,
+        price: Math.floor(Math.random() * 1000),
+        cost: 68,
+        start: "2022-07-09",
+        end: "至今",
+        orderNum: "100",
+        seleNum: "80",
+      },
+      {
+        name: this.productId,
+        price: Math.floor(Math.random() * 1000),
+        cost: 68,
+        start: "2022-07-09",
+        end: "2022-07-09",
+        orderNum: "100",
+        seleNum: "80",
+      },
+    ];
+
+    console.log(this.skuInfo);
     this.validSkuInfo = [];
     this.skuInfo.forEach((item) => {
       if (item.end == "至今") {
@@ -190,7 +268,9 @@ export default {
       status: "松开上传",
       progress: false,
 
+      skuInfo: [],
       validSkuInfo: [],
+
       check: false,
 
       sheaders: [
@@ -244,6 +324,51 @@ export default {
   },
 
   methods: {
+    download() {
+      const XLSX = require("xlsx");
+
+      console.log(this.skuInfo);
+      const raw_data = this.check ? this.validSkuInfo : this.skuInfo;
+
+      /*
+      const prez = raw_data.filter((row) =>
+        row.terms.some((term) => term.type === "prez")
+      );*/
+
+      const rows = raw_data.map((row) => row);
+
+      /* generate worksheet and workbook */
+      const worksheet = XLSX.utils.json_to_sheet(rows);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "SKU数据");
+
+      /* fix headers */
+      XLSX.utils.sheet_add_aoa(
+        worksheet,
+        [
+          [
+            "SKU名称",
+            "售卖价",
+            "成本",
+            "价格开始时间",
+            "价格结束时间",
+            "a",
+            "b",
+          ],
+        ],
+        {
+          origin: "A1",
+        }
+      );
+
+      /* calculate column width */
+      //const max_width = rows.reduce((w, r) => Math.max(w, r.name.length), 10);
+      //worksheet["!cols"] = [{ wch: 60 }, { wch: 5 }, { wch: 5 }];
+
+      /* create an XLSX file and try to save to Presidents.xlsx */
+      XLSX.writeFile(workbook, "SKU数据.xlsx");
+    },
+
     secondeditItem(item) {
       this.seditedIndex = this.subTableEdited.indexOf(item);
       this.secondeditedItem = Object.assign({}, item);
