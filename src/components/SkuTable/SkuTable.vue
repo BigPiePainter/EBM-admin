@@ -178,7 +178,7 @@
 export default {
   props: {
     //skuInfo: Array,
-    productId: String,
+    productsInfo: Array,
   },
 
   created() {
@@ -344,6 +344,15 @@ export default {
   },
 
   methods: {
+ //   upload() {
+   //   const XLSX = require("xlsx");
+//
+  //    const url = "*/public/demo.xslx";
+    //  const data = await(await fetch(url)).arrayBuffer();
+      /* data is an ArrayBuffer */
+      //const workbook = XLSX.read(data);
+    //},
+
     download() {
       const XLSX = require("xlsx");
 
@@ -386,7 +395,7 @@ export default {
       //worksheet["!cols"] = [{ wch: 60 }, { wch: 5 }, { wch: 5 }];
 
       /* create an XLSX file and try to save to Presidents.xlsx */
-      XLSX.writeFile(workbook, "SKU数据.xlsx");
+      XLSX.writeFile(workbook, `${this.productsInfo.owner}-${this.productsInfo.product_name}-${this.productsInfo.id}.xlsx`);
     },
 
     secondeditItem(item) {
