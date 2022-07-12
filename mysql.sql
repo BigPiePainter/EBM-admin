@@ -20,7 +20,7 @@ CREATE TABLE products (
   primary key (id),
   unique key uk_username (username),
   key idx_create_date (create_date)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统用户';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='系统用户';
 
 department varchar(200) COMMENT '事业部'
 group varchar(200) COMMENT '组别'
@@ -55,9 +55,9 @@ CREATE TABLE users (
 
   username varchar(100) NOT NULL COMMENT '用户名',
   password varchar(100) NOT NULL COMMENT '密码',
-  
+
   primary key (uid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统用户';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='系统用户';
 
 
 
@@ -94,13 +94,34 @@ CREATE TABLE products (
   manufacturer bigint COMMENT '厂家'
 
   primary key (uid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品信息';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='商品信息';
 
 
 -- 厂家信息表
 drop table if exists manufacturer;
 CREATE TABLE manufacturer (
   uid bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+
+  product_id bigint NOT NULL COMMENT '商品id'
+  sku_name varchar(200) NOT NULL COMMENT 'SKU名称'
+  price varchar(200) NOT NULL COMMENT '售卖价'
+  cost varchar(200) NOT NULL COMMENT '售卖成本'
+
+
+  start_time varchar(200) NOT NULL COMMENT '价格开始时间'
+  end_time varchar(200) COMMENT '价格截止时间'
+
+
+  primary key (uid)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='厂家';
+
+
+
+-- SKU信息表
+drop table if exists sku;
+CREATE TABLE sku (
+  uid bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+
   creator_id bigint COMMENT '厂家创建人'
 
   name varchar(200) COMMENT '厂家名'
@@ -112,4 +133,4 @@ CREATE TABLE manufacturer (
   address varchar(200) COMMENT '厂家退货-收件地址'
 
   primary key (uid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='厂家';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='SKU信息';
