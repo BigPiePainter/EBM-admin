@@ -15,7 +15,9 @@
 
         <v-spacer></v-spacer>
         <v-switch v-model="check" label="有效SKU" class="pr-5 pt-6"></v-switch>
-        <v-btn color="green lighten-2" dark @click="download" class="mr-3"> 导出 </v-btn>
+        <v-btn color="green lighten-2" dark @click="download" class="mr-3">
+          导出
+        </v-btn>
 
         <v-dialog v-model="ssdialogs" width="500">
           <template v-slot:activator="{ on, attrs }">
@@ -170,14 +172,14 @@
 export default {
   props: {
     //skuInfo: Array,
-    productId: String,
+    productsInfo: Array,
   },
 
   created() {
     //从数据库中获取skuInfo
     this.skuInfo = [
       {
-        name: this.productId,
+        name: this.productId.name,
         price: Math.floor(Math.random() * 1000),
         cost: 68,
         start: "2022-07-09",
@@ -186,7 +188,7 @@ export default {
         seleNum: "80",
       },
       {
-        name: this.productId,
+        name: this.productId.name,
         price: Math.floor(Math.random() * 1000),
         cost: 68,
         start: "2022-07-09",
@@ -195,7 +197,7 @@ export default {
         seleNum: "80",
       },
       {
-        name: this.productId,
+        name: this.productId.name,
         price: Math.floor(Math.random() * 1000),
         cost: 68,
         start: "2022-07-09",
@@ -204,7 +206,7 @@ export default {
         seleNum: "80",
       },
       {
-        name: this.productId,
+        name: this.productId.name,
         price: Math.floor(Math.random() * 1000),
         cost: 68,
         start: "2022-07-09",
@@ -213,7 +215,7 @@ export default {
         seleNum: "80",
       },
       {
-        name: this.productId,
+        name: this.productId.name,
         price: Math.floor(Math.random() * 1000),
         cost: 68,
         start: "2022-07-09",
@@ -222,7 +224,7 @@ export default {
         seleNum: "80",
       },
       {
-        name: this.productId,
+        name: this.productId.name,
         price: Math.floor(Math.random() * 1000),
         cost: 68,
         start: "2022-07-09",
@@ -231,7 +233,7 @@ export default {
         seleNum: "80",
       },
       {
-        name: this.productId,
+        name: this.productId.name,
         price: Math.floor(Math.random() * 1000),
         cost: 68,
         start: "2022-07-09",
@@ -240,7 +242,7 @@ export default {
         seleNum: "80",
       },
       {
-        name: this.productId,
+        name: this.productId.name,
         price: Math.floor(Math.random() * 1000),
         cost: 68,
         start: "2022-07-09",
@@ -324,6 +326,15 @@ export default {
   },
 
   methods: {
+ //   upload() {
+   //   const XLSX = require("xlsx");
+//
+  //    const url = "*/public/demo.xslx";
+    //  const data = await(await fetch(url)).arrayBuffer();
+      /* data is an ArrayBuffer */
+      //const workbook = XLSX.read(data);
+    //},
+
     download() {
       const XLSX = require("xlsx");
 
@@ -366,7 +377,7 @@ export default {
       //worksheet["!cols"] = [{ wch: 60 }, { wch: 5 }, { wch: 5 }];
 
       /* create an XLSX file and try to save to Presidents.xlsx */
-      XLSX.writeFile(workbook, "SKU数据.xlsx");
+      XLSX.writeFile(workbook, `${this.productsInfo.owner} + "-" + ${this.productsInfo.product_name} + "-" + ${this.productsInfo.id}.xlsx`);
     },
 
     secondeditItem(item) {
