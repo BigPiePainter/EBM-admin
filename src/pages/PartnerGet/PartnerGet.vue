@@ -13,8 +13,8 @@
       :headers="headers"
       :items="products"
       :expanded.sync="expanded"
-      item-key="name"
-      sort-by="name"
+      item-key="id"
+      sort-by="id"
       class="elevation-1"
       :items-per-page="50"
       :footer-props="{
@@ -26,7 +26,7 @@
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
           <div class="sub-table-container elevation-20 ml-2 mb-3">
-            <SkuTable :productsInfo="item"/>
+            <SkuTable :item="item"/>
           </div>
         </td>
       </template>
@@ -55,147 +55,147 @@
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.name"
+                        v-model="editedItem.id"
                         label="id"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.company"
+                        v-model="editedItem.department"
                         label="部门"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.city"
+                        v-model="editedItem.group"
                         label="组别"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.state"
+                        v-model="editedItem.owner"
                         label="持品人"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.aaaaa"
+                        v-model="editedItem.shop_name"
                         label="店铺名"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.s"
+                        v-model="editedItem.product_name"
                         label="产品名"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.d"
+                        v-model="editedItem.first_category"
                         label="一级类目"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.f"
+                        v-model="editedItem.product_deduction"
                         label="品类扣点"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.g"
+                        v-model="editedItem.product_insurance"
                         label="品类运费险"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.h"
+                        v-model="editedItem.product_freight"
                         label="每单运费"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.j"
+                        v-model="editedItem.extra_ratio"
                         label="子/主订单附带比"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.k"
+                        v-model="editedItem.freight_to_payment"
                         label="运费/总货款"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.l"
+                        v-model="editedItem.transport_way"
                         label="发货方式"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.q"
+                        v-model="editedItem.storehouse"
                         label="聚水潭仓库"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.w"
+                        v-model="editedItem.manufacturer_name"
                         label="厂家名"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.e"
+                        v-model="editedItem.manufacturer_group"
                         label="厂家群名"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.r"
+                        v-model="editedItem.manufacturer_payment"
                         label="厂家收款账户"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.t"
+                        v-model="editedItem.manufacturer_payment_id"
                         label="厂家账户号码"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.y"
+                        v-model="editedItem.manufacturer_recipient"
                         label="厂家退货-收件人"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.u"
+                        v-model="editedItem.manufacturer_phone"
                         label="厂家退货-收件手机号"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.i"
+                        v-model="editedItem.manufacturer_address"
                         label="厂家退货-收件地址"
                       ></v-text-field>
                     </v-col>
@@ -286,7 +286,7 @@ export default {
       product_insurance: "",
       product_freight: "",
       extra_ratio: "",
-      freight_to_paymentk: "",
+      freight_to_payment: "",
       transport_way: "",
       storehouse: "",
       manufacturer_name: "",
@@ -310,7 +310,7 @@ export default {
       product_insurance: "",
       product_freight: "",
       extra_ratio: "",
-      freight_to_paymentk: "",
+      freight_to_payment: "",
       transport_way: "",
       storehouse: "",
       manufacturer_name: "",
@@ -432,7 +432,7 @@ export default {
             product_insurance: "0.15",
             product_freight: "0",
             extra_ratio: "",
-            freight_to_paymentk: "",
+            freight_to_payment: "",
             transport_way: "聚水潭/手动/其它",
             storehouse: "",
             manufacturer_name: "A",
