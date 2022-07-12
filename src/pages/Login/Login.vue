@@ -114,12 +114,19 @@ export default {
     login() {
       this.loading = true;
       setTimeout(() => {
+        //测试后门
+        if (this.email == "1" && this.password == "1") {
+          this.loading = false;
+          this.$router.push("/partnerget");
+          this.infoAlert("强制登陆");
+          return;
+        }
         userLogin({ username: this.email, password: this.password })
           .then((res) => {
             this.loading = false;
             try {
               if (res && res.data && res.data.isLogin) {
-                this.$router.push("/dashboard");
+                this.$router.push("/partnerget");
                 this.infoAlert("泼发EBC：登陆成功");
                 return;
               }
@@ -135,7 +142,7 @@ export default {
               this.infoAlert("泼发EBC：登陆失败");
             }, 100);
           });
-      }, 1500);
+      }, 500);
     },
 
     infoAlert(message) {
@@ -155,7 +162,7 @@ export default {
   },
   created() {
     //if (window.localStorage.getItem("authenticated") === "true") {
-    //  this.$router.push("/dashboard");
+    //  this.$router.push("/partnerget");
     //}
   },
 };
