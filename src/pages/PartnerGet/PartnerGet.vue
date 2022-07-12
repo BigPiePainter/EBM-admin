@@ -26,7 +26,7 @@
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
           <div class="sub-table-container elevation-20 ml-2 mb-3">
-            <SkuTable :skuInfo="subTableItems" :a="item" />
+            <SkuTable :productId="item.name"/>
           </div>
         </td>
       </template>
@@ -250,6 +250,7 @@
 
 <script>
 import SkuTable from "@/components/SkuTable/SkuTable";
+//import * as XLSX from 'xlsx/xlsx.mjs';
 
 export default {
   components: {
@@ -368,9 +369,7 @@ export default {
   },
 
   created() {
-    this.initialize(); //加载主表
-
-    this.holdini();
+    this.initialize();
     this.buttonBoolean();
     console.log(this.subTableItems);
   },
@@ -489,83 +488,6 @@ export default {
         this.products.push(this.editedItem);
       }
       this.close();
-    },
-
-    holdini() {
-      this.subTableItems = [
-        {
-          name: 1,
-          price: Math.floor(Math.random() * 1000),
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: 1,
-          price: Math.floor(Math.random() * 1000),
-          cost: 68,
-          start: "2022-07-09",
-          end: "至今",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: 1,
-          price: Math.floor(Math.random() * 1000),
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: 1,
-          price: Math.floor(Math.random() * 1000),
-          cost: 68,
-          start: "2022-07-09",
-          end: "至今",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: 1,
-          price: Math.floor(Math.random() * 1000),
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: 1,
-          price: Math.floor(Math.random() * 1000),
-          cost: 68,
-          start: "2022-07-09",
-          end: "至今",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: 1,
-          price: Math.floor(Math.random() * 1000),
-          cost: 68,
-          start: "2022-07-09",
-          end: "至今",
-          orderNum: "100",
-          seleNum: "80",
-        },
-        {
-          name: 1,
-          price: Math.floor(Math.random() * 1000),
-          cost: 68,
-          start: "2022-07-09",
-          end: "2022-07-09",
-          orderNum: "100",
-          seleNum: "80",
-        },
-      ];
     },
 
     buttonBoolean() {
