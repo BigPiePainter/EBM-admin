@@ -26,11 +26,7 @@
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
           <div class="sub-table-container elevation-20 ml-2 mb-3">
-            <SkuTable
-            :skuInfo="subTableItems[products.indexOf(item)]"
-            :skuInfoFather="subTableItems"
-            :a="item"
-            />
+            <SkuTable :skuInfo="subTableItems" :a="item" />
           </div>
         </td>
       </template>
@@ -253,9 +249,8 @@
 
 
 <script>
-import SkuTable from '@/components/SkuTable/SkuTable';
+import SkuTable from "@/components/SkuTable/SkuTable";
 
-        
 export default {
   components: {
     SkuTable,
@@ -403,7 +398,6 @@ export default {
       val || this.closeDelete();
     },
 
-
     sdialog(val) {
       val || this.secondclose();
     },
@@ -416,11 +410,10 @@ export default {
     this.initialize();
     this.holdini();
     this.buttonBoolean();
+    console.log(this.subTableItems);
   },
 
   methods: {
-
-    
     clickRow(item, event) {
       if (event.isExpanded) {
         const index = this.expanded.findIndex((i) => i === item);
@@ -432,7 +425,8 @@ export default {
 
     initialize() {
       this.products = [
-        { link:"/SkuTable",
+        {
+          link: "/SkuTable",
           name: "334455461868",
           company: "某某部",
           city: "某某组",
@@ -455,7 +449,8 @@ export default {
           u: "",
           i: "",
         },
-        { link:"/SkuTable",
+        {
+          link: "/SkuTable",
           name: "334455451868",
           company: "某某部",
           city: "某某组",
@@ -478,7 +473,8 @@ export default {
           u: "",
           i: "",
         },
-        { link:"/SkuTable",
+        {
+          link: "/SkuTable",
           name: "334455861868",
           company: "某某部",
           city: "某某组",
@@ -501,7 +497,8 @@ export default {
           u: "",
           i: "",
         },
-        { link:"/SkuTable",
+        {
+          link: "/SkuTable",
           name: "334455761868",
           company: "某某部",
           city: "某某组",
@@ -524,7 +521,8 @@ export default {
           u: "",
           i: "",
         },
-        { link:"/SkuTable",
+        {
+          link: "/SkuTable",
           name: "334455061868",
           company: "某某部",
           city: "某某组",
@@ -547,7 +545,8 @@ export default {
           u: "",
           i: "",
         },
-        { link:"/SkuTable",
+        {
+          link: "/SkuTable",
           name: "334452461868",
           company: "某某部",
           city: "某某组",
@@ -570,7 +569,8 @@ export default {
           u: "",
           i: "",
         },
-        { link:"/SkuTable",
+        {
+          link: "/SkuTable",
           name: "336455461868",
           company: "某某部",
           city: "某某组",
@@ -597,7 +597,7 @@ export default {
 
       for (let index = 0; index < 100; index++) {
         this.products.push({
-          link:"/SkuTable",
+          link: "/SkuTable",
           name: (Math.random() * 10000000000).toString(),
           company: "某某部",
           city: "某某组",
@@ -666,26 +666,84 @@ export default {
     },
 
     holdini() {
-
-      for (let i = 0; i < this.products.length; i++) {
-        this.subTableItems[i] = []
-        
-        for (let index = 0; index < 3; index++) {
-          this.subTableItems[i].push({
-            name: i,
-            price: Math.floor(Math.random() * 1000),
-            cost: 68,
-            start: "2022-07-09",
-            end: "2022-07-09",
-            orderNum: "100",
-            seleNum: "80",
-          });
-        }
-      }
+      this.subTableItems = [
+        {
+          name: 1,
+          price: Math.floor(Math.random() * 1000),
+          cost: 68,
+          start: "2022-07-09",
+          end: "2022-07-09",
+          orderNum: "100",
+          seleNum: "80",
+        },
+        {
+          name: 1,
+          price: Math.floor(Math.random() * 1000),
+          cost: 68,
+          start: "2022-07-09",
+          end: "至今",
+          orderNum: "100",
+          seleNum: "80",
+        },
+        {
+          name: 1,
+          price: Math.floor(Math.random() * 1000),
+          cost: 68,
+          start: "2022-07-09",
+          end: "2022-07-09",
+          orderNum: "100",
+          seleNum: "80",
+        },
+        {
+          name: 1,
+          price: Math.floor(Math.random() * 1000),
+          cost: 68,
+          start: "2022-07-09",
+          end: "至今",
+          orderNum: "100",
+          seleNum: "80",
+        },
+        {
+          name: 1,
+          price: Math.floor(Math.random() * 1000),
+          cost: 68,
+          start: "2022-07-09",
+          end: "2022-07-09",
+          orderNum: "100",
+          seleNum: "80",
+        },
+        {
+          name: 1,
+          price: Math.floor(Math.random() * 1000),
+          cost: 68,
+          start: "2022-07-09",
+          end: "至今",
+          orderNum: "100",
+          seleNum: "80",
+        },
+        {
+          name: 1,
+          price: Math.floor(Math.random() * 1000),
+          cost: 68,
+          start: "2022-07-09",
+          end: "至今",
+          orderNum: "100",
+          seleNum: "80",
+        },
+        {
+          name: 1,
+          price: Math.floor(Math.random() * 1000),
+          cost: 68,
+          start: "2022-07-09",
+          end: "2022-07-09",
+          orderNum: "100",
+          seleNum: "80",
+        },
+      ];
     },
 
     buttonBoolean() {
-      for (let j = 0; j < this.products.length; j++){
+      for (let j = 0; j < this.products.length; j++) {
         this.ssdialogs[j] = false;
       }
     },
@@ -725,14 +783,16 @@ export default {
 
     secondsave() {
       if (this.seditedIndex > -1) {
-        console.log('444444444');
-        Object.assign(this.subTableItems[this.seditedIndex], this.secondeditedItem);
+        console.log("444444444");
+        Object.assign(
+          this.subTableItems[this.seditedIndex],
+          this.secondeditedItem
+        );
       } else {
         this.subTableItems.push(this.secondeditedItem);
       }
       this.secondclose();
     },
-    
   },
 };
 </script>
