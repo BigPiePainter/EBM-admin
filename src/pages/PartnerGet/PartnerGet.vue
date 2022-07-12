@@ -535,7 +535,6 @@ export default {
 
     secondsave() {
       if (this.seditedIndex > -1) {
-        console.log("444444444");
         Object.assign(
           this.subTableItems[this.seditedIndex],
           this.secondeditedItem
