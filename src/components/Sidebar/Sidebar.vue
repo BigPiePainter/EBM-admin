@@ -97,7 +97,7 @@ export default {
   data() {
     return {
       items: [
-        { title: "Test", icon: "mdi-book-variant-multiple", link: "/Test" },
+        { title: "发/退货状态", icon: "mdi-cubes-medium", link: "/transport" },
         { title: "主页", icon: "mdi-home", link: "/dashboard" },
 
         {
