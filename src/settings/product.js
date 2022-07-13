@@ -2,7 +2,7 @@ import http from '@/libs/http'
 
 export const loadProducts = data => {
     const args = {
-        url: '/product/load/product_to_front',
+        url: '/product/product_to_front',
         method: 'POST',
         data
     }
@@ -11,7 +11,7 @@ export const loadProducts = data => {
 
 export const upLoadProducts = data => {
     const args = {
-        url: '/product/load/product_to_behind',
+        url: '/product/product_to_behind',
         method: 'POST',
         data
     }
@@ -20,7 +20,7 @@ export const upLoadProducts = data => {
 
 export const editProducts = data => {
     const args = {
-        url: '/product/load/product_edit',
+        url: '/product/product_edit',
         method: 'POST',
         data
     }
@@ -29,7 +29,7 @@ export const editProducts = data => {
 
 export const deleteProducts = data => {
     const args = {
-        url: '/product/load/product_delete',
+        url: '/product/product_delete',
         method: 'POST',
         data
     }
@@ -38,7 +38,7 @@ export const deleteProducts = data => {
 
 export const selectProducts = data => {
     const args = {
-        url: '/product/load/product_select',
+        url: '/product/product_select',
         method: 'POST',
         data
     }
