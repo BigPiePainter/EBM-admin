@@ -20,7 +20,7 @@ CREATE TABLE products (
   primary key (id),
   unique key uk_username (username),
   key idx_create_date (create_date)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='系统用户';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统用户';
 
 department varchar(200) COMMENT '事业部'
 group varchar(200) COMMENT '组别'
@@ -57,7 +57,7 @@ CREATE TABLE users (
   password varchar(100) NOT NULL COMMENT '密码',
 
   primary key (uid)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='系统用户';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统用户';
 
 
 
@@ -88,10 +88,10 @@ CREATE TABLE products (
   product_freight varchar(200) COMMENT '每单运费'
   product_insurance varchar(200) COMMENT '品类运费险'
   
-  varchar(200) COMMENT '子/主订单附带比'
-  varchar(200) COMMENT '运费/总货款'
-  varchar(200) COMMENT '发货方式'
-  varchar(200) COMMENT '聚水潭仓库'
+  extra_ratio varchar(200) COMMENT '子/主订单附带比'
+  freight_to_payment varchar(200) COMMENT '运费/总货款'
+  transport_way varchar(200) COMMENT '发货方式'
+  storehouse varchar(200) COMMENT '聚水潭仓库'
 
   manufacturer_name varchar(200) COMMENT '厂家名'
   manufacturer_group varchar(200) COMMENT '厂家群名'
@@ -102,7 +102,7 @@ CREATE TABLE products (
   manufacturer_address varchar(200) COMMENT '厂家退货-收件地址'
 
   primary key (uid)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='商品信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品信息';
 
 
 -- SKU
@@ -121,4 +121,4 @@ CREATE TABLE sku (
 
 
   primary key (uid)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='SKU';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='SKU';

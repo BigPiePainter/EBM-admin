@@ -21,57 +21,14 @@
 
         <v-spacer></v-spacer>
         <v-switch v-model="check" label="有效SKU" class="pr-5 pt-6"></v-switch>
+
         <v-btn color="green lighten-2" dark @click="download" class="mr-3">
           导出
         </v-btn>
 
-        <v-dialog v-model="ssdialogs" width="500">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="red lighten-2" dark v-bind="attrs" v-on="on">
-              上传SKU信息
-            </v-btn>
-          </template>
-
-          <v-card>
-            <v-card-title class="text-h5 grey lighten-2">
-              <p>Upload SKU</p>
-            </v-card-title>
-
-            <div class="dropbox pa-16 mb-5">
-              <h2 v-if="!progress" class="text-center">
-                {{ status }}
-              </h2>
-              <div v-else>
-                <v-progress-linear
-                  indeterminate
-                  color="yellow darken-2"
-                ></v-progress-linear>
-                <br />
-                <v-progress-linear
-                  indeterminate
-                  color="green"
-                ></v-progress-linear>
-                <br />
-                <v-progress-linear
-                  indeterminate
-                  color="teal"
-                ></v-progress-linear>
-                <br />
-                <v-progress-linear
-                  indeterminate
-                  color="cyan"
-                ></v-progress-linear>
-              </div>
-            </div>
-
-            <v-divider></v-divider>
-
-            <v-card-actions>
-              <v-btn color="blue lighten-2" text> 下载SKU导入模板 </v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <SkuUpload
+          :product="productsInfo"
+        />
 
         <v-dialog v-model="sdialog" max-width="500px">
           <v-card>
@@ -175,7 +132,14 @@
 
 
 <script>
+import SkuUpload from "@/components/SkuUpload/SkuUpload";
+//import * as XLSX from 'xlsx/xlsx.mjs';
+
 export default {
+  components: {
+    SkuUpload,
+  },
+
   props: {
     //skuInfo: Array,
     productsInfo: Array,
@@ -206,7 +170,7 @@ export default {
         //加载数据
         this.skuInfo = [
           {
-            name: this.productId,
+            name: this.productsInfo.id,
             price: Math.floor(Math.random() * 1000),
             cost: 68,
             start: "2022-07-09",
@@ -215,7 +179,7 @@ export default {
             seleNum: "80",
           },
           {
-            name: this.productId,
+            name: this.productsInfo.id,
             price: Math.floor(Math.random() * 1000),
             cost: 68,
             start: "2022-07-09",
@@ -224,7 +188,7 @@ export default {
             seleNum: "80",
           },
           {
-            name: this.productId,
+            name: this.productsInfo.id,
             price: Math.floor(Math.random() * 1000),
             cost: 68,
             start: "2022-07-09",
@@ -233,7 +197,7 @@ export default {
             seleNum: "80",
           },
           {
-            name: this.productId,
+            name: this.productsInfo.id,
             price: Math.floor(Math.random() * 1000),
             cost: 68,
             start: "2022-07-09",
@@ -242,7 +206,7 @@ export default {
             seleNum: "80",
           },
           {
-            name: this.productId,
+            name: this.productsInfo.id,
             price: Math.floor(Math.random() * 1000),
             cost: 68,
             start: "2022-07-09",
@@ -251,7 +215,7 @@ export default {
             seleNum: "80",
           },
           {
-            name: this.productId,
+            name: this.productsInfo.id,
             price: Math.floor(Math.random() * 1000),
             cost: 68,
             start: "2022-07-09",
@@ -260,7 +224,7 @@ export default {
             seleNum: "80",
           },
           {
-            name: this.productId,
+            name: this.productsInfo.id,
             price: Math.floor(Math.random() * 1000),
             cost: 68,
             start: "2022-07-09",
@@ -269,7 +233,7 @@ export default {
             seleNum: "80",
           },
           {
-            name: this.productId,
+            name: this.productsInfo.id,
             price: Math.floor(Math.random() * 1000),
             cost: 68,
             start: "2022-07-09",
@@ -279,8 +243,7 @@ export default {
           },
         ];
 
-
-        this.skuInfo = []
+        //this.skuInfo = []
 
         this.validSkuInfo = [];
         this.skuInfo.forEach((item) => {
@@ -344,13 +307,13 @@ export default {
   },
 
   methods: {
- //   upload() {
-   //   const XLSX = require("xlsx");
-//
-  //    const url = "*/public/demo.xslx";
+    //   upload() {
+    //   const XLSX = require("xlsx");
+    //
+    //    const url = "*/public/demo.xslx";
     //  const data = await(await fetch(url)).arrayBuffer();
-      /* data is an ArrayBuffer */
-      //const workbook = XLSX.read(data);
+    /* data is an ArrayBuffer */
+    //const workbook = XLSX.read(data);
     //},
 
     download() {
@@ -395,7 +358,10 @@ export default {
       //worksheet["!cols"] = [{ wch: 60 }, { wch: 5 }, { wch: 5 }];
 
       /* create an XLSX file and try to save to Presidents.xlsx */
-      XLSX.writeFile(workbook, `${this.productsInfo.owner}-${this.productsInfo.product_name}-${this.productsInfo.id}.xlsx`);
+      XLSX.writeFile(
+        workbook,
+        `${this.productsInfo.owner}-${this.productsInfo.product_name}-${this.productsInfo.id}.xlsx`
+      );
     },
 
     secondeditItem(item) {
