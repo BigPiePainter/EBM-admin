@@ -1,6 +1,6 @@
 import http from '@/libs/http'
 
-export const loadSku = data => {
+export const loadSkus = data => {
     const args = {
         url: '/sku/sku_to_front',
         method: 'POST',
@@ -9,11 +9,11 @@ export const loadSku = data => {
     return http.request(args)
 }
 
-export const upLoadSku = data => {
+export const addSkus = data => {
     const args = {
         url: '/sku/sku_to_behind',
         method: 'POST',
-        data
+        data   
     }
     return http.request(args)
 }
