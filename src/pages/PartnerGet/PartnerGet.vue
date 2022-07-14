@@ -234,7 +234,9 @@
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
+<!--
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+-->
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
 
@@ -533,7 +535,6 @@ export default {
 
     secondsave() {
       if (this.seditedIndex > -1) {
-        console.log("444444444");
         Object.assign(
           this.subTableItems[this.seditedIndex],
           this.secondeditedItem

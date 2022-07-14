@@ -318,22 +318,18 @@ export default {
 
     download() {
       const XLSX = require("xlsx");
-
+      //const XLSXS = require("xlsx-style");
       console.log(this.skuInfo);
       const raw_data = this.check ? this.validSkuInfo : this.skuInfo;
-
       /*
       const prez = raw_data.filter((row) =>
         row.terms.some((term) => term.type === "prez")
       );*/
-
       const rows = raw_data.map((row) => row);
-
       /* generate worksheet and workbook */
       const worksheet = XLSX.utils.json_to_sheet(rows);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "SKU数据");
-
       /* fix headers */
       XLSX.utils.sheet_add_aoa(
         worksheet,
@@ -343,9 +339,9 @@ export default {
             "售卖价",
             "成本",
             "价格开始时间",
-            "价格结束时间",
-            "a",
-            "b",
+            "价格截止时间",
+            "销售子订单条数",
+            "销售数",
           ],
         ],
         {
@@ -355,7 +351,15 @@ export default {
 
       /* calculate column width */
       //const max_width = rows.reduce((w, r) => Math.max(w, r.name.length), 10);
-      //worksheet["!cols"] = [{ wch: 60 }, { wch: 5 }, { wch: 5 }];
+      worksheet["!cols"] = [
+        { wch: 10 },
+        { wch: 7 },
+        { wch: 5 },
+        { wch: 13 },
+        { wch: 13 },
+        { wch: 14 },
+        { wch: 7 },
+      ];
 
       /* create an XLSX file and try to save to Presidents.xlsx */
       XLSX.writeFile(
@@ -363,6 +367,11 @@ export default {
         `${this.productsInfo.owner}-${this.productsInfo.product_name}-${this.productsInfo.id}.xlsx`
       );
     },
+
+   // downloadExcel() {
+    //  const ExcelJS = require("exceljs");
+    
+    //},
 
     secondeditItem(item) {
       this.seditedIndex = this.subTableEdited.indexOf(item);

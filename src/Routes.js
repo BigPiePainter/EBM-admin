@@ -9,7 +9,7 @@ import PartnerGet from '@/pages/PartnerGet/PartnerGet'
 import ProductsGet from '@/pages/ProductsGet/ProductsGet'
 import ProductsPut from '@/pages/ProductsPut/ProductsPut'
 import Tables from '@/pages/Tables/Basic'
-import Test from '@/pages/Test/Test'
+import Transport from '@/pages/Transport/Transport'
 import Notifications from '@/pages/Notifications/Notifications'
 import Icons from '@/pages/Icons/Icons'
 import Charts from '@/pages/Charts/Charts'
@@ -79,9 +79,9 @@ var routerConfig = {
           component: Maps
         },
         {
-          path: 'test',
-          name: 'Test',
-          component: Test
+          path: 'transport',
+          name: 'Transport',
+          component: Transport
         },
       ],
     },
