@@ -8,25 +8,21 @@ import zhCN from "x-data-spreadsheet/src/locale/zh-cn";
 
 export default {
   name: "Excel",
-
   props: {
-    height: Number,
+    data: Array,
   },
   data() {
-    return {
-      jsondata: {
-        type: "",
-        label: "",
-      },
-    };
+    return {};
   },
   mounted() {
     this.init();
   },
   methods: {
     init() {
+      console.log("init");
+
       const rows10 = { len: 100000 };
-      for (let i = 0; i < 10; i += 1) {
+      for (let i = 0; i < 100000; i += 1) {
         rows10[i] = {
           cells: {
             0: { text: "A-" + i },
@@ -38,8 +34,9 @@ export default {
           },
         };
       }
+
       const rows = {
-        len: 10,
+        len: 1000,
         1: {
           cells: {
             0: { text: "testingtesttestetst" },
@@ -59,57 +56,94 @@ export default {
           },
         },
       };
+      /*
+      this.data = [
+        {
+          //freeze: "B3",
+          styles: [
+            {
+              bgcolor: "#f4f5f8",
+              textwrap: true,
+              color: "#900b09",
+              border: {
+                top: ["thin", "#0366d6"],
+                bottom: ["thin", "#0366d6"],
+                right: ["thin", "#0366d6"],
+                left: ["thin", "#0366d6"],
+              },
+            },
+          ],
+          cols: {
+            len: 5,
+            2: { width: 200 },
+          },
+          rows,
+        },
+        { name: "sheet-test", rows: rows10 },
+        { name: "sheet-test", rows: rows10 },
+      ];
+      */
+
+      var data2 = [
+        {
+          name: "测试",
+          //freeze: "B3",
+          styles: [
+            {
+              bgcolor: "#f4f5f8",
+              textwrap: true,
+              color: "#900b09",
+              border: {
+                top: ["thin", "#0366d6"],
+                bottom: ["thin", "#0366d6"],
+                right: ["thin", "#0366d6"],
+                left: ["thin", "#0366d6"],
+              },
+            },
+          ],
+          cols: {
+            len: 5,
+            2: { width: 200 },
+          },
+          rows,
+        },
+        //{ name: "sheet-test", rows: rows10 },
+      ];
+      data2.a = [];
 
       Spreadsheet.locale("zh-cn", zhCN);
+      console.log(this.data);
+
       var xs = new Spreadsheet("#x-spreadsheet", {
         showToolbar: true,
         showGrid: true,
         view: {
-          height: () => this.height,
+          height: () => document.documentElement.clientHeight - 48,
           width: () => document.documentElement.clientWidth,
         },
       })
-        .loadData([
-          {
-            //freeze: "B3",
-            styles: [
-              {
-                bgcolor: "#f4f5f8",
-                textwrap: true,
-                color: "#900b09",
-                border: {
-                  top: ["thin", "#0366d6"],
-                  bottom: ["thin", "#0366d6"],
-                  right: ["thin", "#0366d6"],
-                  left: ["thin", "#0366d6"],
-                },
-              },
-            ],
-            cols: {
-              len: 10,
-              2: { width: 200 },
-            },
-            rows,
-          },
-          { name: "sheet-test", rows: rows10 },
-        ])
+        .loadData(this.data)
         .change((cdata) => {
           console.log(cdata);
           console.log(">>>", xs.getData());
         });
 
-      xs.on("cell-selected", (cell, ri, ci) => {
-        console.log("cell:", cell, ", ri:", ri, ", ci:", ci);
-      }).on("cell-edited", (text, ri, ci) => {
-        console.log("text:", text, ", ri: ", ri, ", ci:", ci);
-      });
+      xs
+        .on("cell-selected", (cell, ri, ci) => {
+          console.log("cell:", cell, ", ri:", ri, ", ci:", ci);
+        })
+        .on("cell-edited", (text, ri, ci) => {
+          console.log("text:", text, ", ri: ", ri, ", ci:", ci);
+        });
 
+      /*
       setTimeout(() => {
         // xs.loadData([{ rows }]);
         xs.cellText(14, 3, "cell-text").reRender();
         console.log("cell(8, 8):", xs.cell(8, 8));
         console.log("cellStyle(8, 8):", xs.cellStyle(8, 8));
       }, 5000);
+      */
     },
   },
 };

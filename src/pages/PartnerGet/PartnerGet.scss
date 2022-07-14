@@ -4,6 +4,7 @@
   .v-card__title {
     .v-input {
       max-width: 45%;
+
       @include media-breakpoint-up(md) {
         max-width: 20%;
       }
@@ -13,30 +14,57 @@
   .v-data-table {
     white-space: nowrap;
 
-    .v-text-field > .v-input__control > .v-input__slot {
-      &:after, &:before {
+    .v-text-field>.v-input__control>.v-input__slot {
+
+      &:after,
+      &:before {
         border: none !important;
       }
     }
+
     .v-data-table__checkbox.v-simple-checkbox {
       .v-icon.mdi-checkbox-marked {
         color: $primary;
       }
     }
-  
+
   }
 
 }
 
-.sub-table{
-  
-  .sub-table-container{
+
+.v-data-table {
+  td {
+    font-size: 0.7rem !important;
+    height: 38.4px !important;
+
+    padding-right: 12.8px !important;
+    padding-left: 12.8px !important;
+  }
+
+  th {
+    font-size: 0.7rem !important;
+    height: 38.4px !important;
+
+    padding-right: 12.8px !important;
+    padding-left: 12.8px !important;
+  }
+
+
+  .v-data-footer{
+    font-size: 0.7rem !important;
+
+  }
+
+}
+
+
+.sub-table {
+
+  .sub-table-container {
     width: fit-content;
     background-color: transparent;
     transform: translateY(-5px);
     border-radius: 5px;
   }
 }
-
-
-

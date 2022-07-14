@@ -142,7 +142,7 @@ export default {
 
   props: {
     //skuInfo: Array,
-    productsInfo: Array,
+    productsInfo: Object,
   },
 
   created() {

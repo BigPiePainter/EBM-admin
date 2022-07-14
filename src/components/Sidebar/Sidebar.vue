@@ -38,7 +38,7 @@
           append-icon=""
         >
           <template v-slot:prependIcon>
-            <v-icon size="28">mdi-image-filter-none</v-icon>
+            <v-icon size="20">mdi-image-filter-none</v-icon>
           </template>
           <template v-slot:activator>
             <v-list-item-content>
@@ -72,7 +72,7 @@
           link
         >
           <v-list-item-action>
-            <v-icon size="28" :color="item.color ? item.color : ''">{{
+            <v-icon size="20" :color="item.color ? item.color : ''">{{
               item.icon
             }}</v-icon>
           </v-list-item-action>
@@ -114,8 +114,8 @@ export default {
         { title: "Starred", icon: "mdi-circle-medium", color: "primary" },
         { title: "Background", icon: "mdi-circle-medium", color: "error" },
       ],
-      sidebarWidth: 240,
-      sidebarMinWidth: 96,
+      sidebarWidth: 150,
+      sidebarMinWidth: 50,
     };
   },
   computed: {
