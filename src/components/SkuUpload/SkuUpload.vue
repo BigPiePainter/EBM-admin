@@ -34,7 +34,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="loading" fullscreen>
+    <v-dialog v-model="loading" fullscreen persistent>
       <v-overlay :value="true">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
@@ -44,6 +44,7 @@
       v-model="checkInfoDialog"
       fullscreen
       class="checkInfo"
+      persistent
     >
       <div class="topBar">
         <v-toolbar dark color="primary" dense>
@@ -170,122 +171,127 @@ export default {
       this.loading = true;
       this.dialog = false;
 
-      var reader = new FileReader();
-      reader.onload = (e) => {
-        console.log("加载完毕");
+      //this.$nextTick
+      setTimeout(() => {
+        var reader = new FileReader();
+        reader.onload = (e) => {
+          console.log("加载完毕");
 
-        console.log("数据处理");
+          console.log("数据处理");
 
-        var data = new Uint8Array(e.target.result);
-        data = this.stox(XLSX.read(data, { type: "array" }));
+          var data = new Uint8Array(e.target.result);
+          data = this.stox(XLSX.read(data, { type: "array" }));
 
-        //额外处理
-        //data[0].freeze = "A2",
+          //额外处理
+          //data[0].freeze = "A2",
 
-        data[0].cols = {
-          0: { width: 113 },
-          1: { width: 750 },
-          2: { width: 80 },
-          3: { width: 80 },
-          4: { width: 100 },
-          5: { width: 100 },
-        };
+          data[0].cols = {
+            0: { width: 113 },
+            1: { width: 750 },
+            2: { width: 80 },
+            3: { width: 80 },
+            4: { width: 100 },
+            5: { width: 100 },
+          };
 
-        // /4FF200
+          // /4FF200
 
-        var warning = {
-          //bgcolor: "#f4f5f8",
-          color: "#ff0000",
-          border: {
-            top: ["thin", "#ff0000"],
-            bottom: ["thin", "#ff0000"],
-            right: ["thin", "#ff0000"],
-            left: ["thin", "#ff0000"],
-          },
-        };
+          var warning = {
+            //bgcolor: "#f4f5f8",
+            color: "#ff0000",
+            border: {
+              top: ["thin", "#ff0000"],
+              bottom: ["thin", "#ff0000"],
+              right: ["thin", "#ff0000"],
+              left: ["thin", "#ff0000"],
+            },
+          };
 
-        var success = {
-          bgcolor: "#E5FFE5",
-          //color: "#99CC66",
-          border: {
-            //top: ["thin", "#00CC99"],
-            //bottom: ["thin", "#00CC99"],
-            //right: ["thin", "#00CC99"],
-            //left: ["thin", "#00CC99"],
-          },
-        };
+          var success = {
+            bgcolor: "#E5FFE5",
+            //color: "#99CC66",
+            border: {
+              //top: ["thin", "#00CC99"],
+              //bottom: ["thin", "#00CC99"],
+              //right: ["thin", "#00CC99"],
+              //left: ["thin", "#00CC99"],
+            },
+          };
 
-        data[0].styles = [];
-        data[0].styles.push({
-          align: "center",
-        });
-        data[0].styles.push({
-          align: "left",
-        });
-        data[0].styles.push({
-          align: "right",
-        });
+          data[0].styles = [];
+          data[0].styles.push({
+            align: "center",
+          });
+          data[0].styles.push({
+            align: "left",
+          });
+          data[0].styles.push({
+            align: "right",
+          });
 
-        data[0].styles.push({
-          align: "center",
-          ...warning,
-        });
-        data[0].styles.push({
-          align: "left",
-          ...warning,
-        });
-        data[0].styles.push({
-          align: "right",
-          ...warning,
-        });
+          data[0].styles.push({
+            align: "center",
+            ...warning,
+          });
+          data[0].styles.push({
+            align: "left",
+            ...warning,
+          });
+          data[0].styles.push({
+            align: "right",
+            ...warning,
+          });
 
-        data[0].styles.push({
-          align: "center",
-          ...success,
-        });
-        data[0].styles.push({
-          align: "left",
-          ...success,
-        });
-        data[0].styles.push({
-          align: "right",
-          ...success,
-        });
+          data[0].styles.push({
+            align: "center",
+            ...success,
+          });
+          data[0].styles.push({
+            align: "left",
+            ...success,
+          });
+          data[0].styles.push({
+            align: "right",
+            ...success,
+          });
 
-        data[0].styles.push({
-          font: {
-            bold: true,
-          },
-          ...success,
-        });
-        data[0].styles.push({
-          font: {
-            bold: true,
-          },
-          ...warning,
-        });
+          data[0].styles.push({
+            font: {
+              bold: true,
+            },
+            ...success,
+          });
+          data[0].styles.push({
+            font: {
+              bold: true,
+            },
+            ...warning,
+          });
 
-        for (let row in data[0].rows) {
-          if (!data[0].rows[row].cells) continue;
-          for (let col = 0; col < 6; col++) {
-            var cell = data[0].rows[row].cells[col];
-            if (!cell) data[0].rows[row].cells[col] = { test: "" };
-            cell = data[0].rows[row].cells[col];
 
-            this.cellCheck(cell, row, col);
+          this.wrong = 0
+          for (let row in data[0].rows) {
+            if (!data[0].rows[row].cells) continue;
+            for (let col = 0; col < 6; col++) {
+              var cell = data[0].rows[row].cells[col];
+              if (!cell) data[0].rows[row].cells[col] = { test: "" };
+              cell = data[0].rows[row].cells[col];
+
+              this.cellCheck(cell, row, col);
+            }
           }
-        }
 
-        console.log(data);
-        console.log("数据处理完毕");
+          console.log(data);
+          console.log("数据处理完毕");
 
-        this.loading = false;
-        this.checkInfoDialog = true;
-        this.dataInit(data);
-      };
+          this.loading = false;
+          this.checkInfoDialog = true;
+          this.dataInit(data);
+        };
 
-      console.log("加载文件");
-      reader.readAsArrayBuffer(event.dataTransfer.files[0]);
+        console.log("加载文件");
+        reader.readAsArrayBuffer(this.file);
+      }, 50);
     },
     cellCheck(cell, row, col) {
       if (!cell) return;
