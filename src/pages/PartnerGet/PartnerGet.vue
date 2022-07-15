@@ -293,7 +293,7 @@ export default {
       shop_name: "",
       product_name: "",
       first_category: "",
-      fproduct_deduction: "",
+      product_deduction: "",
       product_insurance: "",
       product_freight: "",
       extra_ratio: "",
@@ -318,7 +318,7 @@ export default {
       shop_name: "",
       product_name: "",
       first_category: "",
-      fproduct_deduction: "",
+      product_deduction: "",
       product_insurance: "",
       product_freight: "",
       extra_ratio: "",
@@ -504,68 +504,49 @@ export default {
           this.infoAlert("泼发EBC：商品ID格式错误");
           return;
         } else {
-          this.products.push(this.editedItem);
+          //this.products.push(this.editedItem);
           this.close();
         }
       }
 
       this.loading = true;
+      console.log(this.editedItem)
+      addProducts({
+        id: this.editedItem.id,
+        product_name: this.editedItem.product_name,
+        department: this.editedItem.department,
+        group_name: this.editedItem.group_name,
+        owner: this.editedItem.owner,
+        shop_name: this.editedItem.shop_name,
+        first_category: this.editedItem.first_category,
+        product_deduction: this.editedItem.product_deduction,
+        product_insurance: this.editedItem.product_insurance,
+        product_freight: this.editedItem.product_freight,
+        extra_ratio: this.editedItem.extra_ratio,
+        freight_to_payment: this.editedItem.freight_to_payment,
+        transport_way: this.editedItem.transport_way,
+        storehouse: this.editedItem.storehouse,
+        manufacturer_name: this.editedItem.manufacturer_name,
+        manufacturer_group: this.editedItem.manufacturer_group,
+        manufacturer_payment_method:
+          this.editedItem.manufacturer_payment_method,
+        manufacturer_payment_name: this.editedItem.manufacturer_payment_name,
+        manufacturer_payment_id: this.editedItem.manufacturer_payment_id,
+        manufacturer_recipient: this.editedItem.manufacturer_recipient,
+        manufacturer_phone: this.editedItem.manufacturer_phone,
+        manufacturer_address: this.editedItem.manufacturer_group,
+      })
+        .then((res) => {
+          this.loading = false;
 
-      if (/[^\d]/.test(this.editedItem.id)) {
-        this.infoAlert("泼发EBC：商品ID格式错误");
-        return;
-      } else {
-        this.products.push(this.editedItem);
-        this.close();
-      }
-
-      setTimeout(() => {
-        addProducts({
-          id: this.editedItem.id,
-          product_name: this.editedItem.product_name,
-          department: this.editedItem.department,
-          group_name: this.editedItem.group_name,
-          owner: this.editedItem.owner,
-          shop_name: this.editedItem.shop_name,
-          first_category: this.editedItem.first_category,
-          product_deduction: this.editedItem.product_deduction,
-          product_insurance: this.editedItem.product_insurance,
-          product_freight: this.editedItem.product_freight,
-          extra_ratio: this.editedItem.extra_ratio,
-          freight_to_payment: this.editedItem.freight_to_payment,
-          transport_way: this.editedItem.transport_way,
-          storehouse: this.editedItem.storehouse,
-          manufacturer_name: this.editedItem.manufacturer_name,
-          manufacturer_group: this.editedItem.manufacturer_group,
-          manufacturer_payment_method:
-            this.editedItem.manufacturer_payment_method,
-          manufacturer_payment_name: this.editedItem.manufacturer_payment_name,
-          manufacturer_payment_id: this.editedItem.manufacturer_payment_id,
-          manufacturer_recipient: this.editedItem.manufacturer_recipient,
-          manufacturer_phone: this.editedItem.manufacturer_phone,
-          manufacturer_address: this.editedItem.manufacturer_group,
+          this.infoAlert("泼发EBC：" + res.data);
         })
-          .then((res) => {
-            this.loading = false;
-            try {
-              if (res && res.data && res.data.isLogin) {
-                this.$router.push("/partnerget");
-                this.infoAlert("泼发EBC：登陆成功");
-                return;
-              }
-
-              this.infoAlert("泼发EBC：" + res.data);
-            } catch (error) {
-              this.infoAlert("泼发EBC：登陆失败");
-            }
-          })
-          .catch(() => {
-            this.loading = false;
-            setTimeout(() => {
-              this.infoAlert("泼发EBC：登陆失败");
-            }, 100);
-          });
-      }, 500);
+        .catch(() => {
+          this.loading = false;
+          setTimeout(() => {
+            this.infoAlert("泼发EBC：上传失败");
+          }, 100);
+        });
     },
 
     buttonBoolean() {
