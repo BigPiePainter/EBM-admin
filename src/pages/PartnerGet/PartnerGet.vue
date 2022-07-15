@@ -11,14 +11,14 @@
       loading-text="加载中... 请稍后"
       no-data-text="空"
       item-key="id"
-      sort-by="id"
+      disable-sort
       class="elevation-1"
       height="calc(100vh - 280px)"
       :loading="loading"
       :headers="headers"
       :items="products"
       :expanded.sync="expanded"
-      :server-items-length="totalDesserts"
+      :server-items-length="totalProducts"
       :options.sync="options"
       :items-per-page="50"
       :footer-props="{
@@ -269,20 +269,19 @@ export default {
   },
   data: () => ({
     //分页懒加载
-    totalDesserts: 0,
+    totalProducts: 50,
     options: {},
 
     dialog: false,
     dialogDelete: false,
-    sdialog: false,
-    sdialogDelete: false,
-    ssdialogs: [],
-    status: "松开上传",
-    progress: false,
+
+    //二级展开
     expanded: [],
 
+    //主表加载
     loading: false,
 
+    //主表头, 内容
     headers: [],
     products: [],
 
@@ -337,29 +336,6 @@ export default {
       manufacturerPhone: "",
       manufacturerAddress: "",
     },
-
-    subTableItems: [],
-    seditedIndex: -1,
-
-    secondeditedItem: {
-      name: "",
-      price: "",
-      cost: "",
-      start: "",
-      end: "",
-      orderNum: "",
-      seleNum: "",
-    },
-
-    seconddefaultItem: {
-      name: "",
-      price: "",
-      cost: "",
-      start: "",
-      end: "",
-      orderNum: "",
-      seleNum: "",
-    },
   }),
 
   computed: {
@@ -379,22 +355,15 @@ export default {
     sdialog(val) {
       val || this.secondclose();
     },
-    sdialogDelete(val) {
-      val || this.secondcloseDelete();
-    },
     options: {
       handler() {
-        this.getDataFromApi();
+        this.loadData();
       },
       deep: true,
     },
   },
 
-  created() {
-    //this.initialize();
-    this.buttonBoolean();
-    console.log(this.subTableItems);
-  },
+  created() {},
 
   methods: {
     clickRow(item, event) {
@@ -406,90 +375,62 @@ export default {
       }
     },
 
-    getDataFromApi() {
+    loadData() {
       this.loading = true;
-      console.log(this.options)
-      const {page, itemsPerPage } = this.options
-      loadProducts({page, itemsPerPage})
+      console.log(this.options);
+      const { page, itemsPerPage } = this.options;
+      loadProducts({ page, itemsPerPage })
         .then((res) => {
           this.loading = false;
 
-          console.log(res);
+          console.log(res.data);
 
-          this.infoAlert("泼发EBC：" + res.data);
+          this.showHead();
+          this.products = res.data.products;
+          this.totalProducts = res.data.total;
 
-          this.products = res.data
+          //this.infoAlert("泼发EBC：" + res.data);
         })
         .catch(() => {
           this.loading = false;
         });
     },
 
-    initialize() {
-      //数据初始化
-      this.loading = true;
+    showHead() {
+      //加载表头
+      this.headers = [
+        { text: "商品ID", sortable: true, value: "id" },
+        { text: "产品名", value: "productName" },
 
-      setTimeout(() => {
-        this.loading = false;
+        { text: "部门", value: "department" },
+        { text: "组别", value: "groupName" },
+        { text: "持品人", value: "owner" },
+        { text: "店铺名", value: "shopName" },
 
-        //加载表头
-        this.headers = [
-          { text: "商品ID", sortable: true, value: "id" },
-          { text: "产品名", value: "productName" },
-
-          { text: "部门", value: "department" },
-          { text: "组别", value: "groupName" },
-          { text: "持品人", value: "owner" },
-          { text: "店铺名", value: "shopName" },
-
-          { text: "一级类目", value: "firstCategory" },
-          { text: "品类扣点", value: "productDeduction" },
-          { text: "品类运费险", value: "productInsurance" },
-          { text: "每单运费", value: "productFreight" },
-          { text: "子/主订单附带比", value: "extraRatio" },
-          { text: "运费/总货款", value: "freightToPayment" },
-          { text: "发货方式", value: "transportWay" },
-          { text: "聚水潭仓库", value: "storehouse" },
-          { text: "厂家名", value: "manufacturerName" },
-          { text: "厂家群名", value: "manufacturerGroup" },
-          { text: "厂家收款账户-收款人", value: "manufacturerPaymentName" },
-          { text: "厂家收款账户", value: "manufacturerPaymentMethod" },
-          { text: "厂家账户号码", value: "manufacturerPaymentId" },
-          { text: "厂家退货-收件人", value: "manufacturerRecipient" },
-          { text: "厂家退货-收件手机号", value: "manufacturerPhone" },
-          { text: "厂家退货-收件地址", value: "manufacturerAddress" },
-          { text: "Actions", value: "actions", sortable: false },
-        ];
-
-        //加载数据
-        for (let index = 0; index < 1000; index++) {
-          this.products.push({
-            id: Math.floor(Math.random() * 1000000000000000).toString(),
-            department: "某某部",
-            groupName: "某某组",
-            owner: "王毅",
-            shopName: "李宁",
-            productName: "书包",
-            firstCategory: "箱包皮具/热销女包",
-            productDeduction: "0.11",
-            productInsurance: "0.15",
-            productFreight: "0",
-            extraRatio: "",
-            freightToPayment: "",
-            transportWay: "聚水潭/手动/其它",
-            storehouse: "",
-            manufacturerName: "A",
-            manufacturerGroup: "",
-            manufacturerPaymentName: "",
-            manufacturerPaymentMethod: "支付宝/某某银行",
-            manufacturerPaymentId: "",
-            manufacturerRecipient: "",
-            manufacturerPhone: "",
-            manufacturerAddress: "",
-          });
-        }
-      }, 1000);
+        { text: "一级类目", value: "firstCategory" },
+        { text: "品类扣点", value: "productDeduction" },
+        { text: "品类运费险", value: "productInsurance" },
+        { text: "每单运费", value: "productFreight" },
+        { text: "子/主订单附带比", value: "extraRatio" },
+        { text: "运费/总货款", value: "freightToPayment" },
+        { text: "发货方式", value: "transportWay" },
+        { text: "聚水潭仓库", value: "storehouse" },
+        { text: "厂家名", value: "manufacturerName" },
+        { text: "厂家群名", value: "manufacturerGroup" },
+        { text: "厂家收款账户-收款人", value: "manufacturerPaymentName" },
+        { text: "厂家收款账户", value: "manufacturerPaymentMethod" },
+        { text: "厂家账户号码", value: "manufacturerPaymentId" },
+        { text: "厂家退货-收件人", value: "manufacturerRecipient" },
+        { text: "厂家退货-收件手机号", value: "manufacturerPhone" },
+        { text: "厂家退货-收件地址", value: "manufacturerAddress" },
+        { text: "Actions", value: "actions", sortable: false },
+      ];
     },
+    hideHead() {
+      this.headers = [];
+    },
+
+    initialize() {},
 
     editItem(item) {
       this.editedIndex = this.products.indexOf(item);
@@ -511,7 +452,7 @@ export default {
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
+        //this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
     },
@@ -525,16 +466,12 @@ export default {
     },
 
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.products[this.editedIndex], this.editedItem);
+      if (/[^\d]/.test(this.editedItem.id)) {
+        this.infoAlert("泼发EBC：商品ID格式错误");
+        return;
       } else {
-        if (/[^\d]/.test(this.editedItem.id)) {
-          this.infoAlert("泼发EBC：商品ID格式错误");
-          return;
-        } else {
-          //this.products.push(this.editedItem);
-          this.close();
-        }
+        //this.products.push(this.editedItem);
+        this.close();
       }
 
       this.loading = true;
@@ -556,8 +493,7 @@ export default {
         storehouse: this.editedItem.storehouse,
         manufacturerName: this.editedItem.manufacturerName,
         manufacturerGroup: this.editedItem.manufacturerGroup,
-        manufacturerPaymentMethod:
-          this.editedItem.manufacturerPaymentMethod,
+        manufacturerPaymentMethod: this.editedItem.manufacturerPaymentMethod,
         manufacturerPaymentName: this.editedItem.manufacturerPaymentName,
         manufacturerPaymentId: this.editedItem.manufacturerPaymentId,
         manufacturerRecipient: this.editedItem.manufacturerRecipient,
@@ -566,8 +502,10 @@ export default {
       })
         .then((res) => {
           this.loading = false;
-
           this.infoAlert("泼发EBC：" + res.data);
+
+          //刷新页面数据
+          this.loadData();
         })
         .catch(() => {
           this.loading = false;
@@ -575,57 +513,6 @@ export default {
             this.infoAlert("泼发EBC：上传失败");
           }, 100);
         });
-    },
-
-    buttonBoolean() {
-      for (let j = 0; j < this.products.length; j++) {
-        this.ssdialogs[j] = false;
-      }
-    },
-
-    secondeditItem(item) {
-      this.seditedIndex = this.subTableItems.indexOf(item);
-      this.secondeditedItem = Object.assign({}, item);
-      this.sdialog = true;
-    },
-
-    seconddeleteItem(item) {
-      this.seditedIndex = this.subTableItems.indexOf(item);
-      this.secondeditedItem = Object.assign({}, item);
-      this.sdialogDelete = true;
-    },
-
-    seconddeleteItemConfirm() {
-      this.subTableItems.splice(this.seditedIndex, 1);
-      this.secondcloseDelete();
-    },
-
-    secondclose() {
-      this.sdialog = false;
-      this.$nextTick(() => {
-        this.secondeditedItem = Object.assign({}, this.seconddefaultItem);
-        this.seditedIndex = -1;
-      });
-    },
-
-    secondcloseDelete() {
-      this.sdialogDelete = false;
-      this.$nextTick(() => {
-        this.secondeditedItem = Object.assign({}, this.seconddefaultItem);
-        this.seditedIndex = -1;
-      });
-    },
-
-    secondsave() {
-      if (this.seditedIndex > -1) {
-        Object.assign(
-          this.subTableItems[this.seditedIndex],
-          this.secondeditedItem
-        );
-      } else {
-        this.subTableItems.push(this.secondeditedItem);
-      }
-      this.secondclose();
     },
 
     infoAlert(message) {
