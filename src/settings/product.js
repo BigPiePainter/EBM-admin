@@ -11,7 +11,7 @@ export const loadProducts = data => {
 
 export const addProduct = data => {
     const args = {
-        url: '/product/product_to_behind',
+        url: '/product/add',
         method: 'POST',
         data
     }
