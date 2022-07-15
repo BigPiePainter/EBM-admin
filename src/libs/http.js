@@ -19,10 +19,10 @@ class Http {
       instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;'
     }
     if (localStorage.token){
-      instance.defaults.headers.satoken = localStorage.token
+      instance.defaults.headers.pofatoken = localStorage.token
     }
     if (options.token) {
-      instance.defaults.headers.satoken = options.token
+      instance.defaults.headers.pofatoken = options.token
     }
     instance.defaults.transformRequest = [data => {
       if (options.headers && options.headers['Content-Type']) {

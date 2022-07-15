@@ -2,7 +2,7 @@ import http from '@/libs/http'
 
 export const loadProducts = data => {
     const args = {
-        url: '/product/get',
+        url: '/product/getByPermission',
         method: 'POST',
         data
     }
