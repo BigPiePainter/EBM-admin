@@ -18,8 +18,11 @@ class Http {
     } else {
       instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;'
     }
+    if (localStorage.token){
+      instance.defaults.headers.satoken = localStorage.token
+    }
     if (options.token) {
-      instance.defaults.headers.token = options.token
+      instance.defaults.headers.satoken = options.token
     }
     instance.defaults.transformRequest = [data => {
       if (options.headers && options.headers['Content-Type']) {
@@ -50,7 +53,6 @@ class Http {
       if (response) {
         this._errorHandle(error, response.status)
       } else {
-
         this._errorHandle('服务器无响应', 500)
       }
 
