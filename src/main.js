@@ -5,6 +5,7 @@ import store from './store/index'
 import vuetify from './plugins/vuetify'
 import * as VueGoogleMaps from 'vue2-google-maps';
 import Toast from "vue-toastification";
+import Global from './global'
 import "vue-toastification/dist/index.css";
 
 Vue.use(Toast);
@@ -16,6 +17,8 @@ Vue.use(VueGoogleMaps, {
 });
 
 Vue.config.productionTip = false
+
+Vue.prototype.global = Global
 
 new Vue({
   vuetify,

@@ -125,9 +125,12 @@ export default {
           .then((res) => {
             this.loading = false;
             try {
+              console.log(res)
               if (res && res.data && res.data.isLogin) {
                 this.$router.push("/partnerget");
                 this.infoAlert("泼发EBC：登陆成功");
+                //this.global.token = res.data.tokenValue
+                localStorage.token = res.data.tokenValue
                 return;
               }
 
