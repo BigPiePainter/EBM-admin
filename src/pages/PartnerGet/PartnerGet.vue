@@ -5,19 +5,21 @@
     </v-card-title>
 
     <v-data-table
-      height="calc(100vh - 280px)"
       single-expand
       show-expand
       fixed-header
-      :loading="loading"
       loading-text="加载中... 请稍后"
       no-data-text="空"
-      :headers="headers"
-      :items="products"
-      :expanded.sync="expanded"
       item-key="id"
       sort-by="id"
       class="elevation-1"
+      height="calc(100vh - 280px)"
+      :loading="loading"
+      :headers="headers"
+      :items="products"
+      :expanded.sync="expanded"
+      :server-items-length="totalDesserts"
+      :options.sync="options"
       :items-per-page="50"
       :footer-props="{
         'items-per-page-options': [10, 20, 50, 100],
@@ -25,11 +27,10 @@
       }"
       @click:row="clickRow"
     >
-
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
           <div class="sub-table-container elevation-20 ml-2 mb-3">
-            <SkuTable :productsInfo="item"/>
+            <SkuTable :productsInfo="item" />
           </div>
         </td>
       </template>
@@ -234,7 +235,7 @@
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-<!--
+        <!--
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
 -->
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
@@ -262,6 +263,10 @@ export default {
     SkuTable,
   },
   data: () => ({
+    //分页懒加载
+    totalDesserts: 0,
+    options: {},
+
     dialog: false,
     dialogDelete: false,
     sdialog: false,
@@ -386,6 +391,15 @@ export default {
       } else {
         this.expanded.push(item);
       }
+    },
+
+    getDataFromApi() {
+      this.loading = true;
+      this.fakeApiCall().then((data) => {
+        this.desserts = data.items;
+        this.totalDesserts = data.total;
+        this.loading = false;
+      });
     },
 
     initialize() {
