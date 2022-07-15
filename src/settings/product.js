@@ -2,7 +2,7 @@ import http from '@/libs/http'
 
 export const loadProducts = data => {
     const args = {
-        url: '/product/load',
+        url: '/product/get',
         method: 'POST',
         data
     }

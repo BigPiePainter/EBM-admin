@@ -247,10 +247,6 @@
 -->
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
-
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize"> Reset </v-btn>
-      </template>
     </v-data-table>
   </v-card>
 </template>
@@ -263,6 +259,7 @@
 
 <script>
 import { addProducts } from "@/settings/product";
+import { loadProducts } from "@/settings/product";
 import SkuTable from "@/components/SkuTable/SkuTable";
 //import * as XLSX from 'xlsx/xlsx.mjs';
 
@@ -385,10 +382,16 @@ export default {
     sdialogDelete(val) {
       val || this.secondcloseDelete();
     },
+    options: {
+      handler() {
+        this.getDataFromApi();
+      },
+      deep: true,
+    },
   },
 
   created() {
-    this.initialize();
+    //this.initialize();
     this.buttonBoolean();
     console.log(this.subTableItems);
   },
@@ -405,11 +408,21 @@ export default {
 
     getDataFromApi() {
       this.loading = true;
-      this.fakeApiCall().then((data) => {
-        this.desserts = data.items;
-        this.totalDesserts = data.total;
-        this.loading = false;
-      });
+      console.log(this.options)
+      const {page, itemsPerPage } = this.options
+      loadProducts({page, itemsPerPage})
+        .then((res) => {
+          this.loading = false;
+
+          console.log(res);
+
+          this.infoAlert("泼发EBC：" + res.data);
+
+          this.products = res.data
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     },
 
     initialize() {
@@ -525,7 +538,7 @@ export default {
       }
 
       this.loading = true;
-      console.log(this.editedItem)
+      console.log(this.editedItem);
       addProducts({
         id: this.editedItem.id,
         product_name: this.editedItem.product_name,

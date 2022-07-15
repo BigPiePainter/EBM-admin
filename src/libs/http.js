@@ -5,7 +5,7 @@ import {
 } from '@/libs/utils'
 class Http {
   constructor() {
-    this.baseUrl = 'http://192.168.124.5:8087/pofa'//'http://localhost:8087/pofa'
+    this.baseUrl = 'http://localhost:8087/pofa'//'http://localhost:8087/pofa'
   }
 
   request(options) {
@@ -60,7 +60,7 @@ class Http {
   }
 
   _errorHandle(data) {
-    console.log(data)
+    //console.log(data)
     if (data.constructor.name == "AxiosError") {
       Vue.prototype.$toast.error(data.code.toString(), {
         position: "top-right",
