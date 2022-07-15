@@ -6,5 +6,6 @@ export const userLogin = data => {
         method: 'POST',
         data
     }
+    console.log(args)
     return http.request(args)
 }
