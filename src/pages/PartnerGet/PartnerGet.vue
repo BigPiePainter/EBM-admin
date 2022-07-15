@@ -556,8 +556,7 @@ export default {
         storehouse: this.editedItem.storehouse,
         manufacturer_name: this.editedItem.manufacturer_name,
         manufacturer_group: this.editedItem.manufacturer_group,
-        manufacturer_payment_method:
-          this.editedItem.manufacturer_payment_method,
+        manufacturer_payment_method: this.editedItem.manufacturer_payment_method,
         manufacturer_payment_name: this.editedItem.manufacturer_payment_name,
         manufacturer_payment_id: this.editedItem.manufacturer_payment_id,
         manufacturer_recipient: this.editedItem.manufacturer_recipient,

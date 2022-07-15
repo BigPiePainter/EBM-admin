@@ -142,7 +142,7 @@ export default {
               this.infoAlert("泼发EBC：登陆失败");
             }, 100);
           });
-      }, 500);
+      }, 0);
     },
 
     infoAlert(message) {
