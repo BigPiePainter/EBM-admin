@@ -291,51 +291,51 @@ export default {
     editedItem: {
       id: "",
       department: "",
-      group_name: "",
+      groupName: "",
       owner: "",
-      shop_name: "",
-      product_name: "",
-      first_category: "",
-      product_deduction: "",
-      product_insurance: "",
-      product_freight: "",
-      extra_ratio: "",
-      freight_to_payment: "",
-      transport_way: "",
+      shopName: "",
+      productName: "",
+      firstCategory: "",
+      productDeduction: "",
+      productInsurance: "",
+      productFreight: "",
+      extraRatio: "",
+      freightToPayment: "",
+      transportWay: "",
       storehouse: "",
-      manufacturer_name: "",
-      manufacturer_group: "",
-      manufacturer_payment_name: "",
-      manufacturer_payment_method: "",
-      manufacturer_payment_id: "",
-      manufacturer_recipient: "",
-      manufacturer_phone: "",
-      manufacturer_address: "",
+      manufacturerName: "",
+      manufacturerGroup: "",
+      manufacturerPaymentName: "",
+      manufacturerPaymentMethod: "",
+      manufacturerPaymentId: "",
+      manufacturerRecipient: "",
+      manufacturerPhone: "",
+      manufacturerAddress: "",
     },
 
     defaultItem: {
       id: "",
       department: "",
-      group_name: "",
+      groupName: "",
       owner: "",
-      shop_name: "",
-      product_name: "",
-      first_category: "",
-      product_deduction: "",
-      product_insurance: "",
-      product_freight: "",
-      extra_ratio: "",
-      freight_to_payment: "",
-      transport_way: "",
+      shopName: "",
+      productName: "",
+      firstCategory: "",
+      productDeduction: "",
+      productInsurance: "",
+      productFreight: "",
+      extraRatio: "",
+      freightToPayment: "",
+      transportWay: "",
       storehouse: "",
-      manufacturer_name: "",
-      manufacturer_group: "",
-      manufacturer_payment_name: "",
-      manufacturer_payment_method: "",
-      manufacturer_payment_id: "",
-      manufacturer_recipient: "",
-      manufacturer_phone: "",
-      manufacturer_address: "",
+      manufacturerName: "",
+      manufacturerGroup: "",
+      manufacturerPaymentName: "",
+      manufacturerPaymentMethod: "",
+      manufacturerPaymentId: "",
+      manufacturerRecipient: "",
+      manufacturerPhone: "",
+      manufacturerAddress: "",
     },
 
     subTableItems: [],
@@ -384,7 +384,7 @@ export default {
     },
     options: {
       handler() {
-        this.loadData();
+        this.getDataFromApi();
       },
       deep: true,
     },
@@ -406,59 +406,23 @@ export default {
       }
     },
 
-    loadData() {
+    getDataFromApi() {
       this.loading = true;
-      console.log(this.options);
-      const { page, itemsPerPage } = this.options;
-      loadProducts({ page, itemsPerPage })
+      console.log(this.options)
+      const {page, itemsPerPage } = this.options
+      loadProducts({page, itemsPerPage})
         .then((res) => {
-          console.log(res);
-
           this.loading = false;
 
-          this.showHead();
-          this.products = res.data;
+          console.log(res);
 
           this.infoAlert("泼发EBC：" + res.data);
 
-          
+          this.products = res.data
         })
         .catch(() => {
           this.loading = false;
         });
-    },
-
-    showHead() {
-      this.headers = [
-        { text: "商品ID", sortable: true, value: "id" },
-        { text: "产品名", value: "product_name" },
-
-        { text: "部门", value: "department" },
-        { text: "组别", value: "group_name" },
-        { text: "持品人", value: "owner" },
-        { text: "店铺名", value: "shop_name" },
-
-        { text: "一级类目", value: "first_category" },
-        { text: "品类扣点", value: "product_deduction" },
-        { text: "品类运费险", value: "product_insurance" },
-        { text: "每单运费", value: "product_freight" },
-        { text: "子/主订单附带比", value: "extra_ratio" },
-        { text: "运费/总货款", value: "freight_to_payment" },
-        { text: "发货方式", value: "transport_way" },
-        { text: "聚水潭仓库", value: "storehouse" },
-        { text: "厂家名", value: "manufacturer_name" },
-        { text: "厂家群名", value: "manufacturer_group" },
-        { text: "厂家收款账户-收款人", value: "manufacturer_payment_name" },
-        { text: "厂家收款账户", value: "manufacturer_payment_method" },
-        { text: "厂家账户号码", value: "manufacturer_payment_id" },
-        { text: "厂家退货-收件人", value: "manufacturer_recipient" },
-        { text: "厂家退货-收件手机号", value: "manufacturer_phone" },
-        { text: "厂家退货-收件地址", value: "manufacturer_address" },
-        { text: "Actions", value: "actions", sortable: false },
-      ];
-    },
-    headHead() {
-      this.headers = [];
     },
 
     initialize() {
@@ -468,31 +432,60 @@ export default {
       setTimeout(() => {
         this.loading = false;
 
+        //加载表头
+        this.headers = [
+          { text: "商品ID", sortable: true, value: "id" },
+          { text: "产品名", value: "productName" },
+
+          { text: "部门", value: "department" },
+          { text: "组别", value: "groupName" },
+          { text: "持品人", value: "owner" },
+          { text: "店铺名", value: "shopName" },
+
+          { text: "一级类目", value: "firstCategory" },
+          { text: "品类扣点", value: "productDeduction" },
+          { text: "品类运费险", value: "productInsurance" },
+          { text: "每单运费", value: "productFreight" },
+          { text: "子/主订单附带比", value: "extraRatio" },
+          { text: "运费/总货款", value: "freightToPayment" },
+          { text: "发货方式", value: "transportWay" },
+          { text: "聚水潭仓库", value: "storehouse" },
+          { text: "厂家名", value: "manufacturerName" },
+          { text: "厂家群名", value: "manufacturerGroup" },
+          { text: "厂家收款账户-收款人", value: "manufacturerPaymentName" },
+          { text: "厂家收款账户", value: "manufacturerPaymentMethod" },
+          { text: "厂家账户号码", value: "manufacturerPaymentId" },
+          { text: "厂家退货-收件人", value: "manufacturerRecipient" },
+          { text: "厂家退货-收件手机号", value: "manufacturerPhone" },
+          { text: "厂家退货-收件地址", value: "manufacturerAddress" },
+          { text: "Actions", value: "actions", sortable: false },
+        ];
+
         //加载数据
         for (let index = 0; index < 1000; index++) {
           this.products.push({
             id: Math.floor(Math.random() * 1000000000000000).toString(),
             department: "某某部",
-            group_name: "某某组",
+            groupName: "某某组",
             owner: "王毅",
-            shop_name: "李宁",
-            product_name: "书包",
-            first_category: "箱包皮具/热销女包",
-            product_deduction: "0.11",
-            product_insurance: "0.15",
-            product_freight: "0",
-            extra_ratio: "",
-            freight_to_payment: "",
-            transport_way: "聚水潭/手动/其它",
+            shopName: "李宁",
+            productName: "书包",
+            firstCategory: "箱包皮具/热销女包",
+            productDeduction: "0.11",
+            productInsurance: "0.15",
+            productFreight: "0",
+            extraRatio: "",
+            freightToPayment: "",
+            transportWay: "聚水潭/手动/其它",
             storehouse: "",
-            manufacturer_name: "A",
-            manufacturer_group: "",
-            manufacturer_payment_name: "",
-            manufacturer_payment_method: "支付宝/某某银行",
-            manufacturer_payment_id: "",
-            manufacturer_recipient: "",
-            manufacturer_phone: "",
-            manufacturer_address: "",
+            manufacturerName: "A",
+            manufacturerGroup: "",
+            manufacturerPaymentName: "",
+            manufacturerPaymentMethod: "支付宝/某某银行",
+            manufacturerPaymentId: "",
+            manufacturerRecipient: "",
+            manufacturerPhone: "",
+            manufacturerAddress: "",
           });
         }
       }, 1000);
@@ -548,28 +541,28 @@ export default {
       console.log(this.editedItem);
       addProducts({
         id: this.editedItem.id,
-        product_name: this.editedItem.product_name,
+        productName: this.editedItem.productName,
         department: this.editedItem.department,
-        group_name: this.editedItem.group_name,
+        groupName: this.editedItem.groupName,
         owner: this.editedItem.owner,
-        shop_name: this.editedItem.shop_name,
-        first_category: this.editedItem.first_category,
-        product_deduction: this.editedItem.product_deduction,
-        product_insurance: this.editedItem.product_insurance,
-        product_freight: this.editedItem.product_freight,
-        extra_ratio: this.editedItem.extra_ratio,
-        freight_to_payment: this.editedItem.freight_to_payment,
-        transport_way: this.editedItem.transport_way,
+        shopName: this.editedItem.shopName,
+        firstCategory: this.editedItem.firstCategory,
+        productDeduction: this.editedItem.productDeduction,
+        productInsurance: this.editedItem.productInsurance,
+        productFreight: this.editedItem.productFreight,
+        extraRatio: this.editedItem.extraRatio,
+        freightToPayment: this.editedItem.freightToPayment,
+        transportWay: this.editedItem.transportWay,
         storehouse: this.editedItem.storehouse,
-        manufacturer_name: this.editedItem.manufacturer_name,
-        manufacturer_group: this.editedItem.manufacturer_group,
-        manufacturer_payment_method:
-          this.editedItem.manufacturer_payment_method,
-        manufacturer_payment_name: this.editedItem.manufacturer_payment_name,
-        manufacturer_payment_id: this.editedItem.manufacturer_payment_id,
-        manufacturer_recipient: this.editedItem.manufacturer_recipient,
-        manufacturer_phone: this.editedItem.manufacturer_phone,
-        manufacturer_address: this.editedItem.manufacturer_group,
+        manufacturerName: this.editedItem.manufacturerName,
+        manufacturerGroup: this.editedItem.manufacturerGroup,
+        manufacturerPaymentMethod:
+          this.editedItem.manufacturerPaymentMethod,
+        manufacturerPaymentName: this.editedItem.manufacturerPaymentName,
+        manufacturerPaymentId: this.editedItem.manufacturerPaymentId,
+        manufacturerRecipient: this.editedItem.manufacturerRecipient,
+        manufacturerPhone: this.editedItem.manufacturerPhone,
+        manufacturerAddress: this.editedItem.manufacturerGroup,
       })
         .then((res) => {
           this.loading = false;
