@@ -9,7 +9,7 @@ export const loadProducts = data => {
     return http.request(args)
 }
 
-export const addProduct = data => {
+export const addProducts = data => {
     const args = {
         url: '/product/product_to_behind',
         method: 'POST',

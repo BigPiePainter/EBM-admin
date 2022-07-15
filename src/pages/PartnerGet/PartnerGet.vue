@@ -25,11 +25,10 @@
       }"
       @click:row="clickRow"
     >
-
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
           <div class="sub-table-container elevation-20 ml-2 mb-3">
-            <SkuTable :productsInfo="item"/>
+            <SkuTable :productsInfo="item" />
           </div>
         </td>
       </template>
@@ -72,7 +71,7 @@
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.group"
+                        v-model="editedItem.group_name"
                         label="组别"
                       ></v-text-field>
                     </v-col>
@@ -170,7 +169,14 @@
 
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedItem.manufacturer_payment"
+                        v-model="editedItem.manufacturer_payment_name"
+                        label="厂家收款账户-收款人"
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.manufacturer_payment_method"
                         label="厂家收款账户"
                       ></v-text-field>
                     </v-col>
@@ -234,7 +240,7 @@
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-<!--
+        <!--
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
 -->
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
@@ -254,6 +260,7 @@
 
 
 <script>
+import { addProducts } from "@/settings/product";
 import SkuTable from "@/components/SkuTable/SkuTable";
 //import * as XLSX from 'xlsx/xlsx.mjs';
 
@@ -281,7 +288,7 @@ export default {
     editedItem: {
       id: "",
       department: "",
-      group: "",
+      group_name: "",
       owner: "",
       shop_name: "",
       product_name: "",
@@ -295,7 +302,8 @@ export default {
       storehouse: "",
       manufacturer_name: "",
       manufacturer_group: "",
-      manufacturer_payment: "",
+      manufacturer_payment_name: "",
+      manufacturer_payment_method: "",
       manufacturer_payment_id: "",
       manufacturer_recipient: "",
       manufacturer_phone: "",
@@ -305,7 +313,7 @@ export default {
     defaultItem: {
       id: "",
       department: "",
-      group: "",
+      group_name: "",
       owner: "",
       shop_name: "",
       product_name: "",
@@ -319,7 +327,8 @@ export default {
       storehouse: "",
       manufacturer_name: "",
       manufacturer_group: "",
-      manufacturer_payment: "",
+      manufacturer_payment_name: "",
+      manufacturer_payment_method: "",
       manufacturer_payment_id: "",
       manufacturer_recipient: "",
       manufacturer_phone: "",
@@ -401,7 +410,7 @@ export default {
           { text: "产品名", value: "product_name" },
 
           { text: "部门", value: "department" },
-          { text: "组别", value: "group" },
+          { text: "组别", value: "group_name" },
           { text: "持品人", value: "owner" },
           { text: "店铺名", value: "shop_name" },
 
@@ -415,7 +424,8 @@ export default {
           { text: "聚水潭仓库", value: "storehouse" },
           { text: "厂家名", value: "manufacturer_name" },
           { text: "厂家群名", value: "manufacturer_group" },
-          { text: "厂家收款账户", value: "manufacturer_payment" },
+          { text: "厂家收款账户-收款人", value: "manufacturer_payment_name" },
+          { text: "厂家收款账户", value: "manufacturer_payment_method" },
           { text: "厂家账户号码", value: "manufacturer_payment_id" },
           { text: "厂家退货-收件人", value: "manufacturer_recipient" },
           { text: "厂家退货-收件手机号", value: "manufacturer_phone" },
@@ -428,7 +438,7 @@ export default {
           this.products.push({
             id: Math.floor(Math.random() * 1000000000000000).toString(),
             department: "某某部",
-            group: "某某组",
+            group_name: "某某组",
             owner: "王毅",
             shop_name: "李宁",
             product_name: "书包",
@@ -442,7 +452,8 @@ export default {
             storehouse: "",
             manufacturer_name: "A",
             manufacturer_group: "",
-            manufacturer_payment: "支付宝/某某银行",
+            manufacturer_payment_name: "",
+            manufacturer_payment_method: "支付宝/某某银行",
             manufacturer_payment_id: "",
             manufacturer_recipient: "",
             manufacturer_phone: "",
@@ -489,9 +500,72 @@ export default {
       if (this.editedIndex > -1) {
         Object.assign(this.products[this.editedIndex], this.editedItem);
       } else {
-        this.products.push(this.editedItem);
+        if (/[^\d]/.test(this.editedItem.id)) {
+          this.infoAlert("泼发EBC：商品ID格式错误");
+          return;
+        } else {
+          this.products.push(this.editedItem);
+          this.close();
+        }
       }
-      this.close();
+
+      this.loading = true;
+
+      if (/[^\d]/.test(this.editedItem.id)) {
+        this.infoAlert("泼发EBC：商品ID格式错误");
+        return;
+      } else {
+        this.products.push(this.editedItem);
+        this.close();
+      }
+
+      setTimeout(() => {
+        addProducts({
+          id: this.editedItem.id,
+          product_name: this.editedItem.product_name,
+          department: this.editedItem.department,
+          group_name: this.editedItem.group_name,
+          owner: this.editedItem.owner,
+          shop_name: this.editedItem.shop_name,
+          first_category: this.editedItem.first_category,
+          product_deduction: this.editedItem.product_deduction,
+          product_insurance: this.editedItem.product_insurance,
+          product_freight: this.editedItem.product_freight,
+          extra_ratio: this.editedItem.extra_ratio,
+          freight_to_payment: this.editedItem.freight_to_payment,
+          transport_way: this.editedItem.transport_way,
+          storehouse: this.editedItem.storehouse,
+          manufacturer_name: this.editedItem.manufacturer_name,
+          manufacturer_group: this.editedItem.manufacturer_group,
+          manufacturer_payment_method:
+            this.editedItem.manufacturer_payment_method,
+          manufacturer_payment_name: this.editedItem.manufacturer_payment_name,
+          manufacturer_payment_id: this.editedItem.manufacturer_payment_id,
+          manufacturer_recipient: this.editedItem.manufacturer_recipient,
+          manufacturer_phone: this.editedItem.manufacturer_phone,
+          manufacturer_address: this.editedItem.manufacturer_group,
+        })
+          .then((res) => {
+            this.loading = false;
+            try {
+              if (res && res.data && res.data.isLogin) {
+                this.$router.push("/partnerget");
+                this.infoAlert("泼发EBC：登陆成功");
+                return;
+              }
+
+              this.infoAlert("泼发EBC：" + res.data);
+            } catch (error) {
+              this.infoAlert("泼发EBC：登陆失败");
+            }
+          })
+          .catch(() => {
+            this.loading = false;
+            setTimeout(() => {
+              this.infoAlert("泼发EBC：登陆失败");
+            }, 100);
+          });
+      }, 500);
     },
 
     buttonBoolean() {
@@ -543,6 +617,21 @@ export default {
         this.subTableItems.push(this.secondeditedItem);
       }
       this.secondclose();
+    },
+
+    infoAlert(message) {
+      this.$toast.info(message, {
+        position: "top-right",
+        timeout: 6000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: false,
+        hideProgressBar: true,
+        closeButton: "button",
+        icon: true,
+      });
     },
   },
 };
