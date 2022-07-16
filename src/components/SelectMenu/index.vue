@@ -3,9 +3,7 @@
     <template v-slot:activator="{ on, attrs }">
       <v-btn color="indigo" dark v-bind="attrs" v-on="on"> {{ title }} </v-btn>
     </template>
-    <v-card
-
-    max-height="50vh"
+    <v-card max-height="50vh"
       ><v-data-table
         :headers="header"
         :items="menu"
@@ -33,10 +31,15 @@ export default {
   data() {
     return {
       selected: [],
+      groupList: [],
     };
   },
 
-  created() {},
+  created() {
+    for (let i = 0; i < this.menu.length; i++) {
+      this.groupList[i] = {name: this.menu[i]};
+    }
+  },
 
   methods: {
     showSelected() {
