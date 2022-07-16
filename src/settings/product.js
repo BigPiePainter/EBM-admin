@@ -36,3 +36,12 @@ export const deleteProduct = data => {
     }
     return http.request(args)
 }
+
+export const getClass = data => {
+    const args = {
+        url: '/product/getCategory',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
