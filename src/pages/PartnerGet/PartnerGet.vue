@@ -1,11 +1,13 @@
 <template>
   <div>
-    <v-card class="mb-7 pa-5">
-      <SelectMenu :title="'部门'" :menu="deparmentList" :header="deparmentHeader"/>
-      <SelectMenu :title="'组别'" />
-      <SelectMenu :title="'持品人'" />
-      <SelectMenu />
-      <SelectMenu />
+    <v-card class="mb-4 pa-2">
+      <SelectDialog :title="'部门'" :menu="deparmentList" />
+      <SelectDialog :title="'组别'" :menu="groupList" />
+      <SelectDialog :title="'持品人'" :menu="ownerList" />
+      <SelectDialog :title="'一级类目'" :menu="categoryList" />
+      <SelectDialog :title="'厂家名'" :menu="manufacturerList" />
+      <SelectDialog :title="'支付方式'" :menu="paymentList" />
+      <SelectDialog />
     </v-card>
     <v-card class="products-list mb-1">
       <v-data-table
@@ -43,6 +45,9 @@
           <v-toolbar flat>
             <v-toolbar-title>产品信息</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
+
+            <p>部门：全部<br>持品人：全部</p>
+
             <v-spacer></v-spacer>
 
             <v-dialog v-model="dialog" max-width="1000px">
@@ -83,7 +88,7 @@
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.group_name"
+                          v-model="editedItem.groupName"
                           label="组别"
                         ></v-text-field>
                       </v-col>
@@ -97,63 +102,63 @@
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.shop_name"
+                          v-model="editedItem.shopName"
                           label="店铺名"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.product_name"
+                          v-model="editedItem.productName"
                           label="产品名"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.first_category"
+                          v-model="editedItem.firstCategory"
                           label="一级类目"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.product_deduction"
+                          v-model="editedItem.productDeduction"
                           label="品类扣点"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.product_insurance"
+                          v-model="editedItem.productInsurance"
                           label="品类运费险"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.product_freight"
+                          v-model="editedItem.productFreight"
                           label="每单运费"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.extra_ratio"
+                          v-model="editedItem.extraRatio"
                           label="子/主订单附带比"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.freight_to_payment"
+                          v-model="editedItem.freightToPayment"
                           label="运费/总货款"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.transport_way"
+                          v-model="editedItem.transportWay"
                           label="发货方式"
                         ></v-text-field>
                       </v-col>
@@ -167,56 +172,56 @@
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.manufacturer_name"
+                          v-model="editedItem.manufacturerName"
                           label="厂家名"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.manufacturer_group"
+                          v-model="editedItem.manufacturerGroup"
                           label="厂家群名"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.manufacturer_payment_name"
+                          v-model="editedItem.manufacturerPaymentName"
                           label="厂家收款账户-收款人"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.manufacturer_payment_method"
+                          v-model="editedItem.manufacturerPaymentMethod"
                           label="厂家收款账户"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.manufacturer_payment_id"
+                          v-model="editedItem.manufacturerPaymentId"
                           label="厂家账户号码"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.manufacturer_recipient"
+                          v-model="editedItem.manufacturerRecipient"
                           label="厂家退货-收件人"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.manufacturer_phone"
+                          v-model="editedItem.manufacturerPhone"
                           label="厂家退货-收件手机号"
                         ></v-text-field>
                       </v-col>
 
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.manufacturer_address"
+                          v-model="editedItem.manufacturerAddress"
                           label="厂家退货-收件地址"
                         ></v-text-field>
                       </v-col>
@@ -273,20 +278,21 @@
 <script>
 import { addProducts } from "@/settings/product";
 import { loadProducts } from "@/settings/product";
+import { getClass } from "@/settings/product";
 import SkuTable from "@/components/SkuTable/SkuTable";
-import SelectMenu from "@/components/SelectMenu";
+import SelectDialog from "@/components/SelectDialog";
 //import * as XLSX from 'xlsx/xlsx.mjs';
 
 export default {
   components: {
     SkuTable,
-    SelectMenu,
+    SelectDialog,
   },
   data: () => ({
     //删选菜单
-    deparmentMenu: false,
-    deparmentHeader: [{text:"部门", value:"name"}],
-    deparmentList: [{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"},{name:"部门11111111111111111111"}, {name:"部门2"},{name:"部门3"},{name:"部门4"},{name:"部门5"},{name:"部门6"}],
+    deparmentList: [],
+    groupList: [],
+    ownerList: [],
 
     //分页懒加载
     totalProducts: 50,
@@ -383,10 +389,23 @@ export default {
     },
   },
 
-  created() {},
+  mounted() {
+    getClass({})
+      .then((res) => {
+        this.deparmentList = res.data.department;
+        this.groupList = res.data.groupName;
+        this.ownerList = res.data.owner;
+        this.categoryList = res.data.firstCategory;
+        this.manufacturerList = res.data.manufacturerName;
+        this.paymentList = res.data.manufacturerPaymentMethod;
+        console.log(res.data);
+      })
+      .catch(() => {});
+  },
 
   methods: {
     clickRow(item, event) {
+      console.log(this.deparmentList);
       if (event.isExpanded) {
         const index = this.expanded.findIndex((i) => i === item);
         this.expanded.splice(index, 1);
