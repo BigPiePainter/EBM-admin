@@ -1,5 +1,5 @@
 <template>
-  <v-menu :close-on-content-click="false" offset-y>
+  <v-menu :close-on-content-click="false" offset-y v-model="refresh">
     <template v-slot:activator="{ on, attrs }">
       <v-btn
         color="indigo"
@@ -9,6 +9,7 @@
         dark
         v-bind="attrs"
         v-on="on"
+        @click="showSelected"
       >
         {{ title }}
       </v-btn>
@@ -35,30 +36,41 @@
 export default {
   props: {
     title: String,
-    menu: Array,
-    header: Array,
+    menu: Object,
+    name: String,
   },
   data() {
     return {
+      refresh: false,
       selected: [],
     };
   },
 
-  created() {},
-
-  watch:{
-
-   // refresh(value){
-
-    //},
+  watch: {
+    refresh(value) {
+      if (!value) {
+        this.$emit("refreshData", {
+          key: this.key,
+          value: this.selected.map((i) => i.name),
+        });
+        // same as the function of below:
+        // var selectedInner = [];
+        // for (let i = 0; i < this.selected.length; i++){
+        //   selectedInner.push(this.selected[i].name);
+        // }
+        // this.$emit("refreshData", selectedInner);
+      }
+    },
   },
 
   computed: {
     groupList() {
-      var list = [];
+      
       if (!this.menu) return [];
-      for (let i = 0; i < this.menu.length; i++) {
-        list[i] = { name: this.menu[i] };
+
+      var list = [];
+      for (let i = 0; i < this.menu[this.name].length; i++) {
+        list[i] = { name: this.menu[this.name][i] };
       }
       return list;
     },
@@ -66,6 +78,7 @@ export default {
 
   methods: {
     showSelected() {
+      console.log(this.refresh);
       console.log(this.selected);
     },
   },

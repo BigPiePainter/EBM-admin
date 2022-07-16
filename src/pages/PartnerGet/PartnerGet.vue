@@ -1,14 +1,33 @@
 <template>
   <div>
-    <v-card class="mb-4 pa-2">
-      <SelectDialog :title="'部门'" :menu="deparmentList" />
-      <SelectDialog :title="'组别'" :menu="groupList" />
-      <SelectDialog :title="'持品人'" :menu="ownerList" />
-      <SelectDialog :title="'一级类目'" :menu="categoryList" />
-      <SelectDialog :title="'厂家名'" :menu="manufacturerList" />
-      <SelectDialog :title="'支付方式'" :menu="paymentList" />
-      <SelectDialog />
-    </v-card>
+    <v-expansion-panels class="mb-3">
+      <v-expansion-panel>
+        <v-expansion-panel-header
+          >筛选条件 <v-space />部门：全部</v-expansion-panel-header
+        >
+        <v-expansion-panel-content>
+          <SelectDialog :title="'部门'" :name="'department'" :menu="menu" />
+          <SelectDialog :title="'组别'" :name="'groupName'" :menu="menu" />
+          <SelectDialog :title="'持品人'" :name="'owner'" :menu="menu" />
+          <SelectDialog
+            :title="'一级类目'"
+            :name="'firstCategory'"
+            :menu="menu"
+          />
+          <SelectDialog
+            :title="'厂家名'"
+            :name="'manufacturerName'"
+            :menu="menu"
+          />
+          <SelectDialog
+            :title="'支付方式'"
+            :name="'manufacturerPaymentMethod'"
+            :menu="menu"
+          />
+          <SelectDialog />
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
     <v-card class="products-list mb-1">
       <v-data-table
         single-expand
@@ -32,6 +51,7 @@
           'items-per-page-text': '每页显示条数',
         }"
         @click:row="clickRow"
+        @refreshData="refreshData"
       >
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length" class="sub-table pa-0">
@@ -45,8 +65,6 @@
           <v-toolbar flat>
             <v-toolbar-title>产品信息</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
-
-            <p>部门：全部<br>持品人：全部</p>
 
             <v-spacer></v-spacer>
 
@@ -290,9 +308,8 @@ export default {
   },
   data: () => ({
     //删选菜单
-    deparmentList: [],
-    groupList: [],
-    ownerList: [],
+    menu: {},
+    selectedMenu: null,
 
     //分页懒加载
     totalProducts: 50,
@@ -392,20 +409,17 @@ export default {
   mounted() {
     getClass({})
       .then((res) => {
-        this.deparmentList = res.data.department;
-        this.groupList = res.data.groupName;
-        this.ownerList = res.data.owner;
-        this.categoryList = res.data.firstCategory;
-        this.manufacturerList = res.data.manufacturerName;
-        this.paymentList = res.data.manufacturerPaymentMethod;
+        this.menu = res.data;
+        this.selectedMenu = this.menu
         console.log(res.data);
       })
       .catch(() => {});
   },
 
   methods: {
+    refreshData() {},
     clickRow(item, event) {
-      console.log(this.deparmentList);
+      console.log(this.departmentList);
       if (event.isExpanded) {
         const index = this.expanded.findIndex((i) => i === item);
         this.expanded.splice(index, 1);
@@ -418,7 +432,16 @@ export default {
       this.loading = true;
       console.log(this.options);
       const { page, itemsPerPage } = this.options;
-      loadProducts({ page, itemsPerPage })
+
+      var args = { page, itemsPerPage };
+      if (this.selectedMenu) {
+        for (let name in this.selectedMenu) {
+          args[name] = this.selectedMenu[name].join("$");
+        }
+      }
+
+      console.log(args);
+      loadProducts(args)
         .then((res) => {
           this.loading = false;
 
