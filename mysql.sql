@@ -7,24 +7,47 @@ CREATE TABLE users (
   permission bigint NOT NULL COMMENT '权限',
   username varchar(100) NOT NULL COMMENT '用户名',
   password varchar(100) NOT NULL COMMENT '密码',
+  nick varchar(100) COMMENT '昵称/姓名',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '系统用户';
 
 -- 测试数据
 insert into
-  users(uid, creator_id, permission, username, password)
+  users(uid, creator_id, permission, username, password, nick)
 values
-  (0, 0, 1048575, 'admin', '88888888');
+  (1, 0, 1048575, 'admin', '88888888', "admin");
 
 insert into
-  users(creator_id, permission, username, password)
+  users(creator_id, permission, username, password, nick)
 values
-  (0, 1048575, 'zqy', '123456');
+  (1, 1048575, 'zqy', '123456', "张清宇");
 
 insert into
-  users(creator_id, permission, username, password)
+  users(creator_id, permission, username, password, nick)
 values
-  (0, 1048575, '556', '654321');
+  (1, 1048575, '556', '654321', "王绿原");
+  
+insert into
+  users(creator_id, permission, username, password, nick)
+values
+  (2, 1048575, '557', '654321', "王绿原2");
+
+  insert into
+  users(creator_id, permission, username, password, nick)
+values
+  (2, 1048575, '555', '654321', "王绿原3");
+
+    insert into
+  users(creator_id, permission, username, password, nick)
+values
+  (3, 1048575, 'wly', '654321', "王绿原4");
+
+  
+    insert into
+  users(creator_id, permission, username, password, nick)
+values
+  (1, 1048575, 'wly2', '654321', "王绿原555");
+
 
 -- 商品信息
 drop table if exists products;
