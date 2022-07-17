@@ -22,7 +22,7 @@
         <v-spacer></v-spacer>
         <v-switch v-model="check" label="有效SKU" class="pr-5 pt-6"></v-switch>
 
-        <v-btn color="green lighten-2" dark @click="download" class="mr-3">
+        <v-btn color="green lighten-2" small dark @click="download" class="mr-3">
           导出
         </v-btn>
 
@@ -421,3 +421,9 @@ export default {
   },
 };
 </script>
+
+
+
+<style scoped lang="scss">
+
+</style>

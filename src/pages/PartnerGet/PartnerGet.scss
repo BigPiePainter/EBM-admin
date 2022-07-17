@@ -35,6 +35,26 @@
 
 
 .v-data-table {
+  .v-toolbar {
+    height: 50px !important;
+
+    .v-toolbar__content {
+      height: 50px !important;
+
+      .v-toolbar__title{
+        font-size: 1rem;
+      }
+    }
+  }
+  .v-data-footer{
+    .v-data-footer__select{
+      .v-select{
+        margin-top: 8px;
+        margin-bottom: 8px;
+      }
+    }
+  }
+
   td {
     font-size: 0.7rem !important;
     height: 38.4px !important;

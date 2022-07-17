@@ -2,7 +2,7 @@
   <div>
     <v-dialog v-model="dialog" :max-width="maxWidth">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn color="red lighten-2" dark v-bind="attrs" v-on="on">
+        <v-btn color="red lighten-2" small dark v-bind="attrs" v-on="on">
           导入SKU信息
         </v-btn>
       </template>
@@ -10,7 +10,7 @@
       <v-card>
         <v-card-title>
           <p>
-            {{ `${product.product_name}（${product.first_category}）上传SKU` }}
+            {{ `${product.productName}（${product.firstCategory}）上传SKU` }}
           </p>
         </v-card-title>
 

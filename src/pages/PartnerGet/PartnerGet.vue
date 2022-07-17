@@ -1,10 +1,56 @@
 <template>
   <div>
-    <v-expansion-panels class="mb-3">
+    <v-expansion-panels class="mb-3" multiple>
       <v-expansion-panel>
-        <v-expansion-panel-header
-          >筛选条件 <v-space />部门：全部</v-expansion-panel-header
-        >
+        <v-expansion-panel-header v-slot="{ open }">
+          <v-row no-gutters>
+            <v-col cols="4"> 一级删选 </v-col>
+            <v-fade-transition>
+              <v-col v-if="!open" cols="8" class="text--secondary">
+                <v-row no-gutters style="width: 100%">
+                  <v-col cols="6"> 部门111 </v-col>
+                  <v-col cols="6"> 组别222 </v-col>
+                </v-row>
+              </v-col>
+            </v-fade-transition>
+          </v-row>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <SelectDialog :title="'部门'" :name="'department'" :menu="menu" />
+          <SelectDialog :title="'组别'" :name="'groupName'" :menu="menu" />
+          <SelectDialog :title="'持品人'" :name="'owner'" :menu="menu" />
+          <SelectDialog
+            :title="'一级类目'"
+            :name="'firstCategory'"
+            :menu="menu"
+          />
+          <SelectDialog
+            :title="'厂家名'"
+            :name="'manufacturerName'"
+            :menu="menu"
+          />
+          <SelectDialog
+            :title="'支付方式'"
+            :name="'manufacturerPaymentMethod'"
+            :menu="menu"
+          />
+          <SelectDialog />
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+      <v-expansion-panel>
+        <v-expansion-panel-header v-slot="{ open }">
+          <v-row no-gutters>
+            <v-col cols="4"> 二级删选 </v-col>
+            <v-fade-transition>
+              <v-col v-if="!open" cols="8" class="text--secondary">
+                <v-row no-gutters style="width: 100%">
+                  <v-col cols="6"> 部门111 </v-col>
+                  <v-col cols="6"> 组别222 </v-col>
+                </v-row>
+              </v-col>
+            </v-fade-transition>
+          </v-row>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
           <SelectDialog :title="'部门'" :name="'department'" :menu="menu" />
           <SelectDialog :title="'组别'" :name="'groupName'" :menu="menu" />
@@ -63,7 +109,7 @@
 
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>产品信息</v-toolbar-title>
+            <v-toolbar-title>商品清单</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
 
             <v-spacer></v-spacer>
@@ -71,13 +117,7 @@
             <v-dialog v-model="dialog" max-width="1000px">
               <!--new item buttom-->
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  dark
-                  class="mb-2"
-                  v-bind="attrs"
-                  v-on="on"
-                >
+                <v-btn small depressed color="primary" v-bind="attrs" v-on="on">
                   新增商品信息
                 </v-btn>
               </template>
@@ -410,7 +450,7 @@ export default {
     getClass({})
       .then((res) => {
         this.menu = res.data;
-        this.selectedMenu = this.menu
+        this.selectedMenu = this.menu;
         console.log(res.data);
       })
       .catch(() => {});
@@ -538,30 +578,7 @@ export default {
 
       this.loading = true;
       console.log(this.editedItem);
-      addProducts({
-        id: this.editedItem.id,
-        productName: this.editedItem.productName,
-        department: this.editedItem.department,
-        groupName: this.editedItem.groupName,
-        owner: this.editedItem.owner,
-        shopName: this.editedItem.shopName,
-        firstCategory: this.editedItem.firstCategory,
-        productDeduction: this.editedItem.productDeduction,
-        productInsurance: this.editedItem.productInsurance,
-        productFreight: this.editedItem.productFreight,
-        extraRatio: this.editedItem.extraRatio,
-        freightToPayment: this.editedItem.freightToPayment,
-        transportWay: this.editedItem.transportWay,
-        storehouse: this.editedItem.storehouse,
-        manufacturerName: this.editedItem.manufacturerName,
-        manufacturerGroup: this.editedItem.manufacturerGroup,
-        manufacturerPaymentMethod: this.editedItem.manufacturerPaymentMethod,
-        manufacturerPaymentName: this.editedItem.manufacturerPaymentName,
-        manufacturerPaymentId: this.editedItem.manufacturerPaymentId,
-        manufacturerRecipient: this.editedItem.manufacturerRecipient,
-        manufacturerPhone: this.editedItem.manufacturerPhone,
-        manufacturerAddress: this.editedItem.manufacturerGroup,
-      })
+      addProducts(this.editedItem)
         .then((res) => {
           this.loading = false;
           this.infoAlert("泼发EBC：" + res.data);
