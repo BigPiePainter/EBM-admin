@@ -1,5 +1,5 @@
 {
-  "name": "vue-material-admin",
+  "name": "pofa-admin",
   "version": "1.0.5",
   "private": true,
   "scripts": {
@@ -38,7 +38,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^7.0.1",
-    "sass": "^1.27.0",
+    "sass": "~1.32",
     "sass-loader": "^10.0.3",
     "vue-cli-plugin-vuetify": "~2.0.7",
     "vue-style-loader": "^4.1.2",
