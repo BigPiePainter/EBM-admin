@@ -39,32 +39,34 @@
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
     </v-dialog>
-    <v-dialog
-      v-if="!checkInfoDialogDestroy"
-      v-model="checkInfoDialog"
-      fullscreen
-      class="checkInfo"
-      persistent
-    >
-      <div class="topBar">
-        <v-toolbar dark color="primary" dense>
-          <v-btn icon dark @click="cancel">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>{{
-            `${product.id}   ${product.product_name}（${product.first_category}）SKU上传检索`
-          }}</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-btn dark text> {{ wrong + " 格式错误" }}</v-btn>
-            <v-btn dark text @click="upload" :disabled="wrong > 0">
-              确认上传
+    <v-scale-transition>
+      <v-dialog
+        v-if="checkInfoDialog"
+        v-model="checkInfoDialog"
+        fullscreen
+        class="checkInfo"
+        persistent
+      >
+        <div class="topBar">
+          <v-toolbar dark color="primary" dense>
+            <v-btn icon dark @click="cancel">
+              <v-icon>mdi-close</v-icon>
             </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-      </div>
-      <div id="x-spreadsheet"></div>
-    </v-dialog>
+            <v-toolbar-title>{{
+              `${product.id}   ${product.product_name}（${product.first_category}）SKU上传检索`
+            }}</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn dark text> {{ wrong + " 格式错误" }}</v-btn>
+              <v-btn dark text @click="upload" :disabled="wrong > 0">
+                确认上传
+              </v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+        </div>
+        <div id="x-spreadsheet"></div>
+      </v-dialog>
+    </v-scale-transition>
   </div>
 </template>
 <script>
@@ -85,7 +87,6 @@ export default {
       file: null,
       dialog: false,
       checkInfoDialog: false,
-      checkInfoDialogDestroy: true,
 
       dropActive: false,
 
@@ -103,15 +104,6 @@ export default {
   watch: {
     hover(value) {
       this.status = value ? "松开上传" : "拖拽上传SKU信息";
-    },
-    checkInfoDialog(value) {
-      if (value) {
-        this.checkInfoDialogDestroy = false;
-      } else {
-        setTimeout(() => {
-          this.checkInfoDialogDestroy = true;
-        }, 300);
-      }
     },
   },
   methods: {
@@ -268,8 +260,7 @@ export default {
             ...warning,
           });
 
-
-          this.wrong = 0
+          this.wrong = 0;
           for (let row in data[0].rows) {
             if (!data[0].rows[row].cells) continue;
             for (let col = 0; col < 6; col++) {

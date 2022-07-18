@@ -17,6 +17,8 @@ import Maps from '@/pages/Maps/Google'
 import Error from "@/pages/Error/Error";
 import Login from "@/pages/Login/Login";
 
+import Employee from "@/pages/Employee/Employee";
+
 Vue.use(Router);
 
 
@@ -42,6 +44,11 @@ var routerConfig = {
           path: 'partnerget',
           name: 'PartnerGet',
           component: PartnerGet,
+        },
+        {
+          path: 'employee',
+          name: 'Employee',
+          component: Employee,
         },
         {
           path: 'productsget',

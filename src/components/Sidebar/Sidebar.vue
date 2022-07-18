@@ -72,7 +72,7 @@
           link
         >
           <v-list-item-action>
-            <v-icon size="20" :color="item.color ? item.color : ''">{{
+            <v-icon dense :color="item.color ? item.color : ''">{{
               item.icon
             }}</v-icon>
           </v-list-item-action>
@@ -97,8 +97,9 @@ export default {
   data() {
     return {
       items: [
+        { heading: "POFA1" },
         { title: "发/退货状态", icon: "mdi-cubes-medium", link: "/transport" },
-        { title: "主页", icon: "mdi-home", link: "/dashboard" },
+        //{ title: "主页", icon: "mdi-home", link: "/dashboard" },
 
         {
           title: "商品管理",
@@ -106,13 +107,16 @@ export default {
           link: "/partnerget",
         },
 
-        { title: "系统信息", icon: "mdi-bell-outline", link: "/notifications" },
+        {
+          title: "员工管理",
+          icon: "mdi-account-multiple",
+          link: "/employee",
+        },
+
+        //{ title: "系统信息", icon: "mdi-bell-outline", link: "/notifications" },
 
         { divider: true },
-        { heading: "PROJECTS" },
-        { title: "My recent", icon: "mdi-circle-medium", color: "warning" },
-        { title: "Starred", icon: "mdi-circle-medium", color: "primary" },
-        { title: "Background", icon: "mdi-circle-medium", color: "error" },
+        { heading: "POFA2" },
       ],
       sidebarWidth: 150,
       sidebarMinWidth: 50,
@@ -136,4 +140,4 @@ export default {
 };
 </script>
 
-<style src="./Sidebar.scss" lang="scss"/>
+<style src="./Sidebar.scss" lang="scss" scoped/>
