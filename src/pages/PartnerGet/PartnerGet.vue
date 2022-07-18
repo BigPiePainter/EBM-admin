@@ -87,7 +87,7 @@
           <v-expansion-panels class="mt-5 pl-8 pr-8">
             <v-expansion-panel>
               <v-expansion-panel-header> 模糊查找 </v-expansion-panel-header>
-              <v-expansion-panel-content> aaaaaa </v-expansion-panel-content>
+              <v-expansion-panel-content> <Search/> </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
         </v-expansion-panel-content>
@@ -358,12 +358,15 @@ import { loadProducts } from "@/settings/product";
 import { getClass } from "@/settings/product";
 import SkuTable from "@/components/SkuTable/SkuTable";
 import SelectDialog from "@/components/SelectDialog";
+//import Search from "@/components/Search";
+import Search from '../../components/Search/Search.vue';
 //import * as XLSX from 'xlsx/xlsx.mjs';
 
 export default {
   components: {
     SkuTable,
     SelectDialog,
+    Search,
   },
   data: () => ({
     //删选菜单
