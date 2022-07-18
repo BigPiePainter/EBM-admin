@@ -1,6 +1,6 @@
 <template>
-  <v-menu :close-on-content-click="false" offset-y v-model="refresh">
-    <template v-slot:activator="{ on, attrs }">
+
+    <!-- <template v-slot:activator="{ on, attrs }">
       <v-btn
         color="indigo"
         class="ml-15"
@@ -13,9 +13,10 @@
       >
         {{ title }}
       </v-btn>
-    </template>
+    </template> -->
     <v-card max-height="50vh" class="select-menu"
       ><v-data-table
+        height="300px"
         :headers="[{ text: '', value: 'name' }]"
         :items="groupList"
         hide-default-footer
@@ -28,7 +29,7 @@
       >
       </v-data-table
     ></v-card>
-  </v-menu>
+
 </template>
 
 

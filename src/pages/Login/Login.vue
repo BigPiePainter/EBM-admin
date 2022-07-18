@@ -57,6 +57,7 @@
                                 "
                                 color="primary"
                                 @click="login"
+                                @keyup.enter="login"
                               >
                                 登陆</v-btn
                               >
@@ -111,6 +112,16 @@ export default {
     };
   },
   methods: {
+    keyDown(e) {
+      console.log(e)
+      //如果是回车则执行登录方法
+      if (e.key == 2) {
+        //需要执行的登录方法
+        
+        this.login();
+      }
+    },
+
     login() {
       this.loading = true;
       setTimeout(() => {
@@ -125,12 +136,12 @@ export default {
           .then((res) => {
             this.loading = false;
             try {
-              console.log(res)
+              console.log(res);
               if (res && res.data && res.data.isLogin) {
                 this.$router.push("/partnerget");
                 this.infoAlert("泼发EBC：登陆成功");
                 //this.global.token = res.data.tokenValue
-                localStorage.token = res.data.tokenValue
+                localStorage.token = res.data.tokenValue;
                 return;
               }
 

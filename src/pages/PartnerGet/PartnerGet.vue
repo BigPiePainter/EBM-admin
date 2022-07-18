@@ -4,7 +4,7 @@
       <v-expansion-panel>
         <v-expansion-panel-header v-slot="{ open }">
           <v-row no-gutters>
-            <v-col cols="4"> 一级删选 </v-col>
+            <v-col cols="4"> 筛选 </v-col>
             <v-fade-transition>
               <v-col v-if="!open" cols="8" class="text--secondary">
                 <v-row no-gutters style="width: 100%">
@@ -16,61 +16,80 @@
           </v-row>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <SelectDialog :title="'部门'" :name="'department'" :menu="menu" />
-          <SelectDialog :title="'组别'" :name="'groupName'" :menu="menu" />
-          <SelectDialog :title="'持品人'" :name="'owner'" :menu="menu" />
-          <SelectDialog
-            :title="'一级类目'"
-            :name="'firstCategory'"
-            :menu="menu"
-          />
-          <SelectDialog
-            :title="'厂家名'"
-            :name="'manufacturerName'"
-            :menu="menu"
-          />
-          <SelectDialog
-            :title="'支付方式'"
-            :name="'manufacturerPaymentMethod'"
-            :menu="menu"
-          />
-          <SelectDialog />
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-      <v-expansion-panel>
-        <v-expansion-panel-header v-slot="{ open }">
-          <v-row no-gutters>
-            <v-col cols="4"> 二级删选 </v-col>
-            <v-fade-transition>
-              <v-col v-if="!open" cols="8" class="text--secondary">
-                <v-row no-gutters style="width: 100%">
-                  <v-col cols="6"> 部门111 </v-col>
-                  <v-col cols="6"> 组别222 </v-col>
-                </v-row>
+          <v-container>
+            <v-row>
+              <v-col>
+                <v-card class="mx-top-left" max-width="250"
+                  ><SelectDialog
+                    :title="'部门'"
+                    :name="'department'"
+                    :menu="menu"
+                /></v-card>
               </v-col>
-            </v-fade-transition>
-          </v-row>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <SelectDialog :title="'部门'" :name="'department'" :menu="menu" />
-          <SelectDialog :title="'组别'" :name="'groupName'" :menu="menu" />
-          <SelectDialog :title="'持品人'" :name="'owner'" :menu="menu" />
-          <SelectDialog
-            :title="'一级类目'"
-            :name="'firstCategory'"
-            :menu="menu"
-          />
-          <SelectDialog
-            :title="'厂家名'"
-            :name="'manufacturerName'"
-            :menu="menu"
-          />
-          <SelectDialog
-            :title="'支付方式'"
-            :name="'manufacturerPaymentMethod'"
-            :menu="menu"
-          />
-          <SelectDialog />
+              <v-col>
+                <SelectDialog
+                  :title="'组别'"
+                  :name="'groupName'"
+                  :menu="menu"
+                />
+              </v-col>
+              <v-col>
+                <SelectDialog :title="'持品人'" :name="'owner'" :menu="menu" />
+              </v-col>
+              <v-col>
+                <SelectDialog
+                  :title="'一级类目'"
+                  :name="'firstCategory'"
+                  :menu="menu"
+                />
+              </v-col>
+              <v-col>
+                <SelectDialog
+                  :title="'厂家群名'"
+                  :name="'manufacturerGroupName'"
+                  :menu="menu"
+                />
+              </v-col>
+              <v-col>
+                <SelectDialog :title="'产品名'" :name="'name'" :menu="menu" />
+              </v-col>
+              <v-col>
+                <SelectDialog
+                  :title="'店铺名'"
+                  :name="'shopName'"
+                  :menu="menu"
+                />
+              </v-col>
+              <v-col>
+                <SelectDialog
+                  :title="'发货方式'"
+                  :name="'transportWay'"
+                  :menu="menu"
+                />
+              </v-col>
+              <v-col>
+                <SelectDialog
+                  :title="'聚水潭仓库'"
+                  :name="'storehouse'"
+                  :menu="menu"
+                />
+              </v-col>
+              <v-col>
+                <SelectDialog
+                  :title="'支付方式'"
+                  :name="'manufacturerPaymentMethod'"
+                  :menu="menu"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+
+          <v-expansion-panels class="mt-5 pl-8 pr-8">
+            <v-expansion-panel>
+              <v-expansion-panel-header> 模糊查找 </v-expansion-panel-header>
+              <v-expansion-panel-content> aaaaaa </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -317,9 +336,9 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <!--
-        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
--->
+          <v-icon small class="mr-2" @click="editItem(item)">
+            mdi-pencil
+          </v-icon>
           <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
         </template>
       </v-data-table>
