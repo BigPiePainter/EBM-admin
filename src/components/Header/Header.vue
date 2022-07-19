@@ -10,7 +10,6 @@
     </v-btn>
     <v-toolbar-title>浙江泼发进出口贸易有限公司EBC</v-toolbar-title>
     <v-spacer></v-spacer>
-    <Search />
 
     <v-menu offset-y bottom nudge-bottom="10" left>
       <template v-slot:activator="{ on, attrs }">
@@ -158,11 +157,10 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import config from "../../config";
-import Search from "@/components/Search/Search";
 
 export default {
   name: "Header",
-  components: { Search },
+  components: {},
   data: () => ({
     config,
     searchCollapse: true,
