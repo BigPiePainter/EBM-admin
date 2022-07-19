@@ -307,18 +307,9 @@ export default {
   },
 
   methods: {
-    //   upload() {
-    //   const XLSX = require("xlsx");
-    //
-    //    const url = "*/public/demo.xslx";
-    //  const data = await(await fetch(url)).arrayBuffer();
-    /* data is an ArrayBuffer */
-    //const workbook = XLSX.read(data);
-    //},
 
     download() {
       const XLSX = require("xlsx");
-      //const XLSXS = require("xlsx-style");
       console.log(this.skuInfo);
       const raw_data = this.check ? this.validSkuInfo : this.skuInfo;
       /*
@@ -349,8 +340,6 @@ export default {
         }
       );
 
-      /* calculate column width */
-      //const max_width = rows.reduce((w, r) => Math.max(w, r.name.length), 10);
       worksheet["!cols"] = [
         { wch: 10 },
         { wch: 7 },
@@ -367,11 +356,6 @@ export default {
         `${this.productsInfo.owner}-${this.productsInfo.product_name}-${this.productsInfo.id}.xlsx`
       );
     },
-
-   // downloadExcel() {
-    //  const ExcelJS = require("exceljs");
-    
-    //},
 
     secondeditItem(item) {
       this.seditedIndex = this.subTableEdited.indexOf(item);

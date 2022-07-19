@@ -194,10 +194,6 @@ export default {
   },
 
   methods: {
-  //   sendSearch() {
-  //     this.$emit("refreshData", { search: this.searchItem });
-  //     //console.log("refreshData",{search: this.searchItem})
-  //   },
   },
 };
 </script>

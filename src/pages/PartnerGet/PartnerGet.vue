@@ -331,20 +331,13 @@
 </template>
 
 
-
-
-
-
-
 <script>
 import { addProducts } from "@/settings/product";
 import { loadProducts } from "@/settings/product";
 import { getClass } from "@/settings/product";
 import SkuTable from "@/components/SkuTable/SkuTable";
 import SelectDialog from "@/components/SelectDialog";
-//import Search from "@/components/Search";
 import Search from "../../components/Search/Search.vue";
-//import * as XLSX from 'xlsx/xlsx.mjs';
 
 export default {
   components: {
@@ -371,20 +364,15 @@ export default {
     //分页懒加载
     totalProducts: 50,
     options: {},
-
     dialog: false,
     dialogDelete: false,
-
     //二级展开
     expanded: [],
-
     //主表加载
     loading: false,
-
     //主表头, 内容
     headers: [],
     products: [],
-
     editedIndex: -1,
 
     editedItem: {
@@ -440,7 +428,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+      return this.editedIndex === -1 ? "新增商品信息" : "编辑商品信息";
     },
   },
 
@@ -554,11 +542,10 @@ export default {
         { text: "Actions", value: "actions", sortable: false },
       ];
     },
+
     hideHead() {
       this.headers = [];
     },
-
-    initialize() {},
 
     editItem(item) {
       this.editedIndex = this.products.indexOf(item);

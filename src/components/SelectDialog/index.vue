@@ -1,18 +1,4 @@
 <template>
-  <!-- <template v-slot:activator="{ on, attrs }">
-      <v-btn
-        color="indigo"
-        class="ml-15"
-        width="40"
-        height="28"
-        dark
-        v-bind="attrs"
-        v-on="on"
-        @click="showSelected"
-      >
-        {{ title }}
-      </v-btn>
-    </template> -->
   <v-card max-height="50vh" class="select-menu"
     ><v-data-table
       height="300px"
@@ -76,19 +62,7 @@ export default {
           list: this.groupList,
         },
       });
-      //same as the function of below:
-      //   var selectedInner = [];
-      //   for (let i = 0; i < this.selected.length; i++) {
-      //     selectedInner.push(this.selected[i].name);
-      //   }
-      //   console.log("refreshData", { 3: this.selected });
-      //   console.log("refreshData", { 4: this.selectedInner });
     },
-
-    // showSelected() {
-    //   console.log(this.refresh);
-    //   console.log(this.selected);
-    // },
   },
 };
 </script>
@@ -99,10 +73,8 @@ export default {
   .v-data-table {
     td:nth-child(1) {
       padding-right: 0px !important;
-      //padding-left: 0px !important;
     }
     td:nth-child(2) {
-      //padding-right: 0px !important;
       padding-left: 3px !important;
     }
   }
