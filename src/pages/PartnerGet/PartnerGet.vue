@@ -24,6 +24,7 @@
                     :title="'部门'"
                     :name="'department'"
                     :menu="menu"
+                    @sendSelectData="refreshData"
                 /></v-card>
               </v-col>
               <v-col>
@@ -31,6 +32,7 @@
                   :title="'组别'"
                   :name="'groupName'"
                   :menu="menu"
+                  @sendSelectData="refreshData"
                 />
               </v-col>
               <v-col>
@@ -41,23 +43,15 @@
                   :title="'一级类目'"
                   :name="'firstCategory'"
                   :menu="menu"
+                  @sendSelectData="refreshData"
                 />
-              </v-col>
-              <v-col>
-                <SelectDialog
-                  :title="'厂家群名'"
-                  :name="'manufacturerGroupName'"
-                  :menu="menu"
-                />
-              </v-col>
-              <v-col>
-                <SelectDialog :title="'产品名'" :name="'name'" :menu="menu" />
               </v-col>
               <v-col>
                 <SelectDialog
                   :title="'店铺名'"
                   :name="'shopName'"
                   :menu="menu"
+                  @sendSelectData="refreshData"
                 />
               </v-col>
               <v-col>
@@ -65,20 +59,7 @@
                   :title="'发货方式'"
                   :name="'transportWay'"
                   :menu="menu"
-                />
-              </v-col>
-              <v-col>
-                <SelectDialog
-                  :title="'聚水潭仓库'"
-                  :name="'storehouse'"
-                  :menu="menu"
-                />
-              </v-col>
-              <v-col>
-                <SelectDialog
-                  :title="'支付方式'"
-                  :name="'manufacturerPaymentMethod'"
-                  :menu="menu"
+                  @sendSelectData="refreshData"
                 />
               </v-col>
             </v-row>
@@ -87,7 +68,9 @@
           <v-expansion-panels class="mt-5 pl-8 pr-8">
             <v-expansion-panel>
               <v-expansion-panel-header> 模糊查找 </v-expansion-panel-header>
-              <v-expansion-panel-content> <Search/> </v-expansion-panel-content>
+              <v-expansion-panel-content>
+                <Search @sendSearchData="refreshData" />
+              </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
         </v-expansion-panel-content>
@@ -116,7 +99,6 @@
           'items-per-page-text': '每页显示条数',
         }"
         @click:row="clickRow"
-        @refreshData="refreshData"
       >
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length" class="sub-table pa-0">
@@ -349,20 +331,13 @@
 </template>
 
 
-
-
-
-
-
 <script>
 import { addProducts } from "@/settings/product";
 import { loadProducts } from "@/settings/product";
 import { getClass } from "@/settings/product";
 import SkuTable from "@/components/SkuTable/SkuTable";
 import SelectDialog from "@/components/SelectDialog";
-//import Search from "@/components/Search";
-import Search from '../../components/Search/Search.vue';
-//import * as XLSX from 'xlsx/xlsx.mjs';
+import Search from "../../components/Search/Search.vue";
 
 export default {
   components: {
@@ -373,25 +348,31 @@ export default {
   data: () => ({
     //删选菜单
     menu: {},
-    selectedMenu: null,
+
+    search: {
+      select: {
+        department: [],
+        owner: [],
+        groupName: [],
+        transportWay: [],
+        firstCategory: [],
+        shopName: [],
+      },
+      search: {},
+    },
 
     //分页懒加载
     totalProducts: 50,
     options: {},
-
     dialog: false,
     dialogDelete: false,
-
     //二级展开
     expanded: [],
-
     //主表加载
     loading: false,
-
     //主表头, 内容
     headers: [],
     products: [],
-
     editedIndex: -1,
 
     editedItem: {
@@ -447,7 +428,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+      return this.editedIndex === -1 ? "新增商品信息" : "编辑商品信息";
     },
   },
 
@@ -481,7 +462,18 @@ export default {
   },
 
   methods: {
-    refreshData() {},
+    refreshData(a) {
+      if (a.select) {
+        this.search.select[a.select.key] = a.select.value;
+      } else if (a.search) {
+        this.search.search = a.search;
+      } else {
+        console.log("未知");
+      }
+      console.log(a);
+      this.loadData();
+    },
+
     clickRow(item, event) {
       console.log(this.departmentList);
       if (event.isExpanded) {
@@ -494,15 +486,13 @@ export default {
 
     loadData() {
       this.loading = true;
+      // this.hideHead();
+      // this.products = [];
+
       console.log(this.options);
       const { page, itemsPerPage } = this.options;
 
-      var args = { page, itemsPerPage };
-      if (this.selectedMenu) {
-        for (let name in this.selectedMenu) {
-          args[name] = this.selectedMenu[name].join("$");
-        }
-      }
+      var args = { page, itemsPerPage, match: JSON.stringify(this.search) };
 
       console.log(args);
       loadProducts(args)
@@ -552,11 +542,10 @@ export default {
         { text: "Actions", value: "actions", sortable: false },
       ];
     },
+
     hideHead() {
       this.headers = [];
     },
-
-    initialize() {},
 
     editItem(item) {
       this.editedIndex = this.products.indexOf(item);

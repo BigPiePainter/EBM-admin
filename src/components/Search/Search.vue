@@ -147,7 +147,6 @@
     <v-row> </v-row>
     <v-row> </v-row>
     <v-row> </v-row>
-    <v-row> </v-row>
   </v-container>
 </template>
 
@@ -178,7 +177,24 @@ export default {
       manufacturerPhone: "",
       manufacturerAddress: "",
     },
+
+    timer:null,
   }),
+
+  watch: {
+    searchItem: {
+      handler: function () {
+        clearTimeout(this.timer);
+        this.timer=setTimeout(()=>{
+        this.$emit("sendSearchData", { search: this.searchItem })
+        },500)
+      },
+      deep: true,
+    },
+  },
+
+  methods: {
+  },
 };
 </script>
 

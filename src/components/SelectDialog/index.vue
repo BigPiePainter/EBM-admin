@@ -1,35 +1,18 @@
 <template>
-
-    <!-- <template v-slot:activator="{ on, attrs }">
-      <v-btn
-        color="indigo"
-        class="ml-15"
-        width="40"
-        height="28"
-        dark
-        v-bind="attrs"
-        v-on="on"
-        @click="showSelected"
-      >
-        {{ title }}
-      </v-btn>
-    </template> -->
-    <v-card max-height="50vh" class="select-menu"
-      ><v-data-table
-        height="300px"
-        :headers="[{ text: '', value: 'name' }]"
-        :items="groupList"
-        hide-default-footer
-        hide-default-header
-        item-key="name"
-        show-select
-        v-model="selected"
-        :items-per-page="1000"
-        @click:row="showSelected"
-      >
-      </v-data-table
-    ></v-card>
-
+  <v-card max-height="50vh" class="select-menu"
+    ><v-data-table
+      height="300px"
+      :headers="[{ text: '', value: 'name' }]"
+      :items="groupList"
+      hide-default-footer
+      hide-default-header
+      item-key="name"
+      show-select
+      v-model="selected"
+      :items-per-page="1000"
+    >
+    </v-data-table
+  ></v-card>
 </template>
 
 
@@ -44,29 +27,21 @@ export default {
     return {
       refresh: false,
       selected: [],
+      timer: null,
     };
   },
 
   watch: {
-    refresh(value) {
-      if (!value) {
-        this.$emit("refreshData", {
-          key: this.key,
-          value: this.selected.map((i) => i.name),
-        });
-        // same as the function of below:
-        // var selectedInner = [];
-        // for (let i = 0; i < this.selected.length; i++){
-        //   selectedInner.push(this.selected[i].name);
-        // }
-        // this.$emit("refreshData", selectedInner);
-      }
+    selected() {
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        this.sendSelect();
+      }, 500);
     },
   },
 
   computed: {
     groupList() {
-      
       if (!this.menu) return [];
 
       var list = [];
@@ -78,9 +53,15 @@ export default {
   },
 
   methods: {
-    showSelected() {
-      console.log(this.refresh);
-      console.log(this.selected);
+    sendSelect() {
+      //(value)
+      this.$emit("sendSelectData", {
+        select: {
+          key: this.name,
+          value: this.selected.map((i) => i.name),
+          list: this.groupList,
+        },
+      });
     },
   },
 };
@@ -92,10 +73,8 @@ export default {
   .v-data-table {
     td:nth-child(1) {
       padding-right: 0px !important;
-      //padding-left: 0px !important;
     }
     td:nth-child(2) {
-      //padding-right: 0px !important;
       padding-left: 3px !important;
     }
   }
