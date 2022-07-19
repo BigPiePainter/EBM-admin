@@ -68,7 +68,7 @@ export default {
   methods: {
     sendSelect() {
       //(value)
-      this.$emit("refreshData", {
+      this.$emit("sendSelectData", {
         select: {
           key: this.key,
           value: this.selected.map((i) => i.name),

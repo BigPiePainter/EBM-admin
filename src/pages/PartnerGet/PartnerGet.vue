@@ -24,7 +24,7 @@
                     :title="'部门'"
                     :name="'department'"
                     :menu="menu"
-                    @refreshData="refreshData"
+                    @sendSelectData="refreshData"
                 /></v-card>
               </v-col>
               <v-col>
@@ -32,7 +32,7 @@
                   :title="'组别'"
                   :name="'groupName'"
                   :menu="menu"
-                  @refreshData="refreshData"
+                  @sendSelectData="refreshData"
                 />
               </v-col>
               <v-col>
@@ -43,7 +43,7 @@
                   :title="'一级类目'"
                   :name="'firstCategory'"
                   :menu="menu"
-                  @refreshData="refreshData"
+                  @sendSelectData="refreshData"
                 />
               </v-col>
               <v-col>
@@ -51,7 +51,7 @@
                   :title="'厂家群名'"
                   :name="'manufacturerGroupName'"
                   :menu="menu"
-                  @refreshData="refreshData"
+                  @sendSelectData="refreshData"
                 />
               </v-col>
               <v-col>
@@ -62,7 +62,7 @@
                   :title="'店铺名'"
                   :name="'shopName'"
                   :menu="menu"
-                  @refreshData="refreshData"
+                  @sendSelectData="refreshData"
                 />
               </v-col>
               <v-col>
@@ -70,7 +70,7 @@
                   :title="'发货方式'"
                   :name="'transportWay'"
                   :menu="menu"
-                  @refreshData="refreshData"
+                  @sendSelectData="refreshData"
                 />
               </v-col>
               <v-col>
@@ -78,7 +78,7 @@
                   :title="'聚水潭仓库'"
                   :name="'storehouse'"
                   :menu="menu"
-                  @refreshData="refreshData"
+                  @sendSelectData="refreshData"
                 />
               </v-col>
               <v-col>
@@ -86,7 +86,7 @@
                   :title="'支付方式'"
                   :name="'manufacturerPaymentMethod'"
                   :menu="menu"
-                  @refreshData="refreshData"
+                  @sendSelectData="refreshData"
                 />
               </v-col>
             </v-row>
@@ -95,7 +95,7 @@
           <v-expansion-panels class="mt-5 pl-8 pr-8">
             <v-expansion-panel>
               <v-expansion-panel-header> 模糊查找 </v-expansion-panel-header>
-              <v-expansion-panel-content> <Search @refreshData="refreshData"/> </v-expansion-panel-content>
+              <v-expansion-panel-content> <Search @sendSearchData="refreshData"/> </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
         </v-expansion-panel-content>
@@ -491,6 +491,7 @@ export default {
 
       console.log(a)
     },
+    
     clickRow(item, event) {
       console.log(this.departmentList);
       if (event.isExpanded) {

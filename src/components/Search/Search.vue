@@ -186,7 +186,7 @@ export default {
       handler: function () {
         clearTimeout(this.timer);
         this.timer=setTimeout(()=>{
-        this.$emit("refreshData", { search: this.searchItem })
+        this.$emit("sendSearchData", { search: this.searchItem })
         },500)
       },
       deep: true,
