@@ -1,5 +1,5 @@
 <template>
-    <!-- <template v-slot:activator="{ on, attrs }">
+  <!-- <template v-slot:activator="{ on, attrs }">
       <v-btn
         color="indigo"
         class="ml-15"
@@ -13,19 +13,20 @@
         {{ title }}
       </v-btn>
     </template> -->
-      <v-card max-height="50vh" class="select-menu"
-        ><v-data-table
-          height="300px"
-          :headers="[{ text: '', value: 'name' }]"
-          :items="groupList"
-          hide-default-footer
-          hide-default-header
-          item-key="name"
-          show-select
-          v-model="selected"
-          :items-per-page="1000"
-        >
-        </v-data-table></v-card>
+  <v-card max-height="50vh" class="select-menu"
+    ><v-data-table
+      height="300px"
+      :headers="[{ text: '', value: 'name' }]"
+      :items="groupList"
+      hide-default-footer
+      hide-default-header
+      item-key="name"
+      show-select
+      v-model="selected"
+      :items-per-page="1000"
+    >
+    </v-data-table
+  ></v-card>
 </template>
 
 
@@ -35,22 +36,22 @@ export default {
     title: String,
     menu: Object,
     name: String,
-    key: String,
   },
   data() {
     return {
       refresh: false,
       selected: [],
-      timer:null,
+      timer: null,
     };
   },
 
   watch: {
-    selected(){
+    selected() {
       clearTimeout(this.timer);
-        this.timer=setTimeout(()=>{
-       this.sendSelect()},500)
-    }
+      this.timer = setTimeout(() => {
+        this.sendSelect();
+      }, 500);
+    },
   },
 
   computed: {
@@ -70,8 +71,9 @@ export default {
       //(value)
       this.$emit("sendSelectData", {
         select: {
-          key: this.key,
+          key: this.name,
           value: this.selected.map((i) => i.name),
+          list: this.groupList,
         },
       });
       //same as the function of below:

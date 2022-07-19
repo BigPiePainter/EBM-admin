@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-expansion-panels class="mb-3" multiple >
+    <v-expansion-panels class="mb-3" multiple>
       <v-expansion-panel>
         <v-expansion-panel-header v-slot="{ open }">
           <v-row no-gutters>
@@ -95,7 +95,9 @@
           <v-expansion-panels class="mt-5 pl-8 pr-8">
             <v-expansion-panel>
               <v-expansion-panel-header> 模糊查找 </v-expansion-panel-header>
-              <v-expansion-panel-content> <Search @sendSearchData="refreshData"/> </v-expansion-panel-content>
+              <v-expansion-panel-content>
+                <Search @sendSearchData="refreshData" />
+              </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
         </v-expansion-panel-content>
@@ -368,7 +370,7 @@ import { getClass } from "@/settings/product";
 import SkuTable from "@/components/SkuTable/SkuTable";
 import SelectDialog from "@/components/SelectDialog";
 //import Search from "@/components/Search";
-import Search from '../../components/Search/Search.vue';
+import Search from "../../components/Search/Search.vue";
 //import * as XLSX from 'xlsx/xlsx.mjs';
 
 export default {
@@ -381,6 +383,8 @@ export default {
     //删选菜单
     menu: {},
     selectedMenu: null,
+
+    search: { select: {}, search: {} },
 
     //分页懒加载
     totalProducts: 50,
@@ -489,11 +493,17 @@ export default {
 
   methods: {
     refreshData(a) {
-
-
-      console.log(a)
+      console.log(a);
+      if (a.select) {
+        this.search.select[a.select.key] = a.select.value;
+      } else if (a.search) {
+        //
+      } else {
+        console.log("为止");
+      }
+      console.log(this.search);
     },
-    
+
     clickRow(item, event) {
       console.log(this.departmentList);
       if (event.isExpanded) {
