@@ -48,17 +48,6 @@
               </v-col>
               <v-col>
                 <SelectDialog
-                  :title="'厂家群名'"
-                  :name="'manufacturerGroupName'"
-                  :menu="menu"
-                  @sendSelectData="refreshData"
-                />
-              </v-col>
-              <v-col>
-                <SelectDialog :title="'产品名'" :name="'name'" :menu="menu" />
-              </v-col>
-              <v-col>
-                <SelectDialog
                   :title="'店铺名'"
                   :name="'shopName'"
                   :menu="menu"
@@ -69,22 +58,6 @@
                 <SelectDialog
                   :title="'发货方式'"
                   :name="'transportWay'"
-                  :menu="menu"
-                  @sendSelectData="refreshData"
-                />
-              </v-col>
-              <v-col>
-                <SelectDialog
-                  :title="'聚水潭仓库'"
-                  :name="'storehouse'"
-                  :menu="menu"
-                  @sendSelectData="refreshData"
-                />
-              </v-col>
-              <v-col>
-                <SelectDialog
-                  :title="'支付方式'"
-                  :name="'manufacturerPaymentMethod'"
                   :menu="menu"
                   @sendSelectData="refreshData"
                 />
@@ -382,9 +355,18 @@ export default {
   data: () => ({
     //删选菜单
     menu: {},
-    selectedMenu: null,
 
-    search: { select: {}, search: {} },
+    search: {
+      select: {
+        department: [],
+        owner: [],
+        groupName: [],
+        transportWay: [],
+        firstCategory: [],
+        shopName: [],
+      },
+      search: {},
+    },
 
     //分页懒加载
     totalProducts: 50,
@@ -493,15 +475,15 @@ export default {
 
   methods: {
     refreshData(a) {
-      console.log(a);
       if (a.select) {
         this.search.select[a.select.key] = a.select.value;
       } else if (a.search) {
-        //
+        this.search.search = a.search;
       } else {
-        console.log("为止");
+        console.log("未知");
       }
-      console.log(this.search);
+      console.log(a);
+      this.loadData();
     },
 
     clickRow(item, event) {
@@ -516,15 +498,13 @@ export default {
 
     loadData() {
       this.loading = true;
+      // this.hideHead();
+      // this.products = [];
+
       console.log(this.options);
       const { page, itemsPerPage } = this.options;
 
-      var args = { page, itemsPerPage };
-      if (this.selectedMenu) {
-        for (let name in this.selectedMenu) {
-          args[name] = this.selectedMenu[name].join("$");
-        }
-      }
+      var args = { page, itemsPerPage, match: JSON.stringify(this.search) };
 
       console.log(args);
       loadProducts(args)
