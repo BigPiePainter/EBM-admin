@@ -1,0 +1,46 @@
+@import '../../styles/app';
+
+
+.v-treeview {
+  
+  font-size: 0.8rem;
+  .v-treeview-node__level {
+    transform: translateX(11.5px) scaleY(2.7);
+  }
+
+  .v-treeview-node__level::after {
+    content: '';
+
+    border: #eee solid;
+    border-width: 0px 0px 0px 1px;
+  }
+
+
+
+  // .v-treeview-node__level:not(:nth-last-child(2)) {
+  //   transform: translateX(11.5px) scaleY(2);
+  // }
+
+  // .v-treeview-node__level:nth-last-child(2) {
+  //   transform: translate(11.5px, -10px) scaleY(1.1);
+  // }
+
+
+  // .v-treeview-node__level:not(:nth-last-child(2))::after {
+  //   content: '';
+
+  //   border: #eee solid;
+  //   border-width: 0px 0px 0px 1px;
+  // }
+
+  // .v-treeview-node__level:nth-last-child(2)::after {
+  //   content: '..';
+  //   color: transparent;
+  //   width: 100%;
+  //   height: 300px;
+  //   border: #eee solid;
+  //   border-width: 0px 0px 1px 1px;
+
+  // }
+
+}

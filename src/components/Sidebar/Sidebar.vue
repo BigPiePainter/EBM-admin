@@ -24,40 +24,47 @@
           </v-col>
           <v-col cols="6" class="text-center"> </v-col>
         </v-row>
+
         <v-divider
           v-else-if="item.divider"
           :key="i"
           dark
           class="my-4"
         ></v-divider>
+
         <v-list-group
-          color="primary"
           v-else-if="item.children && DRAWER_STATE"
+          color="primary"
           :key="item.title"
           v-model="item.model"
           append-icon=""
         >
-          <template v-slot:prependIcon>
-            <v-icon size="20">mdi-image-filter-none</v-icon>
-          </template>
           <template v-slot:activator>
+            <v-list-item-action>
+              <v-icon dense :color="item.color ? item.color : ''">{{
+                item.icon
+              }}</v-icon>
+            </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title class="grey--text">
+              <v-list-item-title class="grey--text" link>
                 {{ item.title }}
               </v-list-item-title>
             </v-list-item-content>
           </template>
+
           <v-list-item
             v-for="(child, i) in item.children"
             :key="i"
             :to="child.link"
             link
           >
-            <v-list-item-action v-if="child.icon">
-              <v-icon size="">{{ child.icon }}</v-icon>
+            <v-list-item-action>
+              <v-icon dense :color="child.color ? child.color : ''">{{
+                child.icon
+              }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title class="grey--text">
+              <v-list-item-title class="grey--text" link>
                 {{ child.title }}
               </v-list-item-title>
             </v-list-item-content>
@@ -72,7 +79,7 @@
           link
         >
           <v-list-item-action>
-            <v-icon size="20" :color="item.color ? item.color : ''">{{
+            <v-icon dense :color="item.color ? item.color : ''">{{
               item.icon
             }}</v-icon>
           </v-list-item-action>
@@ -97,22 +104,64 @@ export default {
   data() {
     return {
       items: [
-        { title: "发/退货状态", icon: "mdi-cubes-medium", link: "/transport" },
-        { title: "主页", icon: "mdi-home", link: "/dashboard" },
+        { heading: "POFA1" },
+        { title: "发/退货状态", icon: "mdi-account-multiple", link: "/transport" },
+        //{ title: "主页", icon: "mdi-home", link: "/dashboard" },
 
         {
           title: "商品管理",
           icon: "mdi-book-variant-multiple",
           link: "/partnerget",
         },
+        {
+          title: "订单管理",
+          icon: "mdi-book-variant-multiple",
+          link: "/employee",
+          children: [
+            {
+              title: "订单",
+              icon: "mdi-book-variant-multiple",
+              link: "/order",
+            },
+          ],
+        },
+        {
+          title: "员工管理",
+          icon: "mdi-account-multiple",
+          link: "/employee",
+          children: [
+            {
+              title: "员工结构",
+              icon: "mdi-account-multiple",
+              link: "/employee",
+            },
+          ],
+        },
+        {
+          title: "部门管理",
+          icon: "mdi-account-multiple",
+          link: "/department",
+          children: [
+            { title: "部门", icon: "mdi-circle-small", link: "/department" },
+          ],
+        },
+        {
+          title: "组别管理",
+          icon: "mdi-account-multiple",
+          link: "/icons",
+          children: [
+            {
+              title: "组别",
+              icon: "mdi-account-multiple",
+              link: "/group",
+            },
+          ],
+        },
 
-        { title: "系统信息", icon: "mdi-bell-outline", link: "/notifications" },
+        //{ title: "系统信息", icon: "mdi-bell-outline", link: "/notifications" },
 
         { divider: true },
-        { heading: "PROJECTS" },
-        { title: "My recent", icon: "mdi-circle-medium", color: "warning" },
-        { title: "Starred", icon: "mdi-circle-medium", color: "primary" },
-        { title: "Background", icon: "mdi-circle-medium", color: "error" },
+        { heading: "POFA2" },
       ],
       sidebarWidth: 150,
       sidebarMinWidth: 50,
@@ -136,4 +185,4 @@ export default {
 };
 </script>
 
-<style src="./Sidebar.scss" lang="scss"/>
+<style src="./Sidebar.scss" lang="scss" scoped/>

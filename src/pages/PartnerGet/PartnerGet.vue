@@ -127,9 +127,11 @@
       >
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length" class="sub-table pa-0">
-            <div class="sub-table-container elevation-20 ml-2 mb-3">
-              <SkuTable :productsInfo="item" />
-            </div>
+            <v-scale-transition>
+              <div class="sub-table-container elevation-20 ml-2 mb-3">
+                <SkuTable :productsInfo="item" />
+              </div>
+            </v-scale-transition>
           </td>
         </template>
 
