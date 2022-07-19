@@ -8,12 +8,20 @@ CREATE TABLE users (
   username varchar(100) NOT NULL COMMENT '用户名',
   password varchar(100) NOT NULL COMMENT '密码',
   nick varchar(100) COMMENT '昵称/姓名',
+  note varchar(10000) NOT NULL DEFAULT '' COMMENT '备注',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '系统用户';
 
 -- 测试数据
 insert into
-  users(uid, creator_id, permission, username, password, nick)
+  users(
+    uid,
+    creator_id,
+    permission,
+    username,
+    password,
+    nick
+  )
 values
   (1, 0, 1048575, 'admin', '88888888', "admin");
 
@@ -26,28 +34,26 @@ insert into
   users(creator_id, permission, username, password, nick)
 values
   (1, 1048575, '556', '654321', "王绿原");
-  
+
 insert into
   users(creator_id, permission, username, password, nick)
 values
   (2, 1048575, '557', '654321', "王绿原2");
 
-  insert into
+insert into
   users(creator_id, permission, username, password, nick)
 values
   (2, 1048575, '555', '654321', "王绿原3");
 
-    insert into
+insert into
   users(creator_id, permission, username, password, nick)
 values
   (3, 1048575, 'wly', '654321', "王绿原4");
 
-  
-    insert into
+insert into
   users(creator_id, permission, username, password, nick)
 values
   (1, 1048575, 'wly2', '654321', "王绿原555");
-
 
 -- 商品信息
 drop table if exists products;
@@ -79,17 +85,515 @@ CREATE TABLE products (
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '商品信息';
 
+INSERT INTO
+  products(
+    `owner`,
+    `id`,
+    `department`,
+    `group_name`,
+    `shop_name`,
+    `first_category`,
+    `product_name`,
+    `product_deduction`,
+    `product_freight`,
+    `product_insurance`,
+    `extra_ratio`,
+    `freight_to_payment`,
+    `transport_way`,
+    `storehouse`,
+    `manufacturer_name`,
+    `manufacturer_group`,
+    `manufacturer_payment_method`,
+    `manufacturer_payment_name`,
+    `manufacturer_payment_id`,
+    `manufacturer_recipient`,
+    `manufacturer_phone`,
+    `manufacturer_address`
+  )
+VALUES
+  (
+    '0',
+    '1515151515',
+    '123123',
+    '123',
+    '13',
+    '132',
+    '13',
+    '323.00000',
+    '1.00000',
+    '13.00000',
+    '132.00000',
+    '132.00000',
+    '13',
+    '13',
+    '13',
+    '132',
+    '132',
+    '13',
+    '13',
+    '13',
+    '13',
+    '132'
+  );
 
-INSERT INTO products(`owner`, `id`, `department`, `group_name`, `shop_name`, `first_category`, `product_name`, `product_deduction`, `product_freight`, `product_insurance`, `extra_ratio`, `freight_to_payment`, `transport_way`, `storehouse`, `manufacturer_name`, `manufacturer_group`, `manufacturer_payment_method`, `manufacturer_payment_name`, `manufacturer_payment_id`, `manufacturer_recipient`, `manufacturer_phone`, `manufacturer_address`) VALUES ('0', '1515151515', '123123', '123', '13', '132', '13', '323.00000', '1.00000', '13.00000', '132.00000', '132.00000', '13', '13', '13', '132', '132', '13', '13', '13', '13', '132');
-INSERT INTO products(`owner`, `id`, `department`, `group_name`, `shop_name`, `first_category`, `product_name`, `product_deduction`, `product_freight`, `product_insurance`, `extra_ratio`, `freight_to_payment`, `transport_way`, `storehouse`, `manufacturer_name`, `manufacturer_group`, `manufacturer_payment_method`, `manufacturer_payment_name`, `manufacturer_payment_id`, `manufacturer_recipient`, `manufacturer_phone`, `manufacturer_address`) VALUES ('0', '1515151515', '123123', '123', '13', '132', '13', '323.00000', '1.00000', '13.00000', '132.00000', '132.00000', '13', '13', '13', '132', '132', '13', '13', '13', '13', '132');
-INSERT INTO products(`owner`, `id`, `department`, `group_name`, `shop_name`, `first_category`, `product_name`, `product_deduction`, `product_freight`, `product_insurance`, `extra_ratio`, `freight_to_payment`, `transport_way`, `storehouse`, `manufacturer_name`, `manufacturer_group`, `manufacturer_payment_method`, `manufacturer_payment_name`, `manufacturer_payment_id`, `manufacturer_recipient`, `manufacturer_phone`, `manufacturer_address`) VALUES ('0', '1515151515', '123123', '123', '13', '132', '13', '323.00000', '1.00000', '13.00000', '132.00000', '132.00000', '13', '13', '13', '132', '132', '13', '13', '13', '13', '132');
-INSERT INTO products(`owner`, `id`, `department`, `group_name`, `shop_name`, `first_category`, `product_name`, `product_deduction`, `product_freight`, `product_insurance`, `extra_ratio`, `freight_to_payment`, `transport_way`, `storehouse`, `manufacturer_name`, `manufacturer_group`, `manufacturer_payment_method`, `manufacturer_payment_name`, `manufacturer_payment_id`, `manufacturer_recipient`, `manufacturer_phone`, `manufacturer_address`) VALUES ('0', '1515151515', '123123', '123', '13', '132', '13', '323.00000', '1.00000', '13.00000', '132.00000', '132.00000', '13', '13', '13', '132', '132', '13', '13', '13', '13', '132');
-INSERT INTO products(`owner`, `id`, `department`, `group_name`, `shop_name`, `first_category`, `product_name`, `product_deduction`, `product_freight`, `product_insurance`, `extra_ratio`, `freight_to_payment`, `transport_way`, `storehouse`, `manufacturer_name`, `manufacturer_group`, `manufacturer_payment_method`, `manufacturer_payment_name`, `manufacturer_payment_id`, `manufacturer_recipient`, `manufacturer_phone`, `manufacturer_address`) VALUES ('0', '1515151515', '123123', '123', '13', '132', '13', '323.00000', '1.00000', '13.00000', '132.00000', '132.00000', '13', '13', '13', '132', '132', '13', '13', '13', '13', '132');
-INSERT INTO products(`owner`, `id`, `department`, `group_name`, `shop_name`, `first_category`, `product_name`, `product_deduction`, `product_freight`, `product_insurance`, `extra_ratio`, `freight_to_payment`, `transport_way`, `storehouse`, `manufacturer_name`, `manufacturer_group`, `manufacturer_payment_method`, `manufacturer_payment_name`, `manufacturer_payment_id`, `manufacturer_recipient`, `manufacturer_phone`, `manufacturer_address`) VALUES ('0', '1515151515', '123123', '123', '13', '132', '13', '323.00000', '1.00000', '13.00000', '132.00000', '132.00000', '13', '13', '13', '132', '132', '13', '13', '13', '13', '132');
-INSERT INTO products(`owner`, `id`, `department`, `group_name`, `shop_name`, `first_category`, `product_name`, `product_deduction`, `product_freight`, `product_insurance`, `extra_ratio`, `freight_to_payment`, `transport_way`, `storehouse`, `manufacturer_name`, `manufacturer_group`, `manufacturer_payment_method`, `manufacturer_payment_name`, `manufacturer_payment_id`, `manufacturer_recipient`, `manufacturer_phone`, `manufacturer_address`) VALUES ('0', '1515151515', '123123', '123', '13', '132', '13', '323.00000', '1.00000', '13.00000', '132.00000', '132.00000', '13', '13', '13', '132', '132', '13', '13', '13', '13', '132');
-INSERT INTO products(`owner`, `id`, `department`, `group_name`, `shop_name`, `first_category`, `product_name`, `product_deduction`, `product_freight`, `product_insurance`, `extra_ratio`, `freight_to_payment`, `transport_way`, `storehouse`, `manufacturer_name`, `manufacturer_group`, `manufacturer_payment_method`, `manufacturer_payment_name`, `manufacturer_payment_id`, `manufacturer_recipient`, `manufacturer_phone`, `manufacturer_address`) VALUES ('0', '1515151515', '123123', '123', '13', '132', '13', '323.00000', '1.00000', '13.00000', '132.00000', '132.00000', '13', '13', '13', '132', '132', '13', '13', '13', '13', '132');
-INSERT INTO products(`owner`, `id`, `department`, `group_name`, `shop_name`, `first_category`, `product_name`, `product_deduction`, `product_freight`, `product_insurance`, `extra_ratio`, `freight_to_payment`, `transport_way`, `storehouse`, `manufacturer_name`, `manufacturer_group`, `manufacturer_payment_method`, `manufacturer_payment_name`, `manufacturer_payment_id`, `manufacturer_recipient`, `manufacturer_phone`, `manufacturer_address`) VALUES ('0', '1515151515', '123123', '123', '13', '132', '13', '323.00000', '1.00000', '13.00000', '132.00000', '132.00000', '13', '13', '13', '132', '132', '13', '13', '13', '13', '132');
-INSERT INTO products(`owner`, `id`, `department`, `group_name`, `shop_name`, `first_category`, `product_name`, `product_deduction`, `product_freight`, `product_insurance`, `extra_ratio`, `freight_to_payment`, `transport_way`, `storehouse`, `manufacturer_name`, `manufacturer_group`, `manufacturer_payment_method`, `manufacturer_payment_name`, `manufacturer_payment_id`, `manufacturer_recipient`, `manufacturer_phone`, `manufacturer_address`) VALUES ('0', '1515151515', '123123', '123', '13', '132', '13', '323.00000', '1.00000', '13.00000', '132.00000', '132.00000', '13', '13', '13', '132', '132', '13', '13', '13', '13', '132');
+INSERT INTO
+  products(
+    `owner`,
+    `id`,
+    `department`,
+    `group_name`,
+    `shop_name`,
+    `first_category`,
+    `product_name`,
+    `product_deduction`,
+    `product_freight`,
+    `product_insurance`,
+    `extra_ratio`,
+    `freight_to_payment`,
+    `transport_way`,
+    `storehouse`,
+    `manufacturer_name`,
+    `manufacturer_group`,
+    `manufacturer_payment_method`,
+    `manufacturer_payment_name`,
+    `manufacturer_payment_id`,
+    `manufacturer_recipient`,
+    `manufacturer_phone`,
+    `manufacturer_address`
+  )
+VALUES
+  (
+    '0',
+    '1515151515',
+    '123123',
+    '123',
+    '13',
+    '132',
+    '13',
+    '323.00000',
+    '1.00000',
+    '13.00000',
+    '132.00000',
+    '132.00000',
+    '13',
+    '13',
+    '13',
+    '132',
+    '132',
+    '13',
+    '13',
+    '13',
+    '13',
+    '132'
+  );
+
+INSERT INTO
+  products(
+    `owner`,
+    `id`,
+    `department`,
+    `group_name`,
+    `shop_name`,
+    `first_category`,
+    `product_name`,
+    `product_deduction`,
+    `product_freight`,
+    `product_insurance`,
+    `extra_ratio`,
+    `freight_to_payment`,
+    `transport_way`,
+    `storehouse`,
+    `manufacturer_name`,
+    `manufacturer_group`,
+    `manufacturer_payment_method`,
+    `manufacturer_payment_name`,
+    `manufacturer_payment_id`,
+    `manufacturer_recipient`,
+    `manufacturer_phone`,
+    `manufacturer_address`
+  )
+VALUES
+  (
+    '0',
+    '1515151515',
+    '123123',
+    '123',
+    '13',
+    '132',
+    '13',
+    '323.00000',
+    '1.00000',
+    '13.00000',
+    '132.00000',
+    '132.00000',
+    '13',
+    '13',
+    '13',
+    '132',
+    '132',
+    '13',
+    '13',
+    '13',
+    '13',
+    '132'
+  );
+
+INSERT INTO
+  products(
+    `owner`,
+    `id`,
+    `department`,
+    `group_name`,
+    `shop_name`,
+    `first_category`,
+    `product_name`,
+    `product_deduction`,
+    `product_freight`,
+    `product_insurance`,
+    `extra_ratio`,
+    `freight_to_payment`,
+    `transport_way`,
+    `storehouse`,
+    `manufacturer_name`,
+    `manufacturer_group`,
+    `manufacturer_payment_method`,
+    `manufacturer_payment_name`,
+    `manufacturer_payment_id`,
+    `manufacturer_recipient`,
+    `manufacturer_phone`,
+    `manufacturer_address`
+  )
+VALUES
+  (
+    '0',
+    '1515151515',
+    '123123',
+    '123',
+    '13',
+    '132',
+    '13',
+    '323.00000',
+    '1.00000',
+    '13.00000',
+    '132.00000',
+    '132.00000',
+    '13',
+    '13',
+    '13',
+    '132',
+    '132',
+    '13',
+    '13',
+    '13',
+    '13',
+    '132'
+  );
+
+INSERT INTO
+  products(
+    `owner`,
+    `id`,
+    `department`,
+    `group_name`,
+    `shop_name`,
+    `first_category`,
+    `product_name`,
+    `product_deduction`,
+    `product_freight`,
+    `product_insurance`,
+    `extra_ratio`,
+    `freight_to_payment`,
+    `transport_way`,
+    `storehouse`,
+    `manufacturer_name`,
+    `manufacturer_group`,
+    `manufacturer_payment_method`,
+    `manufacturer_payment_name`,
+    `manufacturer_payment_id`,
+    `manufacturer_recipient`,
+    `manufacturer_phone`,
+    `manufacturer_address`
+  )
+VALUES
+  (
+    '0',
+    '1515151515',
+    '123123',
+    '123',
+    '13',
+    '132',
+    '13',
+    '323.00000',
+    '1.00000',
+    '13.00000',
+    '132.00000',
+    '132.00000',
+    '13',
+    '13',
+    '13',
+    '132',
+    '132',
+    '13',
+    '13',
+    '13',
+    '13',
+    '132'
+  );
+
+INSERT INTO
+  products(
+    `owner`,
+    `id`,
+    `department`,
+    `group_name`,
+    `shop_name`,
+    `first_category`,
+    `product_name`,
+    `product_deduction`,
+    `product_freight`,
+    `product_insurance`,
+    `extra_ratio`,
+    `freight_to_payment`,
+    `transport_way`,
+    `storehouse`,
+    `manufacturer_name`,
+    `manufacturer_group`,
+    `manufacturer_payment_method`,
+    `manufacturer_payment_name`,
+    `manufacturer_payment_id`,
+    `manufacturer_recipient`,
+    `manufacturer_phone`,
+    `manufacturer_address`
+  )
+VALUES
+  (
+    '0',
+    '1515151515',
+    '123123',
+    '123',
+    '13',
+    '132',
+    '13',
+    '323.00000',
+    '1.00000',
+    '13.00000',
+    '132.00000',
+    '132.00000',
+    '13',
+    '13',
+    '13',
+    '132',
+    '132',
+    '13',
+    '13',
+    '13',
+    '13',
+    '132'
+  );
+
+INSERT INTO
+  products(
+    `owner`,
+    `id`,
+    `department`,
+    `group_name`,
+    `shop_name`,
+    `first_category`,
+    `product_name`,
+    `product_deduction`,
+    `product_freight`,
+    `product_insurance`,
+    `extra_ratio`,
+    `freight_to_payment`,
+    `transport_way`,
+    `storehouse`,
+    `manufacturer_name`,
+    `manufacturer_group`,
+    `manufacturer_payment_method`,
+    `manufacturer_payment_name`,
+    `manufacturer_payment_id`,
+    `manufacturer_recipient`,
+    `manufacturer_phone`,
+    `manufacturer_address`
+  )
+VALUES
+  (
+    '0',
+    '1515151515',
+    '123123',
+    '123',
+    '13',
+    '132',
+    '13',
+    '323.00000',
+    '1.00000',
+    '13.00000',
+    '132.00000',
+    '132.00000',
+    '13',
+    '13',
+    '13',
+    '132',
+    '132',
+    '13',
+    '13',
+    '13',
+    '13',
+    '132'
+  );
+
+INSERT INTO
+  products(
+    `owner`,
+    `id`,
+    `department`,
+    `group_name`,
+    `shop_name`,
+    `first_category`,
+    `product_name`,
+    `product_deduction`,
+    `product_freight`,
+    `product_insurance`,
+    `extra_ratio`,
+    `freight_to_payment`,
+    `transport_way`,
+    `storehouse`,
+    `manufacturer_name`,
+    `manufacturer_group`,
+    `manufacturer_payment_method`,
+    `manufacturer_payment_name`,
+    `manufacturer_payment_id`,
+    `manufacturer_recipient`,
+    `manufacturer_phone`,
+    `manufacturer_address`
+  )
+VALUES
+  (
+    '0',
+    '1515151515',
+    '123123',
+    '123',
+    '13',
+    '132',
+    '13',
+    '323.00000',
+    '1.00000',
+    '13.00000',
+    '132.00000',
+    '132.00000',
+    '13',
+    '13',
+    '13',
+    '132',
+    '132',
+    '13',
+    '13',
+    '13',
+    '13',
+    '132'
+  );
+
+INSERT INTO
+  products(
+    `owner`,
+    `id`,
+    `department`,
+    `group_name`,
+    `shop_name`,
+    `first_category`,
+    `product_name`,
+    `product_deduction`,
+    `product_freight`,
+    `product_insurance`,
+    `extra_ratio`,
+    `freight_to_payment`,
+    `transport_way`,
+    `storehouse`,
+    `manufacturer_name`,
+    `manufacturer_group`,
+    `manufacturer_payment_method`,
+    `manufacturer_payment_name`,
+    `manufacturer_payment_id`,
+    `manufacturer_recipient`,
+    `manufacturer_phone`,
+    `manufacturer_address`
+  )
+VALUES
+  (
+    '0',
+    '1515151515',
+    '123123',
+    '123',
+    '13',
+    '132',
+    '13',
+    '323.00000',
+    '1.00000',
+    '13.00000',
+    '132.00000',
+    '132.00000',
+    '13',
+    '13',
+    '13',
+    '132',
+    '132',
+    '13',
+    '13',
+    '13',
+    '13',
+    '132'
+  );
+
+INSERT INTO
+  products(
+    `owner`,
+    `id`,
+    `department`,
+    `group_name`,
+    `shop_name`,
+    `first_category`,
+    `product_name`,
+    `product_deduction`,
+    `product_freight`,
+    `product_insurance`,
+    `extra_ratio`,
+    `freight_to_payment`,
+    `transport_way`,
+    `storehouse`,
+    `manufacturer_name`,
+    `manufacturer_group`,
+    `manufacturer_payment_method`,
+    `manufacturer_payment_name`,
+    `manufacturer_payment_id`,
+    `manufacturer_recipient`,
+    `manufacturer_phone`,
+    `manufacturer_address`
+  )
+VALUES
+  (
+    '0',
+    '1515151515',
+    '123123',
+    '123',
+    '13',
+    '132',
+    '13',
+    '323.00000',
+    '1.00000',
+    '13.00000',
+    '132.00000',
+    '132.00000',
+    '13',
+    '13',
+    '13',
+    '132',
+    '132',
+    '13',
+    '13',
+    '13',
+    '13',
+    '132'
+  );
 
 -- SKU
 drop table if exists skus;
@@ -104,3 +608,27 @@ CREATE TABLE skus (
   end_time varchar(200) COMMENT '价格截止时间',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'SKU';
+
+-- 部门表
+drop table if exists departments;
+
+CREATE TABLE departments (
+  uid bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  name varchar(100) NOT NULL COMMENT '部门名称',
+  create_time timestamp NOT NULL DEFAULT now() COMMENT '创建时间',
+  modify_time timestamp NOT NULL DEFAULT now() COMMENT '修改时间',
+  note varchar(10000) NOT NULL DEFAULT '' COMMENT '备注',
+  primary key (uid)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '部门';
+
+-- 组别表
+drop table if exists teams;
+
+CREATE TABLE teams (
+  uid bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  name varchar(100) NOT NULL COMMENT '组别名称',
+  create_time timestamp NOT NULL DEFAULT now() COMMENT '创建时间',
+  modify_time timestamp NOT NULL DEFAULT now() COMMENT '修改时间',
+  note varchar(10000) NOT NULL DEFAULT '' COMMENT '备注',
+  primary key (uid)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '组别';

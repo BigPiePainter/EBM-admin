@@ -105,7 +105,11 @@ export default {
     return {
       items: [
         { heading: "POFA1" },
-        { title: "发/退货状态", icon: "mdi-account-multiple", link: "/transport" },
+        {
+          title: "发/退货状态",
+          icon: "mdi-account-multiple",
+          link: "/transport",
+        },
         //{ title: "主页", icon: "mdi-home", link: "/dashboard" },
 
         {
@@ -126,18 +130,6 @@ export default {
           ],
         },
         {
-          title: "员工管理",
-          icon: "mdi-account-multiple",
-          link: "/employee",
-          children: [
-            {
-              title: "员工结构",
-              icon: "mdi-account-multiple",
-              link: "/employee",
-            },
-          ],
-        },
-        {
           title: "部门管理",
           icon: "mdi-account-multiple",
           link: "/department",
@@ -154,6 +146,23 @@ export default {
               title: "组别",
               icon: "mdi-account-multiple",
               link: "/group",
+            },
+          ],
+        },
+        {
+          title: "员工管理",
+          icon: "mdi-account-multiple",
+          link: "/employee",
+          children: [
+            {
+              title: "从属员工",
+              icon: "mdi-account-multiple",
+              link: "/all_employees",
+            },
+            {
+              title: "员工结构",
+              icon: "mdi-account-multiple",
+              link: "/employee",
             },
           ],
         },

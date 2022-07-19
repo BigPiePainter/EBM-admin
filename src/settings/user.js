@@ -6,6 +6,15 @@ export const userLogin = data => {
         method: 'POST',
         data
     }
-    console.log(args)
+    return http.request(args)
+}
+
+
+export const getSubUsers = data => {
+    const args = {
+        url: '/user/getSubUsers',
+        method: 'POST',
+        data
+    }
     return http.request(args)
 }

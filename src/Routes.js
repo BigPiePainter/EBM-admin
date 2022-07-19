@@ -18,9 +18,10 @@ import Error from "@/pages/Error/Error";
 import Login from "@/pages/Login/Login";
 
 import Order from "@/pages/Order/Order";
-import Employee from "@/pages/Employee/Employee";
 import Department from "@/pages/Department/Department";
 import Group from "@/pages/Group/Group";
+import AllEmployees from "@/pages/AllEmployees/AllEmployees";
+import Employee from "@/pages/Employee/Employee";
 
 Vue.use(Router);
 
@@ -52,6 +53,11 @@ var routerConfig = {
           path: 'order',
           name: 'Order',
           component: Order,
+        },
+        {
+          path: 'all_employees',
+          name: 'AllEmployees',
+          component: AllEmployees,
         },
         {
           path: 'employee',

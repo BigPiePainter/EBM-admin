@@ -2,21 +2,19 @@
   <v-card>
     <v-card-title> 测试TEST </v-card-title>
 
-    <v-row class="px-10">
-      <v-text-field
-        v-model="search"
-        flat
-        shaped
-        hide-details
-        clearable
-        clear-icon="mdi-close-circle-outline"
-        prepend-inner-icon="mdi-magnify"
-      >
-      </v-text-field>
-    </v-row>
-
     <v-row class="pa-4" justify="space-between">
       <v-col md="auto">
+        <v-text-field
+          v-model="search"
+          flat
+          shaped
+          hide-details
+          clearable
+          clear-icon="mdi-close-circle-outline"
+          prepend-inner-icon="mdi-magnify"
+          class="pl-3 pb-3"
+        >
+        </v-text-field>
         <v-treeview
           :active.sync="active"
           :items="items"
@@ -192,7 +190,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-
                 ],
               },
             ],
@@ -208,7 +205,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -224,7 +220,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -240,7 +235,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -256,7 +250,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -272,7 +265,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -288,7 +280,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -304,7 +295,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -320,7 +310,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -336,7 +325,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -352,7 +340,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -368,7 +355,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -384,7 +370,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -400,7 +385,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -416,7 +400,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -432,7 +415,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -448,7 +430,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -464,7 +445,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -480,7 +460,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -496,7 +475,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -512,7 +490,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -528,7 +505,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -544,7 +520,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -560,7 +535,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -576,7 +550,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -592,7 +565,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -608,7 +580,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -624,7 +595,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -640,7 +610,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -656,7 +625,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -672,7 +640,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -688,7 +655,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -704,7 +670,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -720,7 +685,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -736,7 +700,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -752,7 +715,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -768,7 +730,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -784,7 +745,6 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
@@ -800,12 +760,10 @@ export default {
                   { id: 12, name: "张清宇 3" },
                   { id: 13, name: "张清宇 4" },
                   { id: 14, name: "王绿原 3" },
-                  
                 ],
               },
             ],
           },
-          
         ],
       },
     ],
