@@ -24,40 +24,47 @@
           </v-col>
           <v-col cols="6" class="text-center"> </v-col>
         </v-row>
+
         <v-divider
           v-else-if="item.divider"
           :key="i"
           dark
           class="my-4"
         ></v-divider>
+
         <v-list-group
-          color="primary"
           v-else-if="item.children && DRAWER_STATE"
+          color="primary"
           :key="item.title"
           v-model="item.model"
           append-icon=""
         >
-          <template v-slot:prependIcon>
-            <v-icon size="20">mdi-image-filter-none</v-icon>
-          </template>
           <template v-slot:activator>
+            <v-list-item-action>
+              <v-icon dense :color="item.color ? item.color : ''">{{
+                item.icon
+              }}</v-icon>
+            </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title class="grey--text">
+              <v-list-item-title class="grey--text" link>
                 {{ item.title }}
               </v-list-item-title>
             </v-list-item-content>
           </template>
+
           <v-list-item
             v-for="(child, i) in item.children"
             :key="i"
             :to="child.link"
             link
           >
-            <v-list-item-action v-if="child.icon">
-              <v-icon size="">{{ child.icon }}</v-icon>
+            <v-list-item-action>
+              <v-icon dense :color="child.color ? child.color : ''">{{
+                child.icon
+              }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title class="grey--text">
+              <v-list-item-title class="grey--text" link>
                 {{ child.title }}
               </v-list-item-title>
             </v-list-item-content>
@@ -108,9 +115,51 @@ export default {
         },
 
         {
+          title: "订单管理",
+          icon: "mdi-book-variant-multiple",
+          link: "/404",
+        },
+        {
           title: "员工管理",
           icon: "mdi-account-multiple",
           link: "/employee",
+          children: [
+            { title: "Icons", icon: "mdi-circle-small", link: "/icons" },
+            { title: "Charts", icon: "mdi-circle-small", link: "/charts" },
+            {
+              title: "员工结构",
+              icon: "mdi-account-multiple",
+              link: "/employee",
+            },
+          ],
+        },
+        {
+          title: "部门管理",
+          icon: "mdi-account-multiple",
+          link: "/icons",
+          children: [
+            { title: "Icons", icon: "mdi-circle-small", link: "/icons" },
+            { title: "Charts", icon: "mdi-circle-small", link: "/charts" },
+            {
+              title: "结构图",
+              icon: "mdi-account-multiple",
+              link: "/employee",
+            },
+          ],
+        },
+        {
+          title: "组别管理",
+          icon: "mdi-account-multiple",
+          link: "/icons",
+          children: [
+            { title: "Icons", icon: "mdi-circle-small", link: "/icons" },
+            { title: "Charts", icon: "mdi-circle-small", link: "/charts" },
+            {
+              title: "结构图",
+              icon: "mdi-account-multiple",
+              link: "/employee",
+            },
+          ],
         },
 
         //{ title: "系统信息", icon: "mdi-bell-outline", link: "/notifications" },

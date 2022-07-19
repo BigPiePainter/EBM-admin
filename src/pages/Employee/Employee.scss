@@ -3,8 +3,9 @@
 
 .v-treeview {
   
+  font-size: 0.8rem;
   .v-treeview-node__level {
-    transform: translateX(11.5px) scaleY(2);
+    transform: translateX(11.5px) scaleY(2.7);
   }
 
   .v-treeview-node__level::after {
