@@ -17,7 +17,10 @@ import Maps from '@/pages/Maps/Google'
 import Error from "@/pages/Error/Error";
 import Login from "@/pages/Login/Login";
 
+import Order from "@/pages/Order/Order";
 import Employee from "@/pages/Employee/Employee";
+import Department from "@/pages/Department/Department";
+import Group from "@/pages/Group/Group";
 
 Vue.use(Router);
 
@@ -46,9 +49,24 @@ var routerConfig = {
           component: PartnerGet,
         },
         {
+          path: 'order',
+          name: 'Order',
+          component: Order,
+        },
+        {
           path: 'employee',
           name: 'Employee',
           component: Employee,
+        },
+        {
+          path: 'department',
+          name: 'Department',
+          component: Department,
+        },
+        {
+          path: 'group',
+          name: 'Group',
+          component: Group,
         },
         {
           path: 'productsget',

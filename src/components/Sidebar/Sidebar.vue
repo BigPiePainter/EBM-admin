@@ -105,7 +105,7 @@ export default {
     return {
       items: [
         { heading: "POFA1" },
-        { title: "发/退货状态", icon: "mdi-cubes-medium", link: "/transport" },
+        { title: "发/退货状态", icon: "mdi-account-multiple", link: "/transport" },
         //{ title: "主页", icon: "mdi-home", link: "/dashboard" },
 
         {
@@ -113,19 +113,23 @@ export default {
           icon: "mdi-book-variant-multiple",
           link: "/partnerget",
         },
-
         {
           title: "订单管理",
           icon: "mdi-book-variant-multiple",
-          link: "/404",
+          link: "/employee",
+          children: [
+            {
+              title: "订单",
+              icon: "mdi-book-variant-multiple",
+              link: "/order",
+            },
+          ],
         },
         {
           title: "员工管理",
           icon: "mdi-account-multiple",
           link: "/employee",
           children: [
-            { title: "Icons", icon: "mdi-circle-small", link: "/icons" },
-            { title: "Charts", icon: "mdi-circle-small", link: "/charts" },
             {
               title: "员工结构",
               icon: "mdi-account-multiple",
@@ -136,15 +140,9 @@ export default {
         {
           title: "部门管理",
           icon: "mdi-account-multiple",
-          link: "/icons",
+          link: "/department",
           children: [
-            { title: "Icons", icon: "mdi-circle-small", link: "/icons" },
-            { title: "Charts", icon: "mdi-circle-small", link: "/charts" },
-            {
-              title: "结构图",
-              icon: "mdi-account-multiple",
-              link: "/employee",
-            },
+            { title: "部门", icon: "mdi-circle-small", link: "/department" },
           ],
         },
         {
@@ -152,12 +150,10 @@ export default {
           icon: "mdi-account-multiple",
           link: "/icons",
           children: [
-            { title: "Icons", icon: "mdi-circle-small", link: "/icons" },
-            { title: "Charts", icon: "mdi-circle-small", link: "/charts" },
             {
-              title: "结构图",
+              title: "组别",
               icon: "mdi-account-multiple",
-              link: "/employee",
+              link: "/group",
             },
           ],
         },
