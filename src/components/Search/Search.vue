@@ -147,7 +147,6 @@
     <v-row> </v-row>
     <v-row> </v-row>
     <v-row> </v-row>
-    <v-row> </v-row>
   </v-container>
 </template>
 
@@ -178,7 +177,28 @@ export default {
       manufacturerPhone: "",
       manufacturerAddress: "",
     },
+
+    timer:null,
   }),
+
+  watch: {
+    searchItem: {
+      handler: function () {
+        clearTimeout(this.timer);
+        this.timer=setTimeout(()=>{
+        this.$emit("refreshData", { search: this.searchItem })
+        },500)
+      },
+      deep: true,
+    },
+  },
+
+  methods: {
+  //   sendSearch() {
+  //     this.$emit("refreshData", { search: this.searchItem });
+  //     //console.log("refreshData",{search: this.searchItem})
+  //   },
+  },
 };
 </script>
 
