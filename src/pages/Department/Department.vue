@@ -1,9 +1,5 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="items"
-    class="elevation-1"
-  >
+  <v-data-table :headers="headers" :items="items" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat color="white">
         <v-toolbar-title>部门信息表</v-toolbar-title>
@@ -69,23 +65,32 @@ export default {
     dialog: false,
     headers: [
       {
-        text: "部门",
+        text: "uid",
         align: "start",
         sortable: false,
-        value: "department",
+        value: "id",
       },
-      { text: "成员", value: "member" },
-      { text: 'Actions', value: 'actions', sortable: false },
+      { text: "部门", value: "name" },
+      { text: "创建时间", value: "create_time" },
+      { text: "修改时间", value: "modify_time" },
+      { text: "备注", value: "note" },
+      { text: "Actions", value: "actions", sortable: false },
     ],
     items: [],
     editedIndex: -1,
     editedItem: {
-      department: "",
-      member: "",
+      id: "",
+      name: "",
+      create_time: "",
+      modify_time: "",
+      note: "",
     },
     defaultItem: {
-      department: "",
-      member: "",
+      id: "",
+      name: "",
+      create_time: "",
+      modify_time: "",
+      note: "",
     },
   }),
 
@@ -109,44 +114,74 @@ export default {
     initialize() {
       this.items = [
         {
-          department: "1",
-          member: 1,
+          id: "191518",
+          name: "Nick",
+          create_time: "2000-1-1",
+          modify_time: "",
+          note: "no",
         },
         {
-          department: "2",
-          member: 2,
+          id: "191410",
+          name: "Aaron",
+          create_time: "1998-1-1",
+          modify_time: "",
+          note: "no",
         },
         {
-          department: "3",
-          member: 3,
+          id: "191517",
+          name: "Jerry",
+          create_time: "2000-1-1",
+          modify_time: "",
+          note: "no",
         },
         {
-          department: "4",
-          member: 4,
+          id: "191516",
+          name: "Andrew",
+          create_time: "2000-1-1",
+          modify_time: "",
+          note: "no",
         },
         {
-          department: "5",
-          member: 5,
+          id: "",
+          name: "",
+          create_time: "",
+          modify_time: "",
+          note: "",
         },
         {
-          department: "6",
-          member: 6,
+          id: "",
+          name: "",
+          create_time: "",
+          modify_time: "",
+          note: "",
         },
         {
-          department: "7",
-          member: 7,
+          id: "",
+          name: "",
+          create_time: "",
+          modify_time: "",
+          note: "",
         },
         {
-          department: "8",
-          member: 8,
+          id: "",
+          name: "",
+          create_time: "",
+          modify_time: "",
+          note: "",
         },
         {
-          department: "9",
-          member: 9,
+          id: "",
+          name: "",
+          create_time: "",
+          modify_time: "",
+          note: "",
         },
         {
-          department: "0",
-          member: 0,
+          id: "",
+          name: "",
+          create_time: "",
+          modify_time: "",
+          note: "",
         },
       ];
     },
