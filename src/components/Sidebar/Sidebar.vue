@@ -130,7 +130,7 @@ export default {
           ],
         },
         {
-          title: "部门管理",
+          title: "事业部管理",
           icon: "mdi-account-multiple",
           link: "/department",
           children: [

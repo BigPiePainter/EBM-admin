@@ -1,11 +1,11 @@
 <template>
-  <v-app-bar class="main-header" height="48" fixed color="primary" dense dark>
-    <v-btn icon class="ml-1" @click.stop="TOGGLE_DRAWER">
+  <v-app-bar class="main-header" height="45" fixed color="primary" dense dark>
+    <v-btn icon class="ml-1" @click.stop="TOGGLE_DRAWER" large>
       <template v-if="DRAWER_STATE">
-        <v-icon style="font-size: 20px">mdi-arrow-left</v-icon>
+        <v-icon small >mdi-arrow-left</v-icon>
       </template>
       <template v-else>
-        <v-icon style="font-size: 20px">mdi-menu</v-icon>
+        <v-icon small>mdi-menu</v-icon>
       </template>
     </v-btn>
     <v-toolbar-title>浙江泼发进出口贸易有限公司EBC</v-toolbar-title>
