@@ -19,14 +19,14 @@ export const addSkus = data => {
     return http.request(args)
 }
 
-export const editSku = data => {
-    const args = {
-        url: '/sku/edit',
-        method: 'POST',
-        data
-    }
-    return http.request(args)
-}
+// export const editSku = data => {
+//     const args = {
+//         url: '/sku/edit',
+//         method: 'POST',
+//         data
+//     }
+//     return http.request(args)
+// }
 
 export const deleteSku = data => {
     const args = {
