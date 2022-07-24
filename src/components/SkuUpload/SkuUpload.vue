@@ -53,7 +53,7 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
             <v-toolbar-title>{{
-              `${product.id}   ${product.product_name}（${product.first_category}）SKU上传检索`
+              `${product.id}   ${product.productName}（${product.firstCategory}）SKU上传检索`
             }}</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
@@ -70,6 +70,7 @@
   </div>
 </template>
 <script>
+import { addSkus } from "@/settings/sku";
 import Spreadsheet from "x-data-spreadsheet";
 import zhCN from "x-data-spreadsheet/src/locale/zh-cn";
 import * as XLSX from "xlsx";
@@ -83,6 +84,7 @@ export default {
   },
   data() {
     return {
+      dataCopy: [],
       status: "",
       file: null,
       dialog: false,
@@ -107,7 +109,40 @@ export default {
     },
   },
   methods: {
-    upload() {},
+    upload() {
+      var dataii = [];
+      //处理data，数据展开
+
+      console.log("start");
+      for (let i = 1; i < Object.keys(this.dataCopy[0].rows).length; i++) {
+        dataii[i - 1] = [];
+        for (let j = 0; j < 6; j++) {
+          dataii[i - 1][j] = this.dataCopy[0].rows[i].cells[j].text;
+        }
+      }
+
+      console.log("dataii", dataii);
+      console.log("dataCopy", this.dataCopy);
+      console.log("length", Object.keys(this.dataCopy[0].rows).length);
+
+      //var pars = { productId: this.product.id, data: JSON.stringify(dataii) };
+      console.log("done");
+      addSkus({ data: dataii })
+        .then((res) => {
+          this.loading = false;
+          this.global.infoAlert("泼发EBC：" + res.data);
+          console.log();
+          //刷新页面数据
+          //this.loadData();
+        })
+        .catch(() => {
+          this.loading = false;
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC：上传失败");
+          }, 100);
+        });
+    },
+
     showInfo(text) {
       this.$toast.info(text, {
         position: "top-right",
@@ -173,17 +208,19 @@ export default {
 
           var data = new Uint8Array(e.target.result);
           data = this.stox(XLSX.read(data, { type: "array" }));
+          this.dataCopy = data;
 
           //额外处理
           //data[0].freeze = "A2",
 
           data[0].cols = {
             0: { width: 113 },
-            1: { width: 750 },
-            2: { width: 80 },
+            1: { width: 113 },
+            2: { width: 750 },
             3: { width: 80 },
-            4: { width: 100 },
+            4: { width: 80 },
             5: { width: 100 },
+            // 6: { width: 100 },
           };
 
           // /4FF200
@@ -286,70 +323,63 @@ export default {
     },
     cellCheck(cell, row, col) {
       if (!cell) return;
-      //console.log(cell);
-
-      if (row == 0) {
-        //表头
-        cell.style = 9;
-        return;
-      }
 
       var alreadyError = cell.error;
 
-      switch (col) {
-        case 0:
-          if (/[^\d]/.test(cell.text) || cell.text.trim() == "") {
-            cell.error = true;
-            this.wrong += alreadyError ? 0 : 1;
-            cell.style = 4;
-          } else {
-            cell.error = false;
-            cell.style = 7;
-            this.wrong -= alreadyError ? 1 : 0;
-          }
-          break;
-        case 1:
-          cell.style = 7;
-          break;
-        case 2:
-          if (/[^\d.]/.test(cell.text) || cell.text.trim() == "") {
-            cell.error = true;
-            this.wrong += alreadyError ? 0 : 1;
-            cell.style = 4;
-          } else {
-            cell.error = false;
-            cell.style = 7;
-            this.wrong -= alreadyError ? 1 : 0;
-          }
-          break;
-        case 3:
-          if (/[^\d.]/.test(cell.text) || cell.text.trim() == "") {
-            cell.error = true;
-            this.wrong += alreadyError ? 0 : 1;
-            cell.style = 4;
-          } else {
-            cell.error = false;
-            this.wrong -= alreadyError ? 1 : 0;
-            cell.style = 7;
-          }
-          break;
-        case 4:
-          cell.style = 7;
-          break;
-        case 5:
-          if (!cell) {
-            cell.error = true;
-            this.wrong += alreadyError ? 0 : 1;
-            cell.style = 4;
-          } else {
-            cell.error = false;
-            cell.style = 7;
-            this.wrong -= alreadyError ? 1 : 0;
-          }
-          break;
-        default:
-          break;
+      if (row == 0) {
+        var colName = "";
+        switch (col) {
+          case 0:
+            colName = "商品ID";
+            break;
+          case 1:
+            colName = "SKUID";
+            break;
+          case 2:
+            colName = "SKU名称";
+            break;
+          case 3:
+            colName = "售卖价";
+            break;
+          case 4:
+            colName = "单个成本";
+            break;
+          case 5:
+            colName = "价格开始时间";
+            break;
+          // case 6:
+          //   colName = "价格截止时间";
+          //   break;
+          default:
+            break;
+        }
+
+        if (!cell.text) {
+          cell.error = true;
+        } else {
+          cell.error = cell.text != colName;
+        }
+      } else {
+        var rules = [
+          /./, // RegExp("^" + this.product.id + "$"),
+          /^\d+$/,
+          /./,
+          /^[0-9]+(\.[0-9]{1,5})?$/,
+          /^[0-9]+(\.[0-9]{1,5})?$/,
+          /^\d{4}-\d{2}-\d{2}$/,
+
+          // /^\d{4}-\d{2}-\d{2}$|^\s+$|^至今$/,
+        ];
+
+        if (!cell.text) {
+          cell.error = true;
+        } else {
+          cell.error = !rules[col].test(cell.text);
+        }
       }
+
+      cell.style = cell.error ? 4 : 7;
+      this.wrong += cell.error ? (alreadyError ? 0 : 1) : alreadyError ? -1 : 0;
     },
     stox(wb) {
       var out = [];
@@ -357,21 +387,40 @@ export default {
       wb.SheetNames.forEach(function (name) {
         var o = { name: name, rows: {} };
         var ws = wb.Sheets[name];
+        console.log(ws);
+
         var range = XLSX.utils.decode_range(ws["!ref"]);
         // sheet_to_json will lost empty row and col at begin as default
         range.s = { r: 0, c: 0 };
         var aoa = XLSX.utils.sheet_to_json(ws, {
-          raw: false,
+          raw: true,
           header: 1,
           range: range,
         });
 
+        console.log(aoa);
+
         var len = 0;
+        var time = new Date();
+
         aoa.forEach(function (r, i) {
           len++;
           var cells = {};
+
           r.forEach(function (c, j) {
-            cells[j] = { text: c };
+            if (typeof c == "number" && c > 40000) {
+              time.setTime(-2209016202000 + (c - 1) * 24 * 60 * 60 * 1000);
+
+              var month = time.getUTCMonth() + 1;
+              var day = time.getUTCDate();
+              cells[j] = {
+                text: `${time.getUTCFullYear()}-${
+                  month < 10 ? "0" + month : month
+                }-${day < 10 ? "0" + day : day}`,
+              };
+            } else {
+              cells[j] = { text: c.toString().trim() };
+            }
 
             //var cellRef = XLSX.utils.encode_cell({ r: i, c: j });
             //
@@ -436,7 +485,6 @@ export default {
           console.log("cell:", cell, ", ri:", ri, ", ci:", ci);
         }).on("cell-edited", (text, ri, ci) => {
           console.log("text:", text, ", ri: ", ri, ", ci:", ci);
-
           this.cellCheck(cellSellected, ri, ci);
         });
 

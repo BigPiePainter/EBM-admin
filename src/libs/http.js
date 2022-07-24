@@ -16,7 +16,7 @@ class Http {
       instance.defaults.headers.post['Content-Type'] = 'application/json'
       instance.defaults.headers.put['Content-Type'] = 'application/json'
     } else {
-      instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;'
+      instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
     }
     if (localStorage.token){
       instance.defaults.headers.pofatoken = localStorage.token
