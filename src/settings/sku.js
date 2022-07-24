@@ -2,7 +2,7 @@ import http from '@/libs/http'
 
 export const loadSkus = data => {
     const args = {
-        url: '/sku/sku_to_front',
+        url: '/sku/get',
         method: 'POST',
         data
     }
@@ -11,16 +11,17 @@ export const loadSkus = data => {
 
 export const addSkus = data => {
     const args = {
-        url: '/sku/sku_to_behind',
+        url: '/sku/add',
         method: 'POST',
-        data   
+        data,
+        json: true,
     }
     return http.request(args)
 }
 
 export const editSku = data => {
     const args = {
-        url: '/sku/sku_edit',
+        url: '/sku/edit',
         method: 'POST',
         data
     }
@@ -29,7 +30,7 @@ export const editSku = data => {
 
 export const deleteSku = data => {
     const args = {
-        url: '/sku/sku_delete',
+        url: '/sku/delete',
         method: 'POST',
         data
     }

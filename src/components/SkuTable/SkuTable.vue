@@ -1,3 +1,4 @@
+:items="check ? validSkuInfo : skuInfo"
 <template>
   <v-data-table
     calculate-widths
@@ -6,7 +7,7 @@
     loading-text="加载中... 请稍后"
     no-data-text="空"
     :headers="headers"
-    :items="check ? validSkuInfo : skuInfo"
+    :items="skuInfo"
     :items-per-page="50"
     :footer-props="{
       'items-per-page-options': [10, 20, 50, 100],
@@ -22,13 +23,17 @@
         <v-spacer></v-spacer>
         <v-switch v-model="check" label="有效SKU" class="pr-5 pt-6"></v-switch>
 
-        <v-btn color="green lighten-2" small dark @click="download" class="mr-3">
+        <v-btn
+          color="green lighten-2"
+          small
+          dark
+          @click="download"
+          class="mr-3"
+        >
           导出
         </v-btn>
 
-        <SkuUpload
-          :product="productsInfo"
-        />
+        <SkuUpload :product="productsInfo" />
 
         <v-dialog v-model="sdialog" max-width="500px">
           <v-card>
@@ -41,6 +46,13 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="secondeditedItem.name"
+                      label="SKU"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="secondeditedItem.skuId"
                       label="SKU"
                     ></v-text-field>
                   </v-col>
@@ -66,12 +78,12 @@
                     ></v-text-field>
                   </v-col>
 
-                  <v-col cols="12" sm="6" md="4">
+                  <!-- <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="secondeditedItem.end"
                       label="价格截止时间"
                     ></v-text-field>
-                  </v-col>
+                  </v-col> -->
 
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
@@ -133,6 +145,7 @@
 
 <script>
 import SkuUpload from "@/components/SkuUpload/SkuUpload";
+import { loadSkus } from "@/settings/sku";
 //import * as XLSX from 'xlsx/xlsx.mjs';
 
 export default {
@@ -146,112 +159,7 @@ export default {
   },
 
   created() {
-    //从数据库中获取skuInfo
-    (this.loading = true),
-      setTimeout(() => {
-        //加载表头
-        (this.loading = false),
-          (this.headers = [
-            {
-              text: "SKU名称",
-              align: "start",
-              sortable: false,
-              value: "name",
-            },
-            { text: "售卖价", align: "start", value: "price" },
-            { text: "成本", align: "start", value: "cost" },
-            { text: "价格开始时间", align: "start", value: "start" },
-            { text: "价格截止时间", align: "start", value: "end" },
-            { text: "销售子订单条数", align: "start", value: "orderNum" },
-            { text: "销售数", align: "start", value: "seleNum" },
-            { text: "Actions", value: "actions", sortable: false },
-          ]);
-
-        //加载数据
-        this.skuInfo = [
-          {
-            name: this.productsInfo.id,
-            price: Math.floor(Math.random() * 1000),
-            cost: 68,
-            start: "2022-07-09",
-            end: "2022-07-09",
-            orderNum: "100",
-            seleNum: "80",
-          },
-          {
-            name: this.productsInfo.id,
-            price: Math.floor(Math.random() * 1000),
-            cost: 68,
-            start: "2022-07-09",
-            end: "至今",
-            orderNum: "100",
-            seleNum: "80",
-          },
-          {
-            name: this.productsInfo.id,
-            price: Math.floor(Math.random() * 1000),
-            cost: 68,
-            start: "2022-07-09",
-            end: "2022-07-09",
-            orderNum: "100",
-            seleNum: "80",
-          },
-          {
-            name: this.productsInfo.id,
-            price: Math.floor(Math.random() * 1000),
-            cost: 68,
-            start: "2022-07-09",
-            end: "至今",
-            orderNum: "100",
-            seleNum: "80",
-          },
-          {
-            name: this.productsInfo.id,
-            price: Math.floor(Math.random() * 1000),
-            cost: 68,
-            start: "2022-07-09",
-            end: "2022-07-09",
-            orderNum: "100",
-            seleNum: "80",
-          },
-          {
-            name: this.productsInfo.id,
-            price: Math.floor(Math.random() * 1000),
-            cost: 68,
-            start: "2022-07-09",
-            end: "至今",
-            orderNum: "100",
-            seleNum: "80",
-          },
-          {
-            name: this.productsInfo.id,
-            price: Math.floor(Math.random() * 1000),
-            cost: 68,
-            start: "2022-07-09",
-            end: "至今",
-            orderNum: "100",
-            seleNum: "80",
-          },
-          {
-            name: this.productsInfo.id,
-            price: Math.floor(Math.random() * 1000),
-            cost: 68,
-            start: "2022-07-09",
-            end: "2022-07-09",
-            orderNum: "100",
-            seleNum: "80",
-          },
-        ];
-
-        //this.skuInfo = []
-
-        this.validSkuInfo = [];
-        this.skuInfo.forEach((item) => {
-          if (item.end == "至今") {
-            this.validSkuInfo.push(item);
-          }
-        });
-      }, 500);
+    this.initialSkuInfo();
   },
 
   data() {
@@ -277,20 +185,22 @@ export default {
 
       secondeditedItem: {
         name: "",
+        skuId: "",
         price: "",
         cost: "",
         start: "",
-        end: "",
+        //end: "",
         orderNum: "",
         seleNum: "",
       },
 
       seconddefaultItem: {
         name: "",
+        skuId: "",
         price: "",
         cost: "",
         start: "",
-        end: "",
+        //end: "",
         orderNum: "",
         seleNum: "",
       },
@@ -307,11 +217,49 @@ export default {
   },
 
   methods: {
+    initialSkuInfo() {
+      this.loading = true;
+      //加载表头
+      this.loading = false;
+      this.headers = [
+        { text: "SKUID", align: "start", value: "skuId" },
+        {
+          text: "SKU名称",
+          align: "start",
+          sortable: false,
+          value: "skuName",
+        },
+        { text: "售卖价", align: "start", value: "skuPrice" },
+        { text: "成本", align: "start", value: "skuCost" },
+        { text: "价格开始时间", align: "start", value: "startTime" },
+        //{ text: "价格截止时间", align: "start", value: "endTime" },
+        { text: "销售子订单条数", align: "start", value: "orderNum" },
+        { text: "销售数", align: "start", value: "seleNum" },
+        { text: "Actions", value: "actions", sortable: false },
+      ];
+
+      //加载数据
+      loadSkus({ productId: this.productsInfo.id })
+        .then((res) => {
+          console.log(res);
+          this.loading = false;
+          this.skuInfo = res.data.skus;
+          // this.skuInfo.forEach((item) => {
+          //   if (item.end == "至今") {
+          //     this.validSkuInfo.push(item);
+          //   }
+          // });
+
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+    },
 
     download() {
       const XLSX = require("xlsx");
       console.log(this.skuInfo);
-      const raw_data = this.check ? this.validSkuInfo : this.skuInfo;
+      const raw_data = this.skuInfo;//this.check ? this.validSkuInfo : this.skuInfo;
       /*
       const prez = raw_data.filter((row) =>
         row.terms.some((term) => term.type === "prez")
@@ -326,11 +274,13 @@ export default {
         worksheet,
         [
           [
+            "商品ID",
+            "SKUID",
             "SKU名称",
             "售卖价",
             "成本",
             "价格开始时间",
-            "价格截止时间",
+            //"价格截止时间",
             "销售子订单条数",
             "销售数",
           ],
@@ -342,10 +292,12 @@ export default {
 
       worksheet["!cols"] = [
         { wch: 10 },
+        { wch: 10 },
         { wch: 7 },
+        { wch: 10 },
         { wch: 5 },
         { wch: 13 },
-        { wch: 13 },
+        //{ wch: 13 },
         { wch: 14 },
         { wch: 7 },
       ];
@@ -353,7 +305,7 @@ export default {
       /* create an XLSX file and try to save to Presidents.xlsx */
       XLSX.writeFile(
         workbook,
-        `${this.productsInfo.owner}-${this.productsInfo.product_name}-${this.productsInfo.id}.xlsx`
+        `${this.productsInfo.owner}-${this.productsInfo.productName}-${this.productsInfo.id}.xlsx`
       );
     },
 
@@ -409,5 +361,4 @@ export default {
 
 
 <style scoped lang="scss">
-
 </style>
