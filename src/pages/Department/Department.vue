@@ -1,57 +1,78 @@
 <template>
-  <v-data-table :headers="headers" :items="items" class="elevation-1">
-    <template v-slot:top>
-      <v-toolbar flat color="white">
-        <v-toolbar-title>部门信息表</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
-              >新部门信息</v-btn
-            >
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+  <v-card>
+    <v-data-table
+      class="elevation-1 mx-5"
+      fixed-header
+      loading-text="加载中... 请稍后"
+      no-data-text="空"
+      item-key="id"
+      disable-sort
+      height="calc(100vh - 257px)"
+      :headers="headers"
+      :items="items"
+      :loading="loading"
+      :server-items-length="totalProducts"
+      :options.sync="options"
+      :items-per-page="50"
+      :footer-props="{
+        'items-per-page-options': [10, 20, 50, 100],
+        'items-per-page-text': '每页显示条数',
+      }"
+      @click:row="clickRow"
+    >
+      <template v-slot:top>
+        <v-toolbar flat color="white">
+          <v-toolbar-title>部门信息表</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
+          <v-spacer></v-spacer>
+          <v-dialog v-model="dialog" max-width="500px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
+                >新部门信息</v-btn
+              >
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
 
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.department"
-                      label="部门"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.member"
-                      label="成员"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.department"
+                        label="部门"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.member"
+                        label="成员"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">取消</v-btn>
-              <v-btn color="blue darken-1" text @click="save">保存</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-      <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
-    </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">Reset</v-btn>
-    </template>
-  </v-data-table>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">取消</v-btn>
+                <v-btn color="blue darken-1" text @click="save">保存</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+        <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+      </template>
+      <template v-slot:no-data>
+        <v-btn color="primary" @click="initialize">Reset</v-btn>
+      </template>
+    </v-data-table>
+  </v-card>
 </template>
 
 
@@ -65,12 +86,14 @@ export default {
     dialog: false,
     headers: [
       {
-        text: "uid",
+        text: "编号",
         align: "start",
         sortable: false,
-        value: "id",
+        value: "uid",
       },
-      { text: "部门", value: "name" },
+      { text: "事业部名称", value: "name" },
+      { text: "添加权限人数", value: "create_time" },
+      { text: "最高权限人数", value: "create_time" },
       { text: "创建时间", value: "create_time" },
       { text: "修改时间", value: "modify_time" },
       { text: "备注", value: "note" },
@@ -79,14 +102,14 @@ export default {
     items: [],
     editedIndex: -1,
     editedItem: {
-      id: "",
+      uid: "",
       name: "",
       create_time: "",
       modify_time: "",
       note: "",
     },
     defaultItem: {
-      id: "",
+      uid: "",
       name: "",
       create_time: "",
       modify_time: "",
@@ -114,70 +137,70 @@ export default {
     initialize() {
       this.items = [
         {
-          id: "191518",
+          uid: "191518",
           name: "Nick",
           create_time: "2000-1-1",
           modify_time: "",
           note: "no",
         },
         {
-          id: "191410",
+          uid: "191410",
           name: "Aaron",
           create_time: "1998-1-1",
           modify_time: "",
           note: "no",
         },
         {
-          id: "191517",
+          uid: "191517",
           name: "Jerry",
           create_time: "2000-1-1",
           modify_time: "",
           note: "no",
         },
         {
-          id: "191516",
+          uid: "191516",
           name: "Andrew",
           create_time: "2000-1-1",
           modify_time: "",
           note: "no",
         },
         {
-          id: "",
+          uid: "",
           name: "",
           create_time: "",
           modify_time: "",
           note: "",
         },
         {
-          id: "",
+          uid: "",
           name: "",
           create_time: "",
           modify_time: "",
           note: "",
         },
         {
-          id: "",
+          uid: "",
           name: "",
           create_time: "",
           modify_time: "",
           note: "",
         },
         {
-          id: "",
+          uid: "",
           name: "",
           create_time: "",
           modify_time: "",
           note: "",
         },
         {
-          id: "",
+          uid: "",
           name: "",
           create_time: "",
           modify_time: "",
           note: "",
         },
         {
-          id: "",
+          uid: "",
           name: "",
           create_time: "",
           modify_time: "",
