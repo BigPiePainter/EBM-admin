@@ -219,28 +219,28 @@ export default {
   methods: {
     initialSkuInfo() {
       this.loading = true;
-      //加载表头
-      this.loading = false;
-      this.headers = [
-        { text: "SKUID", align: "start", value: "skuId" },
-        {
-          text: "SKU名称",
-          align: "start",
-          sortable: false,
-          value: "skuName",
-        },
-        { text: "售卖价", align: "start", value: "skuPrice" },
-        { text: "成本", align: "start", value: "skuCost" },
-        { text: "价格开始时间", align: "start", value: "startTime" },
-        //{ text: "价格截止时间", align: "start", value: "endTime" },
-        { text: "销售子订单条数", align: "start", value: "orderNum" },
-        { text: "销售数", align: "start", value: "seleNum" },
-        { text: "Actions", value: "actions", sortable: false },
-      ];
 
       //加载数据
       loadSkus({ productId: this.productsInfo.id })
         .then((res) => {
+          //加载表头
+          this.headers = [
+            { text: "SKUID", align: "start", value: "skuId" },
+            {
+              text: "SKU名称",
+              align: "start",
+              sortable: false,
+              value: "skuName",
+            },
+            { text: "售卖价", align: "start", value: "skuPrice" },
+            { text: "成本", align: "start", value: "skuCost" },
+            { text: "价格开始时间", align: "start", value: "startTime" },
+            //{ text: "价格截止时间", align: "start", value: "endTime" },
+            { text: "销售子订单条数", align: "start", value: "orderNum" },
+            { text: "销售数", align: "start", value: "seleNum" },
+            { text: "Actions", value: "actions", sortable: false },
+          ];
+
           console.log(res);
           this.loading = false;
           this.skuInfo = res.data.skus;
@@ -249,7 +249,6 @@ export default {
           //     this.validSkuInfo.push(item);
           //   }
           // });
-
         })
         .catch(() => {
           this.loading = false;
