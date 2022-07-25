@@ -1,4 +1,4 @@
-:items="check ? validSkuInfo : skuInfo"
+
 <template>
   <v-data-table
     calculate-widths
@@ -7,7 +7,7 @@
     loading-text="加载中... 请稍后"
     no-data-text="空"
     :headers="headers"
-    :items="skuInfo"
+    :items="check ? validSkuInfo : skuInfo"
     :items-per-page="50"
     :footer-props="{
       'items-per-page-options': [10, 20, 50, 100],
@@ -35,86 +35,6 @@
 
         <SkuUpload :product="productsInfo" />
 
-        <v-dialog v-model="sdialog" max-width="500px">
-          <v-card>
-            <v-card-title>
-              <span class="text-h5">SKU信息修改</span>
-            </v-card-title>
-            <v-card-text class="mt-6">
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="secondeditedItem.name"
-                      label="SKU"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="secondeditedItem.skuId"
-                      label="SKU"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="secondeditedItem.price"
-                      label="售卖价"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="secondeditedItem.cost"
-                      label="成本"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="secondeditedItem.start"
-                      label="价格开始时间"
-                    ></v-text-field>
-                  </v-col>
-
-                  <!-- <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="secondeditedItem.end"
-                      label="价格截止时间"
-                    ></v-text-field>
-                  </v-col> -->
-
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="secondeditedItem.orderNum"
-                      label="销售子订单条数"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="secondeditedItem.seleNum"
-                      label="销售数"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <!-- until there is dialog of new input-->
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="secondclose">
-                取消
-              </v-btn>
-              <v-btn color="blue darken-1" text @click="secondsave">
-                保存
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
         <v-dialog v-model="sdialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="text-h5">是否确定删除？</v-card-title>
@@ -133,9 +53,6 @@
       </v-toolbar>
     </template>
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small class="mr-2" @click="secondeditItem(item)">
-        mdi-pencil
-      </v-icon>
       <v-icon small @click="seconddeleteItem(item)"> mdi-delete </v-icon>
     </template>
   </v-data-table>
@@ -146,6 +63,7 @@
 <script>
 import SkuUpload from "@/components/SkuUpload/SkuUpload";
 import { loadSkus } from "@/settings/sku";
+//import { deleteSkus } from "@/settings/sku";
 //import * as XLSX from 'xlsx/xlsx.mjs';
 
 export default {
@@ -164,7 +82,7 @@ export default {
 
   data() {
     return {
-      sdialog: false,
+      // sdialog: false,
       sdialogDelete: false,
       ssdialogs: false,
 
@@ -173,6 +91,7 @@ export default {
 
       headers: [],
       skuInfo: [],
+      skuInfo1: [],
       validSkuInfo: [],
 
       dense: false,
@@ -208,9 +127,9 @@ export default {
   },
 
   watch: {
-    sdialog(val) {
-      val || this.secondclose();
-    },
+    // sdialog(val) {
+    //   val || this.secondclose();
+    // },
     sdialogDelete(val) {
       val || this.secondcloseDelete();
     },
@@ -234,16 +153,25 @@ export default {
             },
             { text: "售卖价", align: "start", value: "skuPrice" },
             { text: "成本", align: "start", value: "skuCost" },
-            { text: "价格开始时间", align: "start", value: "startTime" },
+            {
+              text: "价格开始时间",
+              align: "start",
+              value: "calculatedStartTime",
+            },
             //{ text: "价格截止时间", align: "start", value: "endTime" },
             { text: "销售子订单条数", align: "start", value: "orderNum" },
             { text: "销售数", align: "start", value: "seleNum" },
+            { text: "创建时间", align: "start", value: "calculatedCreateTime" },
             { text: "Actions", value: "actions", sortable: false },
           ];
 
           console.log(res);
           this.loading = false;
           this.skuInfo = res.data.skus;
+
+          //数据处理
+          this.dataAnalyze();
+
           // this.skuInfo.forEach((item) => {
           //   if (item.end == "至今") {
           //     this.validSkuInfo.push(item);
@@ -255,10 +183,67 @@ export default {
         });
     },
 
+    dataAnalyze() {
+      var date = new Date();
+      var month, day;
+      this.skuInfo.forEach((sku) => {
+        console.log(sku);
+        date.setTime(sku.startTime);
+        month = date.getUTCMonth() + 1;
+        day = date.getUTCDate();
+        sku.calculatedStartTime = `${date.getUTCFullYear()}-${
+          month < 10 ? "0" + month : month
+        }-${day < 10 ? "0" + day : day}`;
+
+        date.setTime(sku.createTime);
+        month = date.getMonth() + 1;
+        day = date.getDate();
+        sku.calculatedCreateTime = `${date.getFullYear()}-${
+          month < 10 ? "0" + month : month
+        }-${
+          day < 10 ? "0" + day : day
+        } ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+      });
+
+      var skuId = {};
+      this.skuInfo.forEach((sku) => {
+        if (skuId[sku.skuId]) {
+          skuId[sku.skuId].count++;
+          if (skuId[sku.skuId].sku.startTime < sku.startTime) {
+            skuId[sku.skuId].sku = sku;
+          } else if (skuId[sku.skuId].sku.startTime == sku.startTime) {
+            if (skuId[sku.skuId].sku.createTime < sku.createTime) {
+              skuId[sku.skuId].sku = sku;
+            }
+          }
+        } else {
+          skuId[sku.skuId] = { count: 1, sku: sku };
+        }
+      });
+      console.log(skuId);
+
+
+      this.validSkuInfo = [];
+      for (let id in skuId) this.validSkuInfo.push(skuId[id].sku);
+    },
+
     download() {
+      var skuInfoCopy = [];
+      for (let sku of this.skuInfo) {
+        console.log(sku);
+        skuInfoCopy.push({
+          productId: sku.productId,
+          skuId: sku.skuId,
+          skuName: sku.skuName,
+          skuPrice: sku.skuPrice,
+          skuCost: sku.skuCost,
+          startTime: sku.calculatedStartTime,
+        });
+      }
+
       const XLSX = require("xlsx");
-      console.log(this.skuInfo);
-      const raw_data = this.skuInfo;//this.check ? this.validSkuInfo : this.skuInfo;
+      console.log(skuInfoCopy);
+      const raw_data = skuInfoCopy; //this.check ? this.validSkuInfo : this.skuInfo;
       /*
       const prez = raw_data.filter((row) =>
         row.terms.some((term) => term.type === "prez")
@@ -308,11 +293,11 @@ export default {
       );
     },
 
-    secondeditItem(item) {
-      this.seditedIndex = this.subTableEdited.indexOf(item);
-      this.secondeditedItem = Object.assign({}, item);
-      this.sdialog = true;
-    },
+    // secondeditItem(item) {
+    //   this.seditedIndex = this.subTableEdited.indexOf(item);
+    //   this.secondeditedItem = Object.assign({}, item);
+    //   this.sdialog = true;
+    // },
 
     seconddeleteItem(item) {
       this.seditedIndex = this.subTableEdited.indexOf(item);
@@ -326,7 +311,7 @@ export default {
     },
 
     secondclose() {
-      this.sdialog = false;
+      // this.sdialog = false;
       this.$nextTick(() => {
         this.secondeditedItem = Object.assign({}, this.seconddefaultItem);
         this.seditedIndex = -1;
