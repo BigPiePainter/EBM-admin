@@ -1,9 +1,5 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="items"
-    class="elevation-1"
-  >
+  <v-data-table :headers="headers" :items="items" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat color="white">
         <v-toolbar-title>组别信息表</v-toolbar-title>
@@ -26,13 +22,19 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.group"
-                      label="组别"
+                      label="组名"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.member"
-                      label="成员"
+                      v-model="editedItem.manager"
+                      label="组长"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="editedItem.note"
+                      label="备注"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -60,31 +62,40 @@
 
 
 
-
-
-
 <script>
 export default {
   data: () => ({
     dialog: false,
     headers: [
       {
-        text: "组别",
+        text: "组名",
         align: "start",
         sortable: false,
         value: "group",
       },
+      { text: "所属部门", value: "belong" },
+      { text: "组长", value: "manager" },
       { text: "成员", value: "member" },
-      { text: 'Actions', value: 'actions', sortable: false },
+      { text: "备注", value: "note" },
+      { text: "Actions", value: "actions", sortable: false },
     ],
+
     items: [],
     editedIndex: -1,
+    
     editedItem: {
       group: "",
+      belong: "",
+      manager: "",
+      note: "",
       member: "",
     },
+
     defaultItem: {
       group: "",
+      belong: "",
+      manager: "",
+      note: "",
       member: "",
     },
   }),
@@ -110,42 +121,72 @@ export default {
       this.items = [
         {
           group: "1",
+          belong: "",
+          manager: "",
+          note: "",
           member: 1,
         },
         {
           group: "2",
+          belong: "",
+          manager: "",
+          note: "",
           member: 2,
         },
         {
           group: "3",
+          belong: "",
+          manager: "",
+          note: "",
           member: 3,
         },
         {
           group: "4",
+          belong: "",
+          manager: "",
+          note: "",
           member: 4,
         },
         {
           group: "5",
+          belong: "",
+          manager: "",
+          note: "",
           member: 5,
         },
         {
           group: "6",
+          belong: "",
+          manager: "",
+          note: "",
           member: 6,
         },
         {
           group: "7",
+          belong: "",
+          manager: "",
+          note: "",
           member: 7,
         },
         {
           group: "8",
+          belong: "",
+          manager: "",
+          note: "",
           member: 8,
         },
         {
           group: "9",
+          belong: "",
+          manager: "",
+          note: "",
           member: 9,
         },
         {
           group: "0",
+          belong: "",
+          manager: "",
+          note: "",
           member: 0,
         },
       ];

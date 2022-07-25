@@ -1,8 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>
-      123
-    </v-card-title>
+    <v-card-title> 123 </v-card-title>
     <v-data-table
       fixed-header
       show-expand
@@ -45,7 +43,8 @@ export default {
     headers: [
       { text: "员工ID", value: "uid" },
       { text: "姓名", value: "nick" },
-      { text: "从属", value: "boss" },
+      { text: "归属", value: "location" },
+      { text: "上级", value: "boss" },
 
       //{ text: "事业部权限", value: "department" },
       //{ text: "组别权限", value: "groupName" },
