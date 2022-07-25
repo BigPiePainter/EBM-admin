@@ -9,7 +9,6 @@ export const userLogin = data => {
     return http.request(args)
 }
 
-
 export const getSubUsers = data => {
     const args = {
         url: '/user/getSubUsers',
@@ -18,3 +17,13 @@ export const getSubUsers = data => {
     }
     return http.request(args)
 }
+
+export const createSubUsers = data => {
+    const args = {
+        url: '/user/createSubUsers',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+

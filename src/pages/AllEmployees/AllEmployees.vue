@@ -1,6 +1,4 @@
 <template>
-  <v-card>
-    <v-card-title> 123 </v-card-title>
     <v-data-table
       fixed-header
       show-expand
@@ -18,14 +16,86 @@
         'items-per-page-text': '每页显示条数',
       }"
     >
-      <template v-slot:top> </template>
+      <template v-slot:top>
+        <v-toolbar>
+          <v-toolbar-title>员工信息</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
+          <v-spacer />
+          <v-dialog v-model="createDialog" max-width="500px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                dark
+                class="mb-2"
+                @click="dialog"
+                v-bind="attrs"
+                v-on="on"
+                >添加新员工</v-btn
+              >
+            </template>
+             <v-card>
+            <v-card-title>
+              <span class="headline">新增员工</span>
+            </v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="createUser.nick"
+                      label="姓名"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="createUser.boss"
+                      label="上级"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="createUser.location"
+                      label="从属"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="createUser.username"
+                      label="用户名"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="createUser.password"
+                      label="密码"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="createUser.note"
+                      label="备注"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="close">取消</v-btn>
+              <v-btn color="blue darken-1" text @click="save">保存</v-btn>
+            </v-card-actions>
+          </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
 
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
-    </v-data-table></v-card
-  >
+    </v-data-table>
 </template>
 
 
@@ -36,6 +106,7 @@
 
 <script>
 import { getSubUsers } from "@/settings/user";
+import { createSubUsers } from "@/settings/user";
 
 export default {
   components: {},
@@ -55,9 +126,20 @@ export default {
       { text: "备注", sortable: false, value: "note" },
     ],
 
+    createUser: {
+      nick: "",
+      boss: "",
+      location: "",
+      username: "",
+      password: "",
+      note: "",
+    },
+
     loading: true,
 
     userInfos: [],
+
+    createDialog: false,
 
     idToNick: {},
   }),
@@ -71,6 +153,23 @@ export default {
   },
 
   methods: {
+    dialog() {
+      this.createDialog = true;
+    },
+
+    close(){
+      this.createDialog = false;
+    },
+
+    save(){
+      this.uploadUser;
+      this.createDialog = false;
+    },
+
+    uploadUser() {
+      createSubUsers({ user: this.createUser });
+    },
+
     init() {
       this.loading = true;
 
