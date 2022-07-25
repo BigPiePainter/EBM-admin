@@ -1,4 +1,4 @@
-:items="check ? validSkuInfo : skuInfo"
+
 <template>
   <v-data-table
     calculate-widths
@@ -7,7 +7,7 @@
     loading-text="加载中... 请稍后"
     no-data-text="空"
     :headers="headers"
-    :items="skuInfo"
+    :items="check ? validSkuInfo : skuInfo"
     :items-per-page="50"
     :footer-props="{
       'items-per-page-options': [10, 20, 50, 100],
@@ -153,16 +153,24 @@ export default {
             },
             { text: "售卖价", align: "start", value: "skuPrice" },
             { text: "成本", align: "start", value: "skuCost" },
-            { text: "价格开始时间", align: "start", value: "startTime" },
+            {
+              text: "价格开始时间",
+              align: "start",
+              value: "calculatedStartTime",
+            },
             //{ text: "价格截止时间", align: "start", value: "endTime" },
             { text: "销售子订单条数", align: "start", value: "orderNum" },
             { text: "销售数", align: "start", value: "seleNum" },
+            { text: "创建时间", align: "start", value: "calculatedCreateTime" },
             { text: "Actions", value: "actions", sortable: false },
           ];
 
           console.log(res);
           this.loading = false;
           this.skuInfo = res.data.skus;
+
+          //数据处理
+          this.dataAnalyze();
 
           // this.skuInfo.forEach((item) => {
           //   if (item.end == "至今") {
@@ -175,6 +183,50 @@ export default {
         });
     },
 
+    dataAnalyze() {
+      var date = new Date();
+      var month, day;
+      this.skuInfo.forEach((sku) => {
+        console.log(sku);
+        date.setTime(sku.startTime);
+        month = date.getUTCMonth() + 1;
+        day = date.getUTCDate();
+        sku.calculatedStartTime = `${date.getUTCFullYear()}-${
+          month < 10 ? "0" + month : month
+        }-${day < 10 ? "0" + day : day}`;
+
+        date.setTime(sku.createTime);
+        month = date.getMonth() + 1;
+        day = date.getDate();
+        sku.calculatedCreateTime = `${date.getFullYear()}-${
+          month < 10 ? "0" + month : month
+        }-${
+          day < 10 ? "0" + day : day
+        } ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+      });
+
+      var skuId = {};
+      this.skuInfo.forEach((sku) => {
+        if (skuId[sku.skuId]) {
+          skuId[sku.skuId].count++;
+          if (skuId[sku.skuId].sku.startTime < sku.startTime) {
+            skuId[sku.skuId].sku = sku;
+          } else if (skuId[sku.skuId].sku.startTime == sku.startTime) {
+            if (skuId[sku.skuId].sku.createTime < sku.createTime) {
+              skuId[sku.skuId].sku = sku;
+            }
+          }
+        } else {
+          skuId[sku.skuId] = { count: 1, sku: sku };
+        }
+      });
+      console.log(skuId);
+
+
+      this.validSkuInfo = [];
+      for (let id in skuId) this.validSkuInfo.push(skuId[id].sku);
+    },
+
     download() {
       var skuInfoCopy = [];
       for (let sku of this.skuInfo) {
@@ -185,23 +237,10 @@ export default {
           skuName: sku.skuName,
           skuPrice: sku.skuPrice,
           skuCost: sku.skuCost,
-          startTime: sku.startTime,
+          startTime: sku.calculatedStartTime,
         });
       }
 
-      var date = new Date();
-      for (let i = 0; i < Object.keys(skuInfoCopy).length; i++) {
-        date.setTime(skuInfoCopy[i].startTime);
-
-        var month = date.getUTCMonth() + 1;
-        var day = date.getUTCDate();
-
-        date.setTime(skuInfoCopy[i].startTime);
-        skuInfoCopy[i].startTime = `${date.getUTCFullYear()}-${
-          month < 10 ? "0" + month : month
-        }-${day < 10 ? "0" + day : day}`;
-        console.log(date);
-      }
       const XLSX = require("xlsx");
       console.log(skuInfoCopy);
       const raw_data = skuInfoCopy; //this.check ? this.validSkuInfo : this.skuInfo;
