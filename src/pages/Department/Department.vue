@@ -4,7 +4,9 @@
     fixed-header
     loading-text="加载中... 请稍后"
     no-data-text="空"
-    item-key="id"
+    item-key="uid"
+    :expanded.sync="expanded"
+    show-expand
     disable-sort
     height="calc(100vh - 257px)"
     :headers="headers"
@@ -69,6 +71,11 @@
         </v-dialog>
       </v-toolbar>
     </template>
+
+    <template v-slot:expanded-item="{ headers, item }">
+      <td :colspan="headers.length">More info about {{ item.name }}</td>
+    </template>
+
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
       <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
@@ -102,6 +109,7 @@ export default {
       { text: "Actions", value: "actions", sortable: false },
     ],
     items: [],
+    expanded: [],
     editedIndex: -1,
     editedItem: {
       uid: "",
