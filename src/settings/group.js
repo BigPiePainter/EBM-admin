@@ -1,29 +1,28 @@
 import http from '@/libs/http'
 
-export const userLogin = data => {
+export const loadGroup = data => {
     const args = {
-        url: '/user/login',
+        url: '/group/load',
         method: 'POST',
         data
     }
     return http.request(args)
 }
 
-export const getSubUsers = data => {
+export const deleteGroup = data => {
     const args = {
-        url: '/user/getSubUsers',
+        url: '/group/delete',
         method: 'POST',
         data
     }
     return http.request(args)
 }
 
-export const createSubUsers = data => {
+export const editGroup = data => {
     const args = {
-        url: '/user/createSubUsers',
+        url: '/group/edit',
         method: 'POST',
         data
     }
     return http.request(args)
 }
-

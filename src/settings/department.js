@@ -1,29 +1,28 @@
 import http from '@/libs/http'
 
-export const userLogin = data => {
+export const loadDepaetment = data => {
     const args = {
-        url: '/user/login',
+        url: '/department/load',
         method: 'POST',
         data
     }
     return http.request(args)
 }
 
-export const getSubUsers = data => {
+export const deleteDepaetment = data => {
     const args = {
-        url: '/user/getSubUsers',
+        url: '/department/delete',
         method: 'POST',
         data
     }
     return http.request(args)
 }
 
-export const createSubUsers = data => {
+export const editDepaetment = data => {
     const args = {
-        url: '/user/createSubUsers',
+        url: '/department/edit',
         method: 'POST',
         data
     }
     return http.request(args)
 }
-
