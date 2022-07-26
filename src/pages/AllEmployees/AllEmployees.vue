@@ -53,7 +53,7 @@
                 </v-row>
                 <v-divider class="my-8" />
                 <v-row>
-                  <v-col >
+                  <v-col>
                     <span class="text-body-2 text--secondary">上级</span>
                     <v-text-field
                       outlined
@@ -62,7 +62,7 @@
                       v-model="createUser.boss"
                     ></v-text-field>
                   </v-col>
-                  <v-col >
+                  <v-col>
                     <span class="text-body-2 text--secondary">从属</span>
                     <v-text-field
                       outlined
@@ -73,7 +73,7 @@
                   </v-col> </v-row
                 ><v-divider class="my-8" />
                 <v-row>
-                  <v-col >
+                  <v-col>
                     <span class="text-body-2 text--secondary">注册用户名</span>
                     <v-text-field
                       outlined
@@ -81,10 +81,8 @@
                       hide-details
                       v-model="createUser.username"
                     ></v-text-field>
-                  </v-col> </v-row
-                ><v-divider class="my-8" />
-                <v-row>
-                  <v-col >
+                  </v-col>
+                  <v-col>
                     <span class="text-body-2 text--secondary">注册密码</span>
                     <v-text-field
                       outlined
@@ -95,7 +93,7 @@
                   </v-col> </v-row
                 ><v-divider class="my-8" />
                 <v-row>
-                  <v-col >
+                  <v-col>
                     <span class="text-body-2 text--secondary">备注</span>
                     <v-text-field
                       outlined

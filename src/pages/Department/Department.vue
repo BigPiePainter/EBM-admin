@@ -42,19 +42,28 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
                     <span class="text-body-2 text--secondary">部门</span>
-                    <v-text-field outlined dense hide-details
+                    <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="editedItem.name"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <span class="text-body-2 text--secondary">负责人</span>
-                    <v-text-field outlined dense hide-details
+                    <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="editedItem.manager"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <span class="text-body-2 text--secondary">备注</span>
-                    <v-text-field outlined dense hide-details
+                    <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="editedItem.note"
                     ></v-text-field>
                   </v-col>
@@ -77,8 +86,27 @@
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-      <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+      <v-btn
+        small
+        depressed
+        outlined
+        color="green"
+        @click="editItem(item)"
+        class="ml-1"
+      >
+        修改
+      </v-btn>
+
+      <v-btn
+        small
+        depressed
+        outlined
+        color="red lighten-2"
+        @click="deleteProduct(item)"
+        class="ml-1"
+      >
+        删除
+      </v-btn>
     </template>
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize">Reset</v-btn>
@@ -255,9 +283,7 @@ export default {
       ];
     },
 
-    clickRow(){
-
-    },
+    clickRow() {},
 
     editItem(item) {
       this.editedIndex = this.items.indexOf(item);

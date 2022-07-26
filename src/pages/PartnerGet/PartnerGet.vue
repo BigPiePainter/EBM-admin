@@ -346,8 +346,6 @@
             @click.stop="editItem(item)"
             class="ml-1"
           >
-            <v-icon small class="mr-1"> mdi-pencil </v-icon>
-
             修改
           </v-btn>
 

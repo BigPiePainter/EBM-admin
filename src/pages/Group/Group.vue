@@ -1,11 +1,12 @@
 <template>
-  <v-data-table 
-  show-expand
-  item-key="group"
-  :expanded.sync="expanded"
-  :headers="headers" 
-  :items="items" 
-  class="elevation-1">
+  <v-data-table
+    show-expand
+    item-key="group"
+    :expanded.sync="expanded"
+    :headers="headers"
+    :items="items"
+    class="elevation-1"
+  >
     <template v-slot:top>
       <v-toolbar flat color="white">
         <v-toolbar-title>组别信息表</v-toolbar-title>
@@ -27,19 +28,19 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
                     <span class="text-body-2 text--secondary">组名</span>
-                    <v-text-field outlined dense hide-details
+                    <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="editedItem.group"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <span class="text-body-2 text--secondary">组长</span>
-                    <v-text-field outlined dense hide-details
-                      v-model="editedItem.manager"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
                     <span class="text-body-2 text--secondary">备注</span>
-                    <v-text-field outlined dense hide-details
+                    <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="editedItem.note"
                     ></v-text-field>
                   </v-col>
@@ -56,14 +57,32 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    
+
     <template v-slot:expanded-item="{ headers, item }">
       <td :colspan="headers.length">More info about {{ item.group }}</td>
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-      <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+      <v-btn
+        small
+        depressed
+        outlined
+        color="green"
+        @click="editItem(item)"
+        class="ml-1"
+      >
+        修改
+      </v-btn>
+      <v-btn
+        small
+        depressed
+        outlined
+        color="red lighten-2"
+        @click="deleteProduct(item)"
+        class="ml-1"
+      >
+        删除
+      </v-btn>
     </template>
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize">Reset</v-btn>
@@ -85,7 +104,6 @@ export default {
         value: "group",
       },
       { text: "所属部门", value: "belong" },
-      { text: "组长", value: "manager" },
       { text: "成员", value: "member" },
       { text: "备注", value: "note" },
       { text: "Actions", value: "actions", sortable: false },
@@ -93,12 +111,11 @@ export default {
 
     items: [],
     editedIndex: -1,
-    expanded:[],
-    
+    expanded: [],
+
     editedItem: {
       group: "",
       belong: "",
-      manager: "",
       note: "",
       member: "",
     },
@@ -106,7 +123,6 @@ export default {
     defaultItem: {
       group: "",
       belong: "",
-      manager: "",
       note: "",
       member: "",
     },
@@ -134,70 +150,60 @@ export default {
         {
           group: "1",
           belong: "",
-          manager: "",
           note: "",
           member: 1,
         },
         {
           group: "2",
           belong: "",
-          manager: "",
           note: "",
           member: 2,
         },
         {
           group: "3",
           belong: "",
-          manager: "",
           note: "",
           member: 3,
         },
         {
           group: "4",
           belong: "",
-          manager: "",
           note: "",
           member: 4,
         },
         {
           group: "5",
           belong: "",
-          manager: "",
           note: "",
           member: 5,
         },
         {
           group: "6",
           belong: "",
-          manager: "",
           note: "",
           member: 6,
         },
         {
           group: "7",
           belong: "",
-          manager: "",
           note: "",
           member: 7,
         },
         {
           group: "8",
           belong: "",
-          manager: "",
           note: "",
           member: 8,
         },
         {
           group: "9",
           belong: "",
-          manager: "",
           note: "",
           member: 9,
         },
         {
           group: "0",
           belong: "",
-          manager: "",
           note: "",
           member: 0,
         },
