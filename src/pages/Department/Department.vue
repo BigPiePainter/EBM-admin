@@ -41,21 +41,21 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field
+                    <span class="text-body-2 text--secondary">部门</span>
+                    <v-text-field outlined dense hide-details
                       v-model="editedItem.name"
-                      label="部门"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field
+                    <span class="text-body-2 text--secondary">负责人</span>
+                    <v-text-field outlined dense hide-details
                       v-model="editedItem.manager"
-                      label="负责人"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field
+                    <span class="text-body-2 text--secondary">备注</span>
+                    <v-text-field outlined dense hide-details
                       v-model="editedItem.note"
-                      label="备注"
                     ></v-text-field>
                   </v-col>
                 </v-row>

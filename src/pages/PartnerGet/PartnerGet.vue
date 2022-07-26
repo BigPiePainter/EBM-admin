@@ -140,17 +140,6 @@
 
             <v-spacer></v-spacer>
 
-            <v-switch
-              v-model="showManufacturer"
-              dense
-              label="厂家信息"
-              class="pr-5 pt-6"
-            >
-              <template v-slot:label>
-                <span class="body-2">厂家信息</span>
-              </template>
-            </v-switch>
-
             <v-dialog v-model="dialog" max-width="1000px">
               <!--new item buttom-->
               <template v-slot:activator="{ on, attrs }">
@@ -160,181 +149,177 @@
               </template>
 
               <v-card>
-                <v-card-title>
-                  <span class="text-h5">{{ formTitle }}</span>
-                </v-card-title>
-                <!-- dialog of new input-->
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.id"
-                          label="id"
-                        ></v-text-field>
-                      </v-col>
+                <v-col class="px-10 pt-10">
+                  <v-row>
+                    <span class="text-subtitle-1">商品信息</span>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary">商品ID</span>
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.id"
+                      ></v-text-field>
+                    </v-col>
 
-                      <v-col cols="12" sm="6" md="4">
-                        <v-select
-                          :items="newDepartment"
-                          v-model="editedItem.department"
-                          menu-props="auto"
-                          hide-details
-                          label="部门"
-                          single-line
-                        ></v-select>
-                      </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary">产品名</span>
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.productName"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-divider class="my-8" />
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary">部门</span>
+                      <v-select
+                        outlined
+                        dense
+                        :items="newDepartment"
+                        v-model="editedItem.department"
+                        menu-props="auto"
+                        hide-details
+                        single-line
+                      ></v-select>
+                    </v-col>
 
-                      <v-col cols="12" sm="6" md="4">
-                        <v-select
-                          v-model="editedItem.groupName"
-                          :items="newGroup"
-                          menu-props="auto"
-                          label="组别"
-                          hide-details
-                          single-line
-                        ></v-select>
-                      </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary">组别</span>
+                      <v-select
+                        outlined
+                        dense
+                        v-model="editedItem.groupName"
+                        :items="newGroup"
+                        menu-props="auto"
+                        hide-details
+                        single-line
+                      ></v-select>
+                    </v-col>
 
-                      <v-col cols="12" sm="6" md="4">
-                        <v-select
-                          v-model="editedItem.owner"
-                          :items="newOwner"
-                          menu-props="auto"
-                          label="持品人"
-                          hide-details
-                          single-line
-                        ></v-select>
-                      </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary">持品人</span>
+                      <v-select
+                        outlined
+                        dense
+                        v-model="editedItem.owner"
+                        :items="newOwner"
+                        menu-props="auto"
+                        hide-details
+                        single-line
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary">店铺名</span>
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.shopName"
+                      ></v-text-field>
+                    </v-col>
 
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.shopName"
-                          label="店铺名"
-                        ></v-text-field>
-                      </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary">一级类目</span>
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.firstCategory"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-divider class="my-8" />
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary">品类扣点</span>
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.productDeduction"
+                      ></v-text-field>
+                    </v-col>
 
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.productName"
-                          label="产品名"
-                        ></v-text-field>
-                      </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary"
+                        >品类运费险</span
+                      >
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.productInsurance"
+                      ></v-text-field>
+                    </v-col>
 
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.firstCategory"
-                          label="一级类目"
-                        ></v-text-field>
-                      </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary">每单运费</span>
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.productFreight"
+                      ></v-text-field>
+                    </v-col>
 
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.productDeduction"
-                          label="品类扣点"
-                        ></v-text-field>
-                      </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary"
+                        >子/主订单附带比</span
+                      >
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.extraRatio"
+                      ></v-text-field>
+                    </v-col>
 
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.productInsurance"
-                          label="品类运费险"
-                        ></v-text-field>
-                      </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary"
+                        >运费/总货款</span
+                      >
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.freightToPayment"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-divider class="my-8" />
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary">发货方式</span>
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.transportWay"
+                      ></v-text-field>
+                    </v-col>
 
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.productFreight"
-                          label="每单运费"
-                        ></v-text-field>
-                      </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary"
+                        >聚水潭仓库</span
+                      >
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.storehouse"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-col>
 
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.extraRatio"
-                          label="子/主订单附带比"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.freightToPayment"
-                          label="运费/总货款"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.transportWay"
-                          label="发货方式"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.storehouse"
-                          label="聚水潭仓库"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.manufacturerName"
-                          label="厂家名"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.manufacturerGroup"
-                          label="厂家群名"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.manufacturerPaymentName"
-                          label="厂家收款账户-收款人"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.manufacturerPaymentMethod"
-                          label="厂家收款账户"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.manufacturerPaymentId"
-                          label="厂家账户号码"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.manufacturerRecipient"
-                          label="厂家退货-收件人"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.manufacturerPhone"
-                          label="厂家退货-收件手机号"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.manufacturerAddress"
-                          label="厂家退货-收件地址"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
                 <!-- until there is dialog of new input-->
 
                 <v-card-actions>
@@ -521,14 +506,6 @@ export default {
       { text: "运费/总货款", value: "freightToPayment" },
       { text: "发货方式", value: "transportWay" },
       { text: "聚水潭仓库", value: "storehouse" },
-      { text: "厂家名", value: "manufacturerName" },
-      { text: "厂家群名", value: "manufacturerGroup" },
-      { text: "厂家收款账户-收款人", value: "manufacturerPaymentName" },
-      { text: "厂家收款账户", value: "manufacturerPaymentMethod" },
-      { text: "厂家账户号码", value: "manufacturerPaymentId" },
-      { text: "厂家退货-收件人", value: "manufacturerRecipient" },
-      { text: "厂家退货-收件手机号", value: "manufacturerPhone" },
-      { text: "厂家退货-收件地址", value: "manufacturerAddress" },
       { text: "操作", value: "actions" },
     ],
 
@@ -547,14 +524,6 @@ export default {
       freightToPayment: "",
       transportWay: "",
       storehouse: "",
-      manufacturerName: "",
-      manufacturerGroup: "",
-      manufacturerPaymentName: "",
-      manufacturerPaymentMethod: "",
-      manufacturerPaymentId: "",
-      manufacturerRecipient: "",
-      manufacturerPhone: "",
-      manufacturerAddress: "",
     },
 
     defaultItem: {
@@ -572,14 +541,6 @@ export default {
       freightToPayment: "",
       transportWay: "",
       storehouse: "",
-      manufacturerName: "",
-      manufacturerGroup: "",
-      manufacturerPaymentName: "",
-      manufacturerPaymentMethod: "",
-      manufacturerPaymentId: "",
-      manufacturerRecipient: "",
-      manufacturerPhone: "",
-      manufacturerAddress: "",
     },
   }),
 

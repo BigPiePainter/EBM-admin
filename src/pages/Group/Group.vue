@@ -1,7 +1,7 @@
 <template>
   <v-data-table 
   show-expand
-  key="group"
+  item-key="group"
   :expanded.sync="expanded"
   :headers="headers" 
   :items="items" 
@@ -26,21 +26,21 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field
+                    <span class="text-body-2 text--secondary">组名</span>
+                    <v-text-field outlined dense hide-details
                       v-model="editedItem.group"
-                      label="组名"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field
+                    <span class="text-body-2 text--secondary">组长</span>
+                    <v-text-field outlined dense hide-details
                       v-model="editedItem.manager"
-                      label="组长"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field
+                    <span class="text-body-2 text--secondary">备注</span>
+                    <v-text-field outlined dense hide-details
                       v-model="editedItem.note"
-                      label="备注"
                     ></v-text-field>
                   </v-col>
                 </v-row>
