@@ -123,11 +123,9 @@
 
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length" class="sub-table pa-0">
-            <v-scale-transition>
-              <div class="sub-table-container elevation-20 ml-2 mb-3">
-                <SkuTable :productsInfo="item" />
-              </div>
-            </v-scale-transition>
+            <div class="sub-table-container elevation-20 ml-2 mb-3">
+              <SkuTable :productsInfo="item" />
+            </div>
           </td>
         </template>
 
@@ -156,13 +154,7 @@
             <v-dialog v-model="dialog" max-width="1000px">
               <!--new item buttom-->
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  small
-                  depressed
-                  color="primary"
-                  v-bind="attrs"
-                  v-on="on"
-                >
+                <v-btn small depressed color="primary" v-bind="attrs" v-on="on">
                   新增商品信息
                 </v-btn>
               </template>
@@ -354,33 +346,98 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-
-            <v-dialog v-model="dialogDelete" max-width="500px">
-              <v-card>
-                <v-card-title class="text-h5">是否确定删除？</v-card-title>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeDelete"
-                    >取消</v-btn
-                  >
-                  <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                    >完成</v-btn
-                  >
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
           </v-toolbar>
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon small class="mr-2" @click="editItem(item)">
+          <!-- <v-icon small class="mr-2" @click.stop="editItem(item)">
             mdi-pencil
-          </v-icon>
-          <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+          </v-icon> -->
+          <v-btn
+            small
+            depressed
+            outlined
+            color="green"
+            @click.stop="editItem(item)"
+            class="ml-1"
+          >
+            <v-icon small class="mr-1"> mdi-pencil </v-icon>
+
+            修改
+          </v-btn>
+
+          <v-btn
+            small
+            depressed
+            outlined
+            color="red lighten-2"
+            @click.stop="deleteProduct(item)"
+            class="ml-1"
+          >
+            删除
+          </v-btn>
         </template>
       </v-data-table>
     </v-card>
+
+    <!-- 删除Dialog -->
+    <v-dialog v-model="deleteDialog" max-width="450px">
+      <v-card class="delete-dialog">
+        <v-card-title class="text-subtitle-1"
+          >{{ deleteItem.productName }}
+          <span class="text--secondary text-body-2 ml-5 mt-1">
+            同时删除SKU与厂家信息
+          </span>
+        </v-card-title>
+
+        <div class="delete-table-container mt-2 mb-1">
+          <v-data-table
+            :headers="[
+              { align: 'start', value: 'key' },
+              { align: 'start', value: 'value' },
+            ]"
+            :items="deleteItemParse"
+            hide-default-footer
+            hide-default-header
+            disable-sort
+          >
+            <template v-slot:[`item.key`]="{ item }">
+              <div class="ml-3">
+                {{ item.key }}
+              </div>
+            </template>
+          </v-data-table>
+        </div>
+
+        <v-card-actions>
+          <v-switch
+            v-for="i of 3"
+            v-model="deleteConfirm[i]"
+            dense
+            class="mt-1 mr-3"
+            :key="i"
+            ><template v-slot:label>
+              <span class="body-2">确定</span>
+            </template></v-switch
+          >
+
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="deleteDialog = false"
+            >取消</v-btn
+          >
+          <v-btn
+            color="red darken-1"
+            text
+            @click="sureDelete"
+            :disabled="
+              !deleteConfirm[1] || !deleteConfirm[2] || !deleteConfirm[3]
+            "
+          >
+            <v-icon small class="mr-1"> mdi-delete </v-icon>删除</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -427,7 +484,12 @@ export default {
     options: {},
 
     dialog: false,
-    dialogDelete: false,
+
+    deleteDialog: false, //删除弹框
+    deleteItem: {},
+    deleteItemParse: [],
+    deleteConfirm: [],
+
     //二级展开
     expanded: [],
 
@@ -467,7 +529,7 @@ export default {
       { text: "厂家退货-收件人", value: "manufacturerRecipient" },
       { text: "厂家退货-收件手机号", value: "manufacturerPhone" },
       { text: "厂家退货-收件地址", value: "manufacturerAddress" },
-      { text: "Actions", value: "actions" },
+      { text: "操作", value: "actions" },
     ],
 
     editedItem: {
@@ -531,7 +593,7 @@ export default {
     dialog(val) {
       val || this.close();
     },
-    dialogDelete(val) {
+    deleteDialog(val) {
       val || this.closeDelete();
     },
 
@@ -650,10 +712,34 @@ export default {
       this.dialog = true;
     },
 
-    deleteItem(item) {
-      this.editedIndex = this.products.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
+    deleteProduct(item) {
+      console.log(item);
+      this.deleteItem = item;
+      this.deleteItemParse = [
+        {
+          key: "商品ID",
+          value: item.id,
+        },
+        {
+          key: "产品名",
+          value: item.productName,
+        },
+        {
+          key: "店铺名",
+          value: item.shopName,
+        },
+        {
+          key: "一级类目",
+          value: item.firstCategory,
+        },
+      ];
+      this.deleteConfirm = [];
+
+      this.deleteDialog = true;
+    },
+
+    sureDelete() {
+      console.log(this.deleteConfirm);
     },
 
     deleteItemConfirm() {
@@ -670,7 +756,7 @@ export default {
     },
 
     closeDelete() {
-      this.dialogDelete = false;
+      this.deleteDialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;

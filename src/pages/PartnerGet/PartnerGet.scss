@@ -41,14 +41,15 @@
     .v-toolbar__content {
       height: 50px !important;
 
-      .v-toolbar__title{
+      .v-toolbar__title {
         font-size: 1rem;
       }
     }
   }
-  .v-data-footer{
-    .v-data-footer__select{
-      .v-select{
+
+  .v-data-footer {
+    .v-data-footer__select {
+      .v-select {
         margin-top: 8px;
         margin-bottom: 8px;
       }
@@ -64,7 +65,7 @@
   }
 
   tr:not(.v-data-table__progress) {
-    th {
+    >th {
       font-size: 0.7rem !important;
       height: 38.4px !important;
 
@@ -82,13 +83,21 @@
 
 }
 
-
 .sub-table {
-
   .sub-table-container {
     width: fit-content;
     background-color: transparent;
     transform: translateY(-5px);
     border-radius: 5px;
+  }
+}
+
+
+
+.delete-dialog {
+  .v-input--switch {
+    .v-messages {
+      min-height: 0px;
+    }
   }
 }

@@ -52,9 +52,11 @@
             <v-btn icon dark @click="cancel">
               <v-icon>mdi-close</v-icon>
             </v-btn>
-            <v-toolbar-title>{{
-              `${product.id}   ${product.productName}（${product.firstCategory}）SKU上传检索`
-            }}</v-toolbar-title>
+            <v-toolbar-title>
+              {{
+                `${product.id}   ${product.productName}（${product.firstCategory}）SKU上传检索`
+              }}
+            </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn dark text> {{ wrong + " 格式错误" }}</v-btn>

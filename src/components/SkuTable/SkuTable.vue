@@ -1,61 +1,252 @@
 
 <template>
-  <v-data-table
-    calculate-widths
-    :dense="dense"
-    :loading="loading"
-    loading-text="加载中... 请稍后"
-    no-data-text="空"
-    :headers="headers"
-    :items="check ? validSkuInfo : skuInfo"
-    :items-per-page="50"
-    :footer-props="{
-      'items-per-page-options': [10, 20, 50, 100],
-      'items-per-page-text': '每页显示条数',
-    }"
-    class="elevation-1 mb-1"
-  >
-    <template v-slot:top>
-      <v-toolbar flat>
-        <v-toolbar-title>SKU信息</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
+  <div>
+    <div v-if="show">
+      <v-tabs v-model="tabs" align-with-title>
+        <!-- align-with-title -->
+        <!-- <v-tabs-slider color="yellow"></v-tabs-slider> -->
+        <v-tab>
+          <span class="text-body-1">SKU信息</span>
+        </v-tab>
+        <v-tab>
+          <span class="text-body-1">厂家信息</span>
+        </v-tab>
+        <v-toolbar flat v-if="tabs == 0" :key="1">
+          <v-spacer></v-spacer>
+          <v-switch
+            v-model="check"
+            label="有效SKU"
+            class="pr-5 pt-6"
+          ></v-switch>
 
-        <v-spacer></v-spacer>
-        <v-switch v-model="check" label="有效SKU" class="pr-5 pt-6"></v-switch>
+          <v-btn
+            color="green lighten-2"
+            small
+            dark
+            @click="download"
+            class="mr-3"
+          >
+            导出
+          </v-btn>
 
-        <v-btn
-          color="green lighten-2"
-          small
-          dark
-          @click="download"
-          class="mr-3"
-        >
-          导出
-        </v-btn>
+          <SkuUpload :product="productsInfo" />
+        </v-toolbar>
+        <v-toolbar flat v-else :key="2">
+          <v-spacer></v-spacer>
+          <v-btn small color="primary" @click="addManufacturerDialog = true">
+            新增厂家信息
+          </v-btn>
+        </v-toolbar>
+      </v-tabs>
+      <v-expand-transition>
+        <v-tabs-items v-model="tabs" v-if="itemShow">
+          <v-tab-item>
+            <v-data-table
+              loading-text="加载中... 请稍后"
+              no-data-text="空"
+              :headers="headers"
+              :items="check ? validSkuInfo : skuInfo"
+              :loading="loading"
+              :hide-default-footer="
+                (check ? validSkuInfo : skuInfo).length <= 10
+              "
+              :items-per-page="10"
+              :footer-props="{
+                'items-per-page-options': [10, 20, 50, 100],
+                'items-per-page-text': '每页显示条数',
+              }"
+            >
+              <template v-slot:[`item.actions`]="{ item }">
+                <v-btn
+                  small
+                  depressed
+                  outlined
+                  color="red lighten-2"
+                  @click="deleteSku(item)"
+                  class="ml-1"
+                >
+                  <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
+                  删除
+                </v-btn>
+              </template>
+            </v-data-table>
+          </v-tab-item>
+          <v-tab-item>
+            <v-data-table
+              calculate-widths
+              loading-text="加载中... 请稍后"
+              no-data-text="空"
+              :headers="manufacturerHeaders"
+              :items="manufacturerInfo"
+              :loading="loading"
+              :hide-default-footer="manufacturerInfo.length <= 10"
+              :items-per-page="10"
+              :footer-props="{
+                'items-per-page-options': [10, 20, 50, 100],
+                'items-per-page-text': '每页显示条数',
+              }"
+            >
+              <template v-slot:[`item.actions`]="{ item }">
+                <v-btn
+                  small
+                  depressed
+                  outlined
+                  color="red lighten-2"
+                  @click="deleteSku(item)"
+                  class="ml-1"
+                >
+                  <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
+                  删除
+                </v-btn>
+              </template>
+            </v-data-table>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-expand-transition>
+    </div>
 
-        <SkuUpload :product="productsInfo" />
+    <!-- 删除SKU Dialog -->
+    <v-dialog v-model="deleteDialog" max-width="450px">
+      <v-card>
+        <v-card-title class="text-subtitle-1">{{
+          deleteItem.skuName
+        }}</v-card-title>
 
-        <v-dialog v-model="sdialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5">是否确定删除？</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="secondcloseDelete"
-                >取消</v-btn
-              >
-              <v-btn color="blue darken-1" text @click="seconddeleteItemConfirm"
-                >完成</v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small @click="seconddeleteItem(item)"> mdi-delete </v-icon>
-    </template>
-  </v-data-table>
+        <div class="delete-table-container mt-2">
+          <v-data-table
+            :headers="[
+              { align: 'start', value: 'key' },
+              { align: 'start', value: 'value' },
+            ]"
+            :items="deleteItemParse"
+            hide-default-footer
+            hide-default-header
+            disable-sort
+          >
+            <template v-slot:[`item.key`]="{ item }">
+              <div class="ml-3">
+                {{ item.key }}
+              </div>
+            </template>
+          </v-data-table>
+        </div>
+
+        <v-card-actions>
+          <!-- <span class="text-body-2 text--secondary">
+            删除后会进入回收站
+          </span> -->
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="deleteDialog = false"
+            >取消</v-btn
+          >
+          <v-btn color="red darken-1" text @click="sureDelete">
+            <v-icon small class="mr-1"> mdi-delete </v-icon>删除</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- 新增厂家信息Dialog -->
+    <v-dialog v-model="addManufacturerDialog" max-width="700px">
+      <v-card>
+        <v-col class="px-10 pt-10">
+          <v-row>
+            <span class="text-subtitle-1">基本信息</span>
+          </v-row>
+          <v-row>
+            <v-col>
+              <span class="text-body-2 text--secondary">厂家名* </span>
+              <v-text-field outlined dense hide-details></v-text-field>
+            </v-col>
+            <v-col>
+              <span class="text-body-2 text--secondary">厂家群名* </span>
+              <v-text-field outlined dense hide-details></v-text-field
+            ></v-col>
+          </v-row>
+
+          <v-divider class="my-8" />
+
+          <v-row>
+            <span class="text-subtitle-1">收款信息</span>
+          </v-row>
+          <v-row>
+            <v-col>
+              <span class="text-body-2 text--secondary"> 收款方式* </span>
+              <v-text-field outlined dense hide-details></v-text-field>
+            </v-col>
+            <v-col>
+              <span class="text-body-2 text--secondary"> 收款人* </span>
+              <v-text-field outlined dense hide-details></v-text-field
+            ></v-col>
+          </v-row>
+          <v-row
+            ><v-col>
+              <span class="text-body-2 text--secondary"> 收款账户* </span>
+              <v-text-field outlined dense hide-details></v-text-field></v-col
+          ></v-row>
+
+          <v-divider class="my-8" />
+
+          <v-row>
+            <span class="text-subtitle-1">退货信息</span>
+          </v-row>
+          <v-row>
+            <v-col>
+              <span class="text-body-2 text--secondary"> 收件人* </span>
+              <v-text-field outlined dense hide-details></v-text-field>
+            </v-col>
+            <v-col>
+              <span class="text-body-2 text--secondary"> 收件手机号* </span>
+              <v-text-field outlined dense hide-details></v-text-field
+            ></v-col>
+          </v-row>
+          <v-row
+            ><v-col>
+              <span class="text-body-2 text--secondary"> 收件地址* </span>
+              <v-text-field outlined dense hide-details></v-text-field></v-col
+          ></v-row>
+
+          <!-- <v-row class="d-flex align-center">
+            <span class="text-body-2 mr-2"> 厂家名 </span>
+            <v-text-field solo></v-text-field>
+          </v-row>
+
+          <v-row class="d-flex align-center">
+            <span class="text-body-2 mr-2"> 厂家群名 </span>
+            <v-text-field solo></v-text-field>
+          </v-row>
+
+          <v-row>
+            <v-col>
+              <div class="d-flex align-center">
+                <span class="text-body-2 mr-2"> 厂家收款人 </span>
+                <v-text-field solo></v-text-field>
+              </div>
+            </v-col>
+            <v-col>
+              <div class="d-flex align-center">
+                <span class="text-body-2 mr-2"> 厂家收款账户 </span>
+                <v-text-field solo></v-text-field>
+              </div>
+            </v-col>
+          </v-row> -->
+        </v-col>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="addManufacturerDialog = false"
+            >取消</v-btn
+          >
+          <v-btn color="blue darken-1" text @click="null">
+            <v-icon small class="mr-1"> mdi-add </v-icon>添加</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 
@@ -63,6 +254,10 @@
 <script>
 import SkuUpload from "@/components/SkuUpload/SkuUpload";
 import { loadSkus } from "@/settings/sku";
+import { deleteSku } from "@/settings/sku";
+
+import { loadManufacturers } from "@/settings/manufacturer";
+import { addManufacturer } from "@/settings/manufacturer";
 //import { deleteSkus } from "@/settings/sku";
 //import * as XLSX from 'xlsx/xlsx.mjs';
 
@@ -80,21 +275,52 @@ export default {
     this.initialSkuInfo();
   },
 
+  mounted() {
+    //this.show = true
+  },
+
   data() {
     return {
-      // sdialog: false,
-      sdialogDelete: false,
-      ssdialogs: false,
+      show: false,
+      itemShow: false,
 
-      status: "松开上传",
-      progress: false,
+      tabs: 0,
 
-      headers: [],
+      deleteDialog: false, //删除弹框
+      deleteItem: {}, //删除信息
+      deleteItemParse: {}, //删
+
+      addManufacturerDialog: false,
+
+      headers: [
+        { text: "SKUID", align: "start", value: "skuId" },
+        { text: "SKU名称", align: "start", value: "skuName" },
+        { text: "售卖价", align: "start", value: "skuPrice" },
+        { text: "成本", align: "start", value: "skuCost" },
+        { text: "价格开始时间", align: "start", value: "calculatedStartTime" },
+        //{ text: "价格截止时间", align: "start", value: "endTime" },
+        { text: "销售子订单条数", align: "start", value: "orderNum" },
+        { text: "销售数", align: "start", value: "seleNum" },
+        { text: "创建时间", align: "start", value: "calculatedCreateTime" },
+        { text: "操作", align: "start", value: "actions" },
+      ],
       skuInfo: [],
-      skuInfo1: [],
       validSkuInfo: [],
 
-      dense: false,
+      manufacturerHeaders: [
+        { text: "厂家名", align: "start", value: "skuId" },
+        { text: "厂家群名", align: "start", value: "skuPrice" },
+        { text: "厂家收款方式", align: "start", value: "skuCost" },
+        { text: "厂家收款人", align: "start", value: "calculatedStartTime" },
+        { text: "厂家收款号码", align: "start", value: "orderNum" },
+        { text: "厂家退货-收件人", align: "start", value: "seleNum" },
+        { text: "厂家退货-收件手机号", align: "start", value: "a" },
+        { text: "厂家退货-收件地址", align: "start", value: "actions" },
+        { text: "厂家生效时间", align: "start", value: "actions" },
+        { text: "操作", align: "start", value: "actions" },
+      ],
+      manufacturerInfo: [],
+
       loading: false,
 
       check: true,
@@ -126,45 +352,14 @@ export default {
     };
   },
 
-  watch: {
-    // sdialog(val) {
-    //   val || this.secondclose();
-    // },
-    sdialogDelete(val) {
-      val || this.secondcloseDelete();
-    },
-  },
+  watch: {},
 
   methods: {
     initialSkuInfo() {
       this.loading = true;
-
       //加载数据
       loadSkus({ productId: this.productsInfo.id })
         .then((res) => {
-          //加载表头
-          this.headers = [
-            { text: "SKUID", align: "start", value: "skuId" },
-            {
-              text: "SKU名称",
-              align: "start",
-              sortable: false,
-              value: "skuName",
-            },
-            { text: "售卖价", align: "start", value: "skuPrice" },
-            { text: "成本", align: "start", value: "skuCost" },
-            {
-              text: "价格开始时间",
-              align: "start",
-              value: "calculatedStartTime",
-            },
-            //{ text: "价格截止时间", align: "start", value: "endTime" },
-            { text: "销售子订单条数", align: "start", value: "orderNum" },
-            { text: "销售数", align: "start", value: "seleNum" },
-            { text: "创建时间", align: "start", value: "calculatedCreateTime" },
-            { text: "Actions", value: "actions", sortable: false },
-          ];
-
           console.log(res);
           this.loading = false;
           this.skuInfo = res.data.skus;
@@ -172,11 +367,24 @@ export default {
           //数据处理
           this.dataAnalyze();
 
-          // this.skuInfo.forEach((item) => {
-          //   if (item.end == "至今") {
-          //     this.validSkuInfo.push(item);
-          //   }
-          // });
+          this.show = true;
+          //this.itemShow = true;
+
+          // setTimeout(() => {
+          //   this.itemShow = true;
+          // }, 0);
+
+          this.$nextTick(() => {
+            this.itemShow = true;
+          });
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+
+      loadManufacturers({ productId: this.productsInfo.id })
+        .then((res) => {
+          console.log(res);
         })
         .catch(() => {
           this.loading = false;
@@ -221,7 +429,6 @@ export default {
         }
       });
       console.log(skuId);
-
 
       this.validSkuInfo = [];
       for (let id in skuId) this.validSkuInfo.push(skuId[id].sku);
@@ -293,50 +500,49 @@ export default {
       );
     },
 
-    // secondeditItem(item) {
-    //   this.seditedIndex = this.subTableEdited.indexOf(item);
-    //   this.secondeditedItem = Object.assign({}, item);
-    //   this.sdialog = true;
-    // },
+    deleteSku(item) {
+      console.log(item);
 
-    seconddeleteItem(item) {
-      this.seditedIndex = this.subTableEdited.indexOf(item);
-      this.secondeditedItem = Object.assign({}, item);
-      this.sdialogDelete = true;
+      this.deleteItem = item;
+      this.deleteItemParse = [
+        {
+          key: "SKUID",
+          value: item.skuId,
+        },
+        {
+          key: "售卖价",
+          value: item.skuPrice,
+        },
+        {
+          key: "单个成本",
+          value: item.skuCost,
+        },
+        {
+          key: "价格开始时间",
+          value: item.calculatedStartTime,
+        },
+        {
+          key: "创建时间",
+          value: item.calculatedCreateTime,
+        },
+      ];
+
+      this.deleteDialog = true;
     },
 
-    seconddeleteItemConfirm() {
-      this.subTableEdited.splice(this.seditedIndex, 1);
-      this.secondcloseDelete();
+    sureDelete() {
+      this.deleteDialog = false;
+      deleteSku({ uid: this.deleteItem.uid })
+        .then((res) => {
+          console.log(res);
+          this.global.infoAlert(res.data);
+          this.initialSkuInfo();
+        })
+        .catch(() => {});
     },
 
-    secondclose() {
-      // this.sdialog = false;
-      this.$nextTick(() => {
-        this.secondeditedItem = Object.assign({}, this.seconddefaultItem);
-        this.seditedIndex = -1;
-      });
-    },
-
-    secondcloseDelete() {
-      this.sdialogDelete = false;
-      this.$nextTick(() => {
-        this.secondeditedItem = Object.assign({}, this.seconddefaultItem);
-        this.seditedIndex = -1;
-      });
-    },
-
-    secondsave() {
-      if (this.seditedIndex > -1) {
-        console.log("444444444");
-        Object.assign(
-          this.subTableEdited[this.seditedIndex],
-          this.secondeditedItem
-        );
-      } else {
-        this.subTableEdited.push(this.secondeditedItem);
-      }
-      this.secondclose();
+    newManufacturer() {
+      addManufacturer({});
     },
   },
 };
@@ -345,4 +551,12 @@ export default {
 
 
 <style scoped lang="scss">
+// .delete-table-container {
+//   width: fit-content;
+// }
+
+.v-card__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>

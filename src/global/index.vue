@@ -8,7 +8,7 @@ export default {
     console.log(...arguments);
   },
   infoAlert(message) {
-    Vue.prototype.$toast.error(message, {
+    Vue.prototype.$toast.info(message, {
       position: "top-right",
       timeout: 6000,
       closeOnClick: true,
