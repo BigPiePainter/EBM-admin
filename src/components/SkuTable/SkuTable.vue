@@ -206,30 +206,6 @@
               <v-text-field outlined dense hide-details></v-text-field></v-col
           ></v-row>
 
-          <!-- <v-row class="d-flex align-center">
-            <span class="text-body-2 mr-2"> 厂家名 </span>
-            <v-text-field solo></v-text-field>
-          </v-row>
-
-          <v-row class="d-flex align-center">
-            <span class="text-body-2 mr-2"> 厂家群名 </span>
-            <v-text-field solo></v-text-field>
-          </v-row>
-
-          <v-row>
-            <v-col>
-              <div class="d-flex align-center">
-                <span class="text-body-2 mr-2"> 厂家收款人 </span>
-                <v-text-field solo></v-text-field>
-              </div>
-            </v-col>
-            <v-col>
-              <div class="d-flex align-center">
-                <span class="text-body-2 mr-2"> 厂家收款账户 </span>
-                <v-text-field solo></v-text-field>
-              </div>
-            </v-col>
-          </v-row> -->
         </v-col>
 
         <v-card-actions>
@@ -241,7 +217,7 @@
             >取消</v-btn
           >
           <v-btn color="blue darken-1" text @click="null">
-            <v-icon small class="mr-1"> mdi-add </v-icon>添加</v-btn
+           添加</v-btn
           >
         </v-card-actions>
       </v-card>
