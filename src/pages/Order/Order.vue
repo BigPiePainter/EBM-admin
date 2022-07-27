@@ -1,67 +1,42 @@
 <template>
-  <v-container fluid>
-    <v-row align="center">
-      <v-col cols="6">
-        <v-select
-          v-model="e4"
-          :items="group"
-          menu-props="auto"
-          label="Select"
-          hide-details
-          single-line
-          @click="show1"
-        ></v-select>
-      </v-col>
-      <v-col cols="6">
-        <v-select
-          :items="department"
-          v-model="e3"
-          menu-props="auto"
-          hide-details
-          label="Select"
-          single-line
-          @click="show2"
-        ></v-select>
-      </v-col>
-    </v-row>
-  </v-container>
+<div> 
+      <v-card>
+        <v-card-title>
+          订单信息
+          <v-spacer />
+          <order-upload />
+        </v-card-title>
+
+        <v-divider />
+
+      <v-data-table>
+          <template>  
+
+          </template>
+      </v-data-table>
+
+      </v-card>
+</div>
 </template>
 
 
 <script>
-import { getClass } from "@/settings/product";
+import OrderUpload from "../../components/OrderUpload/OrderUpload.vue";
+
+import {loadOrder} from "@/settings/order"
+
 export default {
+  components: { OrderUpload },
   data() {
-    return {
-      e3: null,
-      e4: null,
-      department: [],
-      group:[],
-    };
+    return {};
   },
 
-  created(){
-    this.department=[];
-    this.group=[];
-    getClass({})
-      .then((res) => {
-        this.menu = res.data;
-        this.department = this.menu.department;
-        this.group = this.menu.groupName;
-        console.log(res.data);
-      })
-      .catch(() => {});
+  created() {
+    loadOrder({})
   },
 
   methods: {
-    show1() {
-      console.log(this.e4)
-    },
 
-    show2() {
-      console.log(this.e3)
-      console.log(this.menu)
-    },
   },
 };
 </script>
