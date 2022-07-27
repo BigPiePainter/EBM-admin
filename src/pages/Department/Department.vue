@@ -41,21 +41,30 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
+                    <span class="text-body-2 text--secondary">部门</span>
                     <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="editedItem.name"
-                      label="部门"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
+                    <span class="text-body-2 text--secondary">负责人</span>
                     <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="editedItem.manager"
-                      label="负责人"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
+                    <span class="text-body-2 text--secondary">备注</span>
                     <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="editedItem.note"
-                      label="备注"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -77,8 +86,27 @@
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-      <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+      <v-btn
+        small
+        depressed
+        outlined
+        color="green"
+        @click="editItem(item)"
+        class="ml-1"
+      >
+        修改
+      </v-btn>
+
+      <v-btn
+        small
+        depressed
+        outlined
+        color="red lighten-2"
+        @click="deleteProduct(item)"
+        class="ml-1"
+      >
+        删除
+      </v-btn>
     </template>
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize">Reset</v-btn>
@@ -89,6 +117,8 @@
 
 
 <script>
+import { getDepartment } from "@/settings/department";
+import { addDepartment } from "@/settings/department";
 export default {
   data: () => ({
     dialog: false,
@@ -151,113 +181,14 @@ export default {
 
   methods: {
     initialize() {
-      this.items = [
-        {
-          uid: "1",
-          name: "A部",
-          a: "",
-          b: "",
-          c: "",
-          create_time: "2000-1-1",
-          modify_time: "",
-          note: "",
-        },
-        {
-          uid: "2",
-          name: "B部",
-          a: "",
-          b: "",
-          c: "",
-          create_time: "1998-1-1",
-          modify_time: "",
-          note: "",
-        },
-        {
-          uid: "3",
-          name: "C部",
-          a: "",
-          b: "",
-          c: "",
-          create_time: "2000-1-1",
-          modify_time: "",
-          note: "",
-        },
-        {
-          uid: "4",
-          name: "事业部1",
-          a: "",
-          b: "",
-          c: "",
-          create_time: "2000-1-1",
-          modify_time: "",
-          note: "no",
-        },
-        {
-          uid: "",
-          name: "？",
-          a: "",
-          b: "",
-          c: "",
-          create_time: "",
-          modify_time: "",
-          note: "",
-        },
-        {
-          uid: "",
-          name: "？",
-          a: "",
-          b: "",
-          c: "",
-          create_time: "",
-          modify_time: "",
-          note: "",
-        },
-        {
-          uid: "",
-          name: "？",
-          a: "",
-          b: "",
-          c: "",
-          create_time: "",
-          modify_time: "",
-          note: "",
-        },
-        {
-          uid: "",
-          name: "？",
-          a: "",
-          b: "",
-          c: "",
-          create_time: "",
-          modify_time: "",
-          note: "",
-        },
-        {
-          uid: "",
-          name: "？",
-          a: "",
-          b: "",
-          c: "",
-          create_time: "",
-          modify_time: "",
-          note: "",
-        },
-        {
-          uid: "",
-          name: "？",
-          a: "",
-          b: "",
-          c: "",
-          create_time: "",
-          modify_time: "",
-          note: "",
-        },
-      ];
+      getDepartment({})
+      .then((res) => {
+      console.log(res.data.department);
+      // this.items = res.data.department;
+    });
     },
 
-    clickRow(){
-
-    },
+    clickRow() {},
 
     editItem(item) {
       this.editedIndex = this.items.indexOf(item);
@@ -282,7 +213,11 @@ export default {
       if (this.editedIndex > -1) {
         Object.assign(this.items[this.editedIndex], this.editedItem);
       } else {
-        this.items.push(this.editedItem);
+       addDepartment({ name: this.editedItem.name, note:this.editedItem.note }).then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          console.log(this.editedItem);
+          this.initialize();
+       });
       }
       this.close();
     },

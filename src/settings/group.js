@@ -1,26 +1,26 @@
 import http from '@/libs/http'
 
-export const loadGroup = data => {
+export const getTeam = data => {
     const args = {
-        url: '/group/load',
+        url: '/team/get',
         method: 'POST',
         data
     }
     return http.request(args)
 }
 
-export const deleteGroup = data => {
+export const deleteTeam = data => {
     const args = {
-        url: '/group/delete',
+        url: '/team/delete',
         method: 'POST',
         data
     }
     return http.request(args)
 }
 
-export const editGroup = data => {
+export const addTeam = data => {
     const args = {
-        url: '/group/edit',
+        url: '/team/add',
         method: 'POST',
         data
     }

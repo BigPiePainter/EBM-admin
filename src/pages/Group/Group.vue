@@ -1,11 +1,12 @@
 <template>
-  <v-data-table 
-  show-expand
-  key="group"
-  :expanded.sync="expanded"
-  :headers="headers" 
-  :items="items" 
-  class="elevation-1">
+  <v-data-table
+    show-expand
+    item-key="group"
+    :expanded.sync="expanded"
+    :headers="headers"
+    :items="items"
+    class="elevation-1"
+  >
     <template v-slot:top>
       <v-toolbar flat color="white">
         <v-toolbar-title>组别信息表</v-toolbar-title>
@@ -26,21 +27,21 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
+                    <span class="text-body-2 text--secondary">组名</span>
                     <v-text-field
-                      v-model="editedItem.group"
-                      label="组名"
+                      outlined
+                      dense
+                      hide-details
+                      v-model="editedItem.name"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
+                    <span class="text-body-2 text--secondary">备注</span>
                     <v-text-field
-                      v-model="editedItem.manager"
-                      label="组长"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="editedItem.note"
-                      label="备注"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -56,17 +57,32 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    
+
     <template v-slot:expanded-item="{ headers, item }">
       <td :colspan="headers.length">More info about {{ item.group }}</td>
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-      <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
-    </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">Reset</v-btn>
+      <v-btn
+        small
+        depressed
+        outlined
+        color="green"
+        @click="editItem(item)"
+        class="ml-1"
+      >
+        修改
+      </v-btn>
+      <v-btn
+        small
+        depressed
+        outlined
+        color="red lighten-2"
+        @click="deleteProduct(item)"
+        class="ml-1"
+      >
+        删除
+      </v-btn>
     </template>
   </v-data-table>
 </template>
@@ -74,41 +90,49 @@
 
 
 <script>
+import { getTeam } from "@/settings/group";
+import { addTeam } from "@/settings/group";
 export default {
   data: () => ({
     dialog: false,
     headers: [
       {
-        text: "组名",
+        text: "组ID",
         align: "start",
         sortable: false,
-        value: "group",
+        value: "uid",
+      },
+      {
+        text: "组名",
+        sortable: false,
+        value: "name",
       },
       { text: "所属部门", value: "belong" },
-      { text: "组长", value: "manager" },
       { text: "成员", value: "member" },
+      { text: "创建时间", value: "createTime" },
+      { text: "修改时间", value: "modifyTime" },
       { text: "备注", value: "note" },
       { text: "Actions", value: "actions", sortable: false },
     ],
 
     items: [],
     editedIndex: -1,
-    expanded:[],
-    
+    expanded: [],
+
     editedItem: {
-      group: "",
-      belong: "",
-      manager: "",
+      uid: "",
+      name: "",
+      createTime: "",
+      modifyTime: "",
       note: "",
-      member: "",
     },
 
     defaultItem: {
-      group: "",
-      belong: "",
-      manager: "",
+      uid: "",
+      name: "",
+      createTime: "",
+      modifyTime: "",
       note: "",
-      member: "",
     },
   }),
 
@@ -125,83 +149,16 @@ export default {
   },
 
   created() {
-    this.initialize();
+    this.initialGroup();
   },
 
   methods: {
-    initialize() {
-      this.items = [
-        {
-          group: "1",
-          belong: "",
-          manager: "",
-          note: "",
-          member: 1,
-        },
-        {
-          group: "2",
-          belong: "",
-          manager: "",
-          note: "",
-          member: 2,
-        },
-        {
-          group: "3",
-          belong: "",
-          manager: "",
-          note: "",
-          member: 3,
-        },
-        {
-          group: "4",
-          belong: "",
-          manager: "",
-          note: "",
-          member: 4,
-        },
-        {
-          group: "5",
-          belong: "",
-          manager: "",
-          note: "",
-          member: 5,
-        },
-        {
-          group: "6",
-          belong: "",
-          manager: "",
-          note: "",
-          member: 6,
-        },
-        {
-          group: "7",
-          belong: "",
-          manager: "",
-          note: "",
-          member: 7,
-        },
-        {
-          group: "8",
-          belong: "",
-          manager: "",
-          note: "",
-          member: 8,
-        },
-        {
-          group: "9",
-          belong: "",
-          manager: "",
-          note: "",
-          member: 9,
-        },
-        {
-          group: "0",
-          belong: "",
-          manager: "",
-          note: "",
-          member: 0,
-        },
-      ];
+
+    initialGroup(){
+      getTeam({}).then((res) => {
+      console.log(res.data.teams);
+      this.items = res.data.teams;
+    });
     },
 
     editItem(item) {
@@ -227,7 +184,11 @@ export default {
       if (this.editedIndex > -1) {
         Object.assign(this.items[this.editedIndex], this.editedItem);
       } else {
-        this.items.push(this.editedItem);
+        addTeam({ name: this.editedItem.name, note:this.editedItem.note }).then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          console.log(this.editedItem);
+          this.initialGroup();
+        });
       }
       this.close();
     },

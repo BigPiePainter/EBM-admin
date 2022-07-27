@@ -1,80 +1,105 @@
 <template>
-    <v-data-table
-      fixed-header
-      show-expand
-      loading-text="加载中... 请稍后"
-      no-data-text="空"
-      item-key="uid"
-      class="elevation-1"
-      height="calc(100vh - 150px)"
-      :loading="loading"
-      :headers="headers"
-      :items="userInfos"
-      :items-per-page="50"
-      :footer-props="{
-        'items-per-page-options': [10, 20, 50, 100],
-        'items-per-page-text': '每页显示条数',
-      }"
-    >
-      <template v-slot:top>
-        <v-toolbar>
-          <v-toolbar-title>员工信息</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer />
-          <v-dialog v-model="createDialog" max-width="500px">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                dark
-                class="mb-2"
-                @click="dialog"
-                v-bind="attrs"
-                v-on="on"
-                >添加新员工</v-btn
-              >
-            </template>
-             <v-card>
+  <v-data-table
+    fixed-header
+    show-expand
+    loading-text="加载中... 请稍后"
+    no-data-text="空"
+    item-key="uid"
+    class="elevation-1"
+    height="calc(100vh - 150px)"
+    :loading="loading"
+    :headers="headers"
+    :items="userInfos"
+    :items-per-page="50"
+    :footer-props="{
+      'items-per-page-options': [10, 20, 50, 100],
+      'items-per-page-text': '每页显示条数',
+    }"
+  >
+    <template v-slot:top>
+      <v-toolbar>
+        <v-toolbar-title>员工信息</v-toolbar-title>
+        <v-divider class="mx-4" inset vertical></v-divider>
+        <v-spacer />
+        <v-dialog v-model="createDialog" max-width="500px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              dark
+              class="mb-2"
+              @click="dialog"
+              v-bind="attrs"
+              v-on="on"
+              >添加新员工</v-btn
+            >
+          </template>
+          <v-card>
             <v-card-title>
-              <span class="headline">新增员工</span>
+              <span class="text-subtitle-1">新增员工</span>
             </v-card-title>
 
             <v-card-text>
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
+                    <span class="text-body-2 text--secondary">姓名</span>
                     <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="createUser.nick"
-                      label="姓名"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
+                </v-row>
+                <v-divider class="my-8" />
+                <v-row>
+                  <v-col>
+                    <span class="text-body-2 text--secondary">上级</span>
                     <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="createUser.boss"
-                      label="上级"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col>
+                    <span class="text-body-2 text--secondary">从属</span>
                     <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="createUser.location"
-                      label="从属"
                     ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
+                  </v-col> </v-row
+                ><v-divider class="my-8" />
+                <v-row>
+                  <v-col>
+                    <span class="text-body-2 text--secondary">注册用户名</span>
                     <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="createUser.username"
-                      label="用户名"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col>
+                    <span class="text-body-2 text--secondary">注册密码</span>
                     <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="createUser.password"
-                      label="密码"
                     ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
+                  </v-col> </v-row
+                ><v-divider class="my-8" />
+                <v-row>
+                  <v-col>
+                    <span class="text-body-2 text--secondary">备注</span>
                     <v-text-field
+                      outlined
+                      dense
+                      hide-details
                       v-model="createUser.note"
-                      label="备注"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -87,15 +112,15 @@
               <v-btn color="blue darken-1" text @click="save">保存</v-btn>
             </v-card-actions>
           </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
+        </v-dialog>
+      </v-toolbar>
+    </template>
 
-      <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-        <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
-      </template>
-    </v-data-table>
+    <template v-slot:[`item.actions`]="{ item }">
+      <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+      <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+    </template>
+  </v-data-table>
 </template>
 
 
@@ -157,11 +182,11 @@ export default {
       this.createDialog = true;
     },
 
-    close(){
+    close() {
       this.createDialog = false;
     },
 
-    save(){
+    save() {
       this.uploadUser;
       this.createDialog = false;
     },
