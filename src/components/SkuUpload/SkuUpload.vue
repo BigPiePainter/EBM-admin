@@ -133,7 +133,6 @@ export default {
         .then((res) => {
           this.loading = false;
           this.global.infoAlert("泼发EBC：" + res.data);
-          console.log();
           //刷新页面数据
           //this.loadData();
         })

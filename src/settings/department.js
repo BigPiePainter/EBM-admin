@@ -1,8 +1,8 @@
 import http from '@/libs/http'
 
-export const loadDepaetment = data => {
+export const getDepaetment = data => {
     const args = {
-        url: '/department/load',
+        url: '/department/get',
         method: 'POST',
         data
     }
@@ -18,9 +18,9 @@ export const deleteDepaetment = data => {
     return http.request(args)
 }
 
-export const editDepaetment = data => {
+export const addDepaetment = data => {
     const args = {
-        url: '/department/edit',
+        url: '/department/add',
         method: 'POST',
         data
     }

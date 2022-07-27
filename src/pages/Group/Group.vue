@@ -32,7 +32,7 @@
                       outlined
                       dense
                       hide-details
-                      v-model="editedItem.group"
+                      v-model="editedItem.name"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
@@ -84,27 +84,33 @@
         删除
       </v-btn>
     </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">Reset</v-btn>
-    </template>
   </v-data-table>
 </template>
 
 
 
 <script>
+import { getTeam } from "@/settings/group";
+import { addTeam } from "@/settings/group";
 export default {
   data: () => ({
     dialog: false,
     headers: [
       {
-        text: "组名",
+        text: "组ID",
         align: "start",
         sortable: false,
-        value: "group",
+        value: "uid",
+      },
+      {
+        text: "组名",
+        sortable: false,
+        value: "name",
       },
       { text: "所属部门", value: "belong" },
       { text: "成员", value: "member" },
+      { text: "创建时间", value: "createTime" },
+      { text: "修改时间", value: "modifyTime" },
       { text: "备注", value: "note" },
       { text: "Actions", value: "actions", sortable: false },
     ],
@@ -114,17 +120,19 @@ export default {
     expanded: [],
 
     editedItem: {
-      group: "",
-      belong: "",
+      uid: "",
+      name: "",
+      createTime: "",
+      modifyTime: "",
       note: "",
-      member: "",
     },
 
     defaultItem: {
-      group: "",
-      belong: "",
+      uid: "",
+      name: "",
+      createTime: "",
+      modifyTime: "",
       note: "",
-      member: "",
     },
   }),
 
@@ -141,73 +149,16 @@ export default {
   },
 
   created() {
-    this.initialize();
+    this.initialGroup();
   },
 
   methods: {
-    initialize() {
-      this.items = [
-        {
-          group: "1",
-          belong: "",
-          note: "",
-          member: 1,
-        },
-        {
-          group: "2",
-          belong: "",
-          note: "",
-          member: 2,
-        },
-        {
-          group: "3",
-          belong: "",
-          note: "",
-          member: 3,
-        },
-        {
-          group: "4",
-          belong: "",
-          note: "",
-          member: 4,
-        },
-        {
-          group: "5",
-          belong: "",
-          note: "",
-          member: 5,
-        },
-        {
-          group: "6",
-          belong: "",
-          note: "",
-          member: 6,
-        },
-        {
-          group: "7",
-          belong: "",
-          note: "",
-          member: 7,
-        },
-        {
-          group: "8",
-          belong: "",
-          note: "",
-          member: 8,
-        },
-        {
-          group: "9",
-          belong: "",
-          note: "",
-          member: 9,
-        },
-        {
-          group: "0",
-          belong: "",
-          note: "",
-          member: 0,
-        },
-      ];
+
+    initialGroup(){
+      getTeam({}).then((res) => {
+      console.log(res.data.teams);
+      this.items = res.data.teams;
+    });
     },
 
     editItem(item) {
@@ -233,7 +184,11 @@ export default {
       if (this.editedIndex > -1) {
         Object.assign(this.items[this.editedIndex], this.editedItem);
       } else {
-        this.items.push(this.editedItem);
+        addTeam({ name: this.editedItem.name, note:this.editedItem.note }).then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          console.log(this.editedItem);
+          this.initialGroup();
+        });
       }
       this.close();
     },
