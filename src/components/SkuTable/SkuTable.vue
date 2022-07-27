@@ -12,7 +12,7 @@
           <span class="text-body-1">厂家信息</span>
         </v-tab>
         <v-toolbar flat v-if="tabs == 0" :key="1">
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-switch
             v-model="check"
             label="有效SKU"
@@ -29,10 +29,10 @@
             导出
           </v-btn>
 
-          <SkuUpload :product="productsInfo" />
+          <SkuUpload :product="productInfo" />
         </v-toolbar>
         <v-toolbar flat v-else :key="2">
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn small color="primary" @click="addManufacturerDialog = true">
             新增厂家信息
           </v-btn>
@@ -135,7 +135,7 @@
           <!-- <span class="text-body-2 text--secondary">
             删除后会进入回收站
           </span> -->
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn color="blue darken-1" text @click="deleteDialog = false"
             >取消</v-btn
           >
@@ -149,75 +149,179 @@
     <!-- 新增厂家信息Dialog -->
     <v-dialog v-model="addManufacturerDialog" max-width="700px">
       <v-card>
-        <v-col class="px-10 pt-10">
-          <v-row>
-            <span class="text-subtitle-1">基本信息</span>
-          </v-row>
-          <v-row>
-            <v-col>
-              <span class="text-body-2 text--secondary">厂家名* </span>
-              <v-text-field outlined dense hide-details></v-text-field>
-            </v-col>
-            <v-col>
-              <span class="text-body-2 text--secondary">厂家群名* </span>
-              <v-text-field outlined dense hide-details></v-text-field
-            ></v-col>
-          </v-row>
+        <v-form>
+          <v-col class="px-10 pt-10 manufacturer-dialog">
+            <v-row>
+              <span class="text-subtitle-1">基本信息</span>
+            </v-row>
+            <v-row>
+              <v-col>
+                <span class="text-body-2 text--secondary">厂家名* </span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  required
+                  v-model="manufacturerEdit.manufacturerName"
+                ></v-text-field>
+              </v-col>
+              <v-col>
+                <span class="text-body-2 text--secondary">厂家群名 </span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  v-model="manufacturerEdit.manufacturerGroup"
+                ></v-text-field
+              ></v-col>
+            </v-row>
 
-          <v-divider class="my-8" />
+            <v-divider class="my-7" />
 
-          <v-row>
-            <span class="text-subtitle-1">收款信息</span>
-          </v-row>
-          <v-row>
-            <v-col>
-              <span class="text-body-2 text--secondary"> 收款方式* </span>
-              <v-text-field outlined dense hide-details></v-text-field>
-            </v-col>
-            <v-col>
-              <span class="text-body-2 text--secondary"> 收款人* </span>
-              <v-text-field outlined dense hide-details></v-text-field
-            ></v-col>
-          </v-row>
-          <v-row
-            ><v-col>
-              <span class="text-body-2 text--secondary"> 收款账户* </span>
-              <v-text-field outlined dense hide-details></v-text-field></v-col
-          ></v-row>
+            <v-row>
+              <span class="text-subtitle-1">收款信息</span>
+            </v-row>
+            <v-row>
+              <v-col>
+                <span class="text-body-2 text--secondary"> 收款方式 </span>
 
-          <v-divider class="my-8" />
+                <v-combobox
+                  outlined
+                  dense
+                  hide-details
+                  :items="[
+                    '支付宝',
+                    '中国银行',
+                    '中国农业银行',
+                    '中国工商银行',
+                  ]"
+                  v-model="manufacturerEdit.manufacturerPaymentMethod"
+                ></v-combobox>
+              </v-col>
+              <v-col>
+                <span class="text-body-2 text--secondary"> 收款人 </span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  v-model="manufacturerEdit.manufacturerPaymentName"
+                ></v-text-field
+              ></v-col>
+            </v-row>
+            <v-row
+              ><v-col>
+                <span class="text-body-2 text--secondary"> 收款账户 </span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  v-model="manufacturerEdit.manufacturerPaymentId"
+                ></v-text-field></v-col
+            ></v-row>
 
-          <v-row>
-            <span class="text-subtitle-1">退货信息</span>
-          </v-row>
-          <v-row>
-            <v-col>
-              <span class="text-body-2 text--secondary"> 收件人* </span>
-              <v-text-field outlined dense hide-details></v-text-field>
-            </v-col>
-            <v-col>
-              <span class="text-body-2 text--secondary"> 收件手机号* </span>
-              <v-text-field outlined dense hide-details></v-text-field
-            ></v-col>
-          </v-row>
-          <v-row
-            ><v-col>
-              <span class="text-body-2 text--secondary"> 收件地址* </span>
-              <v-text-field outlined dense hide-details></v-text-field></v-col
-          ></v-row>
+            <v-divider class="my-7" />
 
-        </v-col>
+            <v-row>
+              <span class="text-subtitle-1">退货信息</span>
+            </v-row>
+            <v-row>
+              <v-col>
+                <span class="text-body-2 text--secondary"> 收件人 </span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  v-model="manufacturerEdit.manufacturerRecipient"
+                ></v-text-field>
+              </v-col>
+              <v-col>
+                <span class="text-body-2 text--secondary"> 收件手机号 </span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  v-model="manufacturerEdit.manufacturerPhone"
+                ></v-text-field
+              ></v-col>
+            </v-row>
+            <v-row
+              ><v-col>
+                <span class="text-body-2 text--secondary"> 收件地址 </span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  v-model="manufacturerEdit.manufacturerAddress"
+                ></v-text-field></v-col
+            ></v-row>
+
+            <v-divider class="my-7" />
+
+            <v-row>
+              <v-col>
+                <span class="text-body-2 text--secondary"> 选择起始日期* </span>
+                <v-menu
+                  ref="menu"
+                  v-model="datePicker"
+                  :close-on-content-click="false"
+                  :return-value.sync="manufacturerEdit.startTime"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="auto"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="manufacturerEdit.startTime"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      outlined
+                      dense
+                      hide-details
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="manufacturerEdit.startTime"
+                    no-title
+                    scrollable
+                    locale="zh-cn"
+                    first-day-of-week="1"
+                    :day-format="dayFormat"
+                  >
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="datePicker = false">
+                      取消
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.menu.save(manufacturerEdit.startTime)"
+                    >
+                      确定
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col> </v-col>
+            </v-row>
+          </v-col>
+        </v-form>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             color="blue darken-1"
             text
             @click="addManufacturerDialog = false"
             >取消</v-btn
           >
-          <v-btn color="blue darken-1" text @click="null">
-           添加</v-btn
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="newManufacturer"
+            type="submit"
+          >
+            添加</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -237,6 +341,11 @@ import { addManufacturer } from "@/settings/manufacturer";
 //import { deleteSkus } from "@/settings/sku";
 //import * as XLSX from 'xlsx/xlsx.mjs';
 
+
+
+import {javaUTCDateToString} from "@/libs/utils"
+import {javaDateTimeToString} from "@/libs/utils"
+
 export default {
   components: {
     SkuUpload,
@@ -244,11 +353,11 @@ export default {
 
   props: {
     //skuInfo: Array,
-    productsInfo: Object,
+    productInfo: Object,
   },
 
   created() {
-    this.initialSkuInfo();
+    this.init();
   },
 
   mounted() {
@@ -284,46 +393,38 @@ export default {
       validSkuInfo: [],
 
       manufacturerHeaders: [
-        { text: "厂家名", align: "start", value: "skuId" },
-        { text: "厂家群名", align: "start", value: "skuPrice" },
-        { text: "厂家收款方式", align: "start", value: "skuCost" },
-        { text: "厂家收款人", align: "start", value: "calculatedStartTime" },
-        { text: "厂家收款号码", align: "start", value: "orderNum" },
-        { text: "厂家退货-收件人", align: "start", value: "seleNum" },
-        { text: "厂家退货-收件手机号", align: "start", value: "a" },
-        { text: "厂家退货-收件地址", align: "start", value: "actions" },
-        { text: "厂家生效时间", align: "start", value: "actions" },
+        { text: "厂家名", align: "start", value: "manufacturerName" },
+        { text: "厂家群名", align: "start", value: "manufacturerGroup" },
+        { text: "厂家收款方式", align: "start", value: "manufacturerPaymentMethod" },
+        { text: "厂家收款人", align: "start", value: "manufacturerPaymentName" },
+        { text: "厂家收款号码", align: "start", value: "manufacturerPaymentId" },
+        { text: "厂家退货-收件人", align: "start", value: "manufacturerRecipient" },
+        { text: "厂家退货-收件手机号", align: "start", value: "manufacturerPhone" },
+        { text: "厂家退货-收件地址", align: "start", value: "manufacturerAddress" },
+        { text: "厂家生效时间", align: "start", value: "calculatedStartTime" },
+        { text: "创建时间", align: "start", value: "calculatedCreateTime" },
+        { text: "修改时间", align: "start", value: "calculatedModifyTime" },
+        { text: "备注", align: "start", value: "note" },
         { text: "操作", align: "start", value: "actions" },
       ],
       manufacturerInfo: [],
+
+      manufacturerEdit: {},
+
+      datePicker: false,
 
       loading: false,
 
       check: true,
 
-      subTableEdited: [],
-      seditedIndex: -1,
-
-      secondeditedItem: {
-        name: "",
-        skuId: "",
-        price: "",
-        cost: "",
-        start: "",
-        //end: "",
-        orderNum: "",
-        seleNum: "",
-      },
-
-      seconddefaultItem: {
-        name: "",
-        skuId: "",
-        price: "",
-        cost: "",
-        start: "",
-        //end: "",
-        orderNum: "",
-        seleNum: "",
+      rules: {
+        required: (value) => !!value || "必填",
+        counter: (value) => value.length <= 20 || "Max 20 characters",
+        email: (value) => {
+          const pattern =
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return pattern.test(value) || "Invalid e-mail.";
+        },
       },
     };
   },
@@ -331,36 +432,51 @@ export default {
   watch: {},
 
   methods: {
-    initialSkuInfo() {
+    dayFormat(date) {
+      return Number(date.split("-")[2]);
+    },
+
+    initDone() {
+      console.log("check done");
+      if (!this.skuDone || !this.manufacturerDone) return;
+
+      console.log("显示");
+      this.show = true;
+      //this.itemShow = true;
+
+      // setTimeout(() => {
+      //   this.itemShow = true;
+      // }, 0);
+
+      this.$nextTick(() => {
+        this.itemShow = true;
+      });
+    },
+
+    init() {
       this.loading = true;
       //加载数据
-      loadSkus({ productId: this.productsInfo.id })
+      loadSkus({ productId: this.productInfo.id })
         .then((res) => {
           console.log(res);
           this.loading = false;
           this.skuInfo = res.data.skus;
-
           //数据处理
           this.dataAnalyze();
-
-          this.show = true;
-          //this.itemShow = true;
-
-          // setTimeout(() => {
-          //   this.itemShow = true;
-          // }, 0);
-
-          this.$nextTick(() => {
-            this.itemShow = true;
-          });
+          this.skuDone = true;
+          this.initDone();
         })
         .catch(() => {
           this.loading = false;
         });
-
-      loadManufacturers({ productId: this.productsInfo.id })
+      loadManufacturers({ productId: this.productInfo.id })
         .then((res) => {
           console.log(res);
+          this.manufacturerInfo = res.data.manufacturers;
+          this.dataAnalyzeManufacturer()
+          this.manufacturerDone = true;
+          console.log(this.manufacturerInfo)
+          this.initDone();
         })
         .catch(() => {
           this.loading = false;
@@ -368,25 +484,10 @@ export default {
     },
 
     dataAnalyze() {
-      var date = new Date();
-      var month, day;
       this.skuInfo.forEach((sku) => {
         console.log(sku);
-        date.setTime(sku.startTime);
-        month = date.getUTCMonth() + 1;
-        day = date.getUTCDate();
-        sku.calculatedStartTime = `${date.getUTCFullYear()}-${
-          month < 10 ? "0" + month : month
-        }-${day < 10 ? "0" + day : day}`;
-
-        date.setTime(sku.createTime);
-        month = date.getMonth() + 1;
-        day = date.getDate();
-        sku.calculatedCreateTime = `${date.getFullYear()}-${
-          month < 10 ? "0" + month : month
-        }-${
-          day < 10 ? "0" + day : day
-        } ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+        sku.calculatedStartTime = javaUTCDateToString(sku.startTime)
+        sku.calculatedCreateTime =  javaDateTimeToString(sku.createTime)
       });
 
       var skuId = {};
@@ -408,6 +509,15 @@ export default {
 
       this.validSkuInfo = [];
       for (let id in skuId) this.validSkuInfo.push(skuId[id].sku);
+    },
+
+    dataAnalyzeManufacturer() {
+      this.manufacturerInfo.forEach((manufacturer) => {
+        console.log(manufacturer);
+        manufacturer.calculatedStartTime = javaUTCDateToString(manufacturer.startTime)
+        manufacturer.calculatedCreateTime =  javaDateTimeToString(manufacturer.createTime)
+        manufacturer.calculatedModifyTime =  javaDateTimeToString(manufacturer.modifyTime)
+      });
     },
 
     download() {
@@ -472,7 +582,7 @@ export default {
       /* create an XLSX file and try to save to Presidents.xlsx */
       XLSX.writeFile(
         workbook,
-        `${this.productsInfo.owner}-${this.productsInfo.productName}-${this.productsInfo.id}.xlsx`
+        `${this.productInfo.owner}-${this.productInfo.productName}-${this.productInfo.id}.xlsx`
       );
     },
 
@@ -512,13 +622,23 @@ export default {
         .then((res) => {
           console.log(res);
           this.global.infoAlert(res.data);
-          this.initialSkuInfo();
+          this.init();
         })
         .catch(() => {});
     },
 
     newManufacturer() {
-      addManufacturer({});
+      console.log(this.manufacturerEdit);
+      var pars = { productId: this.productInfo.id, ...this.manufacturerEdit };
+      pars.startTime = pars.startTime.replaceAll("-", "/")
+      console.log(pars)
+      addManufacturer(pars)
+        .then((res) => {
+          console.log(res);
+          this.global.infoAlert(res.data);
+          this.init();
+        })
+        .catch(() => {});
     },
   },
 };
@@ -534,5 +654,12 @@ export default {
 .v-card__title {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.manufacturer-dialog {
+  .col {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
 }
 </style>

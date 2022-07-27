@@ -49,3 +49,22 @@ export const colorMix = (color1, color2, weight) => {
   b = ("0" + (b || 0).toString(16)).slice(-2);
   return "#" + r + g + b;
 };
+
+
+
+export const javaUTCDateToString = (dateNum) => {
+  var date = new Date()
+  date.setTime(dateNum);
+  return `${date.getUTCFullYear()}-${zeroPadding(date.getUTCMonth())}-${zeroPadding(date.getUTCDate())}`;
+};
+
+export const javaDateTimeToString = (dateNum) => {
+  var date = new Date()
+  date.setTime(dateNum);
+  return `${date.getFullYear()}-${zeroPadding(date.getMonth())}-${zeroPadding(date.getDate())} ${zeroPadding(date.getHours())}:${zeroPadding(date.getMinutes())}:${zeroPadding(date.getSeconds())}`;
+};
+
+
+export const zeroPadding = (num) => {
+  return num < 10 ? "0" + num : num;
+};

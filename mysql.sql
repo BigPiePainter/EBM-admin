@@ -73,27 +73,23 @@ CREATE TABLE products (
   freight_to_payment DECIMAL(15, 5) COMMENT '运费/总货款',
   transport_way VARCHAR(200) COMMENT '发货方式',
   storehouse VARCHAR(200) COMMENT '聚水潭仓库',
-  manufacturer_name VARCHAR(200) COMMENT '厂家名',
-  manufacturer_group VARCHAR(200) COMMENT '厂家群名',
-  manufacturer_payment_method VARCHAR(200) COMMENT '厂家收款账户',
-  manufacturer_payment_name VARCHAR(200) COMMENT '厂家收款账户-收款人',
-  manufacturer_payment_id VARCHAR(200) COMMENT '厂家收款账户号码',
-  manufacturer_recipient VARCHAR(200) COMMENT '厂家退货-收件人',
-  manufacturer_phone VARCHAR(200) COMMENT '厂家退货-收件手机号',
-  manufacturer_address VARCHAR(200) COMMENT '厂家退货-收件地址',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
-
   deprecated tinyint(1) NOT NULL COMMENT '是否弃用',
   delete_time timestamp NOT NULL DEFAULT NOW() COMMENT '弃用时间',
   primary key (id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '商品信息';
 
-alter table products add column create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
-alter table products add column modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
-
--- SKU
-drop table if exists skus;
+alter table
+  products
+add
+  column create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
+alter table
+  products
+add
+  column modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
+  -- SKU
+  drop table if exists skus;
 
 CREATE TABLE skus (
   uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
@@ -103,15 +99,34 @@ CREATE TABLE skus (
   sku_price DECIMAL(15, 5) NOT NULL COMMENT '售卖价',
   sku_cost DECIMAL(15, 5) NOT NULL COMMENT '售卖成本',
   start_time DATE NOT NULL COMMENT '生效时间',
-
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
-
   deprecated tinyint(1) NOT NULL COMMENT '是否弃用',
   delete_time timestamp NOT NULL DEFAULT NOW() COMMENT '弃用时间',
-
   note VARCHAR(10000) NOT NULL DEFAULT '' COMMENT '备注',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'SKU';
+
+-- 厂家信息
+drop table if exists manufacturers;
+
+CREATE TABLE manufacturers (
+  uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
+  product_id BIGINT NOT NULL COMMENT '商品id',
+  manufacturer_name VARCHAR(200) COMMENT '厂家名',
+  manufacturer_group VARCHAR(200) COMMENT '厂家群名',
+  manufacturer_payment_method VARCHAR(200) COMMENT '厂家收款账户',
+  manufacturer_payment_name VARCHAR(200) COMMENT '厂家收款账户-收款人',
+  manufacturer_payment_id VARCHAR(200) COMMENT '厂家收款账户号码',
+  manufacturer_recipient VARCHAR(200) COMMENT '厂家退货-收件人',
+  manufacturer_phone VARCHAR(200) COMMENT '厂家退货-收件手机号',
+  manufacturer_address VARCHAR(200) COMMENT '厂家退货-收件地址',
+  start_time DATE NOT NULL COMMENT '生效时间',
+  create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
+  modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
+  deprecated tinyint(1) NOT NULL COMMENT '是否弃用',
+  note VARCHAR(10000) COMMENT '备注',
+  primary key (uid)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '厂家信息';
 
 -- 部门表
 drop table if exists departments;
@@ -121,7 +136,7 @@ CREATE TABLE departments (
   name VARCHAR(100) NOT NULL COMMENT '部门名称',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
-  note VARCHAR(10000) NOT NULL DEFAULT '' COMMENT '备注',
+  note VARCHAR(10000) COMMENT '备注',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '部门';
 
@@ -133,6 +148,6 @@ CREATE TABLE teams (
   name VARCHAR(100) NOT NULL COMMENT '组别名称',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
-  note VARCHAR(10000) NOT NULL DEFAULT '' COMMENT '备注',
+  note VARCHAR(10000) COMMENT '备注',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '组别';
