@@ -1,19 +1,18 @@
 <template>
+<v-card width="1200px" style="margin:0 auto">
   <v-data-table
-    class="elevation-1 mx-5"
+    class="elevation-1"
     fixed-header
+    hide-default-footer
     loading-text="加载中... 请稍后"
     no-data-text="空"
     item-key="uid"
     :expanded.sync="expanded"
     show-expand
     disable-sort
-    height="calc(100vh - 257px)"
     :headers="headers"
     :items="items"
     :loading="loading"
-    :server-items-length="totalProducts"
-    :options.sync="options"
     :items-per-page="50"
     :footer-props="{
       'items-per-page-options': [10, 20, 50, 100],
@@ -22,13 +21,13 @@
     @click:row="clickRow"
   >
     <template v-slot:top>
-      <v-toolbar flat color="white">
+      <v-toolbar flat color="white" dense>
         <v-toolbar-title>部门信息表</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
+            <v-btn small depressed color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
               >新部门信息</v-btn
             >
           </template>
@@ -112,6 +111,7 @@
       <v-btn color="primary" @click="initialize">Reset</v-btn>
     </template>
   </v-data-table>
+</v-card>
 </template>
 
 

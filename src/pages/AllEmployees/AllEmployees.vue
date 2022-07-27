@@ -26,6 +26,8 @@
             <v-btn
               color="primary"
               dark
+              small
+              depressed
               class="mb-2"
               @click="dialog"
               v-bind="attrs"
