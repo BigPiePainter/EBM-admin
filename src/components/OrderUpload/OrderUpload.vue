@@ -69,10 +69,12 @@ export default {
       this.maxWidth = 550;
       this.hover = true;
     },
+    
     dragleave() {
       this.maxWidth = 500;
       this.hover = false;
     },
+
     drop(event) {
       this.maxWidth = 500;
       this.hover = false;
@@ -98,9 +100,6 @@ export default {
         this.showInfo("泼发EBC: 只支持xlsx格式");
         return;
       }
-
-      this.loading = true;
-      this.dialog = false;
 
       var reader = new FileReader();
       reader.onload = (e) => {
