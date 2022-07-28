@@ -1,6 +1,6 @@
 import http from '@/libs/http'
 
-export const getDepaetment = data => {
+export const getDepartment = data => {
     const args = {
         url: '/department/get',
         method: 'POST',
@@ -9,7 +9,7 @@ export const getDepaetment = data => {
     return http.request(args)
 }
 
-export const deleteDepaetment = data => {
+export const deleteDepartment = data => {
     const args = {
         url: '/department/delete',
         method: 'POST',
@@ -18,7 +18,7 @@ export const deleteDepaetment = data => {
     return http.request(args)
 }
 
-export const addDepaetment = data => {
+export const addDepartment = data => {
     const args = {
         url: '/department/add',
         method: 'POST',

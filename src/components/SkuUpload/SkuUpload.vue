@@ -322,6 +322,7 @@ export default {
         reader.readAsArrayBuffer(this.file);
       }, 50);
     },
+    
     cellCheck(cell, row, col) {
       if (!cell) return;
 

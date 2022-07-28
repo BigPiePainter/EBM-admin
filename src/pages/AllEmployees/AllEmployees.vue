@@ -1,4 +1,5 @@
 <template>
+<v-card width="1500px" style="margin:0 auto">
   <v-data-table
     fixed-header
     show-expand
@@ -26,6 +27,8 @@
             <v-btn
               color="primary"
               dark
+              small
+              depressed
               class="mb-2"
               @click="dialog"
               v-bind="attrs"
@@ -121,6 +124,7 @@
       <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
     </template>
   </v-data-table>
+</v-card>
 </template>
 
 

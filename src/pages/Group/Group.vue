@@ -1,20 +1,26 @@
 <template>
+<v-card width="1100px" style="margin: 0 auto">
   <v-data-table
+  max-height="700"
+    fixed-header
+    loading-text="加载中... 请稍后"
+    no-data-text="空"
     show-expand
-    item-key="group"
+    hide-default-footer
+    item-key="uid"
     :expanded.sync="expanded"
     :headers="headers"
     :items="items"
     class="elevation-1"
   >
     <template v-slot:top>
-      <v-toolbar flat color="white">
+      <v-toolbar flat color="white" dense>
         <v-toolbar-title>组别信息表</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
+            <v-btn small depressed color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
               >新组别信息</v-btn
             >
           </template>
@@ -35,7 +41,7 @@
                       v-model="editedItem.name"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="12">
                     <span class="text-body-2 text--secondary">备注</span>
                     <v-text-field
                       outlined
@@ -59,7 +65,7 @@
     </template>
 
     <template v-slot:expanded-item="{ headers, item }">
-      <td :colspan="headers.length">More info about {{ item.group }}</td>
+      <td :colspan="headers.length">More info about {{ item.name }}</td>
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
@@ -85,6 +91,7 @@
       </v-btn>
     </template>
   </v-data-table>
+</v-card>
 </template>
 
 

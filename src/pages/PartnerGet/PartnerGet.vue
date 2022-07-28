@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-expansion-panels class="mb-3" multiple>
+    <!-- <v-expansion-panels class="mb-3" multiple>
       <v-expansion-panel>
         <v-expansion-panel-header v-slot="{ open }">
           <v-row no-gutters>
@@ -65,18 +65,11 @@
             </v-row>
           </v-container>
 
-          <!-- <v-expansion-panels class="mt-5 pl-8 pr-8">
-            <v-expansion-panel>
-              <v-expansion-panel-header> 模糊查找 </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <Search @sendSearchData="refreshData" />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels> -->
+
         </v-expansion-panel-content>
       </v-expansion-panel>
-    </v-expansion-panels>
-
+    </v-expansion-panels> -->
+    <!-- height="calc(100vh - 257px)" -->
     <v-card class="products-list mb-1">
       <v-data-table
         single-expand
@@ -87,7 +80,7 @@
         item-key="id"
         disable-sort
         class="elevation-1"
-        height="calc(100vh - 257px)"
+        height="80vh"
         :loading="loading"
         :headers="headers"
         :items="products"
@@ -433,12 +426,12 @@ import { getClass } from "@/settings/product";
 import { getSubUsers } from "@/settings/user";
 
 import SkuTable from "@/components/SkuTable/SkuTable";
-import SelectDialog from "@/components/SelectDialog";
+//import SelectDialog from "@/components/SelectDialog";
 
 export default {
   components: {
     SkuTable,
-    SelectDialog,
+    //SelectDialog,
   },
   data: () => ({
     newDepartment: [],
