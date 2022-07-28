@@ -165,7 +165,7 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">产品名</span>
+                      <span class="text-body-2 text--secondary">商品名</span>
                       <v-text-field
                         outlined
                         dense
@@ -429,6 +429,9 @@
 import { addProducts } from "@/settings/product";
 import { loadProducts } from "@/settings/product";
 import { getClass } from "@/settings/product";
+
+import { getSubUsers } from "@/settings/user";
+
 import SkuTable from "@/components/SkuTable/SkuTable";
 import SelectDialog from "@/components/SelectDialog";
 
@@ -441,6 +444,7 @@ export default {
     newDepartment: [],
     newGroup: [],
     newOwner: [],
+
     //筛选菜单
     menu: {}, //类别可选项
 
@@ -484,16 +488,13 @@ export default {
     products: [],
     editedIndex: -1,
 
-    //显示厂家
-    showManufacturer: false,
-
     headersContent: [
       { text: "商品ID", value: "id" },
-      { text: "产品名", value: "productName" },
+      { text: "商品名", value: "productName" },
 
       { text: "事业部", value: "department" },
       { text: "组别", value: "groupName" },
-      { text: "持品人", value: "owner" },
+      { text: "持品人", value: "calculatedOwner" },
       { text: "店铺名", value: "shopName" },
 
       { text: "一级类目", value: "firstCategory" },
@@ -540,6 +541,10 @@ export default {
       transportWay: "",
       storehouse: "",
     },
+
+    userInfos: [],
+    idToNick: {},
+    userAnalyze: [false, false],
   }),
 
   computed: {
@@ -552,13 +557,7 @@ export default {
     dialog(val) {
       val || this.close();
     },
-    deleteDialog(val) {
-      val || this.closeDelete();
-    },
 
-    sdialog(val) {
-      val || this.secondclose();
-    },
     options: {
       handler() {
         this.loadData();
@@ -585,9 +584,6 @@ export default {
       deep: true,
       immediate: true,
     },
-    showManufacturer() {
-      this.showHeaders();
-    },
   },
 
   created() {
@@ -611,20 +607,9 @@ export default {
 
   methods: {
     showHeaders() {
-      if (this.showManufacturer) {
-        this.headers = this.headersContent;
-      } else {
-        this.headers = this.headersContent.filter(
-          (v) => !v.value.startsWith("manufacturer")
-        );
-      }
-
-      // this.headers = this.showManufacturer
-      //   ? this.headersContent
-      //   : this.headersContent.filter(
-      //       (header) => !header.value.startsWith("manufacturer")
-      //     );
+      this.headers = this.headersContent;
     },
+
     refreshData(a) {
       if (a.select) {
         this.search.select[a.select.key] = a.select.value;
@@ -657,12 +642,39 @@ export default {
           this.showHeaders();
           this.products = res.data.products;
           this.totalProducts = res.data.total;
-
+          this.userAnalyze[0] = true;
+          this.createrAnalyze();
           //this.global.infoAlert("泼发EBC：" + res.data);
         })
         .catch(() => {
           this.loading = false;
         });
+
+      getSubUsers({})
+        .then((res) => {
+          console.log(res);
+          this.userInfos = res.data.userInfos;
+          this.userAnalyze[1] = true;
+          this.createrAnalyze();
+          //this.infoAlert("泼发EBC：" + res.data);
+        })
+        .catch(() => {});
+    },
+
+    createrAnalyze() {
+      if (!this.userAnalyze[0] || !this.userAnalyze[1]) return;
+
+      this.userAnalyze = [false, false];
+
+      this.userInfos.forEach((user) => {
+        console.log(user);
+        this.idToNick[user.uid] = user.nick;
+      });
+
+      this.products.forEach((product) => {
+        product.calculatedOwner = this.idToNick[product.owner]
+      });
+      console.log(this.products);
     },
 
     editItem(item) {
@@ -680,7 +692,7 @@ export default {
           value: item.id,
         },
         {
-          key: "产品名",
+          key: "商品名",
           value: item.productName,
         },
         {
@@ -701,23 +713,10 @@ export default {
       console.log(this.deleteConfirm);
     },
 
-    deleteItemConfirm() {
-      this.products.splice(this.editedIndex, 1);
-      this.closeDelete();
-    },
-
     close() {
       this.dialog = false;
       this.$nextTick(() => {
         //this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    closeDelete() {
-      this.deleteDialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
     },

@@ -76,7 +76,6 @@ CREATE TABLE products (
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
   deprecated tinyint(1) NOT NULL COMMENT '是否弃用',
-  delete_time timestamp NOT NULL DEFAULT NOW() COMMENT '弃用时间',
   primary key (id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '商品信息';
 
@@ -103,7 +102,8 @@ CREATE TABLE skus (
   deprecated tinyint(1) NOT NULL COMMENT '是否弃用',
   delete_time timestamp NOT NULL DEFAULT NOW() COMMENT '弃用时间',
   note VARCHAR(10000) NOT NULL DEFAULT '' COMMENT '备注',
-  primary key (uid)
+  primary key (uid),
+  index index_product_id(product_id),
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'SKU';
 
 -- 厂家信息

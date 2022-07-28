@@ -111,11 +111,22 @@ export default {
           link: "/transport",
         },
         //{ title: "主页", icon: "mdi-home", link: "/dashboard" },
-
         {
           title: "商品管理",
-          icon: "mdi-book-variant-multiple",
-          link: "/partnerget",
+          icon: "mdi-account-multiple",
+          link: "/",
+          children: [
+            {
+              title: "商品清单",
+              icon: "mdi-account-multiple",
+              link: "/partnerget",
+            },
+            {
+              title: "认领大厅",
+              icon: "mdi-account-multiple",
+              link: "/partnerget",
+            },
+          ],
         },
         {
           title: "订单管理",

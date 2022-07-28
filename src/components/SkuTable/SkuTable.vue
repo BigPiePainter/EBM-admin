@@ -33,7 +33,7 @@
         </v-toolbar>
         <v-toolbar flat v-else :key="2">
           <v-spacer />
-          <v-btn small color="primary" @click="addManufacturerDialog = true">
+          <v-btn small color="primary" @click="addManufacturerButton">
             新增厂家信息
           </v-btn>
         </v-toolbar>
@@ -91,8 +91,18 @@
                   small
                   depressed
                   outlined
+                  color="green"
+                  @click="editManufacturerButton(item)"
+                  class="ml-1"
+                >
+                  修改
+                </v-btn>
+                <v-btn
+                  small
+                  depressed
+                  outlined
                   color="red lighten-2"
-                  @click="deleteSku(item)"
+                  @click="deleteManufacturerButton(item)"
                   class="ml-1"
                 >
                   <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
@@ -106,48 +116,30 @@
     </div>
 
     <!-- 删除SKU Dialog -->
-    <v-dialog v-model="deleteDialog" max-width="450px">
+    <v-dialog v-model="deleteSkuDialog" max-width="450px">
       <v-card>
         <v-card-title class="text-subtitle-1">{{
-          deleteItem.skuName
+          deleteSkuItem.skuName
         }}</v-card-title>
 
-        <div class="delete-table-container mt-2">
-          <v-data-table
-            :headers="[
-              { align: 'start', value: 'key' },
-              { align: 'start', value: 'value' },
-            ]"
-            :items="deleteItemParse"
-            hide-default-footer
-            hide-default-header
-            disable-sort
-          >
-            <template v-slot:[`item.key`]="{ item }">
-              <div class="ml-3">
-                {{ item.key }}
-              </div>
-            </template>
-          </v-data-table>
+        <div class="mt-2">
+          <TableKV :items="deleteSkuItemParse" />
         </div>
 
         <v-card-actions>
-          <!-- <span class="text-body-2 text--secondary">
-            删除后会进入回收站
-          </span> -->
           <v-spacer />
-          <v-btn color="blue darken-1" text @click="deleteDialog = false"
+          <v-btn color="blue darken-1" text @click="deleteSkuDialog = false"
             >取消</v-btn
           >
-          <v-btn color="red darken-1" text @click="sureDelete">
+          <v-btn color="red darken-1" text @click="sureDeleteSkuButton">
             <v-icon small class="mr-1"> mdi-delete </v-icon>删除</v-btn
           >
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <!-- 新增厂家信息Dialog -->
-    <v-dialog v-model="addManufacturerDialog" max-width="700px">
+    <!-- 厂家信息Dialog -->
+    <v-dialog v-model="manufacturerInfoDialog" max-width="700px">
       <v-card>
         <v-form>
           <v-col class="px-10 pt-10 manufacturer-dialog">
@@ -302,7 +294,15 @@
                   </v-date-picker>
                 </v-menu>
               </v-col>
-              <v-col> </v-col>
+              <v-col>
+                <span class="text-body-2 text--secondary"> 备注 </span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  v-model="manufacturerEdit.note"
+                ></v-text-field
+              ></v-col>
             </v-row>
           </v-col>
         </v-form>
@@ -312,16 +312,41 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="addManufacturerDialog = false"
+            @click="manufacturerInfoDialog = false"
             >取消</v-btn
           >
+          <v-btn color="blue darken-1" text @click="sureButton" type="submit">
+            {{ manufacturerMode == 1 ? "添加" : "修改" }}</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- 删除厂家 Dialog -->
+    <v-dialog v-model="deleteManufacturerDialog" max-width="450px">
+      <v-card>
+        <v-card-title class="text-subtitle-1">{{
+          deleteManufacturerItem.manufacturerName
+        }}</v-card-title>
+
+        <div class="mt-2">
+          <TableKV :items="deleteManufacturerItemParse" />
+        </div>
+
+        <v-card-actions>
+          <v-spacer />
           <v-btn
             color="blue darken-1"
             text
-            @click="newManufacturer"
-            type="submit"
+            @click="deleteManufacturerDialog = false"
+            >取消</v-btn
           >
-            添加</v-btn
+          <v-btn
+            color="red darken-1"
+            text
+            @click="sureDeleteManufacturerButton"
+          >
+            <v-icon small class="mr-1"> mdi-delete </v-icon>删除</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -333,22 +358,26 @@
 
 <script>
 import SkuUpload from "@/components/SkuUpload/SkuUpload";
+import TableKV from "@/components/TableKV/TableKV";
 import { loadSkus } from "@/settings/sku";
 import { deleteSku } from "@/settings/sku";
 
 import { loadManufacturers } from "@/settings/manufacturer";
 import { addManufacturer } from "@/settings/manufacturer";
+import { deleteManufacturer } from "@/settings/manufacturer";
+import { editManufacturer } from "@/settings/manufacturer";
+
+editManufacturer;
 //import { deleteSkus } from "@/settings/sku";
 //import * as XLSX from 'xlsx/xlsx.mjs';
 
-
-
-import {javaUTCDateToString} from "@/libs/utils"
-import {javaDateTimeToString} from "@/libs/utils"
+import { javaUTCDateToString } from "@/libs/utils";
+import { javaDateTimeToString } from "@/libs/utils";
 
 export default {
   components: {
     SkuUpload,
+    TableKV,
   },
 
   props: {
@@ -371,11 +400,17 @@ export default {
 
       tabs: 0,
 
-      deleteDialog: false, //删除弹框
-      deleteItem: {}, //删除信息
-      deleteItemParse: {}, //删
+      deleteSkuDialog: false, //删除SKU弹框
+      deleteSkuItem: {}, //删除信息
+      deleteSkuItemParse: {}, //删
 
-      addManufacturerDialog: false,
+      deleteManufacturerDialog: false, //删除厂家弹框
+      deleteManufacturerItem: {},
+      deleteManufacturerItemParse: {},
+
+      manufacturerInfoDialog: false,
+      manufacturerEdit: {},
+      manufacturerMode: 0, // 1--添加模式,  2--修改模式
 
       headers: [
         { text: "SKUID", align: "start", value: "skuId" },
@@ -395,12 +430,36 @@ export default {
       manufacturerHeaders: [
         { text: "厂家名", align: "start", value: "manufacturerName" },
         { text: "厂家群名", align: "start", value: "manufacturerGroup" },
-        { text: "厂家收款方式", align: "start", value: "manufacturerPaymentMethod" },
-        { text: "厂家收款人", align: "start", value: "manufacturerPaymentName" },
-        { text: "厂家收款号码", align: "start", value: "manufacturerPaymentId" },
-        { text: "厂家退货-收件人", align: "start", value: "manufacturerRecipient" },
-        { text: "厂家退货-收件手机号", align: "start", value: "manufacturerPhone" },
-        { text: "厂家退货-收件地址", align: "start", value: "manufacturerAddress" },
+        {
+          text: "厂家收款方式",
+          align: "start",
+          value: "manufacturerPaymentMethod",
+        },
+        {
+          text: "厂家收款人",
+          align: "start",
+          value: "manufacturerPaymentName",
+        },
+        {
+          text: "厂家收款号码",
+          align: "start",
+          value: "manufacturerPaymentId",
+        },
+        {
+          text: "厂家退货-收件人",
+          align: "start",
+          value: "manufacturerRecipient",
+        },
+        {
+          text: "厂家退货-收件手机号",
+          align: "start",
+          value: "manufacturerPhone",
+        },
+        {
+          text: "厂家退货-收件地址",
+          align: "start",
+          value: "manufacturerAddress",
+        },
         { text: "厂家生效时间", align: "start", value: "calculatedStartTime" },
         { text: "创建时间", align: "start", value: "calculatedCreateTime" },
         { text: "修改时间", align: "start", value: "calculatedModifyTime" },
@@ -408,8 +467,6 @@ export default {
         { text: "操作", align: "start", value: "actions" },
       ],
       manufacturerInfo: [],
-
-      manufacturerEdit: {},
 
       datePicker: false,
 
@@ -463,9 +520,9 @@ export default {
         .then((res) => {
           console.log(res);
           this.manufacturerInfo = res.data.manufacturers;
-          this.dataAnalyzeManufacturer()
+          this.dataAnalyzeManufacturer();
           this.manufacturerDone = true;
-          console.log(this.manufacturerInfo)
+          console.log(this.manufacturerInfo);
           this.initDone();
         })
         .catch(() => {
@@ -475,9 +532,8 @@ export default {
 
     dataAnalyze() {
       this.skuInfo.forEach((sku) => {
-        console.log(sku);
-        sku.calculatedStartTime = javaUTCDateToString(sku.startTime)
-        sku.calculatedCreateTime =  javaDateTimeToString(sku.createTime)
+        sku.calculatedStartTime = javaUTCDateToString(sku.startTime);
+        sku.calculatedCreateTime = javaDateTimeToString(sku.createTime);
       });
 
       var skuId = {};
@@ -504,9 +560,15 @@ export default {
     dataAnalyzeManufacturer() {
       this.manufacturerInfo.forEach((manufacturer) => {
         console.log(manufacturer);
-        manufacturer.calculatedStartTime = javaUTCDateToString(manufacturer.startTime)
-        manufacturer.calculatedCreateTime =  javaDateTimeToString(manufacturer.createTime)
-        manufacturer.calculatedModifyTime =  javaDateTimeToString(manufacturer.modifyTime)
+        manufacturer.calculatedStartTime = javaUTCDateToString(
+          manufacturer.startTime
+        );
+        manufacturer.calculatedCreateTime = javaDateTimeToString(
+          manufacturer.createTime
+        );
+        manufacturer.calculatedModifyTime = javaDateTimeToString(
+          manufacturer.modifyTime
+        );
       });
     },
 
@@ -579,8 +641,8 @@ export default {
     deleteSku(item) {
       console.log(item);
 
-      this.deleteItem = item;
-      this.deleteItemParse = [
+      this.deleteSkuItem = { ...item };
+      this.deleteSkuItemParse = [
         {
           key: "SKUID",
           value: item.skuId,
@@ -603,12 +665,12 @@ export default {
         },
       ];
 
-      this.deleteDialog = true;
+      this.deleteSkuDialog = true;
     },
 
-    sureDelete() {
-      this.deleteDialog = false;
-      deleteSku({ uid: this.deleteItem.uid })
+    sureDeleteSkuButton() {
+      this.deleteSkuDialog = false;
+      deleteSku({ uid: this.deleteSkuItem.uid })
         .then((res) => {
           console.log(res);
           this.global.infoAlert(res.data);
@@ -617,12 +679,99 @@ export default {
         .catch(() => {});
     },
 
+    deleteManufacturerButton(item) {
+      console.log(item);
+
+      this.deleteManufacturerItem = { ...item };
+      this.deleteManufacturerItemParse = [
+        {
+          key: "厂家名",
+          value: item.manufacturerName,
+        },
+        {
+          key: "厂家群名",
+          value: item.manufacturerGroup,
+        },
+        {
+          key: "厂家收款方式",
+          value: item.manufacturerPaymentMethod,
+        },
+        {
+          key: "厂家收款人",
+          value: item.manufacturerPaymentName,
+        },
+        {
+          key: "厂家收款号码",
+          value: item.manufacturerPaymentId,
+        },
+        {
+          key: "厂家生效时间",
+          value: item.calculatedStartTime,
+        },
+      ];
+
+      this.deleteManufacturerDialog = true;
+    },
+
+    //deleteManufacturer
+
+    sureDeleteManufacturerButton() {
+      this.deleteManufacturerDialog = false;
+      deleteManufacturer({ uid: this.deleteManufacturerItem.uid })
+        .then((res) => {
+          console.log(res);
+          this.global.infoAlert(res.data);
+          this.init();
+        })
+        .catch(() => {});
+    },
+
+    editManufacturerButton(item) {
+      this.manufacturerMode = 2; //"修改"模式
+      this.manufacturerEdit = { ...item };
+      //注意
+      this.manufacturerEdit.startTime =
+        this.manufacturerEdit.calculatedStartTime;
+      this.manufacturerInfoDialog = true;
+    },
+
+    addManufacturerButton() {
+      this.manufacturerMode = 1; //"添加"模式
+      this.manufacturerEdit = {};
+      this.manufacturerInfoDialog = true;
+    },
+
+    sureButton() {
+      this.manufacturerMode == 1
+        ? this.newManufacturer()
+        : this.modifyManufacturer();
+    },
+
     newManufacturer() {
+      this.manufacturerInfoDialog = false;
       console.log(this.manufacturerEdit);
       var pars = { productId: this.productInfo.id, ...this.manufacturerEdit };
-      pars.startTime = pars.startTime.replaceAll("-", "/")
-      console.log(pars)
+      pars.startTime = pars.startTime.replaceAll("-", "/");
+      console.log(pars);
       addManufacturer(pars)
+        .then((res) => {
+          console.log(res);
+          this.global.infoAlert(res.data);
+          this.init();
+        })
+        .catch(() => {});
+    },
+
+    modifyManufacturer() {
+      this.manufacturerInfoDialog = false;
+      var pars = { ...this.manufacturerEdit };
+
+      //参数预处理
+      pars.startTime = pars.startTime.replaceAll("-", "/");
+      for (let name in pars) pars[name] == null && delete pars[name];
+
+      console.log(pars);
+      editManufacturer(pars)
         .then((res) => {
           console.log(res);
           this.global.infoAlert(res.data);

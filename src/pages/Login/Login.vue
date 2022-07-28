@@ -57,7 +57,6 @@
                                 "
                                 color="primary"
                                 @click="login"
-                                @keyup.enter="login"
                               >
                                 登陆</v-btn
                               >

@@ -18,3 +18,23 @@ export const addManufacturer = data => {
     }
     return http.request(args)
 }
+
+
+export const deleteManufacturer = data => {
+    const args = {
+        url: '/manufacturer/delete',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
+
+export const editManufacturer = data => {
+    const args = {
+        url: '/manufacturer/modify',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}

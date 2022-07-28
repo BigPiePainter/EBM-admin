@@ -55,7 +55,7 @@ export const colorMix = (color1, color2, weight) => {
 export const javaUTCDateToString = (dateNum) => {
   var date = new Date()
   date.setTime(dateNum);
-  return `${date.getUTCFullYear()}-${zeroPadding(date.getUTCMonth())}-${zeroPadding(date.getUTCDate())}`;
+  return `${date.getFullYear()}-${zeroPadding(date.getMonth() + 1)}-${zeroPadding(date.getDate())}`;
 };
 
 export const javaDateTimeToString = (dateNum) => {

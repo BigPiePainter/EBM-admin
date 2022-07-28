@@ -23,6 +23,9 @@ import Group from "@/pages/Group/Group";
 import AllEmployees from "@/pages/AllEmployees/AllEmployees";
 import Employee from "@/pages/Employee/Employee";
 
+
+import { isLogin } from "@/settings/user"
+
 Vue.use(Router);
 
 
@@ -127,9 +130,39 @@ var routerConfig = {
 var router = new Router(routerConfig)
 
 router.beforeEach((to, from, next) => {
+  if (to.name == "Login") { next(); return; }
+
+
+  isLogin({}).then((res)=> {
+    console.log(res)
+    if (res.data.isLogin){
+      next();
+    } else {
+      router.push("/login");
+      //Vue.global.errorAlert("")
+
+      Vue.$toast.error("泼发EBC：请先登录", {
+        position: "top-right",
+        timeout: 6000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: false,
+        hideProgressBar: true,
+        closeButton: "button",
+        icon: true,
+      });
+    }
+  })
+
+  console.log(to)
+  console.log(from)
   console.log("？？？？？？？？？")
-  next();
+
 });
+
+console.log(router)
 
 
 export default router;
