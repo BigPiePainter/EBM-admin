@@ -10,7 +10,6 @@
       <v-card-title>
         <p>上传订单信息</p>
       </v-card-title>
-      <v-row>
 
       <v-card
         id="dropbox"
@@ -25,39 +24,13 @@
       >
         <h5>{{ status }}</h5>
       </v-card>
-      <v-card
-        id="dropbox"
-        class="d-flex align-center justify-center mx-10 my-5 transition-swing"
-        :min-height="180"
-        :color="hover ? '#fafafa' : '#fff'"
-        @dragenter.prevent="dragenter($event)"
-        @dragleave.prevent="dragleave($event)"
-        @drop.prevent="drop($event)"
-        @dragover.prevent=""
-        @dragend.prevent=""
-      >
-        <h5>{{ status }}</h5>
-      </v-card>
-      <v-card
-        id="dropbox"
-        class="d-flex align-center justify-center mx-10 my-5 transition-swing"
-        :min-height="180"
-        :color="hover ? '#fafafa' : '#fff'"
-        @dragenter.prevent="dragenter($event)"
-        @dragleave.prevent="dragleave($event)"
-        @drop.prevent="drop($event)"
-        @dragover.prevent=""
-        @dragend.prevent=""
-      >
-        <h5>{{ status }}</h5>
-      </v-card>
-      </v-row>
       <v-card-text> 请确认文件选择无误 </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 <script>
-import {addOrder} from "@/settings/order"
+import { addOrder } from "@/settings/order";
+import * as XLSX from "xlsx";
 export default {
   name: "SkuUpload",
   components: {},
@@ -89,7 +62,7 @@ export default {
   },
   methods: {
     upload() {
-        addOrder({})
+      addOrder({});
     },
 
     dragenter() {
@@ -128,6 +101,19 @@ export default {
 
       this.loading = true;
       this.dialog = false;
+
+      var reader = new FileReader();
+      reader.onload = (e) => {
+        console.log("加载完毕");
+
+        console.log("数据处理");
+
+        var data = new Uint8Array(e.target.result);
+        data = this.stox(XLSX.read(data, { type: "array" }));
+
+        console.log(data);
+        console.log("数据处理完毕");
+      };
     },
   },
 };
