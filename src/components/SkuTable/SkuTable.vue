@@ -769,6 +769,7 @@ export default {
       //参数预处理
       pars.startTime = pars.startTime.replaceAll("-", "/");
       for (let name in pars) pars[name] == null && delete pars[name];
+      pars.manufacturerPaymentMethod || (pars.manufacturerPaymentMethod = "") 
 
       console.log(pars);
       editManufacturer(pars)
