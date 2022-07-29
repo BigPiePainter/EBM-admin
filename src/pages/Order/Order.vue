@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-card>
-
       <v-card class="products-list mb-1">
         <v-data-table
           loading-text="加载中... 请稍后"
@@ -20,19 +19,17 @@
             'items-per-page-options': [10, 20, 50, 100],
             'items-per-page-text': '每页显示条数',
           }"
-          @click:row="clickRow"
         >
           <template v-slot:top>
-          <v-toolbar flat>
-            <v-toolbar-title>订单管理</v-toolbar-title>
-            <v-divider class="mx-4" inset vertical></v-divider>
+            <v-toolbar flat>
+              <v-toolbar-title>订单管理</v-toolbar-title>
+              <v-divider class="mx-4" inset vertical></v-divider>
 
-            <v-spacer></v-spacer>
-<v-switch class="mt-5" label="展开更多信息">
-</v-switch>
-
-          </v-toolbar>
-        </template>
+              <v-spacer></v-spacer>
+              <v-switch class="mt-5" label="展开更多信息" v-model="moreInfo">
+              </v-switch>
+            </v-toolbar>
+          </template>
         </v-data-table>
       </v-card>
     </v-card>
@@ -41,7 +38,6 @@
 
 
 <script>
-
 import { getOrder } from "@/settings/order";
 
 export default {
@@ -50,7 +46,23 @@ export default {
     return {
       moreInfo: false,
       orderItems: [],
-      Headers:[],
+      Headers: [{ text: "子订单编号", value: "subOrderNumber" },
+        { text: "主订单编号", value: "mainOrderNumber" },
+        { text: "买家应付邮费", value: "buyerPostage" },
+        { text: "买家实际支付金额", value: "buyerActualPayment" },
+        { text: "子单实际支付金额", value: "subActualPayment" },
+        { text: "订单状态", value: "orderStatu" },
+        { text: "订单创建时间", value: "orderCreateTime" },
+        { text: "订单付款时间", value: "orderPayTime" },
+        { text: "宝贝标题", value: "goodsTitle" },
+        { text: "宝贝数量", value: "goodsAmount" },
+        { text: "物流单号", value: "postId" },
+        { text: "物流公司", value: "postCompany" },
+        { text: "店铺名称", value: "shopName" },
+        { text: "供应商名称", value: "suppilerName" },
+        { text: "退款金额", value: "returnPrice" },
+        { text: "颜色/尺码", value: "skuName" },
+        { text: "商品编码", value: "goodsId" },],
       orderHeader: [
         { text: "子订单编号", value: "subOrderNumber" },
         { text: "主订单编号", value: "mainOrderNumber" },
@@ -104,8 +116,14 @@ export default {
     getOrder({});
   },
 
-  watch(){
-
+  watch: {
+    moreInfo(){
+      if (this.moreInfo == false){
+        this.Headers=this.orderHeader
+      }else{
+        this.Headers=this.completeOrderHeader
+      }
+    }
   },
 
   methods: {},

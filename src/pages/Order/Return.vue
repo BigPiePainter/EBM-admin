@@ -1,15 +1,6 @@
 <template>
   <div>
     <v-card>
-      <v-card-title>
-        退单信息
-        <v-spacer />
-        <!-- <v-switch class="mr-5 mt-5" label="展开更多信息" v-model="moreInfo">
-        </v-switch> -->
-        <order-upload />
-      </v-card-title>
-      <v-divider />
-
       <v-card class="products-list mb-1">
         <v-data-table
           single-expand
@@ -31,9 +22,15 @@
             'items-per-page-options': [10, 20, 50, 100],
             'items-per-page-text': '每页显示条数',
           }"
-          @click:row="clickRow"
         >
-          <template> </template>
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title>订单管理</v-toolbar-title>
+              <v-divider class="mx-4" inset vertical></v-divider>
+
+              <v-spacer></v-spacer>
+            </v-toolbar>
+          </template>
         </v-data-table>
       </v-card>
     </v-card>
@@ -42,12 +39,10 @@
 
 
 <script>
-import OrderUpload from "../../components/OrderUpload/OrderUpload.vue";
-
 import { getReturn } from "@/settings/order";
 
 export default {
-  components: { OrderUpload },
+  components: {},
   data() {
     return {
       moreInfo: false,
@@ -79,9 +74,7 @@ export default {
     getReturn({});
   },
 
-  watch(){
-
-  },
+  watch() {},
 
   methods: {},
 };
