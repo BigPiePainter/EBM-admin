@@ -1,8 +1,8 @@
 import http from '@/libs/http'
 
-export const loadOrder = data => {
+export const getOrder = data => {
     const args = {
-        url: '/Order/get',
+        url: '/Order/getOrder',
         method: 'POST',
         data
     }
@@ -11,7 +11,43 @@ export const loadOrder = data => {
 
 export const addOrder = data => {
     const args = {
-        url: '/Order/add',
+        url: '/Order/addOrder',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
+export const addBrush = data => {
+    const args = {
+        url: '/Order/addBrush',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
+export const getBrush = data => {
+    const args = {
+        url: '/Order/getBrush',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
+export const getReturn = data => {
+    const args = {
+        url: '/Order/getReturn',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
+export const addReturn = data => {
+    const args = {
+        url: '/Order/addReturn',
         method: 'POST',
         data
     }
