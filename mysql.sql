@@ -4,11 +4,15 @@ drop table if exists users;
 CREATE TABLE users (
   uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
   creator_id BIGINT NOT NULL COMMENT '用户创建人',
-  permission BIGINT NOT NULL COMMENT '权限',
+  gender TINYINT(1) COMMENT '性别',
+  contact VARCHAR(1000) COMMENT '联系方式',
+  permission VARCHAR(5000) COMMENT '权限json',
   username VARCHAR(100) NOT NULL COMMENT '用户名',
   password VARCHAR(100) NOT NULL COMMENT '密码',
   nick VARCHAR(100) COMMENT '昵称/姓名',
-  note VARCHAR(10000) NOT NULL DEFAULT '' COMMENT '备注',
+  note VARCHAR(5000) COMMENT '备注',
+  create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
+  modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '系统用户';
 
@@ -23,37 +27,37 @@ insert into
     nick
   )
 values
-  (1, 0, 1048575, 'admin', '88888888', "admin");
+  (1, 0, '{}', 'admin', '88888888', "admin");
 
 insert into
   users(creator_id, permission, username, password, nick)
 values
-  (1, 1048575, 'zqy', '123456', "张清宇");
+  (1, '{}', 'zqy', '123456', "张清宇");
 
 insert into
   users(creator_id, permission, username, password, nick)
 values
-  (1, 1048575, '556', '654321', "王绿原");
+  (1, '{}', '556', '654321', "王绿原");
 
 insert into
   users(creator_id, permission, username, password, nick)
 values
-  (2, 1048575, '557', '654321', "王绿原2");
+  (2, '{}', '557', '654321', "王绿原2");
 
 insert into
   users(creator_id, permission, username, password, nick)
 values
-  (2, 1048575, '555', '654321', "王绿原3");
+  (2, '{}', '555', '654321', "王绿原3");
 
 insert into
   users(creator_id, permission, username, password, nick)
 values
-  (3, 1048575, 'wly', '654321', "王绿原4");
+  (3, '{}', 'wly', '654321', "王绿原4");
 
 insert into
   users(creator_id, permission, username, password, nick)
 values
-  (1, 1048575, 'wly2', '654321', "王绿原555");
+  (1, '{}', 'wly2', '654321', "王绿原555");
 
 -- 商品信息
 drop table if exists products;
@@ -75,7 +79,7 @@ CREATE TABLE products (
   storehouse VARCHAR(200) COMMENT '聚水潭仓库',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
-  deprecated tinyint(1) NOT NULL COMMENT '是否弃用',
+  deprecated TINYINT(1) NOT NULL COMMENT '是否弃用',
   primary key (id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '商品信息';
 
@@ -99,9 +103,9 @@ CREATE TABLE skus (
   sku_cost DECIMAL(15, 5) NOT NULL COMMENT '售卖成本',
   start_time DATE NOT NULL COMMENT '生效时间',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
-  deprecated tinyint(1) NOT NULL COMMENT '是否弃用',
+  deprecated TINYINT(1) NOT NULL COMMENT '是否弃用',
   delete_time timestamp NOT NULL DEFAULT NOW() COMMENT '弃用时间',
-  note VARCHAR(10000) NOT NULL DEFAULT '' COMMENT '备注',
+  note VARCHAR(10000) COMMENT '备注',
   primary key (uid),
   index index_product_id(product_id),
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'SKU';
@@ -123,7 +127,7 @@ CREATE TABLE manufacturers (
   start_time DATE NOT NULL COMMENT '生效时间',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
-  deprecated tinyint(1) NOT NULL COMMENT '是否弃用',
+  deprecated TINYINT(1) NOT NULL COMMENT '是否弃用',
   note VARCHAR(10000) COMMENT '备注',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '厂家信息';

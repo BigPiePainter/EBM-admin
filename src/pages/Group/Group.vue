@@ -1,97 +1,103 @@
 <template>
-<v-card width="1100px" style="margin: 0 auto">
-  <v-data-table
-  max-height="700"
-    fixed-header
-    loading-text="加载中... 请稍后"
-    no-data-text="空"
-    show-expand
-    hide-default-footer
-    item-key="uid"
-    :expanded.sync="expanded"
-    :headers="headers"
-    :items="items"
-    class="elevation-1"
-  >
-    <template v-slot:top>
-      <v-toolbar flat color="white" dense>
-        <v-toolbar-title>组别信息表</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn small depressed color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
-              >新组别信息</v-btn
-            >
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+  <v-card>
+    <v-data-table
+      fixed-header
+      loading-text="加载中... 请稍后"
+      no-data-text="空"
+      show-expand
+      hide-default-footer
+      item-key="uid"
+      :expanded.sync="expanded"
+      :headers="headers"
+      :items="items"
+      class="elevation-1"
+    >
+      <template v-slot:top>
+        <v-toolbar flat color="white" dense>
+          <v-toolbar-title>组别信息表</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
+          <v-spacer></v-spacer>
+          <v-dialog v-model="dialog" max-width="500px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                small
+                depressed
+                color="primary"
+                dark
+                class="mb-2"
+                v-bind="attrs"
+                v-on="on"
+                >新组别信息</v-btn
+              >
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
 
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <span class="text-body-2 text--secondary">组名</span>
-                    <v-text-field
-                      outlined
-                      dense
-                      hide-details
-                      v-model="editedItem.name"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <span class="text-body-2 text--secondary">备注</span>
-                    <v-text-field
-                      outlined
-                      dense
-                      hide-details
-                      v-model="editedItem.note"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <span class="text-body-2 text--secondary">组名</span>
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.name"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <span class="text-body-2 text--secondary">备注</span>
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.note"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">取消</v-btn>
-              <v-btn color="blue darken-1" text @click="save">保存</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">取消</v-btn>
+                <v-btn color="blue darken-1" text @click="save">保存</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
 
-    <template v-slot:expanded-item="{ headers, item }">
-      <td :colspan="headers.length">More info about {{ item.name }}</td>
-    </template>
+      <template v-slot:expanded-item="{ headers, item }">
+        <td :colspan="headers.length">More info about {{ item.name }}</td>
+      </template>
 
-    <template v-slot:[`item.actions`]="{ item }">
-      <v-btn
-        small
-        depressed
-        outlined
-        color="green"
-        @click="editItem(item)"
-        class="ml-1"
-      >
-        修改
-      </v-btn>
-      <v-btn
-        small
-        depressed
-        outlined
-        color="red lighten-2"
-        @click="deleteProduct(item)"
-        class="ml-1"
-      >
-        删除
-      </v-btn>
-    </template>
-  </v-data-table>
-</v-card>
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-btn
+          small
+          depressed
+          outlined
+          color="green"
+          @click="editItem(item)"
+          class="ml-1"
+        >
+          修改
+        </v-btn>
+        <v-btn
+          small
+          depressed
+          outlined
+          color="red lighten-2"
+          @click="deleteProduct(item)"
+          class="ml-1"
+        >
+          删除
+        </v-btn>
+      </template>
+    </v-data-table>
+  </v-card>
 </template>
 
 
@@ -160,12 +166,11 @@ export default {
   },
 
   methods: {
-
-    initialGroup(){
+    initialGroup() {
       getTeam({}).then((res) => {
-      console.log(res.data.teams);
-      this.items = res.data.teams;
-    });
+        console.log(res.data.teams);
+        this.items = res.data.teams;
+      });
     },
 
     editItem(item) {
@@ -191,7 +196,10 @@ export default {
       if (this.editedIndex > -1) {
         Object.assign(this.items[this.editedIndex], this.editedItem);
       } else {
-        addTeam({ name: this.editedItem.name, note:this.editedItem.note }).then((res) => {
+        addTeam({
+          name: this.editedItem.name,
+          note: this.editedItem.note,
+        }).then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
           console.log(this.editedItem);
           this.initialGroup();

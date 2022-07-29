@@ -111,51 +111,41 @@ export default {
     };
   },
   methods: {
-    keyDown(e) {
-      console.log(e)
-      //如果是回车则执行登录方法
-      if (e.key == 2) {
-        //需要执行的登录方法
-        
-        this.login();
-      }
-    },
-
     login() {
       this.loading = true;
-      setTimeout(() => {
-        //测试后门
-        if (this.email == "1" && this.password == "1") {
+      userLogin({ username: this.email, password: this.password })
+        .then((res) => {
           this.loading = false;
-          this.$router.push("/partnerget");
-          this.infoAlert("强制登陆");
-          return;
-        }
-        userLogin({ username: this.email, password: this.password })
-          .then((res) => {
-            this.loading = false;
-            try {
-              console.log(res);
-              if (res && res.data && res.data.isLogin) {
-                this.$router.push("/partnerget");
-                this.infoAlert("泼发EBC：登陆成功");
-                //this.global.token = res.data.tokenValue
-                localStorage.token = res.data.tokenValue;
-                return;
-              }
+          try {
+            console.log(res);
+            if (res.data.token && res.data.token.isLogin) {
+              this.infoAlert("泼发EBC：登陆成功");
+              //this.global.token = res.data.token.tokenValue
+              localStorage.token = res.data.token.tokenValue;
+              this.global.user = res.data.user;
 
-              this.infoAlert("泼发EBC：" + res.data);
-            } catch (error) {
-              this.infoAlert("泼发EBC：登陆失败");
+              if (this.global.user.uid == 1) {
+                this.global.user.permission = this.global.allPermissions; //admin
+              } else {
+                this.global.user.permission = JSON.parse(
+                  this.global.user.permission
+                );
+              }
+              this.$router.push("/partnerget");
+              return;
             }
-          })
-          .catch(() => {
-            this.loading = false;
-            setTimeout(() => {
-              this.infoAlert("泼发EBC：登陆失败");
-            }, 100);
-          });
-      }, 0);
+
+            this.infoAlert("泼发EBC：" + res.data);
+          } catch (error) {
+            this.infoAlert("泼发EBC：登陆失败");
+          }
+        })
+        .catch(() => {
+          this.loading = false;
+          setTimeout(() => {
+            this.infoAlert("泼发EBC：登陆失败");
+          }, 100);
+        });
     },
 
     infoAlert(message) {

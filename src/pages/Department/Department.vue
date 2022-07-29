@@ -1,5 +1,4 @@
 <template>
-<v-card width="1200px" style="margin:0 auto">
   <v-data-table
     class="elevation-1"
     fixed-header
@@ -27,7 +26,14 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn small depressed color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
+            <v-btn
+              small
+              depressed
+              color="primary"
+              dark
+              class="mb-2"
+              v-bind="attrs"
+              v-on="on"
               >新部门信息</v-btn
             >
           </template>
@@ -111,7 +117,6 @@
       <v-btn color="primary" @click="initialize">Reset</v-btn>
     </template>
   </v-data-table>
-</v-card>
 </template>
 
 
@@ -181,12 +186,11 @@ export default {
 
   methods: {
     initialize() {
-      getDepartment({})
-      .then((res) => {
-      console.log(res.data.departments);
-      this.items = res.data.departments;
-      // this.items = res.data.department;
-    });
+      getDepartment({}).then((res) => {
+        console.log(res.data.departments);
+        this.items = res.data.departments;
+        // this.items = res.data.department;
+      });
     },
 
     clickRow() {},
@@ -214,11 +218,14 @@ export default {
       if (this.editedIndex > -1) {
         Object.assign(this.items[this.editedIndex], this.editedItem);
       } else {
-       addDepartment({ name: this.editedItem.name, note: this.editedItem.note }).then((res) => {
+        addDepartment({
+          name: this.editedItem.name,
+          note: this.editedItem.note,
+        }).then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
           console.log(this.editedItem);
           this.initialize();
-       });
+        });
       }
       this.close();
     },
