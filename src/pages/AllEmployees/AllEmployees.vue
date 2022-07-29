@@ -89,41 +89,22 @@
                   v-model="createUser.nick"
                 ></v-text-field>
               </v-col>
-              <v-col>
-                <span class="text-body-2 text--secondary">备注</span>
+              <v-col cols="2">
+                <span class="text-body-2 text--secondary">性别</span>
                 <v-text-field
                   outlined
                   dense
                   hide-details
-                  v-model="createUser.note"
+                  v-model="createUser.gender"
                 ></v-text-field>
               </v-col>
-            </v-row>
-            <v-divider class="my-8" />
-            <v-row>
               <v-col>
-                <span class="text-body-2 text--secondary">上级</span>
-
-                <v-combobox
-                  outlined
-                  dense
-                  hide-details
-                  :items="[
-                    '支付宝',
-                    '中国银行',
-                    '中国农业银行',
-                    '中国工商银行',
-                  ]"
-                  v-model="createUser.boss"
-                ></v-combobox>
-              </v-col>
-              <v-col>
-                <span class="text-body-2 text--secondary">从属</span>
+                <span class="text-body-2 text--secondary">联系方式</span>
                 <v-text-field
                   outlined
                   dense
                   hide-details
-                  v-model="createUser.location"
+                  v-model="createUser.contact"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -139,12 +120,39 @@
                 ></v-text-field>
               </v-col>
               <v-col>
-                <span class="text-body-2 text--secondary">登陆密码</span>
+                <span class="text-body-2 text--secondary">登陆密码*</span>
                 <v-text-field
                   outlined
                   dense
                   hide-details
                   v-model="createUser.password"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-divider class="my-8" />
+            <v-row>
+              <v-col>
+                <span class="text-body-2 text--secondary">上级*</span>
+                <v-combobox
+                  outlined
+                  dense
+                  hide-details
+                  :items="[
+                    '支付宝',
+                    '中国银行',
+                    '中国农业银行',
+                    '中国工商银行',
+                  ]"
+                  v-model="createUser.boss"
+                ></v-combobox>
+              </v-col>
+              <v-col>
+                <span class="text-body-2 text--secondary">备注</span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  v-model="createUser.note"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -182,6 +190,7 @@
                 v-for="permission in global.user.permission"
                 :key="permission"
                 :label="permission"
+                dense
               >
               </v-checkbox>
             </v-col>

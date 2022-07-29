@@ -133,26 +133,18 @@ router.beforeEach((to, from, next) => {
   if (to.name == "Login") { next(); return; }
 
 
-  isLogin({}).then((res)=> {
+  isLogin({}).then((res) => {
     console.log(res)
-    if (res.data.isLogin){
+    if (res.data.isLogin) {
+
+      if (!Vue.prototype.global.user.uid) {
+        router.push("/login");
+        return
+      }
       next();
     } else {
+      Vue.prototype.global.errorAlert("泼发EBC：请先登录")
       router.push("/login");
-      //Vue.global.errorAlert("")
-
-      Vue.$toast.error("泼发EBC：请先登录", {
-        position: "top-right",
-        timeout: 6000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: false,
-        hideProgressBar: true,
-        closeButton: "button",
-        icon: true,
-      });
     }
   })
 
