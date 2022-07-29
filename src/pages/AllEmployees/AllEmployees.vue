@@ -36,13 +36,12 @@
       </template>
 
       <template v-slot:[`item.calculatedPermission`]="{ item }">
-        <v-chip
+        <span
           v-for="permission in item.calculatedPermission"
           :key="permission"
-          small
         >
-          {{ permission }}
-        </v-chip>
+          {{ permission + "," }}
+        </span>
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
@@ -133,18 +132,14 @@
             <v-row>
               <v-col>
                 <span class="text-body-2 text--secondary">上级*</span>
-                <v-combobox
+                <v-autocomplete
                   outlined
                   dense
                   hide-details
-                  :items="[
-                    '支付宝',
-                    '中国银行',
-                    '中国农业银行',
-                    '中国工商银行',
-                  ]"
+                  no-data-text="空！！"
+                  :items="userInfos.map(i => i.nick)"
                   v-model="createUser.boss"
-                ></v-combobox>
+                ></v-autocomplete>
               </v-col>
               <v-col>
                 <span class="text-body-2 text--secondary">备注</span>
@@ -174,7 +169,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="this.createDialog = false"
+          <v-btn color="blue darken-1" text @click="createDialog = false"
             >取消</v-btn
           >
           <v-btn color="blue darken-1" text @click="save">新建</v-btn>
@@ -207,7 +202,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="save">确定</v-btn>
+          <v-btn color="blue darken-1" text @click="permissionDialog = false">确定</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -283,16 +278,12 @@ export default {
   created() {
     this.init();
     console.log(this.global.user);
-
-    setInterval(() => {
-      console.log(this.permissionCheckbox);
-    }, 1000);
   },
 
   methods: {
     save() {
-      this.uploadUser;
       this.createDialog = false;
+      this.uploadUser;
     },
 
     uploadUser() {
