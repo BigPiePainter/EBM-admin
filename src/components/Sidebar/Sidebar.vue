@@ -128,18 +128,35 @@ export default {
             },
           ],
         },
+
         {
           title: "订单管理",
-          icon: "mdi-book-variant-multiple",
-          link: "/employee",
+          icon: "mdi-account-multiple",
+          link: "",
           children: [
             {
+              title: "录入",
+              icon: "mdi-book-variant-multiple",
+              link: "/input",
+            },
+                        {
               title: "订单",
               icon: "mdi-book-variant-multiple",
               link: "/order",
             },
+            {
+              title: "退单",
+              icon: "mdi-book-variant-multiple",
+              link: "/return",
+            },
+            {
+              title: "刷单",
+              icon: "mdi-book-variant-multiple",
+              link: "/brush",
+            },
           ],
         },
+
         {
           title: "事业部管理",
           icon: "mdi-account-multiple",
@@ -148,6 +165,7 @@ export default {
             { title: "部门", icon: "mdi-circle-small", link: "/department" },
           ],
         },
+
         {
           title: "组别管理",
           icon: "mdi-account-multiple",
@@ -160,6 +178,7 @@ export default {
             },
           ],
         },
+
         {
           title: "员工管理",
           icon: "mdi-account-multiple",
