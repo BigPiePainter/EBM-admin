@@ -158,9 +158,16 @@
             </v-row>
             <v-divider class="my-8" />
             <v-row>
-              <v-col>
-                <v-btn text @click="permissionDialog = true"> 权限分配 </v-btn>
-              </v-col>
+              <v-btn text @click="permissionDialog = true"> 权限分配 </v-btn>
+            </v-row>
+            <v-row class="ml-4 mt-5">
+              <span
+                v-for="permission in selectedPermission"
+                :key="permission"
+                small
+              >
+                {{ permission + "，"}}
+              </span>
             </v-row>
           </v-container>
         </v-card-text>
@@ -170,13 +177,13 @@
           <v-btn color="blue darken-1" text @click="this.createDialog = false"
             >取消</v-btn
           >
-          <v-btn color="blue darken-1" text @click="save">保存</v-btn>
+          <v-btn color="blue darken-1" text @click="save">新建</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <!-- 权限Dialog -->
-    <v-dialog v-model="permissionDialog" max-width="500px">
+    <v-dialog v-model="permissionDialog" max-width="300px">
       <v-card class="employee-dialog">
         <v-card-title>
           <span class="text-subtitle-1">权限分配</span>
@@ -190,6 +197,7 @@
                 v-for="permission in global.user.permission"
                 :key="permission"
                 :label="permission"
+                v-model="permissionCheckbox[permission]"
                 dense
               >
               </v-checkbox>
@@ -199,10 +207,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="this.createDialog = false"
-            >取消</v-btn
-          >
-          <v-btn color="blue darken-1" text @click="save">保存</v-btn>
+          <v-btn color="blue darken-1" text @click="save">确定</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -256,19 +261,32 @@ export default {
 
     createDialog: false,
     permissionDialog: false,
+    permissionCheckbox: {},
 
     idToNick: {},
 
     //
   }),
 
-  computed: {},
+  computed: {
+    selectedPermission() {
+      var result = [];
+      for (const name in this.permissionCheckbox) {
+        if (this.permissionCheckbox[name]) result.push(name);
+      }
+      return result;
+    },
+  },
 
   watch: {},
 
   created() {
     this.init();
     console.log(this.global.user);
+
+    setInterval(() => {
+      console.log(this.permissionCheckbox);
+    }, 1000);
   },
 
   methods: {
