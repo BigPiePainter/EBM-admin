@@ -27,9 +27,9 @@ export const getSubUsers = data => {
     return http.request(args)
 }
 
-export const createSubUsers = data => {
+export const registUser = data => {
     const args = {
-        url: '/user/createSubUsers',
+        url: '/user/regist',
         method: 'POST',
         data
     }

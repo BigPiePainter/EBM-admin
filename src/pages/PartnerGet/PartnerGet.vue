@@ -69,7 +69,6 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels> -->
-    <!-- height="calc(100vh - 257px)" -->
     <v-card class="products-list mb-1">
       <v-data-table
         single-expand
@@ -80,7 +79,7 @@
         item-key="id"
         disable-sort
         class="elevation-1"
-        height="80vh"
+        height="calc(100vh - 200px)"
         :loading="loading"
         :headers="headers"
         :items="products"

@@ -1,3 +1,4 @@
+-- 数据库的索引目前还不完善
 -- 用户
 drop table if exists users;
 
@@ -13,10 +14,11 @@ CREATE TABLE users (
   note VARCHAR(5000) COMMENT '备注',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
+  deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '系统用户';
 
--- 测试数据
+-- 唯一账号数据
 insert into
   users(
     uid,
@@ -28,36 +30,6 @@ insert into
   )
 values
   (1, 0, '{}', 'admin', '88888888', "admin");
-
-insert into
-  users(creator_id, permission, username, password, nick)
-values
-  (1, '{}', 'zqy', '123456', "张清宇");
-
-insert into
-  users(creator_id, permission, username, password, nick)
-values
-  (1, '{}', '556', '654321', "王绿原");
-
-insert into
-  users(creator_id, permission, username, password, nick)
-values
-  (2, '{}', '557', '654321', "王绿原2");
-
-insert into
-  users(creator_id, permission, username, password, nick)
-values
-  (2, '{}', '555', '654321', "王绿原3");
-
-insert into
-  users(creator_id, permission, username, password, nick)
-values
-  (3, '{}', 'wly', '654321', "王绿原4");
-
-insert into
-  users(creator_id, permission, username, password, nick)
-values
-  (1, '{}', 'wly2', '654321', "王绿原555");
 
 -- 商品信息
 drop table if exists products;
@@ -77,22 +49,15 @@ CREATE TABLE products (
   freight_to_payment DECIMAL(15, 5) COMMENT '运费/总货款',
   transport_way VARCHAR(200) COMMENT '发货方式',
   storehouse VARCHAR(200) COMMENT '聚水潭仓库',
+  note VARCHAR(5000) COMMENT '备注',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
-  deprecated TINYINT(1) NOT NULL COMMENT '是否弃用',
-  primary key (id)
+  deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
+  primary key (id),
+  index index_owner(owner)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '商品信息';
 
-alter table
-  products
-add
-  column create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
-alter table
-  products
-add
-  column modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
-  -- SKU
-  drop table if exists skus;
+drop table if exists skus;
 
 CREATE TABLE skus (
   uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
@@ -102,12 +67,12 @@ CREATE TABLE skus (
   sku_price DECIMAL(15, 5) NOT NULL COMMENT '售卖价',
   sku_cost DECIMAL(15, 5) NOT NULL COMMENT '售卖成本',
   start_time DATE NOT NULL COMMENT '生效时间',
+  note VARCHAR(5000) COMMENT '备注',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
-  deprecated TINYINT(1) NOT NULL COMMENT '是否弃用',
-  delete_time timestamp NOT NULL DEFAULT NOW() COMMENT '弃用时间',
-  note VARCHAR(10000) COMMENT '备注',
+  modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
+  deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
   primary key (uid),
-  index index_product_id(product_id),
+  index index_product_id(product_id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'SKU';
 
 -- 厂家信息
@@ -125,10 +90,10 @@ CREATE TABLE manufacturers (
   manufacturer_phone VARCHAR(200) COMMENT '厂家退货-收件手机号',
   manufacturer_address VARCHAR(200) COMMENT '厂家退货-收件地址',
   start_time DATE NOT NULL COMMENT '生效时间',
+  note VARCHAR(5000) COMMENT '备注',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
-  deprecated TINYINT(1) NOT NULL COMMENT '是否弃用',
-  note VARCHAR(10000) COMMENT '备注',
+  deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '厂家信息';
 
@@ -138,9 +103,10 @@ drop table if exists departments;
 CREATE TABLE departments (
   uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
   name VARCHAR(100) NOT NULL COMMENT '部门名称',
+  note VARCHAR(5000) COMMENT '备注',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
-  note VARCHAR(10000) COMMENT '备注',
+  deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '部门';
 
@@ -150,8 +116,9 @@ drop table if exists teams;
 CREATE TABLE teams (
   uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
   name VARCHAR(100) NOT NULL COMMENT '组别名称',
+  note VARCHAR(5000) COMMENT '备注',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
-  note VARCHAR(10000) COMMENT '备注',
+  deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '组别';
