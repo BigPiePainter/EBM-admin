@@ -135,7 +135,7 @@
             <v-dialog v-model="dialog" max-width="1000px">
               <!--new item buttom-->
               <template v-slot:activator="{ on, attrs }">
-                <v-btn small depressed color="primary" v-bind="attrs" v-on="on">
+                <v-btn small depressed color="primary" v-bind="attrs" v-on="on" @click="addMode">
                   新增商品信息
                 </v-btn>
               </template>
@@ -149,6 +149,7 @@
                     <v-col cols="12" sm="6" md="4">
                       <span class="text-body-2 text--secondary">商品ID</span>
                       <v-text-field
+                        :readonly="checkReadOnly"
                         outlined
                         dense
                         hide-details
@@ -327,9 +328,6 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <!-- <v-icon small class="mr-2" @click.stop="editItem(item)">
-            mdi-pencil
-          </v-icon> -->
           <v-btn
             small
             depressed
@@ -437,6 +435,9 @@ export default {
     newGroup: [],
     newOwner: [],
 
+    mode:0,
+    checkReadOnly:"",
+
     //筛选菜单
     menu: {}, //类别可选项
 
@@ -478,7 +479,6 @@ export default {
     //主表头, 内容
     headers: [],
     products: [],
-    editedIndex: -1,
 
     headersContent: [
       { text: "商品ID", value: "id" },
@@ -500,39 +500,7 @@ export default {
       { text: "操作", value: "actions" },
     ],
 
-    editedItem: {
-      id: "",
-      department: "",
-      groupName: "",
-      owner: "",
-      shopName: "",
-      productName: "",
-      firstCategory: "",
-      productDeduction: "",
-      productInsurance: "",
-      productFreight: "",
-      extraRatio: "",
-      freightToPayment: "",
-      transportWay: "",
-      storehouse: "",
-    },
-
-    defaultItem: {
-      id: "",
-      department: "",
-      groupName: "",
-      owner: "",
-      shopName: "",
-      productName: "",
-      firstCategory: "",
-      productDeduction: "",
-      productInsurance: "",
-      productFreight: "",
-      extraRatio: "",
-      freightToPayment: "",
-      transportWay: "",
-      storehouse: "",
-    },
+    editedItem: {},
 
     userInfos: [],
     idToNick: {},
@@ -540,9 +508,7 @@ export default {
   }),
 
   computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "新增商品信息" : "编辑商品信息";
-    },
+
   },
 
   watch: {
@@ -598,6 +564,11 @@ export default {
   },
 
   methods: {
+    addMode(){
+      this.editedItem={};
+      this.mode=1;
+      this.checkReadOnly=false;
+    },
     showHeaders() {
       this.headers = this.headersContent;
     },
@@ -670,8 +641,9 @@ export default {
     },
 
     editItem(item) {
-      this.editedIndex = this.products.indexOf(item);
+      // this.editedIndex = this.products.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      this.checkReadOnly=true;
       this.dialog = true;
     },
 
@@ -707,10 +679,6 @@ export default {
 
     close() {
       this.dialog = false;
-      this.$nextTick(() => {
-        //this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
     },
 
     // initialData() {
