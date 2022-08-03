@@ -27,12 +27,20 @@ export const getSubUsers = data => {
     return http.request(args)
 }
 
-export const createSubUsers = data => {
+export const registUser = data => {
     const args = {
-        url: '/user/createSubUsers',
+        url: '/user/regist',
         method: 'POST',
         data
     }
     return http.request(args)
 }
 
+export const getAllUsers = data => {
+    const args = {
+        url: '/user/getAllUsers',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}

@@ -69,11 +69,24 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels> -->
-    <!-- height="calc(100vh - 257px)" -->
     <v-card class="products-list mb-1">
-      <v-data-table single-expand show-expand fixed-header loading-text="加载中... 请稍后" no-data-text="空" item-key="id"
-        disable-sort class="elevation-1" height="80vh" :loading="loading" :headers="headers" :items="products"
-        :expanded.sync="expanded" :server-items-length="totalProducts" :options.sync="options" :items-per-page="50"
+      <v-data-table
+        single-expand
+        show-expand
+        fixed-header
+        loading-text="加载中... 请稍后"
+        no-data-text="空"
+        item-key="id"
+        disable-sort
+        class="elevation-1"
+        height="calc(100vh - 200px)"
+        :loading="loading"
+        :headers="headers"
+        :items="products"
+        :expanded.sync="expanded"
+        :server-items-length="totalProducts"
+        :options.sync="options"
+        :items-per-page="50"
         :footer-props="{
           'items-per-page-options': [10, 20, 50, 100],
           'items-per-page-text': '每页显示条数',
