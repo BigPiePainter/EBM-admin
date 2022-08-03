@@ -11,7 +11,7 @@
       height="calc(100vh - 195px)"
       :loading="loading"
       :headers="headers"
-      :items="userInfos"
+      :items="userInfosWithoutSelf"
       :items-per-page="50"
       :footer-props="{
         'items-per-page-options': [10, 20, 50, 100],
@@ -254,6 +254,7 @@ export default {
     loading: true,
 
     userInfos: [],
+    userInfosWithoutSelf: [],
 
     createDialog: false,
     permissionDialog: false,
@@ -308,11 +309,11 @@ export default {
         .then((res) => {
           this.loading = false;
           this.userInfos = res.data.userInfos;
+          this.userAnalyze();
 
-          this.userInfos = this.userInfos.filter(
+          this.userInfosWithoutSelf = this.userInfos.filter(
             (i) => i.uid != this.global.user.uid
           );
-          this.userAnalyze();
           //this.infoAlert("泼发EBC：" + res.data);
         })
         .catch(() => {

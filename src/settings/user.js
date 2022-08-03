@@ -36,3 +36,11 @@ export const registUser = data => {
     return http.request(args)
 }
 
+export const getAllUsers = data => {
+    const args = {
+        url: '/user/getAllUsers',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
