@@ -71,44 +71,21 @@
     </v-expansion-panels> -->
     <!-- height="calc(100vh - 257px)" -->
     <v-card class="products-list mb-1">
-      <v-data-table
-        single-expand
-        show-expand
-        fixed-header
-        loading-text="加载中... 请稍后"
-        no-data-text="空"
-        item-key="id"
-        disable-sort
-        class="elevation-1"
-        height="80vh"
-        :loading="loading"
-        :headers="headers"
-        :items="products"
-        :expanded.sync="expanded"
-        :server-items-length="totalProducts"
-        :options.sync="options"
-        :items-per-page="50"
+      <v-data-table single-expand show-expand fixed-header loading-text="加载中... 请稍后" no-data-text="空" item-key="id"
+        disable-sort class="elevation-1" height="80vh" :loading="loading" :headers="headers" :items="products"
+        :expanded.sync="expanded" :server-items-length="totalProducts" :options.sync="options" :items-per-page="50"
         :footer-props="{
           'items-per-page-options': [10, 20, 50, 100],
           'items-per-page-text': '每页显示条数',
-        }"
-        @click:row="clickRow"
-      >
-        <template
-          v-for="header in headersContent"
-          v-slot:[`header.${header.value}`]="props"
-        >
+        }" @click:row="clickRow">
+        <template v-for="header in headersContent" v-slot:[`header.${header.value}`]="props">
           <v-edit-dialog :key="header.value" @close="loadData">
             {{ props.header.text }}
             <template v-slot:input>
               <div class="d-flex align-center">
                 <span class=""> {{ props.header.text }} </span>
-                <v-text-field
-                  v-model="search.search[props.header.value]"
-                  single-line
-                  counter
-                  class="ml-3"
-                ></v-text-field>
+                <v-text-field v-model="search.search[props.header.value]" single-line counter class="ml-3">
+                </v-text-field>
               </div>
             </template>
           </v-edit-dialog>
@@ -128,7 +105,7 @@
             <v-divider class="mx-4" inset vertical></v-divider>
 
             <span class="grey--text body-2 overflow-y-auto">{{
-              searchPreview
+                searchPreview
             }}</span>
 
             <v-spacer></v-spacer>
@@ -148,180 +125,96 @@
                   </v-row>
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">商品ID</span>
-                      <v-text-field
-                        :readonly="checkReadOnly"
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.id"
-                      ></v-text-field>
+                      <span class="text-body-2 text--secondary">商品ID*</span>
+                      <v-text-field :readonly="checkReadOnly" outlined dense hide-details v-model="editedItem.id">
+                      </v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">商品名</span>
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.productName"
-                      ></v-text-field>
+                      <span class="text-body-2 text--secondary">商品名*</span>
+                      <v-text-field outlined dense hide-details v-model="editedItem.productName"></v-text-field>
                     </v-col>
                   </v-row>
                   <v-divider class="my-8" />
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">部门</span>
-                      <v-select
-                        outlined
-                        dense
-                        :items="newDepartment"
-                        v-model="editedItem.department"
-                        menu-props="auto"
-                        hide-details
-                        single-line
-                      ></v-select>
+                      <span class="text-body-2 text--secondary">部门*</span>
+                      <v-select outlined dense :items="newDepartment" v-model="editedItem.department" menu-props="auto"
+                        hide-details single-line></v-select>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">组别</span>
-                      <v-select
-                        outlined
-                        dense
-                        v-model="editedItem.groupName"
-                        :items="newGroup"
-                        menu-props="auto"
-                        hide-details
-                        single-line
-                      ></v-select>
+                      <span class="text-body-2 text--secondary">组别*</span>
+                      <v-select outlined dense v-model="editedItem.groupName" :items="newGroup" menu-props="auto"
+                        hide-details single-line></v-select>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">持品人</span>
-                      <v-select
-                        outlined
-                        dense
-                        v-model="editedItem.owner"
-                        :items="newOwner"
-                        menu-props="auto"
-                        hide-details
-                        single-line
-                      ></v-select>
+                      <span class="text-body-2 text--secondary">持品人*</span>
+                      <v-select outlined dense v-model="editedItem.owner" :items="newOwner" menu-props="auto"
+                        hide-details single-line></v-select>
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">店铺名</span>
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.shopName"
-                      ></v-text-field>
+                      <span class="text-body-2 text--secondary">店铺名*</span>
+                      <v-text-field outlined dense hide-details v-model="editedItem.shopName"></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">一级类目</span>
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.firstCategory"
-                      ></v-text-field>
+                      <span class="text-body-2 text--secondary">一级类目*</span>
+                      <v-text-field outlined dense hide-details v-model="editedItem.firstCategory"></v-text-field>
                     </v-col>
                   </v-row>
                   <v-divider class="my-8" />
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">品类扣点</span>
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.productDeduction"
-                      ></v-text-field>
+                      <span class="text-body-2 text--secondary">品类扣点*</span>
+                      <v-text-field outlined dense hide-details v-model="editedItem.productDeduction"></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary"
-                        >品类运费险</span
-                      >
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.productInsurance"
-                      ></v-text-field>
+                      <span class="text-body-2 text--secondary">品类运费险*</span>
+                      <v-text-field outlined dense hide-details v-model="editedItem.productInsurance"></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">每单运费</span>
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.productFreight"
-                      ></v-text-field>
+                      <span class="text-body-2 text--secondary">每单运费*</span>
+                      <v-text-field outlined dense hide-details v-model="editedItem.productFreight"></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary"
-                        >子/主订单附带比</span
-                      >
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.extraRatio"
-                      ></v-text-field>
+                      <span class="text-body-2 text--secondary">子/主订单附带比*</span>
+                      <v-text-field outlined dense hide-details v-model="editedItem.extraRatio"></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary"
-                        >运费/总货款</span
-                      >
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.freightToPayment"
-                      ></v-text-field>
+                      <span class="text-body-2 text--secondary">运费/总货款</span>
+                      <v-text-field outlined dense hide-details v-model="editedItem.freightToPayment"></v-text-field>
                     </v-col>
                   </v-row>
                   <v-divider class="my-8" />
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
                       <span class="text-body-2 text--secondary">发货方式</span>
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.transportWay"
-                      ></v-text-field>
+                      <v-text-field outlined dense hide-details v-model="editedItem.transportWay"></v-text-field>
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary"
-                        >聚水潭仓库</span
-                      >
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.storehouse"
-                      ></v-text-field>
+                      <span class="text-body-2 text--secondary">聚水潭仓库</span>
+                      <v-text-field outlined dense hide-details v-model="editedItem.storehouse"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-col>
 
                 <!-- until there is dialog of new input-->
-
                 <v-card-actions>
+                  <p class="caption font-italic font-weight-thin">带*为必填项目</p>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" text @click="close">
                     取消
                   </v-btn>
-                  <v-btn color="blue darken-1" text @click="save"> 保存 </v-btn>
+                  <v-btn color="blue darken-1" text @click="save" :disabled="isEmp"> 保存 </v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -329,25 +222,11 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn
-            small
-            depressed
-            outlined
-            color="green"
-            @click.stop="editItem(item)"
-            class="ml-1"
-          >
+          <v-btn small depressed outlined color="green" @click.stop="editItem(item)" class="ml-1">
             修改
           </v-btn>
 
-          <v-btn
-            small
-            depressed
-            outlined
-            color="red lighten-2"
-            @click.stop="deleteProduct(item)"
-            class="ml-1"
-          >
+          <v-btn small depressed outlined color="red lighten-2" @click.stop="deleteProduct(item)" class="ml-1">
             删除
           </v-btn>
         </template>
@@ -357,24 +236,17 @@
     <!-- 删除Dialog -->
     <v-dialog v-model="deleteDialog" max-width="450px">
       <v-card class="delete-dialog">
-        <v-card-title class="text-subtitle-1"
-          >{{ deleteItem.productName }}
+        <v-card-title class="text-subtitle-1">{{ deleteItem.productName }}
           <span class="text--secondary text-body-2 ml-5 mt-1">
             同时删除SKU与厂家信息
           </span>
         </v-card-title>
 
         <div class="delete-table-container mt-2 mb-1">
-          <v-data-table
-            :headers="[
-              { align: 'start', value: 'key' },
-              { align: 'start', value: 'value' },
-            ]"
-            :items="deleteItemParse"
-            hide-default-footer
-            hide-default-header
-            disable-sort
-          >
+          <v-data-table :headers="[
+            { align: 'start', value: 'key' },
+            { align: 'start', value: 'value' },
+          ]" :items="deleteItemParse" hide-default-footer hide-default-header disable-sort>
             <template v-slot:[`item.key`]="{ item }">
               <div class="ml-3">
                 {{ item.key }}
@@ -384,31 +256,17 @@
         </div>
 
         <v-card-actions>
-          <v-switch
-            v-for="i of 3"
-            v-model="deleteConfirm[i]"
-            dense
-            class="mt-1 mr-3"
-            :key="i"
-            ><template v-slot:label>
+          <v-switch v-for="i of 3" v-model="deleteConfirm[i]" dense class="mt-1 mr-3" :key="i"><template v-slot:label>
               <span class="body-2">确定</span>
-            </template></v-switch
-          >
+            </template></v-switch>
 
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="deleteDialog = false"
-            >取消</v-btn
-          >
-          <v-btn
-            color="red darken-1"
-            text
-            @click="sureDelete"
-            :disabled="
-              !deleteConfirm[1] || !deleteConfirm[2] || !deleteConfirm[3]
-            "
-          >
-            <v-icon small class="mr-1"> mdi-delete </v-icon>删除</v-btn
-          >
+          <v-btn color="blue darken-1" text @click="deleteDialog = false">取消</v-btn>
+          <v-btn color="red darken-1" text @click="sureDelete" :disabled="
+            !deleteConfirm[1] || !deleteConfirm[2] || !deleteConfirm[3]
+          ">
+            <v-icon small class="mr-1"> mdi-delete </v-icon>删除
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -418,6 +276,7 @@
 
 <script>
 import { addProducts } from "@/settings/product";
+import { editProduct } from "@/settings/product";
 import { loadProducts } from "@/settings/product";
 import { getClass } from "@/settings/product";
 
@@ -435,9 +294,8 @@ export default {
     newDepartment: [],
     newGroup: [],
     newOwner: [],
-
-    mode:0,
-    checkReadOnly:"",
+    mode: 0,
+    checkReadOnly: "",
 
     //筛选菜单
     menu: {}, //类别可选项
@@ -503,16 +361,43 @@ export default {
 
     editedItem: {},
 
+
+
+
     userInfos: [],
     idToNick: {},
     userAnalyze: [false, false],
   }),
 
   computed: {
+    isEmp: function () {
+      var check = [
+        "id",
+        "department",
+        "groupName",
+        "owner",
+        "shopName",
+        "productName",
+        "firstCategory",
+        "productDeduction",
+        "productInsurance",
+        "productFreight",
+        "extraRatio",
+      ]
 
+      var pass = true;
+      check.forEach((item) => {
+        if (!this.editedItem[item]) pass = false
+      })
+
+      console.log(pass)
+
+      return !pass;
+    }
   },
 
   watch: {
+
     dialog(val) {
       val || this.close();
     },
@@ -531,9 +416,8 @@ export default {
           if (!this.search.search[name]) continue;
           this.search.search[name] = this.search.search[name].trim();
           if (this.search.search[name]) {
-            this.searchPreview += `${
-              this.headersContent.find((i) => i.value == name).text
-            }：${this.search.search[name]} ，`;
+            this.searchPreview += `${this.headersContent.find((i) => i.value == name).text
+              }：${this.search.search[name]} ，`;
           }
         }
         this.searchPreview = this.searchPreview
@@ -561,14 +445,18 @@ export default {
         this.editedItem.department = this.menu.department[0];
         console.log(res.data);
       })
-      .catch(() => {});
+      .catch(() => { });
   },
 
   methods: {
-    addMode(){
-      this.editedItem={};
-      this.mode=1;
-      this.checkReadOnly=false;
+    // checkEmpty() {
+    //   if (this.editedItem.productName.length === 0) { isEmpty == true}
+    //   else {isEmpty == false}
+    // },
+    addMode() {
+      this.editedItem = {};
+      this.mode = 1; //新增
+      this.checkReadOnly = false;
     },
     showHeaders() {
       this.headers = this.headersContent;
@@ -622,7 +510,7 @@ export default {
           this.createrAnalyze();
           //this.infoAlert("泼发EBC：" + res.data);
         })
-        .catch(() => {});
+        .catch(() => { });
     },
 
     createrAnalyze() {
@@ -643,8 +531,9 @@ export default {
 
     editItem(item) {
       // this.editedIndex = this.products.indexOf(item);
+      this.mode = 2; //修改
       this.editedItem = Object.assign({}, item);
-      this.checkReadOnly=true;
+      this.checkReadOnly = true;
       this.dialog = true;
     },
 
@@ -683,8 +572,7 @@ export default {
     },
 
     // initialData() {
-    // var iniData = [];
-
+    //   var iniData = []
     //   for (let i = 0; i < Object.keys(iniData).length; i++) {
     //     setTimeout(function () {
     //       console.log(iniData.length);
@@ -699,17 +587,45 @@ export default {
     // },
 
     save() {
+      if (this.mode == 1) {
+        this.add();
+      } else if (this.mode == 2) {
+        this.edit();
+      }
+    },
+
+    add() {
       if (/[^\d]/.test(this.editedItem.id)) {
         this.global.infoAlert("泼发EBC：商品ID格式错误");
         return;
       } else {
-        //this.products.push(this.editedItem);
         this.close();
       }
-
       this.loading = true;
       console.log(this.editedItem);
       addProducts(this.editedItem)
+        .then((res) => {
+          this.loading = false;
+          this.global.infoAlert("泼发EBC：" + res.data);
+          //刷新页面数据
+          this.loadData();
+        })
+        .catch(() => {
+          this.loading = false;
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC：上传失败");
+          }, 100);
+        });
+    },
+
+    edit() {
+      this.loading = true;
+      // var args = { ...this.editedItem };
+      // console.log(this.editedItem);
+      // console.log(args);
+      // if (args.freightToPayment == null) { delete args.freightToPayment; }
+      // console.log(args);
+      editProduct(this.editedItem)
         .then((res) => {
           this.loading = false;
           this.global.infoAlert("泼发EBC：" + res.data);

@@ -363,7 +363,7 @@ export default {
         }
       } else {
         var rules = [
-          /./, // RegExp("^" + this.product.id + "$"),
+          RegExp("^" + this.product.id + "$"),
           /^\d+$/,
           /./,
           /^[0-9]+(\.[0-9]{1,5})?$/,

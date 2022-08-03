@@ -21,7 +21,7 @@ export const addProducts = data => {
 
 export const editProduct = data => {
     const args = {
-        url: '/product/edit',
+        url: '/product/modify',
         method: 'POST',
         data
     }
