@@ -488,6 +488,7 @@ export default {
       if (!this.skuDone || !this.manufacturerDone) return;
 
       console.log("显示");
+      this.loading = false;
       this.show = true;
       //this.itemShow = true;
 
@@ -506,7 +507,6 @@ export default {
       loadSkus({ productId: this.productInfo.id })
         .then((res) => {
           console.log(res);
-          this.loading = false;
           this.skuInfo = res.data.skus;
           //数据处理
           this.dataAnalyze();

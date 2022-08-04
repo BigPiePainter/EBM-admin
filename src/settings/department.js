@@ -26,3 +26,14 @@ export const addDepartment = data => {
     }
     return http.request(args)
 }
+
+
+export const modifyDepartment = data => {
+    const args = {
+        url: '/department/modify',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+

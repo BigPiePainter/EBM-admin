@@ -41,6 +41,12 @@
         <td :colspan="headers.length">aaaa {{ item.name }}</td>
       </template>
 
+      <template v-slot:[`item.calculatedAdmin`]="{ item }">
+        <span v-for="nick in item.calculatedAdmin" :key="nick">
+          {{ nick + "," }}
+        </span>
+      </template>
+
       <template v-slot:[`header.actions`]="{ header }">
         <div class="d-flex mr-4">
           <v-spacer />
@@ -65,7 +71,7 @@
     </v-data-table>
 
     <!-- 部门信息Dialog -->
-    <v-dialog v-model="departmentInfoDialog" max-width="450px">
+    <v-dialog v-model="departmentInfoDialog" max-width="450px" persistent>
       <v-card>
         <v-col class="px-10 pt-10 department-dialog">
           <v-row>
@@ -100,8 +106,8 @@
                 hide-details
                 chips
                 color="blue-grey lighten-1"
-                item-text="nick"
-                item-value="nick"
+                item-text="uid"
+                item-value="uid"
                 multiple
               >
                 <template v-slot:selection="data">
@@ -182,10 +188,10 @@ export default {
         value: "uid",
       },
       { text: "事业部名称", value: "name" },
-      { text: "管理员", value: "admin" },
+      { text: "管理员", value: "calculatedAdmin" },
+      { text: "备注", value: "note" },
       { text: "创建时间", value: "calculatedCreateTime" },
       { text: "修改时间", value: "calculatedModifyTime" },
-      { text: "备注", value: "note" },
       { text: "操作", value: "actions", sortable: false },
     ],
     departmentInfo: [],
@@ -196,6 +202,9 @@ export default {
     departmentMode: 0, // 1--添加模式,  2--修改模式
 
     loading: false,
+
+    departmentDone: false,
+    allUserDone: false,
   }),
 
   created() {
@@ -204,28 +213,41 @@ export default {
 
   methods: {
     init() {
+      this.departmentDone = false;
+      this.allUserDone = false;
       this.loading = true;
       getDepartment({})
         .then((res) => {
           console.log(res.data.departments);
           this.departmentInfo = res.data.departments;
           // this.departmentInfo = res.data.department;
-          this.dataAnalyze();
-          this.loading = false;
+          this.departmentDone = true;
+          this.initDone();
         })
         .catch(() => {
           this.loading = false;
         });
-
       getAllUsers({})
         .then((res) => {
           console.log(res);
           this.allUsers = res.data.userInfos;
+          this.allUserDone = true;
+          this.initDone();
         })
-        .catch(() => {});
+        .catch(() => {
+          this.loading = false;
+        });
+    },
+
+    initDone() {
+      if (!this.departmentDone || !this.allUserDone) return;
+
+      this.dataAnalyze();
+      this.loading = false;
     },
 
     dataAnalyze() {
+      console.log(this.allUsers);
       this.departmentInfo.forEach((department) => {
         department.calculatedCreateTime = javaDateTimeToString(
           department.createTime
@@ -233,6 +255,13 @@ export default {
         department.calculatedModifyTime = javaDateTimeToString(
           department.modifyTime
         );
+
+        department.calculatedAdmin = [];
+        if (department.admin) {
+          department.calculatedAdmin = department.admin
+            .split(",")
+            .map((id) => this.allUsers.find((i) => i.uid == id).nick);
+        }
       });
     },
 
@@ -241,23 +270,30 @@ export default {
     editDepartmentButton(item) {
       this.departmentMode = 2; //"修改"模式
       this.departmentEdit = { ...item };
+      this.selectedAdmin = item.admin
+        ? item.admin.split(",").map((i) => Number(i))
+        : [];
       this.departmentInfoDialog = true;
     },
 
     addDepartmentButton() {
       this.departmentMode = 1; //"添加"模式
       this.departmentEdit = {};
+      this.selectedAdmin = [];
       this.departmentInfoDialog = true;
     },
 
     save() {
-      console.log(this.selectedAdmin)
+      console.log(this.selectedAdmin);
       this.departmentMode == 1 ? this.newDepartment() : this.editDepartment();
       this.departmentInfoDialog = false;
     },
 
     newDepartment() {
-      addDepartment(this.departmentEdit).then((res) => {
+      var args = { admin: this.selectedAdmin.join(), ...this.departmentEdit };
+      console.log(args);
+
+      addDepartment(args).then((res) => {
         this.global.infoAlert("泼发EBC：" + res.data);
         console.log(this.departmentEdit);
         this.init();
@@ -265,7 +301,12 @@ export default {
     },
 
     editDepartment() {
-      modifyDepartment(this.departmentEdit).then((res) => {
+      var args = { ...this.departmentEdit };
+
+      args.admin = this.selectedAdmin.join();
+      console.log(args);
+
+      modifyDepartment(args).then((res) => {
         this.global.infoAlert("泼发EBC：" + res.data);
         console.log(this.departmentEdit);
         this.init();

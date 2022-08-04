@@ -103,6 +103,7 @@ drop table if exists departments;
 CREATE TABLE departments (
   uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
   name VARCHAR(100) NOT NULL COMMENT '部门名称',
+  admin VARCHAR(5000) COMMENT '管理员id(多个)',
   note VARCHAR(5000) COMMENT '备注',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
@@ -116,6 +117,7 @@ drop table if exists teams;
 CREATE TABLE teams (
   uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
   name VARCHAR(100) NOT NULL COMMENT '组别名称',
+  admin VARCHAR(5000) COMMENT '管理员id(多个)',
   note VARCHAR(5000) COMMENT '备注',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',

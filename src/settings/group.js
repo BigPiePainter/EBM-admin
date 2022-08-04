@@ -1,6 +1,6 @@
 import http from '@/libs/http'
 
-export const getTeam = data => {
+export const getGroup = data => {
     const args = {
         url: '/team/get',
         method: 'POST',
@@ -9,18 +9,18 @@ export const getTeam = data => {
     return http.request(args)
 }
 
-export const deleteTeam = data => {
+export const addGroup = data => {
     const args = {
-        url: '/team/delete',
+        url: '/team/add',
         method: 'POST',
         data
     }
     return http.request(args)
 }
 
-export const addTeam = data => {
+export const modifyGroup = data => {
     const args = {
-        url: '/team/add',
+        url: '/team/modify',
         method: 'POST',
         data
     }
