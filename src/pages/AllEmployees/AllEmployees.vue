@@ -174,11 +174,12 @@
         </v-card-text>
 
         <v-card-actions>
+          <p class="caption font-italic font-weight-thin">带*为必填项目</p>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="createDialog = false"
             >取消</v-btn
           >
-          <v-btn color="blue darken-1" text @click="newEmployee">新建</v-btn>
+          <v-btn color="blue darken-1" text @click="newEmployee" :disabled="isEmpty">新建</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -273,6 +274,23 @@ export default {
       }
       return result;
     },
+
+    isEmpty: function(){
+      var check = [
+        "nick",
+        "username",
+        "password",
+        "creatorId",
+      ]
+      var pass = true;
+      check.forEach((item) => {
+        if (!this.userInfoEdit[item]) pass = false
+      })
+
+      console.log(pass)
+
+      return !pass;
+    }
   },
 
   watch: {},
