@@ -1,44 +1,28 @@
 <template>
   <div>
-    <v-data-table
-      class="elevation-2"
-      fixed-header
-      loading-text="加载中... 请稍后"
-      no-data-text="空"
-      item-key="uid"
-      show-expand
-      disable-sort
-      height="calc(100vh - 200px)"
-      :expanded.sync="expanded"
-      :headers="headers"
-      :items="departmentInfo"
-      :loading="loading"
-      :items-per-page="50"
-      :footer-props="{
+    <v-data-table class="elevation-2" fixed-header loading-text="加载中... 请稍后" no-data-text="空" item-key="uid" show-expand
+      disable-sort height="calc(100vh - 200px)" :expanded.sync="expanded" :headers="headers" :items="departmentInfo"
+      :loading="loading" :items-per-page="50" :footer-props="{
         'items-per-page-options': [10, 20, 50, 100],
         'items-per-page-text': '每页显示条数',
-      }"
-      @click:row="clickRow"
-    >
+      }" @click:row="clickRow">
       <template v-slot:top>
         <v-toolbar flat color="white" dense>
           <v-toolbar-title>事业部</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-btn
-            small
-            depressed
-            color="primary"
-            dark
-            @click="addDepartmentButton"
-          >
+          <v-btn small depressed color="primary" dark @click="addDepartmentButton">
             新事业部
           </v-btn>
         </v-toolbar>
       </template>
 
       <template v-slot:expanded-item="{ headers, item }">
-        <td :colspan="headers.length">aaaa {{ item.name }}</td>
+        <td :colspan="headers.length" class="sub-table pa-0">
+          <div class="sub-table-container elevation-20 ml-2 mb-3">
+            <DepartmentMemberTable :DepartmentMemberInfo="item" />
+          </div>
+        </td>
       </template>
 
       <template v-slot:[`item.calculatedAdmin`]="{ item }">
@@ -56,14 +40,7 @@
       <template v-slot:[`item.actions`]="{ item }">
         <div class="d-flex">
           <v-spacer />
-          <v-btn
-            small
-            depressed
-            outlined
-            color="green"
-            @click="editDepartmentButton(item)"
-            class="ml-1"
-          >
+          <v-btn small depressed outlined color="green" @click="editDepartmentButton(item)" class="ml-1">
             修改
           </v-btn>
         </div>
@@ -76,19 +53,14 @@
         <v-col class="px-10 pt-10 department-dialog">
           <v-row>
             <span color="" class="text-subtitle-1">{{
-              departmentMode == 1 ? "新事业部" : "编辑事业部"
+                departmentMode == 1 ? "新事业部" : "编辑事业部"
             }}</span>
           </v-row>
           <v-row>
             <v-col cols="8">
               <span class="text-body-2 text--secondary">名称</span>
-              <v-text-field
-                outlined
-                dense
-                hide-details
-                color="blue-grey lighten-1"
-                v-model="departmentEdit.name"
-              ></v-text-field>
+              <v-text-field outlined dense hide-details color="blue-grey lighten-1" v-model="departmentEdit.name">
+              </v-text-field>
             </v-col>
           </v-row>
 
@@ -97,19 +69,8 @@
           <v-row>
             <v-col>
               <span class="text-body-2 text--secondary">管理员</span>
-              <v-autocomplete
-                v-model="selectedAdmin"
-                :items="allUsers"
-                no-data-text="无"
-                outlined
-                dense
-                hide-details
-                chips
-                color="blue-grey lighten-1"
-                item-text="uid"
-                item-value="uid"
-                multiple
-              >
+              <v-autocomplete v-model="selectedAdmin" :items="allUsers" no-data-text="无" outlined dense hide-details
+                chips color="blue-grey lighten-1" item-text="uid" item-value="uid" multiple>
                 <template v-slot:selection="data">
                   <span>{{ data.item.nick + "，" }}</span>
                 </template>
@@ -120,11 +81,11 @@
                       {{ data.item.nick }}
 
                       <span class="text--secondary text-body-2 ml-3">{{
-                        data.item.note
-                      }}</span></v-list-item-title
-                    >
+                          data.item.note
+                      }}</span>
+                    </v-list-item-title>
                     <v-list-item-subtitle class="mt-1">{{
-                      data.item.username
+                        data.item.username
                     }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </template>
@@ -137,25 +98,15 @@
           <v-row>
             <v-col>
               <span class="text-body-2 text--secondary">备注</span>
-              <v-text-field
-                outlined
-                dense
-                hide-details
-                v-model="departmentEdit.note"
-                color="blue-grey lighten-1"
-              ></v-text-field>
+              <v-text-field outlined dense hide-details v-model="departmentEdit.note" color="blue-grey lighten-1">
+              </v-text-field>
             </v-col>
           </v-row>
         </v-col>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="departmentInfoDialog = false"
-            >取消</v-btn
-          >
+          <v-btn color="blue darken-1" text @click="departmentInfoDialog = false">取消</v-btn>
           <v-btn color="blue darken-1" text @click="save">保存</v-btn>
         </v-card-actions>
       </v-card>
@@ -169,6 +120,7 @@
 import { getDepartment } from "@/settings/department";
 import { addDepartment } from "@/settings/department";
 import { modifyDepartment } from "@/settings/department";
+import DepartmentMemberTable from "../../components/DepartmentMemberTable/DepartmentMemberTable.vue";
 
 import { getAllUsers } from "@/settings/user";
 
@@ -265,7 +217,7 @@ export default {
       });
     },
 
-    clickRow() {},
+    clickRow() { },
 
     editDepartmentButton(item) {
       this.departmentMode = 2; //"修改"模式
@@ -313,6 +265,7 @@ export default {
       });
     },
   },
+  components: { DepartmentMemberTable }
 };
 </script>
 
