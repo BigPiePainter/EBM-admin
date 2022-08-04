@@ -28,7 +28,7 @@ export default {
             idToNick: {},
         }
     },
-
+    //测试git
     methods: {
         init() {
             this.loading = true;
