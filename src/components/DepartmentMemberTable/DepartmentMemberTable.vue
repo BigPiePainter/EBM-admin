@@ -1,6 +1,8 @@
 <template>
     <div>
-        <v-data-table>
+        <v-data-table
+        :headers="headers"
+        :items="memberItems">
 
         </v-data-table>
     </div>
@@ -19,7 +21,13 @@ export default {
 
     data() {
         return {
-            headers: [],
+            headers: [
+                {text:"部门员工姓名", value:"name"},
+                {text:"账号", value:"account"},
+                {text:"所属部门", value:"belong"},
+                {text:"联系方式", value:"contact"},
+                {text:"备注", value:"note"}
+            ],
 
             memberItems: [],
 
