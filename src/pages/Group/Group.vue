@@ -20,7 +20,7 @@
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
           <div class="sub-table-container elevation-20 ml-2 mb-3">
-            <GroupMemberTable :groupMemberInfo="item" />
+            <GroupMemberTable :groupInfo="item" :allUsers="allUsers" :allGroups="groupInfo" />
           </div>
         </td>
       </template>

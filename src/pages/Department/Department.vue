@@ -20,7 +20,7 @@
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
           <div class="sub-table-container elevation-20 ml-2 mb-3">
-            <DepartmentMemberTable :DepartmentMemberInfo="item" />
+            <DepartmentMemberTable :departmentInfo="item" :allUsers="allUsers" :allDepartments="departmentInfo" />
           </div>
         </td>
       </template>
@@ -217,7 +217,15 @@ export default {
       });
     },
 
-    clickRow() { },
+    clickRow(item, event) {
+      if (event.isExpanded) {
+        const index = this.expanded.findIndex((i) => i === item);
+        this.expanded.splice(index, 1);
+      }
+      else {
+        this.expanded.push(item);
+      }
+    },
 
     editDepartmentButton(item) {
       this.departmentMode = 2; //"修改"模式

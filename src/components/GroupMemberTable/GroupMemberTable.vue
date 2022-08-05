@@ -1,72 +1,55 @@
 <template>
     <div>
-        <v-data-table
-        :headers="headers"
-        :items="memberItems">
+        <v-data-table :headers="headers" :items="memberItems">
 
         </v-data-table>
     </div>
 </template>
 
 <script>
-import { getSubUsers } from "@/settings/user";
 export default {
     comments: {},
 
-    props: {},
+    props: {
+        allUsers: Array,
+        allGroups: Array,
+        groupInfo: Object,
+    },
 
     created() {
         this.init();
+        // console.log(this.allUsers);
+        // console.log(this.groupInfo);
     },
 
     data() {
         return {
             headers: [
-                {text:"组员姓名", value:"name"},
-                {text:"账号", value:"account"},
-                {text:"所属小组", value:"belong"},
-                {text:"联系方式", value:"contact"},
-                {text:"备注", value:"note"}
+                { text: "组员姓名", value: "nick" },
+                { text: "账号", value: "username" },
+                { text: "所属小组", value: "calculatedPermission" },
+                { text: "联系方式", value: "contact" },
+                { text: "备注", value: "note" }
             ],
 
             memberItems: [],
 
-            userInfos: [],
-
-            idToNick: {},
         }
     },
     //测试git
     methods: {
         init() {
-            this.loading = true;
-            getSubUsers()
-                .then((res) => {
-                    this.loading = false;
-                    this.userInfos = res.data.userInfos;
-                    this.userAnalyze();
-                })
-                .catch(() => {
-                    this.loading = false;
-                });
+            console.log(this.allGroups)
+
+            this.memberItems = this.allUsers.filter(i => JSON.parse(i.permission).a && JSON.parse(i.permission).a.g.find(p => p == this.groupInfo.uid));
+            this.memberItems.forEach(i => {
+                var permission = JSON.parse(i.permission)
+                if (permission.a) {
+                    i.calculatedPermission = permission.a.g.map(id => this.allGroups.find(g => g.uid == id).name)
+                }
+            })
         },
 
-        userAnalyze() {
-            this.userInfos.forEach((user) => {
-                console.log(user);
-                this.idToNick[user.uid] = user.nick;
-                user.calculatedGender = "";
-                if (null != user.gender) {
-                    user.calculatedGender = user.gender == 1 ? "男" : "女";
-                }
-                user.calculatedPermission = JSON.parse(user.permission);
-            });
-            this.userInfos.forEach((user) => {
-                console.log(user);
-                if (user.uid == 1) return; //admin
-                user.calculatedCreator = `${this.idToNick[user.creatorId]}`;
-            });
-        },
     },
 }
 </script>

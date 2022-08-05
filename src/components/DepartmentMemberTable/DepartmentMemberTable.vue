@@ -9,11 +9,14 @@
 </template>
 
 <script>
-import { getSubUsers } from "@/settings/user";
 export default {
     comments: {},
 
-    props: {},
+    props: {
+        allUsers: Array,
+        allDepartments: Array,
+        departmentInfo: Object,
+    },
 
     created() {
         this.init();
@@ -22,9 +25,9 @@ export default {
     data() {
         return {
             headers: [
-                {text:"部门员工姓名", value:"name"},
-                {text:"账号", value:"account"},
-                {text:"所属部门", value:"belong"},
+                {text:"部门员工姓名", value:"nick"},
+                {text:"账号", value:"username"},
+                {text:"所属部门", value:"calculatedPermission"},
                 {text:"联系方式", value:"contact"},
                 {text:"备注", value:"note"}
             ],
@@ -39,35 +42,15 @@ export default {
 
     methods: {
         init() {
-            this.loading = true;
+            console.log(this.allDepartments)
 
-            getSubUsers()
-                .then((res) => {
-                    this.loading = false;
-                    this.userInfos = res.data.userInfos;
-                    this.userAnalyze();
-
-                })
-                .catch(() => {
-                    this.loading = false;
-                });
-        },
-
-        userAnalyze() {
-            this.userInfos.forEach((user) => {
-                console.log(user);
-                this.idToNick[user.uid] = user.nick;
-                user.calculatedGender = "";
-                if (null != user.gender) {
-                    user.calculatedGender = user.gender == 1 ? "男" : "女";
+            this.memberItems = this.allUsers.filter(i => JSON.parse(i.permission).a && JSON.parse(i.permission).a.g.find(p => p == this.departmentInfo.uid));
+            this.memberItems.forEach(i => {
+                var permission = JSON.parse(i.permission)
+                if (permission.a) {
+                    i.calculatedPermission = permission.a.d.map(id => this.allDepartments.find(d => d.uid == id).name)
                 }
-                user.calculatedPermission = JSON.parse(user.permission);
-            });
-            this.userInfos.forEach((user) => {
-                console.log(user);
-                if (user.uid == 1) return; //admin
-                user.calculatedCreator = `${this.idToNick[user.creatorId]}`;
-            });
+            })
         },
     },
 }
