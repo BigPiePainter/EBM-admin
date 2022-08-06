@@ -142,7 +142,7 @@
     <v-dialog v-model="manufacturerInfoDialog" max-width="700px">
       <v-card>
         <v-form>
-          <v-col class="px-10 pt-10 manufacturer-dialog">
+          <v-col class="px-10 py-10 manufacturer-dialog">
             <v-row>
               <span class="text-subtitle-1">基本信息</span>
             </v-row>
@@ -257,7 +257,6 @@
                   v-model="datePicker"
                   :close-on-content-click="false"
                   :return-value.sync="manufacturerEdit.startTime"
-                  transition="scale-transition"
                   offset-y
                   min-width="auto"
                 >

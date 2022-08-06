@@ -256,11 +256,18 @@ export default {
           department.modifyTime
         );
 
+        console.log("111");
+        console.log();
+
         department.calculatedAdmin = [];
         if (department.admin) {
           department.calculatedAdmin = department.admin
             .split(",")
-            .map((id) => this.allUsers.find((i) => i.uid == id).nick);
+            .map(
+              (id) =>
+                this.allUsers.find((i) => i.uid == id) &&
+                this.allUsers.find((i) => i.uid == id).nick
+            );
         }
       });
     },
