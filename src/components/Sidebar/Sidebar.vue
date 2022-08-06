@@ -105,11 +105,6 @@ export default {
     return {
       items: [
         { heading: "POFA1" },
-        {
-          title: "发/退货状态",
-          icon: "mdi-account-multiple",
-          link: "/transport",
-        },
         //{ title: "主页", icon: "mdi-home", link: "/dashboard" },
         {
           title: "商品管理",
@@ -135,11 +130,11 @@ export default {
           link: "",
           children: [
             {
-              title: "录入",
+              title: "导入",
               icon: "mdi-book-variant-multiple",
               link: "/input",
             },
-                        {
+            {
               title: "订单",
               icon: "mdi-book-variant-multiple",
               link: "/order",
@@ -153,6 +148,11 @@ export default {
               title: "刷单",
               icon: "mdi-book-variant-multiple",
               link: "/brush",
+            },
+            {
+              title: "发退货",
+              icon: "mdi-book-variant-multiple",
+              link: "/t",
             },
           ],
         },
