@@ -92,6 +92,8 @@ import { userLogin } from "@/settings/user";
 import { getDepartment } from "@/settings/department";
 import { getGroup } from "@/settings/group";
 
+import { isLogin } from "@/settings/user";
+
 export default {
   name: "Login",
   data() {
@@ -172,24 +174,41 @@ export default {
 
       //如果拥有事业部管理权限，那么商品管理可录入的事业部为全部
       if (this.global.user.permission.d.a) {
-        getDepartment({})
-          .then((res) => {
-            console.log(res.data.departments);
-            this.global.user.permission.a.d = res.data.departments.map(i => i.uid)
-          })
+        getDepartment({}).then((res) => {
+          console.log(res.data.departments);
+          this.global.user.permission.a.d = res.data.departments.map(
+            (i) => i.uid
+          );
+        });
       }
 
       //组别同上
       if (this.global.user.permission.e.a) {
-        getGroup({})
-          .then((res) => {
-            console.log(res.data.teams);
-            this.global.user.permission.a.g = res.data.teams.map(i => i.uid)
-          })
+        getGroup({}).then((res) => {
+          console.log(res.data.teams);
+          this.global.user.permission.a.g = res.data.teams.map((i) => i.uid);
+        });
       }
     },
   },
   created() {
+    isLogin({}).then((res) => {
+      console.log("isLogin");
+      console.log(res);
+
+      if (!res.data.isLogin) return;
+
+      this.infoAlert("泼发EBC：登陆成功");
+
+      //this.global.token = res.data.token.tokenValue
+      localStorage.token = res.data.token.tokenValue;
+      this.global.user = res.data.user;
+
+      this.userAnalyze();
+
+      this.$router.push("/partnerget");
+    });
+
     //if (window.localStorage.getItem("authenticated") === "true") {
     //  this.$router.push("/partnerget");
     //}
