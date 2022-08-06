@@ -1,11 +1,25 @@
 <template>
   <div>
-    <v-data-table class="elevation-2" fixed-header loading-text="加载中... 请稍后" no-data-text="空" item-key="uid" show-expand
-      disable-sort height="calc(100vh - 200px)" :expanded.sync="expanded" :headers="headers" :items="groupInfo"
-      :loading="loading" :items-per-page="50" :footer-props="{
+    <v-data-table
+      class="elevation-2"
+      fixed-header
+      loading-text="加载中... 请稍后"
+      no-data-text="空"
+      item-key="uid"
+      show-expand
+      disable-sort
+      height="calc(100vh - 200px)"
+      :expanded.sync="expanded"
+      :headers="headers"
+      :items="groupInfo"
+      :loading="loading"
+      :items-per-page="50"
+      :footer-props="{
         'items-per-page-options': [10, 20, 50, 100],
         'items-per-page-text': '每页显示条数',
-      }" @click:row="clickRow">
+      }"
+      @click:row="clickRow"
+    >
       <template v-slot:top>
         <v-toolbar flat color="white" dense>
           <v-toolbar-title>组别</v-toolbar-title>
@@ -20,7 +34,11 @@
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
           <div class="sub-table-container elevation-20 ml-2 mb-3">
-            <GroupMemberTable :groupInfo="item" :allUsers="allUsers" :allGroups="groupInfo" />
+            <GroupMemberTable
+              :groupInfo="item"
+              :allUsers="allUsers"
+              :allGroups="groupInfo"
+            />
           </div>
         </td>
       </template>
@@ -51,9 +69,7 @@
       </template>
 
       <template v-slot:[`item.calculatedAdmin`]="{ item }">
-        <span v-for="nick in item.calculatedAdmin" :key="nick">
-          {{ nick + "," }}
-        </span>
+        {{ item.calculatedAdmin.join("，") }}
       </template>
 
       <template v-slot:[`header.actions`]="{ header }">
@@ -65,7 +81,14 @@
       <template v-slot:[`item.actions`]="{ item }">
         <div class="d-flex">
           <v-spacer />
-          <v-btn small depressed outlined color="green" @click="editGroupButton(item)" class="ml-1">
+          <v-btn
+            small
+            depressed
+            outlined
+            color="green"
+            @click.stop="editGroupButton(item)"
+            class="ml-1"
+          >
             修改
           </v-btn>
         </div>
@@ -73,18 +96,28 @@
     </v-data-table>
 
     <!-- 组别信息Dialog -->
-    <v-dialog v-model="groupInfoDialog" max-width="450px" persistent>
+    <v-dialog
+      v-model="groupInfoDialog"
+      max-width="450px"
+      :persistent="dialogPersistent"
+    >
       <v-card>
         <v-col class="px-10 pt-10 group-dialog">
           <v-row>
             <span color="" class="text-subtitle-1">{{
-                groupMode == 1 ? "新组别" : "编辑组别"
+              groupMode == 1 ? "新组别" : "编辑组别"
             }}</span>
           </v-row>
           <v-row>
             <v-col cols="8">
               <span class="text-body-2 text--secondary">名称</span>
-              <v-text-field outlined dense hide-details color="blue-grey lighten-1" v-model="groupEdit.name">
+              <v-text-field
+                outlined
+                dense
+                hide-details
+                color="blue-grey lighten-1"
+                v-model="groupEdit.name"
+              >
               </v-text-field>
             </v-col>
           </v-row>
@@ -94,23 +127,31 @@
           <v-row>
             <v-col>
               <span class="text-body-2 text--secondary">管理员</span>
-              <v-autocomplete v-model="selectedAdmin" :items="allUsers" no-data-text="无" outlined dense hide-details
-                chips color="blue-grey lighten-1" item-text="uid" item-value="uid" multiple>
-                <template v-slot:selection="data">
-                  <span>{{ data.item.nick + "，" }}</span>
-                </template>
-
+              <v-autocomplete
+                v-model="selectedAdmin"
+                :items="allUsers"
+                no-data-text="无"
+                outlined
+                dense
+                hide-details
+                color="blue-grey lighten-1"
+                item-text="nick"
+                item-value="uid"
+                multiple
+                @focus="autocompleteFocus = true"
+                @blur="autocompleteFocus = false"
+              >
                 <template v-slot:item="data">
                   <v-list-item-content>
                     <v-list-item-title>
                       {{ data.item.nick }}
 
                       <span class="text--secondary text-body-2 ml-3">{{
-                          data.item.note
+                        data.item.note
                       }}</span>
                     </v-list-item-title>
                     <v-list-item-subtitle class="mt-1">{{
-                        data.item.username
+                      data.item.username
                     }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </template>
@@ -123,7 +164,13 @@
           <v-row>
             <v-col>
               <span class="text-body-2 text--secondary">备注</span>
-              <v-text-field outlined dense hide-details v-model="groupEdit.note" color="blue-grey lighten-1">
+              <v-text-field
+                outlined
+                dense
+                hide-details
+                v-model="groupEdit.note"
+                color="blue-grey lighten-1"
+              >
               </v-text-field>
             </v-col>
           </v-row>
@@ -131,7 +178,9 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="groupInfoDialog = false">取消</v-btn>
+          <v-btn color="blue darken-1" text @click="groupInfoDialog = false"
+            >取消</v-btn
+          >
           <v-btn color="blue darken-1" text @click="save">保存</v-btn>
         </v-card-actions>
       </v-card>
@@ -153,6 +202,10 @@ import GroupMemberTable from "../../components/GroupMemberTable/GroupMemberTable
 
 export default {
   data: () => ({
+    autocompleteFocus: false,
+    dialogPersistent: false,
+
+    allGroups: [],
     allUsers: [],
     selectedAdmin: [],
     headers: [
@@ -181,15 +234,28 @@ export default {
   created() {
     this.init();
   },
+
+  watch: {
+    autocompleteFocus(v) {
+      if (v) {
+        this.dialogPersistent = v;
+      } else {
+        setTimeout(() => {
+          this.dialogPersistent = false;
+        }, 100);
+      }
+    },
+  },
   methods: {
     init() {
+      console.log("init");
       this.groupDone = false;
       this.allUserDone = false;
       this.loading = true;
       getGroup({})
         .then((res) => {
           console.log(res.data.teams);
-          this.groupInfo = res.data.teams; //team => group
+          this.allGroups = res.data.teams; //team => group
           // this.groupInfo = res.data.group;
           this.groupDone = true;
           this.initDone();
@@ -209,30 +275,35 @@ export default {
         });
     },
     initDone() {
-      if (!this.groupDone || !this.allUserDone)
-        return;
+      if (!this.groupDone || !this.allUserDone) return;
       this.dataAnalyze();
       this.loading = false;
     },
     dataAnalyze() {
+      console.log("dataAnalyze");
       console.log(this.allUsers);
-      this.groupInfo.forEach((group) => {
+      this.allGroups.forEach((group) => {
         group.calculatedCreateTime = javaDateTimeToString(group.createTime);
         group.calculatedModifyTime = javaDateTimeToString(group.modifyTime);
         group.calculatedAdmin = [];
         if (group.admin) {
           group.calculatedAdmin = group.admin
             .split(",")
-            .map((id) => this.allUsers.find((i) => i.uid == id).nick);
+            .map(
+              (id) =>
+                this.allUsers.find((i) => i.uid == id) &&
+                this.allUsers.find((i) => i.uid == id).nick
+            );
         }
       });
+
+      this.groupInfo = this.allGroups; //team => group
     },
     clickRow(item, event) {
       if (event.isExpanded) {
         const index = this.expanded.findIndex((i) => i === item);
         this.expanded.splice(index, 1);
-      }
-      else {
+      } else {
         this.expanded.push(item);
       }
     },
@@ -267,7 +338,10 @@ export default {
     editGroup() {
       var args = { ...this.groupEdit };
       args.admin = this.selectedAdmin.join();
-      console.log(args);
+
+      //预处理
+      if (args.note == null) delete args.note
+
       modifyGroup(args).then((res) => {
         this.global.infoAlert("泼发EBC：" + res.data);
         console.log(this.groupEdit);
@@ -275,7 +349,7 @@ export default {
       });
     },
   },
-  components: { GroupMemberTable }
+  components: { GroupMemberTable },
 };
 </script>
 
