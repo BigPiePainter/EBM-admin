@@ -5,7 +5,7 @@ import {
 } from '@/libs/utils'
 class Http {
   constructor() {
-    this.baseUrl = 'http://192.168.0.104:8087/pofa'//'http://localhost:8087/pofa'
+    this.baseUrl = 'http://192.168.0.56:8087/pofa'//'http://localhost:8087/pofa'
   }
 
   request(options) {

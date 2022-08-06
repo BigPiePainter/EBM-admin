@@ -155,36 +155,26 @@
       @click="
         notificationsBadge ? (notificationsBadge = !notificationsBadge) : ''
       "
-      v-bind="attrs"
-      v-on="on"
       style="font-size: 28px"
       icon
       class="mr-2"
     >
       <v-badge :value="notificationsBadge" color="error" content="4" overlap>
-        <v-icon color="rgba(255, 255, 255, 0.35)"
-          >mdi-bell-outline</v-icon
-        >
+        <v-icon color="rgba(255, 255, 255, 0.35)">mdi-bell-outline</v-icon>
       </v-badge>
     </v-btn>
     <v-btn
       @click="messageBadge ? (messageBadge = !messageBadge) : ''"
-      v-bind="attrs"
-      v-on="on"
       style="font-size: 28px"
       icon
       class="mr-2"
     >
       <v-badge :value="messageBadge" color="warning" content="3" overlap>
-        <v-icon :color="config.light.iconColor">
-          mdi-email-outline</v-icon
-        >
+        <v-icon :color="config.light.iconColor"> mdi-email-outline</v-icon>
       </v-badge>
     </v-btn>
-    <v-btn class="mr-0" icon v-bind="attrs" v-on="on">
-      <v-icon :color="config.light.iconColor"
-        >mdi-account</v-icon
-      >
+    <v-btn class="mr-0" icon>
+      <v-icon :color="config.light.iconColor">mdi-account</v-icon>
     </v-btn>
   </v-app-bar>
 </template>

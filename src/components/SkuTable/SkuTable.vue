@@ -308,6 +308,7 @@
         </v-form>
 
         <v-card-actions>
+          <p class="caption font-italic font-weight-thin">带*为必填项目</p>
           <v-spacer />
           <v-btn
             color="blue darken-1"
@@ -315,7 +316,7 @@
             @click="manufacturerInfoDialog = false"
             >取消</v-btn
           >
-          <v-btn color="blue darken-1" text @click="sureButton" type="submit">
+          <v-btn color="blue darken-1" text @click="sureButton" type="submit" :disabled="isEmpty">
             {{ manufacturerMode == 1 ? "添加" : "修改" }}</v-btn
           >
         </v-card-actions>
@@ -478,6 +479,23 @@ export default {
 
   watch: {},
 
+  computed: {
+    isEmpty: function(){
+      var check = [
+        "manufacturerName",
+        "startTime",
+      ]
+      var pass = true;
+      check.forEach((item) => {
+        if (!this.manufacturerEdit[item]) pass = false
+      })
+
+      console.log(pass)
+
+      return !pass;
+    }
+  },
+
   methods: {
     dayFormat(date) {
       return Number(date.split("-")[2]);
@@ -488,6 +506,7 @@ export default {
       if (!this.skuDone || !this.manufacturerDone) return;
 
       console.log("显示");
+      this.loading = false;
       this.show = true;
       //this.itemShow = true;
 
@@ -506,7 +525,6 @@ export default {
       loadSkus({ productId: this.productInfo.id })
         .then((res) => {
           console.log(res);
-          this.loading = false;
           this.skuInfo = res.data.skus;
           //数据处理
           this.dataAnalyze();

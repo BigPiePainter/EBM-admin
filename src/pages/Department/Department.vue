@@ -1,122 +1,117 @@
 <template>
-  <v-data-table
-    class="elevation-1"
-    fixed-header
-    hide-default-footer
-    loading-text="加载中... 请稍后"
-    no-data-text="空"
-    item-key="uid"
-    :expanded.sync="expanded"
-    show-expand
-    disable-sort
-    :headers="headers"
-    :items="items"
-    :loading="loading"
-    :items-per-page="50"
-    :footer-props="{
-      'items-per-page-options': [10, 20, 50, 100],
-      'items-per-page-text': '每页显示条数',
-    }"
-    @click:row="clickRow"
-  >
-    <template v-slot:top>
-      <v-toolbar flat color="white" dense>
-        <v-toolbar-title>部门信息表</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              small
-              depressed
-              color="primary"
-              dark
-              class="mb-2"
-              v-bind="attrs"
-              v-on="on"
-              >新部门信息</v-btn
-            >
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+  <div>
+    <v-data-table class="elevation-2" fixed-header loading-text="加载中... 请稍后" no-data-text="空" item-key="uid" show-expand
+      disable-sort height="calc(100vh - 200px)" :expanded.sync="expanded" :headers="headers" :items="departmentInfo"
+      :loading="loading" :items-per-page="50" :footer-props="{
+        'items-per-page-options': [10, 20, 50, 100],
+        'items-per-page-text': '每页显示条数',
+      }" @click:row="clickRow">
+      <template v-slot:top>
+        <v-toolbar flat color="white" dense>
+          <v-toolbar-title>事业部</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
+          <v-spacer></v-spacer>
+          <v-btn small depressed color="primary" dark @click="addDepartmentButton">
+            新事业部
+          </v-btn>
+        </v-toolbar>
+      </template>
 
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <span class="text-body-2 text--secondary">部门</span>
-                    <v-text-field
-                      outlined
-                      dense
-                      hide-details
-                      v-model="editedItem.name"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <span class="text-body-2 text--secondary">负责人</span>
-                    <v-text-field
-                      outlined
-                      dense
-                      hide-details
-                      v-model="editedItem.manager"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <span class="text-body-2 text--secondary">备注</span>
-                    <v-text-field
-                      outlined
-                      dense
-                      hide-details
-                      v-model="editedItem.note"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+      <template v-slot:expanded-item="{ headers, item }">
+        <td :colspan="headers.length" class="sub-table pa-0">
+          <div class="sub-table-container elevation-20 ml-2 mb-3">
+            <DepartmentMemberTable :departmentInfo="item" :allUsers="allUsers" :allDepartments="departmentInfo" />
+          </div>
+        </td>
+      </template>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">取消</v-btn>
-              <v-btn color="blue darken-1" text @click="save">保存</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
+      <template v-slot:[`item.calculatedAdmin`]="{ item }">
+        <span v-for="nick in item.calculatedAdmin" :key="nick">
+          {{ nick + "," }}
+        </span>
+      </template>
 
-    <template v-slot:expanded-item="{ headers, item }">
-      <td :colspan="headers.length">More info about {{ item.name }}</td>
-    </template>
+      <template v-slot:[`header.actions`]="{ header }">
+        <div class="d-flex mr-4">
+          <v-spacer />
+          {{ header.text }}
+        </div>
+      </template>
+      <template v-slot:[`item.actions`]="{ item }">
+        <div class="d-flex">
+          <v-spacer />
+          <v-btn small depressed outlined color="green" @click="editDepartmentButton(item)" class="ml-1">
+            修改
+          </v-btn>
+        </div>
+      </template>
+    </v-data-table>
 
-    <template v-slot:[`item.actions`]="{ item }">
-      <v-btn
-        small
-        depressed
-        outlined
-        color="green"
-        @click="editItem(item)"
-        class="ml-1"
-      >
-        修改
-      </v-btn>
+    <!-- 部门信息Dialog -->
+    <v-dialog v-model="departmentInfoDialog" max-width="450px" persistent>
+      <v-card>
+        <v-col class="px-10 pt-10 department-dialog">
+          <v-row>
+            <span color="" class="text-subtitle-1">{{
+                departmentMode == 1 ? "新事业部" : "编辑事业部"
+            }}</span>
+          </v-row>
+          <v-row>
+            <v-col cols="8">
+              <span class="text-body-2 text--secondary">名称</span>
+              <v-text-field outlined dense hide-details color="blue-grey lighten-1" v-model="departmentEdit.name">
+              </v-text-field>
+            </v-col>
+          </v-row>
 
-      <v-btn
-        small
-        depressed
-        outlined
-        color="red lighten-2"
-        @click="deleteProduct(item)"
-        class="ml-1"
-      >
-        删除
-      </v-btn>
-    </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">Reset</v-btn>
-    </template>
-  </v-data-table>
+          <v-divider class="my-7" />
+
+          <v-row>
+            <v-col>
+              <span class="text-body-2 text--secondary">管理员</span>
+              <v-autocomplete v-model="selectedAdmin" :items="allUsers" no-data-text="无" outlined dense hide-details
+                chips color="blue-grey lighten-1" item-text="uid" item-value="uid" multiple>
+                <template v-slot:selection="data">
+                  <span>{{ data.item.nick + "，" }}</span>
+                </template>
+
+                <template v-slot:item="data">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ data.item.nick }}
+
+                      <span class="text--secondary text-body-2 ml-3">{{
+                          data.item.note
+                      }}</span>
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="mt-1">{{
+                        data.item.username
+                    }}</v-list-item-subtitle>
+                  </v-list-item-content>
+                </template>
+              </v-autocomplete>
+            </v-col>
+          </v-row>
+
+          <v-divider class="my-7" />
+
+          <v-row>
+            <v-col>
+              <span class="text-body-2 text--secondary">备注</span>
+              <v-text-field outlined dense hide-details v-model="departmentEdit.note" color="blue-grey lighten-1">
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-col>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="departmentInfoDialog = false">取消</v-btn>
+          <v-btn color="blue darken-1" text @click="save">保存</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 
@@ -124,9 +119,19 @@
 <script>
 import { getDepartment } from "@/settings/department";
 import { addDepartment } from "@/settings/department";
+import { modifyDepartment } from "@/settings/department";
+import DepartmentMemberTable from "../../components/DepartmentMemberTable/DepartmentMemberTable.vue";
+
+import { getAllUsers } from "@/settings/user";
+
+import { javaDateTimeToString } from "@/libs/utils";
+
 export default {
   data: () => ({
-    dialog: false,
+    allUsers: [],
+
+    selectedAdmin: [],
+
     headers: [
       {
         text: "编号",
@@ -135,101 +140,148 @@ export default {
         value: "uid",
       },
       { text: "事业部名称", value: "name" },
-      { text: "负责人", value: "manager" },
-      { text: "人数", value: "a" },
-      { text: "组成", value: "c" },
-      { text: "创建时间", value: "createTime" },
-      { text: "修改时间", value: "modifyTime" },
+      { text: "管理员", value: "calculatedAdmin" },
       { text: "备注", value: "note" },
-      { text: "Actions", value: "actions", sortable: false },
+      { text: "创建时间", value: "calculatedCreateTime" },
+      { text: "修改时间", value: "calculatedModifyTime" },
+      { text: "操作", value: "actions", sortable: false },
     ],
-    items: [],
+    departmentInfo: [],
     expanded: [],
-    editedIndex: -1,
-    editedItem: {
-      uid: "",
-      name: "",
-      manager: "",
-      b: "",
-      c: "",
-      createTime: "",
-      modifyTime: "",
-      note: "",
-    },
-    defaultItem: {
-      uid: "",
-      name: "",
-      manager: "",
-      b: "",
-      c: "",
-      createTime: "",
-      modifyTime: "",
-      note: "",
-    },
+
+    departmentInfoDialog: false,
+    departmentEdit: {},
+    departmentMode: 0, // 1--添加模式,  2--修改模式
+
+    loading: false,
+
+    departmentDone: false,
+    allUserDone: false,
   }),
 
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "新部门信息" : "编辑部门信息";
-    },
-  },
-
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-  },
-
   created() {
-    this.initialize();
+    this.init();
   },
 
   methods: {
-    initialize() {
-      getDepartment({}).then((res) => {
-        console.log(res.data.departments);
-        this.items = res.data.departments;
-        // this.items = res.data.department;
+    init() {
+      this.departmentDone = false;
+      this.allUserDone = false;
+      this.loading = true;
+      getDepartment({})
+        .then((res) => {
+          console.log(res.data.departments);
+          this.departmentInfo = res.data.departments;
+          // this.departmentInfo = res.data.department;
+          this.departmentDone = true;
+          this.initDone();
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+      getAllUsers({})
+        .then((res) => {
+          console.log(res);
+          this.allUsers = res.data.userInfos;
+          this.allUserDone = true;
+          this.initDone();
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+    },
+
+    initDone() {
+      if (!this.departmentDone || !this.allUserDone) return;
+
+      this.dataAnalyze();
+      this.loading = false;
+    },
+
+    dataAnalyze() {
+      console.log(this.allUsers);
+      this.departmentInfo.forEach((department) => {
+        department.calculatedCreateTime = javaDateTimeToString(
+          department.createTime
+        );
+        department.calculatedModifyTime = javaDateTimeToString(
+          department.modifyTime
+        );
+
+        department.calculatedAdmin = [];
+        if (department.admin) {
+          department.calculatedAdmin = department.admin
+            .split(",")
+            .map((id) => this.allUsers.find((i) => i.uid == id).nick);
+        }
       });
     },
 
-    clickRow() {},
-
-    editItem(item) {
-      this.editedIndex = this.items.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
+    clickRow(item, event) {
+      if (event.isExpanded) {
+        const index = this.expanded.findIndex((i) => i === item);
+        this.expanded.splice(index, 1);
+      }
+      else {
+        this.expanded.push(item);
+      }
     },
 
-    deleteItem(item) {
-      const index = this.items.indexOf(item);
-      confirm("是否确定删除数据?") && this.items.splice(index, 1);
+    editDepartmentButton(item) {
+      this.departmentMode = 2; //"修改"模式
+      this.departmentEdit = { ...item };
+      this.selectedAdmin = item.admin
+        ? item.admin.split(",").map((i) => Number(i))
+        : [];
+      this.departmentInfoDialog = true;
     },
 
-    close() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
+    addDepartmentButton() {
+      this.departmentMode = 1; //"添加"模式
+      this.departmentEdit = {};
+      this.selectedAdmin = [];
+      this.departmentInfoDialog = true;
     },
 
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.items[this.editedIndex], this.editedItem);
-      } else {
-        addDepartment({
-          name: this.editedItem.name,
-          note: this.editedItem.note,
-        }).then((res) => {
-          this.global.infoAlert("泼发EBC：" + res.data);
-          console.log(this.editedItem);
-          this.initialize();
-        });
-      }
-      this.close();
+      console.log(this.selectedAdmin);
+      this.departmentMode == 1 ? this.newDepartment() : this.editDepartment();
+      this.departmentInfoDialog = false;
+    },
+
+    newDepartment() {
+      var args = { admin: this.selectedAdmin.join(), ...this.departmentEdit };
+      console.log(args);
+
+      addDepartment(args).then((res) => {
+        this.global.infoAlert("泼发EBC：" + res.data);
+        console.log(this.departmentEdit);
+        this.init();
+      });
+    },
+
+    editDepartment() {
+      var args = { ...this.departmentEdit };
+
+      args.admin = this.selectedAdmin.join();
+      console.log(args);
+
+      modifyDepartment(args).then((res) => {
+        this.global.infoAlert("泼发EBC：" + res.data);
+        console.log(this.departmentEdit);
+        this.init();
+      });
     },
   },
+  components: { DepartmentMemberTable }
 };
 </script>
 
+<style scoped lang="scss">
+.department-dialog {
+  .col {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+}
+</style>

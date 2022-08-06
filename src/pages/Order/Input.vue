@@ -32,10 +32,10 @@
         item-key=""
         hide-default-footer
         class="elevation-1"
-        height="550px"
+        height="500px"
         :loading="loading"
-        :headers="Header"
-        :items="History"
+        :headers="historyHeaders"
+        :items="historyItems"
         :options.sync="options"
         :items-per-page="50"
       >
@@ -66,13 +66,13 @@ export default {
       status: "",
       dialog: false,
       dropActive: false,
-      Header:[
-        {text:"用户", value:"userName"},
-        {text:"文件名", value:"fileNmae"},
-        {text:"时间", value:"time"},
+      historyHeaders:[
+        {text:"用户", value:"name"},
+        {text:"文件名", value:"file"},
+        {text:"上传条数", value:"number"},
+        {text:"上传时间", value:"time"}
       ],
-
-      History:[],
+      historyItems:[],
 
       hover: false,
       maxWidth: 500,

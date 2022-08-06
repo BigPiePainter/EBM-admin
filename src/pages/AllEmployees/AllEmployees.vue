@@ -11,7 +11,7 @@
       height="calc(100vh - 195px)"
       :loading="loading"
       :headers="headers"
-      :items="userInfos"
+      :items="userInfosWithoutSelf"
       :items-per-page="50"
       :footer-props="{
         'items-per-page-options': [10, 20, 50, 100],
@@ -36,37 +36,42 @@
       </template>
 
       <template v-slot:[`item.calculatedPermission`]="{ item }">
-        <v-chip
-          v-for="permission in item.calculatedPermission"
-          :key="permission"
-          small
-        >
-          {{ permission }}
-        </v-chip>
+        <span v-for="permission in item.calculatedPermission" :key="permission">
+          {{ permission + "," }}
+        </span>
       </template>
 
+      <template v-slot:[`header.actions`]="{ header }">
+        <div class="d-flex mr-12">
+          <v-spacer />
+          {{ header.text }}
+        </div>
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn
-          small
-          depressed
-          outlined
-          color="green"
-          @click="editButton(item)"
-          class="ml-1"
-        >
-          修改
-        </v-btn>
-        <v-btn
-          small
-          depressed
-          outlined
-          color="red lighten-2"
-          @click="deleteButton(item)"
-          class="ml-1"
-        >
-          <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
-          删除
-        </v-btn>
+        <div class="d-flex">
+          <v-spacer />
+          <v-btn
+            small
+            depressed
+            outlined
+            color="green"
+            @click="editButton(item)"
+            class="ml-1"
+          >
+            修改
+          </v-btn>
+          <v-btn
+            small
+            depressed
+            outlined
+            color="red lighten-2"
+            @click="deleteButton(item)"
+            class="ml-1"
+          >
+            <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
+            删除
+          </v-btn>
+        </div>
       </template>
     </v-data-table>
 
@@ -86,7 +91,7 @@
                   outlined
                   dense
                   hide-details
-                  v-model="createUser.nick"
+                  v-model="userInfoEdit.nick"
                 ></v-text-field>
               </v-col>
               <v-col cols="2">
@@ -95,7 +100,7 @@
                   outlined
                   dense
                   hide-details
-                  v-model="createUser.gender"
+                  v-model="userInfoEdit.gender"
                 ></v-text-field>
               </v-col>
               <v-col>
@@ -104,7 +109,7 @@
                   outlined
                   dense
                   hide-details
-                  v-model="createUser.contact"
+                  v-model="userInfoEdit.contact"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -116,7 +121,7 @@
                   outlined
                   dense
                   hide-details
-                  v-model="createUser.username"
+                  v-model="userInfoEdit.username"
                 ></v-text-field>
               </v-col>
               <v-col>
@@ -125,7 +130,7 @@
                   outlined
                   dense
                   hide-details
-                  v-model="createUser.password"
+                  v-model="userInfoEdit.password"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -133,18 +138,14 @@
             <v-row>
               <v-col>
                 <span class="text-body-2 text--secondary">上级*</span>
-                <v-combobox
+                <v-autocomplete
                   outlined
                   dense
                   hide-details
-                  :items="[
-                    '支付宝',
-                    '中国银行',
-                    '中国农业银行',
-                    '中国工商银行',
-                  ]"
-                  v-model="createUser.boss"
-                ></v-combobox>
+                  no-data-text="空！！"
+                  :items="userInfos.map((i) => i.nick)"
+                  v-model="userInfoEdit.creatorId"
+                ></v-autocomplete>
               </v-col>
               <v-col>
                 <span class="text-body-2 text--secondary">备注</span>
@@ -152,7 +153,7 @@
                   outlined
                   dense
                   hide-details
-                  v-model="createUser.note"
+                  v-model="userInfoEdit.note"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -166,18 +167,19 @@
                 :key="permission"
                 small
               >
-                {{ permission + "，"}}
+                {{ permission + "，" }}
               </span>
             </v-row>
           </v-container>
         </v-card-text>
 
         <v-card-actions>
+          <p class="caption font-italic font-weight-thin">带*为必填项目</p>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="this.createDialog = false"
+          <v-btn color="blue darken-1" text @click="createDialog = false"
             >取消</v-btn
           >
-          <v-btn color="blue darken-1" text @click="save">新建</v-btn>
+          <v-btn color="blue darken-1" text @click="newEmployee" :disabled="isEmpty">新建</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -207,7 +209,9 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="save">确定</v-btn>
+          <v-btn color="blue darken-1" text @click="permissionDialog = false"
+            >确定</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -222,7 +226,7 @@
 
 <script>
 import { getSubUsers } from "@/settings/user";
-import { createSubUsers } from "@/settings/user";
+import { registUser } from "@/settings/user";
 
 export default {
   components: {},
@@ -246,18 +250,12 @@ export default {
       { text: "操作", value: "actions" },
     ],
 
-    createUser: {
-      nick: "",
-      boss: "",
-      location: "",
-      username: "",
-      password: "",
-      note: "",
-    },
+    userInfoEdit: {},
 
     loading: true,
 
     userInfos: [],
+    userInfosWithoutSelf: [],
 
     createDialog: false,
     permissionDialog: false,
@@ -276,6 +274,23 @@ export default {
       }
       return result;
     },
+
+    isEmpty: function(){
+      var check = [
+        "nick",
+        "username",
+        "password",
+        "creatorId",
+      ]
+      var pass = true;
+      check.forEach((item) => {
+        if (!this.userInfoEdit[item]) pass = false
+      })
+
+      console.log(pass)
+
+      return !pass;
+    }
   },
 
   watch: {},
@@ -283,30 +298,40 @@ export default {
   created() {
     this.init();
     console.log(this.global.user);
-
-    setInterval(() => {
-      console.log(this.permissionCheckbox);
-    }, 1000);
   },
 
   methods: {
-    save() {
-      this.uploadUser;
+    newEmployee() {
       this.createDialog = false;
-    },
 
-    uploadUser() {
-      createSubUsers({ user: this.createUser });
+      var args = {
+        permission: JSON.stringify(this.selectedPermission),
+        ...this.userInfoEdit,
+      };
+      args.creatorId = this.userInfos.find((i) => i.nick == args.creatorId).uid;
+
+      console.log(args);
+      registUser(args)
+        .then((res) => {
+          console.log(res);
+          this.global.infoAlert("泼发EBC：" + res.data);
+          this.init();
+        })
+        .catch(() => {});
     },
 
     init() {
       this.loading = true;
 
-      getSubUsers({})
+      getSubUsers()
         .then((res) => {
           this.loading = false;
           this.userInfos = res.data.userInfos;
           this.userAnalyze();
+
+          this.userInfosWithoutSelf = this.userInfos.filter(
+            (i) => i.uid != this.global.user.uid
+          );
           //this.infoAlert("泼发EBC：" + res.data);
         })
         .catch(() => {
@@ -321,16 +346,7 @@ export default {
         if (null != user.gender) {
           user.calculatedGender = user.gender == 1 ? "男" : "女";
         }
-
-        if (user.uid == 1) {
-          //admin
-        }
-
-        if (user.uid == 1) {
-          user.calculatedPermission = this.global.allPermissions;
-        } else {
-          user.calculatedPermission = JSON.parse(user.permission);
-        }
+        user.calculatedPermission = JSON.parse(user.permission);
       });
       this.userInfos.forEach((user) => {
         console.log(user);
