@@ -1,38 +1,19 @@
 <template>
   <v-card>
-    <v-data-table
-      fixed-header
-      show-select
-      disable-sort
-      loading-text="加载中... 请稍后"
-      no-data-text="空"
-      item-key="uid"
-      class="elevation-1"
-      height="calc(100vh - 195px)"
-      :loading="loading"
-      :headers="headers"
-      :items="userInfosWithoutSelf"
-      :items-per-page="50"
-      :footer-props="{
+    <v-data-table fixed-header show-select disable-sort loading-text="加载中... 请稍后" no-data-text="空" item-key="uid"
+      class="elevation-1" height="calc(100vh - 195px)" :loading="loading" :headers="headers"
+      :items="userInfosWithoutSelf" :items-per-page="50" :footer-props="{
         'items-per-page-options': [10, 20, 50, 100],
         'items-per-page-text': '每页显示条数',
-      }"
-    >
+      }">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>员工信息</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer />
           <v-btn small depressed class="mr-2 text--secondary">导出</v-btn>
-          <v-btn
-            color="primary"
-            dark
-            small
-            depressed
-            @click="createDialog = true"
-          >
-            新建员工</v-btn
-          >
+          <v-btn color="primary" dark small depressed @click="createDialog = true">
+            新建员工</v-btn>
         </v-toolbar>
       </template>
 
@@ -40,13 +21,13 @@
         <span v-for="(permission, key) in item.calculatedPermission" :key="key">
           <span v-if="permission.a">
             {{
-              {
-                a: "商品管理",
-                b: "订单管理",
-                c: "员工管理",
-                d: "事业部管理",
-                e: "组别管理",
-              }[key] + ","
+                {
+                  a: "商品管理",
+                  b: "订单管理",
+                  c: "员工管理",
+                  d: "事业部管理",
+                  e: "组别管理",
+                }[key] + ","
             }}
           </span>
         </span>
@@ -61,24 +42,10 @@
       <template v-slot:[`item.actions`]="{ item }">
         <div class="d-flex">
           <v-spacer />
-          <v-btn
-            small
-            depressed
-            outlined
-            color="green"
-            @click="editButton(item)"
-            class="ml-1"
-          >
+          <v-btn small depressed outlined color="green" @click="editButton(item)" class="ml-1">
             修改
           </v-btn>
-          <v-btn
-            small
-            depressed
-            outlined
-            color="red lighten-2"
-            @click="deleteButton(item)"
-            class="ml-1"
-          >
+          <v-btn small depressed outlined color="red lighten-2" @click="deleteButton(item)" class="ml-1">
             <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
             删除
           </v-btn>
@@ -105,81 +72,44 @@
               <v-row>
                 <v-col cols="4">
                   <span class="text-body-2 text--secondary">姓名*</span>
-                  <v-text-field
-                    color="blue-grey lighten-1"
-                    outlined
-                    dense
-                    hide-details
-                    v-model="userInfoEdit.nick"
-                  ></v-text-field>
+                  <v-text-field color="blue-grey lighten-1" outlined dense hide-details v-model="userInfoEdit.nick">
+                  </v-text-field>
                 </v-col>
                 <v-col cols="2">
                   <span class="text-body-2 text--secondary">性别</span>
-                  <v-text-field
-                    color="blue-grey lighten-1"
-                    outlined
-                    dense
-                    hide-details
-                    v-model="userInfoEdit.gender"
-                  ></v-text-field>
+                  <v-text-field color="blue-grey lighten-1" outlined dense hide-details v-model="userInfoEdit.gender">
+                  </v-text-field>
                 </v-col>
                 <v-col>
                   <span class="text-body-2 text--secondary">联系方式</span>
-                  <v-text-field
-                    outlined
-                    color="blue-grey lighten-1"
-                    dense
-                    hide-details
-                    v-model="userInfoEdit.contact"
-                  ></v-text-field>
+                  <v-text-field outlined color="blue-grey lighten-1" dense hide-details v-model="userInfoEdit.contact">
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-divider class="my-8" />
               <v-row>
                 <v-col>
                   <span class="text-body-2 text--secondary">登陆账号*</span>
-                  <v-text-field
-                    color="blue-grey lighten-1"
-                    outlined
-                    dense
-                    hide-details
-                    v-model="userInfoEdit.username"
-                  ></v-text-field>
+                  <v-text-field color="blue-grey lighten-1" outlined dense hide-details v-model="userInfoEdit.username">
+                  </v-text-field>
                 </v-col>
                 <v-col>
                   <span class="text-body-2 text--secondary">登陆密码*</span>
-                  <v-text-field
-                    color="blue-grey lighten-1"
-                    outlined
-                    dense
-                    hide-details
-                    v-model="userInfoEdit.password"
-                  ></v-text-field>
+                  <v-text-field color="blue-grey lighten-1" outlined dense hide-details v-model="userInfoEdit.password">
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-divider class="my-8" />
               <v-row>
                 <v-col>
                   <span class="text-body-2 text--secondary">上级*</span>
-                  <v-autocomplete
-                    color="blue-grey lighten-1"
-                    outlined
-                    dense
-                    hide-details
-                    no-data-text="空！！"
-                    :items="userInfos.map((i) => i.nick)"
-                    v-model="userInfoEdit.creatorId"
-                  ></v-autocomplete>
+                  <v-autocomplete color="blue-grey lighten-1" outlined dense hide-details no-data-text="空！！"
+                    :items="userInfos.map((i) => i.nick)" v-model="userInfoEdit.creatorId"></v-autocomplete>
                 </v-col>
                 <v-col>
                   <span class="text-body-2 text--secondary">备注</span>
-                  <v-text-field
-                    color="blue-grey lighten-1"
-                    outlined
-                    dense
-                    hide-details
-                    v-model="userInfoEdit.note"
-                  ></v-text-field>
+                  <v-text-field color="blue-grey lighten-1" outlined dense hide-details v-model="userInfoEdit.note">
+                  </v-text-field>
                 </v-col>
               </v-row>
             </v-col>
@@ -189,12 +119,7 @@
               <v-col class="px-10 py-10">
                 <v-row>
                   <span class="text-subtitle-1">商品管理模块</span>
-                  <v-checkbox
-                    v-model="selectedPermission.a.a"
-                    label="授权"
-                    hide-details
-                    class="ml-10 mt-0 pt-0"
-                  />
+                  <v-checkbox v-model="selectedPermission.a.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
                 </v-row>
 
                 {{ global.log(selectedPermission) }}
@@ -205,44 +130,22 @@
                       <span class="text-body-2 text--secondary">
                         部门录入权限
                       </span>
-                      <v-autocomplete
-                        v-model="selectedPermission.a.d"
-                        :items="
-                          allDepartment.filter((d) =>
-                            global.user.permission.a.d.find((i) => d.uid)
-                          )
-                        "
-                        no-data-text="无"
-                        outlined
-                        dense
-                        hide-details
-                        color="blue-grey lighten-1"
-                        item-text="name"
-                        item-value="uid"
-                        multiple
-                      >
+                      <v-autocomplete v-model="selectedPermission.a.d" :items="
+                        allDepartment.filter((d) =>
+                          global.user.permission.a.d.find((i) => d.uid)
+                        )
+                      " no-data-text="无" outlined dense hide-details color="blue-grey lighten-1" item-text="name"
+                        item-value="uid" multiple>
                       </v-autocomplete>
                     </v-col>
                     <v-col>
-                      <span class="text-body-2 text--secondary"
-                        >组别录入权限</span
-                      >
-                      <v-autocomplete
-                        v-model="selectedPermission.a.g"
-                        :items="
-                          allGroup.filter((g) =>
-                            global.user.permission.a.g.find((i) => g.uid)
-                          )
-                        "
-                        no-data-text="无"
-                        outlined
-                        dense
-                        hide-details
-                        color="blue-grey lighten-1"
-                        item-text="name"
-                        item-value="uid"
-                        multiple
-                      >
+                      <span class="text-body-2 text--secondary">组别录入权限</span>
+                      <v-autocomplete v-model="selectedPermission.a.g" :items="
+                        allGroup.filter((g) =>
+                          global.user.permission.a.g.find((i) => g.uid)
+                        )
+                      " no-data-text="无" outlined dense hide-details color="blue-grey lighten-1" item-text="name"
+                        item-value="uid" multiple>
                       </v-autocomplete>
                     </v-col>
                   </v-row>
@@ -251,12 +154,7 @@
                 <v-divider class="my-8" />
                 <v-row>
                   <span class="text-subtitle-1">订单管理模块</span>
-                  <v-checkbox
-                    v-model="selectedPermission.b.a"
-                    label="授权"
-                    hide-details
-                    class="ml-10 mt-0 pt-0"
-                  >
+                  <v-checkbox v-model="selectedPermission.b.a" label="授权" hide-details class="ml-10 mt-0 pt-0">
                     <template v-slot:label>
                       <span class="text-subtitle-1">授权</span>
                     </template>
@@ -265,32 +163,17 @@
                 <v-divider class="my-8" />
                 <v-row>
                   <span class="text-subtitle-1">下级员工管理模块</span>
-                  <v-checkbox
-                    v-model="selectedPermission.c.a"
-                    label="授权"
-                    hide-details
-                    class="ml-10 mt-0 pt-0"
-                  />
+                  <v-checkbox v-model="selectedPermission.c.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
                 </v-row>
                 <v-divider class="my-8" />
                 <v-row>
                   <span class="text-subtitle-1">事业部管理模块</span>
-                  <v-checkbox
-                    v-model="selectedPermission.d.a"
-                    label="授权"
-                    hide-details
-                    class="ml-10 mt-0 pt-0"
-                  />
+                  <v-checkbox v-model="selectedPermission.d.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
                 </v-row>
                 <v-divider class="my-8" />
                 <v-row>
                   <span class="text-subtitle-1">组别管理模块</span>
-                  <v-checkbox
-                    v-model="selectedPermission.e.a"
-                    label="授权"
-                    hide-details
-                    class="ml-10 mt-0 pt-0"
-                  />
+                  <v-checkbox v-model="selectedPermission.e.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
                 </v-row>
               </v-col>
             </div>
@@ -300,16 +183,8 @@
         <v-card-actions>
           <p class="caption font-italic font-weight-thin">带*为必填项目</p>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="createDialog = false"
-            >取消</v-btn
-          >
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="newEmployee"
-            :disabled="isEmpty"
-            >新建</v-btn
-          >
+          <v-btn color="blue darken-1" text @click="createDialog = false">取消</v-btn>
+          <v-btn color="blue darken-1" text @click="userAction" :disabled="isEmpty">保存</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -325,6 +200,7 @@
 <script>
 import { getSubUsers } from "@/settings/user";
 import { registUser } from "@/settings/user";
+import { modifyUsers } from "@/settings/user";
 
 import { getDepartment } from "@/settings/department";
 import { getGroup } from "@/settings/group";
@@ -350,6 +226,8 @@ export default {
 
       { text: "操作", value: "actions" },
     ],
+
+    mode: 0,
 
     userInfoEdit: {},
 
@@ -398,6 +276,35 @@ export default {
   },
 
   methods: {
+    deleteButton() {
+      
+    },
+
+    editButton() {
+      this.createDialog = true;
+      this.mode = 1;
+    },
+
+    editEmployee(){
+      this.createDialog = false;
+
+      var args = {
+        permission: JSON.stringify(this.selectedPermission),
+        ...this.userInfoEdit,
+      };
+      args.creatorId = this.userInfos.find((i) => i.nick == args.creatorId).uid;
+
+      console.log(args);
+      modifyUsers(args)
+        .then((res) => {
+          console.log(res);
+          this.global.infoAlert("泼发EBC：" + res.data);
+          this.init();
+        })
+        .catch(() => { });
+        this.mode = 0;
+    },
+
     newEmployee() {
       this.createDialog = false;
 
@@ -414,7 +321,16 @@ export default {
           this.global.infoAlert("泼发EBC：" + res.data);
           this.init();
         })
-        .catch(() => {});
+        .catch(() => { });
+        this.mode = 0;
+    },
+
+    userAction() {
+      if (this.mode == 0) {
+        this.newEmployee();
+      } else if (this.mode == 1) {
+        this.editEmployee();
+      } 
     },
 
     init() {
