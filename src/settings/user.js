@@ -44,3 +44,12 @@ export const getAllUsers = data => {
     }
     return http.request(args)
 }
+
+export const modifyUsers = data => {
+    const args = {
+        url: '/user/modifyUsers',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
