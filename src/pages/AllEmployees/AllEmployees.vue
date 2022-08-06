@@ -33,6 +33,10 @@
         </span>
       </template>
 
+      <template v-slot:[`item.password`]="{ item }">
+        {{ global.user.permission.c.b ? item.password : "隐藏" }}
+      </template>
+
       <template v-slot:[`header.actions`]="{ header }">
         <div class="d-flex mr-12">
           <v-spacer />
@@ -117,11 +121,12 @@
           <v-tab-item>
             <div style="height: 350px; overflow: auto">
               <v-col class="px-10 py-10">
-                <v-row>
+                <v-row v-if="global.user.permission.a.a">
                   <span class="text-subtitle-1">商品管理模块</span>
                   <v-checkbox v-model="selectedPermission.a.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
                 </v-row>
 
+                {{ global.log(global.user) }}
                 {{ global.log(selectedPermission) }}
 
                 <v-expand-transition>
@@ -130,29 +135,51 @@
                       <span class="text-body-2 text--secondary">
                         部门录入权限
                       </span>
-                      <v-autocomplete v-model="selectedPermission.a.d" :items="
-                        allDepartment.filter((d) =>
-                          global.user.permission.a.d.find((i) => d.uid)
-                        )
-                      " no-data-text="无" outlined dense hide-details color="blue-grey lighten-1" item-text="name"
-                        item-value="uid" multiple>
+                      <v-autocomplete
+                        v-model="selectedPermission.a.d"
+                        :items="
+                          allDepartment.filter((d) =>
+                            global.user.permission.a.d.find((i) => d.uid)
+                          )
+                        "
+                        no-data-text="无"
+                        outlined
+                        dense
+                        hide-details
+                        color="blue-grey lighten-1"
+                        item-text="name"
+                        item-value="uid"
+                        multiple
+                      >
                       </v-autocomplete>
                     </v-col>
                     <v-col>
-                      <span class="text-body-2 text--secondary">组别录入权限</span>
-                      <v-autocomplete v-model="selectedPermission.a.g" :items="
-                        allGroup.filter((g) =>
-                          global.user.permission.a.g.find((i) => g.uid)
-                        )
-                      " no-data-text="无" outlined dense hide-details color="blue-grey lighten-1" item-text="name"
-                        item-value="uid" multiple>
+                      <span class="text-body-2 text--secondary"
+                        >组别录入权限</span
+                      >
+                      <v-autocomplete
+                        v-model="selectedPermission.a.g"
+                        :items="
+                          allGroup.filter((g) =>
+                            global.user.permission.a.g.find((i) => g.uid)
+                          )
+                        "
+                        no-data-text="无"
+                        outlined
+                        dense
+                        hide-details
+                        color="blue-grey lighten-1"
+                        item-text="name"
+                        item-value="uid"
+                        multiple
+                      >
                       </v-autocomplete>
                     </v-col>
                   </v-row>
                 </v-expand-transition>
 
-                <v-divider class="my-8" />
-                <v-row>
+                <v-divider class="my-8" v-if="global.user.permission.b.a" />
+                <v-row v-if="global.user.permission.b.a">
                   <span class="text-subtitle-1">订单管理模块</span>
                   <v-checkbox v-model="selectedPermission.b.a" label="授权" hide-details class="ml-10 mt-0 pt-0">
                     <template v-slot:label>
@@ -161,17 +188,22 @@
                   </v-checkbox>
                 </v-row>
                 <v-divider class="my-8" />
-                <v-row>
+                <v-row v-if="global.user.permission.c.a">
                   <span class="text-subtitle-1">下级员工管理模块</span>
-                  <v-checkbox v-model="selectedPermission.c.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
+                  <v-checkbox
+                    v-model="selectedPermission.c.a"
+                    label="授权"
+                    hide-details
+                    class="ml-10 mt-0 pt-0"
+                  />
                 </v-row>
                 <v-divider class="my-8" />
                 <v-row>
                   <span class="text-subtitle-1">事业部管理模块</span>
                   <v-checkbox v-model="selectedPermission.d.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
                 </v-row>
-                <v-divider class="my-8" />
-                <v-row>
+                <v-divider class="my-8" v-if="global.user.permission.e.a" />
+                <v-row v-if="global.user.permission.e.a">
                   <span class="text-subtitle-1">组别管理模块</span>
                   <v-checkbox v-model="selectedPermission.e.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
                 </v-row>

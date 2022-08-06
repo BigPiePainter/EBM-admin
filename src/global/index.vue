@@ -45,21 +45,22 @@ export default {
       g: [], //可录入的组别       同上
     },
     b: {
-      a: true, //avaliable
       //订单管理模块
+      a: true, //avaliable
     },
     c: {
-      a: true, //avaliable
       //下级员工管理
+      a: true, //avaliable
+
+      b: true, //查看下级员工密码的权限
     },
     d: {
-      a: true, //avaliable
       //事业部管理
+      a: true, //avaliable
     },
     e: {
-      a: true, //avaliable
       //组别管理
-
+      a: true, //avaliable
     },
   },
 

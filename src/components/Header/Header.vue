@@ -110,7 +110,7 @@
         </div>
       </v-list>
     </v-menu> -->
-    <!-- <v-menu min-width="180" offset-y bottom left nudge-bottom="10">
+    <v-menu min-width="180" offset-y bottom left nudge-bottom="10">
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="mr-0" icon v-bind="attrs" v-on="on">
           <v-icon style="font-size: 28px" :color="config.light.iconColor"
@@ -120,37 +120,23 @@
       </template>
       <v-list>
         <div class="text-h5 grey--text text--darken-3 px-4 pt-4">
-          John Smith
+          {{global.user.nick}}
         </div>
         <div class="subtitle-2 primary--text font-weight-regular px-4">
-          Flatlogic.com
+          {{global.user.username}}
         </div>
-        <v-list-item-group color="primary">
-          <v-list-item v-for="(item, i) in account" :key="i">
-            <v-list-item-icon class="mr-4">
-              <v-icon :color="item.color" v-text="item.icon"> </v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title
-                :color="config.light.textColor"
-                v-text="item.text"
-              ></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
         <div class="d-flex justify-center my-3">
           <v-btn
             width="80%"
-            large
             outlined
             color="primary"
             class="text-capitalize"
             @click="logOut"
-            >Sign Out
+            >登出
           </v-btn>
         </div>
       </v-list>
-    </v-menu> -->
+    </v-menu>
     <v-btn
       @click="
         notificationsBadge ? (notificationsBadge = !notificationsBadge) : ''
@@ -260,7 +246,7 @@ export default {
   methods: {
     ...mapActions(["TOGGLE_DRAWER"]),
     logOut: function () {
-      window.localStorage.setItem("authenticated", false);
+      localStorage.token = ""
       this.$router.push("/login");
     },
   },
