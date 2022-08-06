@@ -335,6 +335,7 @@ export default {
         })
         .catch(() => { });
         this.mode = 0;
+        this.userInfoEdit = {};
     },
 
     newEmployee() {
@@ -355,6 +356,7 @@ export default {
         })
         .catch(() => { });
         this.mode = 0;
+        this.userInfoEdit = {};
     },
 
     userAction() {
