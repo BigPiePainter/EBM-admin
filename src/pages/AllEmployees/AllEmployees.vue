@@ -75,7 +75,7 @@
           >
             修改
           </v-btn>
-          <v-btn
+          <!-- <v-btn
             small
             depressed
             outlined
@@ -83,9 +83,8 @@
             @click="deleteButton(item)"
             class="ml-1"
           >
-            <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
             删除
-          </v-btn>
+          </v-btn> -->
         </div>
       </template>
     </v-data-table>
