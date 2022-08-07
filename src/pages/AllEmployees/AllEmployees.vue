@@ -29,10 +29,10 @@
             dark
             small
             depressed
-            @click="createDialog = true"
+            @click="newEmployeeButton"
           >
-            新建员工</v-btn
-          >
+            新建员工
+          </v-btn>
         </v-toolbar>
       </template>
 
@@ -91,7 +91,7 @@
     </v-data-table>
 
     <!-- 新建员工Dialog -->
-    <v-dialog v-model="createDialog" max-width="500px">
+    <v-dialog v-model="userInfoDialog" max-width="500px">
       <v-card class="employee-dialog">
         <v-tabs v-model="tabs" align-with-title>
           <!-- align-with-title -->
@@ -273,7 +273,7 @@
                     </template>
                   </v-checkbox>
                 </v-row>
-                <v-divider class="my-8" v-if="global.user.permission.c.a"/>
+                <v-divider class="my-8" v-if="global.user.permission.c.a" />
                 <v-row v-if="global.user.permission.c.a">
                   <span class="text-subtitle-1">下级员工管理模块</span>
                   <v-checkbox
@@ -331,7 +331,7 @@
         <v-card-actions>
           <p class="caption font-italic font-weight-thin">带*为必填项目</p>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="createDialog = false"
+          <v-btn color="blue darken-1" text @click="userInfoDialog = false"
             >取消</v-btn
           >
           <v-btn
@@ -392,7 +392,7 @@ export default {
     userInfos: [],
     userInfosWithoutSelf: [],
 
-    createDialog: false,
+    userInfoDialog: false,
 
     idToNick: {},
 
@@ -432,15 +432,32 @@ export default {
   },
 
   methods: {
+    newEmployeeButton() {
+      this.userInfoEdit = {};
+      this.selectedPermission = {
+        a: {},
+        b: {},
+        c: {},
+        d: {},
+        e: {},
+      };
+      this.mode = 0; // 0-添加模式   1-修改模式
+      this.userInfoDialog = true;
+    },
+
     deleteButton() {},
 
-    editButton() {
-      this.createDialog = true;
+    editButton(item) {
+      this.userInfoEdit = Object.assign({}, item);
+      this.selectedPermission = this.userInfos.find((i) => i.nick == this.userInfoEdit.nick).calculatedPermission;
+      console.log(this.userInfoEdit);
+      console.log(this.userInfos);
       this.mode = 1;
+      this.userInfoDialog = true;
     },
 
     editEmployee() {
-      this.createDialog = false;
+      this.userInfoDialog = false;
 
       var args = {
         permission: JSON.stringify(this.selectedPermission),
@@ -455,13 +472,12 @@ export default {
           this.global.infoAlert("泼发EBC：" + res.data);
           this.init();
         })
-        .catch(() => { });
-        this.mode = 0;
-        this.userInfoEdit = {};
+        .catch(() => {});
+      this.mode = 0;
     },
 
     newEmployee() {
-      this.createDialog = false;
+      this.userInfoDialog = false;
 
       var args = {
         permission: JSON.stringify(this.selectedPermission),
@@ -476,9 +492,8 @@ export default {
           this.global.infoAlert("泼发EBC：" + res.data);
           this.init();
         })
-        .catch(() => { });
-        this.mode = 0;
-        this.userInfoEdit = {};
+        .catch(() => {});
+      this.mode = 0;
     },
 
     userAction() {
