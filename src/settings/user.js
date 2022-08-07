@@ -45,9 +45,9 @@ export const getAllUsers = data => {
     return http.request(args)
 }
 
-export const modifyUsers = data => {
+export const modifyUser = data => {
     const args = {
-        url: '/user/modifyUsers',
+        url: '/user/modify',
         method: 'POST',
         data
     }
