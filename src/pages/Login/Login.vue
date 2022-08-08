@@ -91,6 +91,7 @@
 import { userLogin } from "@/settings/user";
 import { getDepartment } from "@/settings/department";
 import { getGroup } from "@/settings/group";
+import { getAllUsers } from "@/settings/user";
 
 import { isLogin } from "@/settings/user";
 
@@ -112,6 +113,12 @@ export default {
         (v) => v.length <= 30 || "密码不能多于30个字符",
       ],
       loading: false,
+
+      allGroups: [],
+      allDepartments: [],
+      allUsers: [],
+
+      done: [false, false, false], //三个请求状态
     };
   },
   methods: {
@@ -129,9 +136,7 @@ export default {
               localStorage.token = res.data.token.tokenValue;
               this.global.user = res.data.user;
 
-              this.userAnalyze();
-
-              this.$router.push("/mainpage");
+              this.globalInitAndJump();
               return;
             }
 
@@ -163,14 +168,35 @@ export default {
       });
     },
 
-    userAnalyze() {
+    globalInitAndJump() {
+      this.done.fill(false);
+
+      getDepartment({}).then((res) => {
+        this.allDepartments = res.data.departments;
+        this.requestDone(0);
+      });
+      getGroup({}).then((res) => {
+        this.allGroups = res.data.teams;
+        this.requestDone(1);
+      });
+      getAllUsers({}).then((res) => {
+        this.allUsers = res.data.userInfos;
+        this.requestDone(2);
+      });
+    },
+
+    requestDone(i) {
+      this.done[i] = true;
+      console.log("done");
+      if (this.done.find((i) => !i)) return;
+
+      console.log(this.global.user.permission);
+
       if (this.global.user.uid == 1) {
         this.global.user.permission = this.global.allPermissions; //admin
       } else {
         this.global.user.permission = JSON.parse(this.global.user.permission);
       }
-
-      console.log(this.global.user.permission);
 
       //如果拥有事业部管理权限，那么商品管理可录入的事业部为全部
       if (this.global.user.permission.d.a) {
@@ -189,6 +215,8 @@ export default {
           this.global.user.permission.a.g = res.data.teams.map((i) => i.uid);
         });
       }
+
+      this.$router.push("/mainpage");
     },
   },
   created() {
@@ -204,9 +232,7 @@ export default {
       localStorage.token = res.data.token.tokenValue;
       this.global.user = res.data.user;
 
-      this.userAnalyze();
-
-      this.$router.push("/mainpage");
+      this.globalInitAndJump();
     });
 
     //if (window.localStorage.getItem("authenticated") === "true") {
