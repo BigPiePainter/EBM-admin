@@ -72,6 +72,52 @@
                       v-model="editedItem.insurance"
                     ></v-text-field>
                   </v-col>
+
+                  <v-col cols="12">
+                    <span class="text-body-2 text--secondary">
+                      选择生效日期*
+                    </span>
+                    <v-menu
+                      ref="menu"
+                      v-model="datePicker"
+                      :close-on-content-click="false"
+                      :return-value.sync="editedItem.crateTime"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="editedItem.crateTime"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          outlined
+                          dense
+                          hide-details
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="editedItem.crateTime"
+                        no-title
+                        scrollable
+                        locale="zh-cn"
+                        first-day-of-week="1"
+                        :day-format="dayFormat"
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="datePicker = false">
+                          取消
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.menu.save(editedItem.crateTime)"
+                        >
+                          确定
+                        </v-btn>
+                      </v-date-picker>
+                    </v-menu>
+                  </v-col>
                 </v-col>
 
                 <!-- until there is dialog of new input-->
@@ -148,21 +194,21 @@ import { deleteCategory } from "@/settings/category";
 export default {
   data() {
     return {
+        editedItem: [],
+      mode: 0,
+      checkReadOnly: true,
       dialog: false,
       deleteDialog: false,
       categoryHeaders: [
         { text: "一级类目", value: "category" },
         { text: "品类扣点", value: "ratio" },
         { text: "品类运费险", value: "insurance" },
-        { text: "生效时间", value: "creatTime" },
+        { text: "生效时间", value: "crateTime" },
         { text: "操作", value: "actions" },
       ],
       categoryItems: [
         { category: "1", ratio: "1111111", insurance: "1", creatTime: "11111" },
       ],
-      editedItem: [],
-      mode: 0,
-      checkReadOnly: true,
     };
   },
 
@@ -173,7 +219,7 @@ export default {
 
   computed: {
     isEmp: function () {
-      var check = ["category", "ratio", "insurance"];
+      var check = ["category", "ratio", "insurance", "crateTime"];
       var pass = true;
       check.forEach((item) => {
         if (!this.editedItem[item]) pass = false;
@@ -188,7 +234,7 @@ export default {
       getCategory({});
     },
 
-//----------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------
     addButton() {
       this.mode = 1;
       this.editedItem = [];
@@ -218,7 +264,7 @@ export default {
       editCategory({});
       this.dialog = false;
     },
-//----------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------
     deleteButton() {
       this.deleteDialog = true;
     },
