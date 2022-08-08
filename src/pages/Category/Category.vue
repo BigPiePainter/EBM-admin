@@ -13,7 +13,6 @@
         :headers="categoryHeaders"
         :items="categoryItems"
         disable-sort
-        @click:row="clickRow"
       >
         <template v-slot:top>
           <v-toolbar flat>
@@ -49,6 +48,7 @@
                       dense
                       hide-details
                       v-model="editedItem.category"
+                      :readonly="checkReadOnly"
                     >
                     </v-text-field>
                   </v-col>
@@ -102,7 +102,7 @@
             depressed
             outlined
             color="green"
-            @click.stop="editButton(item)"
+            @click="editButton(item)"
             class="ml-1"
           >
             修改
@@ -142,6 +142,9 @@
 
 <script>
 import { getCategory } from "@/settings/category";
+import { addCategory } from "@/settings/category";
+import { editCategory } from "@/settings/category";
+import { deleteCategory } from "@/settings/category";
 export default {
   data() {
     return {
@@ -159,6 +162,7 @@ export default {
       ],
       editedItem: [],
       mode: 0,
+      checkReadOnly: true,
     };
   },
 
@@ -170,14 +174,11 @@ export default {
   computed: {
     isEmp: function () {
       var check = ["category", "ratio", "insurance"];
-
       var pass = true;
       check.forEach((item) => {
         if (!this.editedItem[item]) pass = false;
       });
-
       console.log(pass);
-
       return !pass;
     },
   },
@@ -187,22 +188,17 @@ export default {
       getCategory({});
     },
 
-    clickRow(item, event) {
-      if (event.isExpanded) {
-        const index = this.expanded.findIndex((i) => i === item);
-        this.expanded.splice(index, 1);
-      } else {
-        this.expanded.push(item);
-      }
-    },
-    //----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
     addButton() {
       this.mode = 1;
       this.editedItem = [];
+      this.checkReadOnly = false;
     },
     editButton(item) {
       this.mode = 2;
       this.editedItem = Object.assign({}, item);
+      this.checkReadOnly = true;
+      this.dialog = true;
     },
     close() {
       this.dialog = false;
@@ -215,12 +211,14 @@ export default {
       }
     },
     add() {
+      addCategory({});
       this.dialog = false;
     },
     edit() {
+      editCategory({});
       this.dialog = false;
     },
-    //----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
     deleteButton() {
       this.deleteDialog = true;
     },
@@ -231,7 +229,9 @@ export default {
       this.deleteDialog = false;
       this.delete();
     },
-    delete() {},
+    delete() {
+      deleteCategory({});
+    },
   },
 };
 </script>
