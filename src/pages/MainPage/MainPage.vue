@@ -1,5 +1,7 @@
 <template>
-  <div id="bg"></div>
+  <div class="bg">
+    
+  </div>
 </template>
 
 <script>
@@ -11,8 +13,8 @@ export default {
 </script>
 
 <style>
-#bg {
-  background: url("E:/aaaaa/EBM-admin/src/assets/screenshot/bg.png");
+.bg {
+  background: url("../../assets/bg.png");
   padding: 0px;
   width: 100%;
   height: 100%;

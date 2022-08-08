@@ -103,9 +103,11 @@ export default {
         { text: "品类扣点", valeu: "rate" },
         { text: "品类运费险", value: "insurance" },
         { text: "生效时间", valie: "creatTime" },
+        { text: "", value: "actions" },
       ],
       categoryItems: [],
       editedItem:[],
+      mode: 0,
     };
   },
 
@@ -137,9 +139,25 @@ export default {
       getCategory({});
     },
 
+    save() {
+      if (this.mode == 1) {
+        this.add();
+      } else if (this.mode == 2) {
+        this.edit();
+      }
+    },
+
     clickRow() {},
 
-    addMode() {},
+    addMode() {
+        this.mode = 1;
+    },
+    editMode(){
+        this.mode = 2;
+    },
+
+    add(){},
+    edit(){},
   },
 };
 </script>
