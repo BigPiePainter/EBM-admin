@@ -103,6 +103,7 @@
               <div class="d-flex align-center">
                 <span class=""> {{ props.header.text }} </span>
                 <v-text-field
+                  color="blue-grey lighten-1"
                   v-model="search.search[props.header.value]"
                   single-line
                   counter
@@ -141,7 +142,7 @@
 
             <v-spacer></v-spacer>
 
-            <v-dialog v-model="dialog" max-width="1000px">
+            <v-dialog v-model="dialog" max-width="550px">
               <!--new item buttom-->
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -157,14 +158,15 @@
               </template>
 
               <v-card>
-                <v-col class="px-10 pt-10">
+                <v-col class="px-10 pt-10 product-dialog">
                   <v-row>
                     <span class="text-subtitle-1">商品信息</span>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="5">
                       <span class="text-body-2 text--secondary">商品ID*</span>
                       <v-text-field
+                        color="blue-grey lighten-1"
                         :readonly="checkReadOnly"
                         outlined
                         dense
@@ -174,9 +176,10 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="7">
                       <span class="text-body-2 text--secondary">商品名*</span>
                       <v-text-field
+                        color="blue-grey lighten-1"
                         outlined
                         dense
                         hide-details
@@ -184,11 +187,39 @@
                       ></v-text-field>
                     </v-col>
                   </v-row>
+                  <v-row>
+                    <v-col cols="7">
+                      <span class="text-body-2 text--secondary">一级类目*</span>
+                      <v-combobox
+                        color="blue-grey lighten-1"
+                        outlined
+                        dense
+                        hide-details
+                        :items="menu.firstCategory"
+                        v-model="editedItem.firstCategory"
+                      ></v-combobox>
+                    </v-col>
+                    <v-col cols="5">
+                      <span class="text-body-2 text--secondary">店铺名*</span>
+                      <v-combobox
+                        color="blue-grey lighten-1"
+                        outlined
+                        dense
+                        hide-details
+                        :items="menu.shopName"
+                        v-model="editedItem.shopName"
+                      ></v-combobox>
+                    </v-col>
+                  </v-row>
                   <v-divider class="my-8" />
                   <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">部门*</span>
-                      <v-select
+                    <span class="text-subtitle-1">内部归属</span>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="5">
+                      <span class="text-body-2 text--secondary">事业部*</span>
+                      <v-autocomplete
+                        color="blue-grey lighten-1"
                         outlined
                         dense
                         :items="
@@ -196,18 +227,20 @@
                             global.user.permission.a.d.find((i) => i == d.uid)
                           )
                         "
+                        no-data-text="无"
                         v-model="editedItem.department"
                         menu-props="auto"
                         hide-details
                         single-line
                         item-text="name"
                         item-value="uid"
-                      ></v-select>
+                      ></v-autocomplete>
                     </v-col>
 
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="4">
                       <span class="text-body-2 text--secondary">组别*</span>
-                      <v-select
+                      <v-autocomplete
+                        color="blue-grey lighten-1"
                         outlined
                         dense
                         v-model="editedItem.groupName"
@@ -216,111 +249,38 @@
                             global.user.permission.a.g.find((i) => i == g.uid)
                           )
                         "
+                        no-data-text="无"
                         menu-props="auto"
                         hide-details
                         item-text="name"
                         item-value="uid"
                         single-line
-                      ></v-select>
+                      ></v-autocomplete>
                     </v-col>
 
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="3">
                       <span class="text-body-2 text--secondary">持品人*</span>
-                      <v-select
+                      <v-autocomplete
                         outlined
                         dense
+                        color="blue-grey lighten-1"
                         v-model="editedItem.owner"
-                        :items="newOwner"
+                        :items="subUsers"
+                        no-data-text="无"
                         menu-props="auto"
                         hide-details
                         single-line
-                      ></v-select>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">店铺名*</span>
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.shopName"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">一级类目*</span>
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.firstCategory"
-                      ></v-text-field>
+                        item-text="nick"
+                        item-value="uid"
+                      ></v-autocomplete>
                     </v-col>
                   </v-row>
                   <v-divider class="my-8" />
                   <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">品类扣点*</span>
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.productDeduction"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary"
-                        >品类运费险*</span
-                      >
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.productInsurance"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary">每单运费*</span>
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.productFreight"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary"
-                        >子/主订单附带比*</span
-                      >
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.extraRatio"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" sm="6" md="4">
-                      <span class="text-body-2 text--secondary"
-                        >运费/总货款</span
-                      >
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.freightToPayment"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-divider class="my-8" />
-                  <v-row>
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="4">
                       <span class="text-body-2 text--secondary">发货方式</span>
                       <v-text-field
+                        color="blue-grey lighten-1"
                         outlined
                         dense
                         hide-details
@@ -328,11 +288,12 @@
                       ></v-text-field>
                     </v-col>
 
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="8">
                       <span class="text-body-2 text--secondary"
                         >聚水潭仓库</span
                       >
                       <v-text-field
+                        color="blue-grey lighten-1"
                         outlined
                         dense
                         hide-details
@@ -340,6 +301,7 @@
                       ></v-text-field>
                     </v-col>
                   </v-row>
+                  <v-row></v-row>
                 </v-col>
 
                 <!-- until there is dialog of new input-->
@@ -421,12 +383,7 @@
         </div>
 
         <v-card-actions>
-          <v-switch
-            v-for="i of 3"
-            v-model="deleteConfirm[i]"
-            dense
-            class="mt-1 mr-3"
-            :key="i"
+          <v-switch v-model="deleteConfirm" dense class="mt-1 mr-3"
             ><template v-slot:label>
               <span class="body-2">确定</span>
             </template></v-switch
@@ -440,9 +397,7 @@
             color="red darken-1"
             text
             @click="sureDelete"
-            :disabled="
-              !deleteConfirm[1] || !deleteConfirm[2] || !deleteConfirm[3]
-            "
+            :disabled="!deleteConfirm"
           >
             <v-icon small class="mr-1"> mdi-delete </v-icon>删除
           </v-btn>
@@ -476,7 +431,6 @@ export default {
     allDepartment: [],
     allGroup: [],
 
-    newOwner: [],
     mode: 0,
     checkReadOnly: "",
 
@@ -510,7 +464,7 @@ export default {
     deleteDialog: false, //删除弹框
     deleteItem: {},
     deleteItemParse: [],
-    deleteConfirm: [],
+    deleteConfirm: false,
 
     //二级展开
     expanded: [],
@@ -532,11 +486,7 @@ export default {
       { text: "店铺名", value: "shopName" },
 
       { text: "一级类目", value: "firstCategory" },
-      { text: "品类扣点", value: "productDeduction" },
-      { text: "品类运费险", value: "productInsurance" },
-      { text: "每单运费", value: "productFreight" },
-      { text: "子/主订单附带比", value: "extraRatio" },
-      { text: "运费/总货款", value: "freightToPayment" },
+
       { text: "发货方式", value: "transportWay" },
       { text: "聚水潭仓库", value: "storehouse" },
       { text: "操作", value: "actions" },
@@ -617,11 +567,7 @@ export default {
       getClass({})
         .then((res) => {
           this.menu = res.data;
-          this.selectedMenu = this.menu;
-          this.newOwner = this.menu.owner;
-          this.editedItem.owner = this.menu.owner[0];
-          this.editedItem.groupName = this.menu.groupName[0];
-          this.editedItem.department = this.menu.department[0];
+          console.log("this.menu");
           console.log(res.data);
         })
         .catch(() => {});
@@ -711,7 +657,7 @@ export default {
           value: item.firstCategory,
         },
       ];
-      this.deleteConfirm = [];
+      this.deleteConfirm = false;
 
       this.deleteDialog = true;
     },
