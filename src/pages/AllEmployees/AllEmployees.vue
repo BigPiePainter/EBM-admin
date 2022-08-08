@@ -245,7 +245,7 @@
                       <v-autocomplete
                         v-model="selectedPermission.a.g"
                         :items="
-                          allGroup.filter((g) =>
+                          allTeam.filter((g) =>
                             global.user.permission.a.g.find((i) => i == g.uid)
                           )
                         "
@@ -359,7 +359,7 @@ import { registUser } from "@/settings/user";
 import { modifyUser } from "@/settings/user";
 
 import { getDepartment } from "@/settings/department";
-import { getGroup } from "@/settings/group";
+import { getTeam } from "@/settings/team";
 
 export default {
   components: {},
@@ -371,9 +371,6 @@ export default {
       { text: "联系方式", value: "contact" },
       { text: "权限", value: "calculatedPermission" },
       { text: "上级", value: "calculatedCreator" },
-
-      //{ text: "事业部权限", value: "department" },
-      //{ text: "组别权限", value: "groupName" },
 
       { text: "登陆账号", value: "username" },
       { text: "登陆密码", value: "password" },
@@ -407,7 +404,7 @@ export default {
     },
 
     allDepartment: [],
-    allGroup: [],
+    allTeam: [],
   }),
 
   computed: {
@@ -528,7 +525,7 @@ export default {
       getDepartment({}).then(
         (res) => (this.allDepartment = res.data.departments)
       );
-      getGroup({}).then((res) => (this.allGroup = res.data.teams));
+      getTeam({}).then((res) => (this.allTeam = res.data.teams));
     },
     userAnalyze() {
       this.userInfos.forEach((user) => {

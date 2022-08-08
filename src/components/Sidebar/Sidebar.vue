@@ -193,7 +193,7 @@ export default {
             {
               title: "组别",
               icon: "mdi-account-multiple",
-              link: "/group",
+              link: "/team",
             },
           ],
         },

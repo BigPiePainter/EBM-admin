@@ -24,7 +24,7 @@ import Brush from "@/pages/Order/Brush";
 import Input from "@/pages/Order/Input";
 import Return from "@/pages/Order/Return";
 import Department from "@/pages/Department/Department";
-import Group from "@/pages/Group/Group";
+import Team from "@/pages/Team/Team";
 import AllEmployees from "@/pages/AllEmployees/AllEmployees";
 import Employee from "@/pages/Employee/Employee";
 
@@ -103,9 +103,9 @@ var routerConfig = {
           component: Department,
         },
         {
-          path: 'group',
-          name: 'Group',
-          component: Group,
+          path: 'team',
+          name: 'Team',
+          component: Team,
         },
         {
           path: 'productsget',

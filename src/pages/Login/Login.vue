@@ -90,7 +90,7 @@
 <script>
 import { userLogin } from "@/settings/user";
 import { getDepartment } from "@/settings/department";
-import { getGroup } from "@/settings/group";
+import { getTeam } from "@/settings/team";
 import { getAllUsers } from "@/settings/user";
 
 import { isLogin } from "@/settings/user";
@@ -114,7 +114,7 @@ export default {
       ],
       loading: false,
 
-      allGroups: [],
+      allTeams: [],
       allDepartments: [],
       allUsers: [],
 
@@ -175,8 +175,8 @@ export default {
         this.allDepartments = res.data.departments;
         this.requestDone(0);
       });
-      getGroup({}).then((res) => {
-        this.allGroups = res.data.teams;
+      getTeam({}).then((res) => {
+        this.allTeams = res.data.teams;
         this.requestDone(1);
       });
       getAllUsers({}).then((res) => {
@@ -188,9 +188,15 @@ export default {
     requestDone(i) {
       this.done[i] = true;
       console.log("done");
-      if (this.done.find((i) => !i)) return;
+      console.log(this.done);
+      if (this.done.find((i) => !i) == false) return;
 
-      console.log(this.global.user.permission);
+      
+
+      this.global.allDepartments = this.allDepartments;
+      this.global.allTeams = this.allTeams;
+      this.global.allUsers = this.allUsers;
+      
 
       if (this.global.user.uid == 1) {
         this.global.user.permission = this.global.allPermissions; //admin
@@ -200,22 +206,20 @@ export default {
 
       //如果拥有事业部管理权限，那么商品管理可录入的事业部为全部
       if (this.global.user.permission.d.a) {
-        getDepartment({}).then((res) => {
-          console.log(res.data.departments);
-          this.global.user.permission.a.d = res.data.departments.map(
-            (i) => i.uid
-          );
-        });
+        this.global.user.permission.a.d = this.global.allDepartments.map(
+          (i) => i.uid
+        );
       }
 
-      //组别同上
+      //同上
       if (this.global.user.permission.e.a) {
-        getGroup({}).then((res) => {
-          console.log(res.data.teams);
-          this.global.user.permission.a.g = res.data.teams.map((i) => i.uid);
-        });
+        this.global.user.permission.a.g = this.global.allTeams.map(
+          (i) => i.uid
+        );
       }
 
+      console.log("登陆跳转");
+      console.log(this.global);
       this.$router.push("/mainpage");
     },
   },

@@ -37,16 +37,11 @@ drop table if exists products;
 CREATE TABLE products (
   id BIGINT NOT NULL COMMENT '商品ID',
   owner BIGINT COMMENT '持品人',
-  department VARCHAR(200) COMMENT '事业部',
-  group_name VARCHAR(200) COMMENT '组别',
+  department BIGINT COMMENT '事业部',
+  team BIGINT COMMENT '组别',
   shop_name VARCHAR(200) COMMENT '店铺名',
-  first_category VARCHAR(200) COMMENT '一级类目',
+  first_category BIGINT COMMENT '一级类目',
   product_name VARCHAR(200) COMMENT '产品名',
-  product_deduction DECIMAL(15, 5) COMMENT '品类扣点',
-  product_freight DECIMAL(15, 5) COMMENT '每单运费',
-  product_insurance DECIMAL(15, 5) COMMENT '品类运费险',
-  extra_ratio DECIMAL(15, 5) COMMENT '子/主订单附带比',
-  freight_to_payment DECIMAL(15, 5) COMMENT '运费/总货款',
   transport_way VARCHAR(200) COMMENT '发货方式',
   storehouse VARCHAR(200) COMMENT '聚水潭仓库',
   note VARCHAR(5000) COMMENT '备注',
@@ -89,6 +84,9 @@ CREATE TABLE manufacturers (
   manufacturer_recipient VARCHAR(200) COMMENT '厂家退货-收件人',
   manufacturer_phone VARCHAR(200) COMMENT '厂家退货-收件手机号',
   manufacturer_address VARCHAR(200) COMMENT '厂家退货-收件地址',
+  freight DECIMAL(15, 5) COMMENT '每单运费',
+  extra_ratio DECIMAL(15, 5) COMMENT '子/主订单附带比',
+  freight_to_payment DECIMAL(15, 5) COMMENT '运费/总货款',
   start_time DATE NOT NULL COMMENT '生效时间',
   note VARCHAR(5000) COMMENT '备注',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
@@ -124,3 +122,19 @@ CREATE TABLE teams (
   deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '组别';
+
+-- 一级类目表
+drop table if exists categorys;
+
+CREATE TABLE categorys (
+  uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
+  name VARCHAR(100) NOT NULL COMMENT '一级类目名称',
+  deduction DECIMAL(15, 5) COMMENT '品类扣点',
+  insurance DECIMAL(15, 5) COMMENT '品类运费险',
+  note VARCHAR(5000) COMMENT '备注',
+  start_time DATE NOT NULL COMMENT '生效时间',
+  create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
+  modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
+  deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
+  primary key (uid)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '一级类目';

@@ -51,6 +51,14 @@
             <div class="sub-table-container elevation-20 ml-2 mb-3">
               <SkuTable :productInfo="item" />
             </div>
+            <v-progress-circular
+              class="ml-10 mb-2"
+              size="25"
+              width="3"
+              indeterminate
+              color="grey"
+            >
+            </v-progress-circular>
           </td>
         </template>
 
@@ -89,7 +97,7 @@
               </template>
 
               <v-card>
-                <v-col class="px-10 pt-10 product-dialog">
+                <v-col class="px-10 py-10 product-dialog">
                   <v-row>
                     <span class="text-subtitle-1">商品信息</span>
                   </v-row>
@@ -154,7 +162,7 @@
                         outlined
                         dense
                         :items="
-                          allDepartment.filter((d) =>
+                          global.allDepartments.filter((d) =>
                             global.user.permission.a.d.find((i) => i == d.uid)
                           )
                         "
@@ -174,9 +182,9 @@
                         color="blue-grey lighten-1"
                         outlined
                         dense
-                        v-model="editedItem.groupName"
+                        v-model="editedItem.team"
                         :items="
-                          allGroup.filter((g) =>
+                          global.allTeams.filter((g) =>
                             global.user.permission.a.g.find((i) => i == g.uid)
                           )
                         "
@@ -210,29 +218,49 @@
                   <v-row>
                     <v-col cols="4">
                       <span class="text-body-2 text--secondary">发货方式</span>
-                      <v-text-field
+                      <v-combobox
                         color="blue-grey lighten-1"
                         outlined
                         dense
                         hide-details
+                        :items="['手动', '聚水潭', '旺店通', '店管家', '其他']"
                         v-model="editedItem.transportWay"
-                      ></v-text-field>
+                      ></v-combobox>
                     </v-col>
 
-                    <v-col cols="8">
-                      <span class="text-body-2 text--secondary"
-                        >聚水潭仓库</span
-                      >
+                    <v-col
+                      :cols="editedItem.transportWay == '聚水潭' ? 8 : 8"
+                    >
+                      <v-expand-x-transition>
+                        <div v-if="editedItem.transportWay == '聚水潭'">
+                          <span class="text-body-2 text--secondary text-no-wrap">
+                            <!-- {{ editedItem.transportWay == "聚水潭" ? "聚水潭仓库*" : "聚水潭仓库" }} -->
+                            聚水潭仓库*
+                          </span>
+                          <v-text-field
+                            color="blue-grey lighten-1"
+                            outlined
+                            dense
+                            hide-details
+                            single-line
+                            v-model="editedItem.storehouse"
+                          ></v-text-field>
+                        </div>
+                      </v-expand-x-transition>
+                    </v-col>
+
+                    <v-col>
+                      <span class="text-body-2 text--secondary">备注</span>
                       <v-text-field
                         color="blue-grey lighten-1"
                         outlined
                         dense
                         hide-details
-                        v-model="editedItem.storehouse"
-                      ></v-text-field>
+                        v-model="editedItem.note"
+                      >
+                      </v-text-field>
                     </v-col>
                   </v-row>
-                  <v-row></v-row>
                 </v-col>
 
                 <!-- until there is dialog of new input-->
@@ -347,9 +375,6 @@ import { getClass } from "@/settings/product";
 
 import { getSubUsers } from "@/settings/user";
 
-import { getDepartment } from "@/settings/department";
-import { getGroup } from "@/settings/group";
-
 import SkuTable from "@/components/SkuTable/SkuTable";
 //import SelectDialog from "@/components/SelectDialog";
 
@@ -359,9 +384,6 @@ export default {
     //SelectDialog,
   },
   data: () => ({
-    allDepartment: [],
-    allGroup: [],
-
     mode: 0,
     checkReadOnly: "",
 
@@ -374,7 +396,7 @@ export default {
         //类别筛选
         department: [],
         owner: [],
-        groupName: [],
+        team: [],
         transportWay: [],
         firstCategory: [],
         shopName: [],
@@ -412,7 +434,7 @@ export default {
       { text: "商品名", value: "productName" },
 
       { text: "事业部", value: "department" },
-      { text: "组别", value: "groupName" },
+      { text: "组别", value: "team" },
       { text: "持品人", value: "owner" },
       { text: "店铺名", value: "shopName" },
 
@@ -434,15 +456,11 @@ export default {
       var check = [
         "id",
         "department",
-        "groupName",
+        "team",
         "owner",
         "shopName",
         "productName",
         "firstCategory",
-        "productDeduction",
-        "productInsurance",
-        "productFreight",
-        "extraRatio",
       ];
 
       var pass = true;
@@ -502,10 +520,6 @@ export default {
           console.log(res.data);
         })
         .catch(() => {});
-      getDepartment({}).then(
-        (res) => (this.allDepartment = res.data.departments)
-      );
-      getGroup({}).then((res) => (this.allGroup = res.data.teams));
       getSubUsers({}).then((res) => (this.subUsers = res.data.userInfos));
 
       //有watch search.search, init时不需要loadData
@@ -675,3 +689,4 @@ export default {
 
 <style src="./PartnerGet.scss" lang="scss">
 </style>
+

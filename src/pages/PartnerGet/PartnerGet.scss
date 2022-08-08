@@ -86,9 +86,9 @@
 .sub-table {
   .sub-table-container {
     width: fit-content;
-    background-color: transparent;
+    // background-color: red;
     transform: translateY(-5px);
-    border-radius: 5px;
+    border-radius: 20px;
   }
 }
 
@@ -116,7 +116,6 @@
 
 
 }
-
 
 .v-menu__content {
   .v-list {

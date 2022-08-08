@@ -11,7 +11,7 @@
       height="calc(100vh - 200px)"
       :expanded.sync="expanded"
       :headers="headers"
-      :items="groupInfo"
+      :items="teamInfo"
       :loading="loading"
       :items-per-page="50"
       :footer-props="{
@@ -25,7 +25,7 @@
           <v-toolbar-title>组别</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-btn small depressed color="primary" dark @click="addGroupButton">
+          <v-btn small depressed color="primary" dark @click="addTeamButton">
             新组别
           </v-btn>
         </v-toolbar>
@@ -34,10 +34,10 @@
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
           <div class="sub-table-container elevation-20 ml-2 mb-3">
-            <GroupMemberTable
-              :groupInfo="item"
+            <TeamMemberTable
+              :teamInfo="item"
               :allUsers="allUsers"
-              :allGroups="groupInfo"
+              :allTeams="teamInfo"
             />
           </div>
         </td>
@@ -86,7 +86,7 @@
             depressed
             outlined
             color="green"
-            @click.stop="editGroupButton(item)"
+            @click.stop="editTeamButton(item)"
             class="ml-1"
           >
             修改
@@ -97,15 +97,15 @@
 
     <!-- 组别信息Dialog -->
     <v-dialog
-      v-model="groupInfoDialog"
+      v-model="teamInfoDialog"
       max-width="450px"
       :persistent="dialogPersistent"
     >
       <v-card>
-        <v-col class="px-10 pt-10 group-dialog">
+        <v-col class="px-10 pt-10 team-dialog">
           <v-row>
             <span color="" class="text-subtitle-1">{{
-              groupMode == 1 ? "新组别" : "编辑组别"
+              teamMode == 1 ? "新组别" : "编辑组别"
             }}</span>
           </v-row>
           <v-row>
@@ -116,7 +116,7 @@
                 dense
                 hide-details
                 color="blue-grey lighten-1"
-                v-model="groupEdit.name"
+                v-model="teamEdit.name"
               >
               </v-text-field>
             </v-col>
@@ -168,7 +168,7 @@
                 outlined
                 dense
                 hide-details
-                v-model="groupEdit.note"
+                v-model="teamEdit.note"
                 color="blue-grey lighten-1"
               >
               </v-text-field>
@@ -178,7 +178,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="groupInfoDialog = false"
+          <v-btn color="blue darken-1" text @click="teamInfoDialog = false"
             >取消</v-btn
           >
           <v-btn color="blue darken-1" text @click="save">保存</v-btn>
@@ -191,21 +191,21 @@
 
 
 <script>
-import { getGroup } from "@/settings/group";
-import { addGroup } from "@/settings/group";
-import { modifyGroup } from "@/settings/group";
+import { getTeam } from "@/settings/team";
+import { addTeam } from "@/settings/team";
+import { modifyTeam } from "@/settings/team";
 
 import { getAllUsers } from "@/settings/user";
 
 import { javaDateTimeToString } from "@/libs/utils";
-import GroupMemberTable from "../../components/GroupMemberTable/GroupMemberTable.vue";
+import TeamMemberTable from "../../components/TeamMemberTable/TeamMemberTable.vue";
 
 export default {
   data: () => ({
     autocompleteFocus: false,
     dialogPersistent: false,
 
-    allGroups: [],
+    allTeams: [],
     allUsers: [],
     selectedAdmin: [],
     headers: [
@@ -222,13 +222,13 @@ export default {
       { text: "修改时间", value: "calculatedModifyTime" },
       { text: "操作", value: "actions", sortable: false },
     ],
-    groupInfo: [],
+    teamInfo: [],
     expanded: [],
-    groupInfoDialog: false,
-    groupEdit: {},
-    groupMode: 0,
+    teamInfoDialog: false,
+    teamEdit: {},
+    teamMode: 0,
     loading: false,
-    groupDone: false,
+    teamDone: false,
     allUserDone: false,
   }),
   created() {
@@ -249,15 +249,15 @@ export default {
   methods: {
     init() {
       console.log("init");
-      this.groupDone = false;
+      this.teamDone = false;
       this.allUserDone = false;
       this.loading = true;
-      getGroup({})
+      getTeam({})
         .then((res) => {
           console.log(res.data.teams);
-          this.allGroups = res.data.teams; //team => group
-          // this.groupInfo = res.data.group;
-          this.groupDone = true;
+          this.allTeams = res.data.teams; //team => team
+          // this.teamInfo = res.data.team;
+          this.teamDone = true;
           this.initDone();
         })
         .catch(() => {
@@ -275,19 +275,19 @@ export default {
         });
     },
     initDone() {
-      if (!this.groupDone || !this.allUserDone) return;
+      if (!this.teamDone || !this.allUserDone) return;
       this.dataAnalyze();
       this.loading = false;
     },
     dataAnalyze() {
       console.log("dataAnalyze");
       console.log(this.allUsers);
-      this.allGroups.forEach((group) => {
-        group.calculatedCreateTime = javaDateTimeToString(group.createTime);
-        group.calculatedModifyTime = javaDateTimeToString(group.modifyTime);
-        group.calculatedAdmin = [];
-        if (group.admin) {
-          group.calculatedAdmin = group.admin
+      this.allTeams.forEach((team) => {
+        team.calculatedCreateTime = javaDateTimeToString(team.createTime);
+        team.calculatedModifyTime = javaDateTimeToString(team.modifyTime);
+        team.calculatedAdmin = [];
+        if (team.admin) {
+          team.calculatedAdmin = team.admin
             .split(",")
             .map(
               (id) =>
@@ -297,7 +297,7 @@ export default {
         }
       });
 
-      this.groupInfo = this.allGroups; //team => group
+      this.teamInfo = this.allTeams; //team => team
     },
     clickRow(item, event) {
       if (event.isExpanded) {
@@ -307,54 +307,54 @@ export default {
         this.expanded.push(item);
       }
     },
-    editGroupButton(item) {
-      this.groupMode = 2; //"修改"模式
-      this.groupEdit = { ...item };
+    editTeamButton(item) {
+      this.teamMode = 2; //"修改"模式
+      this.teamEdit = { ...item };
       this.selectedAdmin = item.admin
         ? item.admin.split(",").map((i) => Number(i))
         : [];
-      this.groupInfoDialog = true;
+      this.teamInfoDialog = true;
     },
-    addGroupButton() {
-      this.groupMode = 1; //"添加"模式
-      this.groupEdit = {};
+    addTeamButton() {
+      this.teamMode = 1; //"添加"模式
+      this.teamEdit = {};
       this.selectedAdmin = [];
-      this.groupInfoDialog = true;
+      this.teamInfoDialog = true;
     },
     save() {
       console.log(this.selectedAdmin);
-      this.groupMode == 1 ? this.newGroup() : this.editGroup();
-      this.groupInfoDialog = false;
+      this.teamMode == 1 ? this.newTeam() : this.editTeam();
+      this.teamInfoDialog = false;
     },
-    newGroup() {
-      var args = { admin: this.selectedAdmin.join(), ...this.groupEdit };
+    newTeam() {
+      var args = { admin: this.selectedAdmin.join(), ...this.teamEdit };
       console.log(args);
-      addGroup(args).then((res) => {
+      addTeam(args).then((res) => {
         this.global.infoAlert("泼发EBC：" + res.data);
-        console.log(this.groupEdit);
+        console.log(this.teamEdit);
         this.init();
       });
     },
-    editGroup() {
-      var args = { ...this.groupEdit };
+    editTeam() {
+      var args = { ...this.teamEdit };
       args.admin = this.selectedAdmin.join();
 
       //预处理
       if (args.note == null) delete args.note
 
-      modifyGroup(args).then((res) => {
+      modifyTeam(args).then((res) => {
         this.global.infoAlert("泼发EBC：" + res.data);
-        console.log(this.groupEdit);
+        console.log(this.teamEdit);
         this.init();
       });
     },
   },
-  components: { GroupMemberTable },
+  components: { TeamMemberTable },
 };
 </script>
 
 <style scoped lang="scss">
-.group-dialog {
+.team-dialog {
   .col {
     padding-top: 5px;
     padding-bottom: 5px;

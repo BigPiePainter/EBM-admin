@@ -10,14 +10,14 @@ export default {
 
   props: {
     allUsers: Array,
-    allGroups: Array,
-    groupInfo: Object,
+    allTeams: Array,
+    teamInfo: Object,
   },
 
   created() {
     this.init();
     // console.log(this.allUsers);
-    // console.log(this.groupInfo);
+    // console.log(this.teamInfo);
   },
 
   data() {
@@ -35,21 +35,21 @@ export default {
   },
   methods: {
     init() {
-      console.log(this.allGroups);
+      console.log(this.allTeams); 
       console.log(this.allUsers);
       this.memberItems = this.allUsers.filter((i) => {
         var permission = JSON.parse(i.permission);
         return (
           permission.a &&
           permission.a.g &&
-          permission.a.g.find((p) => p == this.groupInfo.uid)
+          permission.a.g.find((p) => p == this.teamInfo.uid)
         );
       });
       this.memberItems.forEach((i) => {
         var permission = JSON.parse(i.permission);
         if (permission.a) {
           i.calculatedPermission = permission.a.g.map(
-            (id) => this.allGroups.find((g) => g.uid == id).name
+            (id) => this.allTeams.find((g) => g.uid == id).name
           );
         }
       });

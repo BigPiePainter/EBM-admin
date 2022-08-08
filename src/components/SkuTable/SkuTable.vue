@@ -114,6 +114,11 @@
         </v-tabs-items>
       </v-expand-transition>
     </div>
+    <div v-else>
+      <!-- <v-card>
+        <v-progress-linear indeterminate color="green"> </v-progress-linear>
+      </v-card> -->
+    </div>
 
     <!-- 删除SKU Dialog -->
     <v-dialog v-model="deleteSkuDialog" max-width="450px">
@@ -139,7 +144,7 @@
     </v-dialog>
 
     <!-- 厂家信息Dialog -->
-    <v-dialog v-model="manufacturerInfoDialog" max-width="700px">
+    <v-dialog v-model="manufacturerInfoDialog" max-width="600px">
       <v-card>
         <v-form>
           <v-col class="px-10 py-10 manufacturer-dialog">
@@ -174,6 +179,15 @@
               <span class="text-subtitle-1">收款信息</span>
             </v-row>
             <v-row>
+              <v-col cols="5">
+                <span class="text-body-2 text--secondary"> 收款人 </span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  v-model="manufacturerEdit.manufacturerPaymentName"
+                ></v-text-field
+              ></v-col>
               <v-col>
                 <span class="text-body-2 text--secondary"> 收款方式 </span>
 
@@ -190,15 +204,6 @@
                   v-model="manufacturerEdit.manufacturerPaymentMethod"
                 ></v-combobox>
               </v-col>
-              <v-col>
-                <span class="text-body-2 text--secondary"> 收款人 </span>
-                <v-text-field
-                  outlined
-                  dense
-                  hide-details
-                  v-model="manufacturerEdit.manufacturerPaymentName"
-                ></v-text-field
-              ></v-col>
             </v-row>
             <v-row
               ><v-col>
@@ -217,7 +222,7 @@
               <span class="text-subtitle-1">退货信息</span>
             </v-row>
             <v-row>
-              <v-col>
+              <v-col cols="5">
                 <span class="text-body-2 text--secondary"> 收件人 </span>
                 <v-text-field
                   outlined
@@ -250,7 +255,45 @@
             <v-divider class="my-7" />
 
             <v-row>
+              <span class="text-subtitle-1">运费信息</span>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <span class="text-body-2 text--secondary"> 每单运费 </span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  v-model="manufacturerEdit.freight"
+                  suffix="￥"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <span class="text-body-2 text--secondary">
+                  子/主订单附带比
+                </span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  v-model="manufacturerEdit.extraRatio"
+                ></v-text-field
+              ></v-col>
               <v-col>
+                <span class="text-body-2 text--secondary"> 运费/总货款 </span>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  v-model="manufacturerEdit.freightToPayment"
+                ></v-text-field
+              ></v-col>
+            </v-row>
+
+            <v-divider class="my-7" />
+
+            <v-row>
+              <v-col cols="3">
                 <span class="text-body-2 text--secondary"> 选择起始日期* </span>
                 <v-menu
                   ref="menu"
@@ -315,7 +358,13 @@
             @click="manufacturerInfoDialog = false"
             >取消</v-btn
           >
-          <v-btn color="blue darken-1" text @click="sureButton" type="submit" :disabled="isEmpty">
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="sureButton"
+            type="submit"
+            :disabled="isEmpty"
+          >
             {{ manufacturerMode == 1 ? "添加" : "修改" }}</v-btn
           >
         </v-card-actions>
@@ -479,20 +528,17 @@ export default {
   watch: {},
 
   computed: {
-    isEmpty: function(){
-      var check = [
-        "manufacturerName",
-        "startTime",
-      ]
+    isEmpty: function () {
+      var check = ["manufacturerName", "startTime"];
       var pass = true;
       check.forEach((item) => {
-        if (!this.manufacturerEdit[item]) pass = false
-      })
+        if (!this.manufacturerEdit[item]) pass = false;
+      });
 
-      console.log(pass)
+      console.log(pass);
 
       return !pass;
-    }
+    },
   },
 
   methods: {
@@ -786,7 +832,7 @@ export default {
       //参数预处理
       pars.startTime = pars.startTime.replaceAll("-", "/");
       for (let name in pars) pars[name] == null && delete pars[name];
-      pars.manufacturerPaymentMethod || (pars.manufacturerPaymentMethod = "") 
+      pars.manufacturerPaymentMethod || (pars.manufacturerPaymentMethod = "");
 
       console.log(pars);
       editManufacturer(pars)
@@ -817,6 +863,18 @@ export default {
   .col {
     padding-top: 5px;
     padding-bottom: 5px;
+  }
+
+  .v-input {
+    font-size: 15px;
+  }
+}
+
+.v-menu__content {
+  .v-list {
+    .v-list-item__title {
+      font-size: 15px;
+    }
   }
 }
 </style>
