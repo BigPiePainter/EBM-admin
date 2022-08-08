@@ -3,13 +3,10 @@
     <v-card class="products-list mb-1">
       <v-data-table
         fixed-header
-        loading-text="加载中... 请稍后"
         no-data-text="空"
         item-key="category"
         show-expand
         height="calc(100vh - 200px)"
-        :expanded.sync="expanded"
-        :loading="loading"
         :headers="categoryHeaders"
         :items="categoryItems"
         disable-sort
@@ -47,7 +44,7 @@
                       outlined
                       dense
                       hide-details
-                      v-model="editedItem.category"
+                      v-model="editedItem.name"
                       :readonly="checkReadOnly"
                     >
                     </v-text-field>
@@ -59,7 +56,7 @@
                       outlined
                       dense
                       hide-details
-                      v-model="editedItem.ratio"
+                      v-model="editedItem.deduction"
                     ></v-text-field>
                   </v-col>
 
@@ -81,13 +78,13 @@
                       ref="menu"
                       v-model="datePicker"
                       :close-on-content-click="false"
-                      :return-value.sync="editedItem.crateTime"
+                      :return-value.sync="editedItem.startTime"
                       offset-y
                       min-width="auto"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="editedItem.crateTime"
+                          v-model="editedItem.startTime"
                           readonly
                           v-bind="attrs"
                           v-on="on"
@@ -97,7 +94,7 @@
                         ></v-text-field>
                       </template>
                       <v-date-picker
-                        v-model="editedItem.crateTime"
+                        v-model="editedItem.startTime"
                         no-title
                         scrollable
                         locale="zh-cn"
@@ -111,7 +108,7 @@
                         <v-btn
                           text
                           color="primary"
-                          @click="$refs.menu.save(editedItem.crateTime)"
+                          @click="$refs.menu.save(editedItem.startTime)"
                         >
                           确定
                         </v-btn>
@@ -179,7 +176,7 @@
           </v-dialog>
         </template>
         <template v-slot:expanded-item="{ headers, item }">
-          <td :colspan="headers.length">More info about {{ item.category }}</td>
+          <td :colspan="headers.length">More info about {{ item.name }}</td>
         </template>
       </v-data-table>
     </v-card>
@@ -194,44 +191,49 @@ import { deleteCategory } from "@/settings/category";
 export default {
   data() {
     return {
-        editedItem: [],
+      datePicker: false,
+      editedItem: [],
       mode: 0,
       checkReadOnly: true,
       dialog: false,
       deleteDialog: false,
       categoryHeaders: [
-        { text: "一级类目", value: "category" },
-        { text: "品类扣点", value: "ratio" },
+        { text: "一级类目", value: "name" },
+        { text: "品类扣点", value: "deduction" },
         { text: "品类运费险", value: "insurance" },
-        { text: "生效时间", value: "crateTime" },
+        { text: "生效时间", value: "startTime" },
         { text: "操作", value: "actions" },
       ],
-      categoryItems: [
-        { category: "1", ratio: "1111111", insurance: "1", creatTime: "11111" },
-      ],
+      categoryItems: [],
     };
   },
 
   created() {
     this.loadData();
-    console.log(this.categoryItems);
+    //console.log(this.categoryItems);
   },
 
   computed: {
     isEmp: function () {
-      var check = ["category", "ratio", "insurance", "crateTime"];
+      var check = ["name", "deduction", "insurance", "startTime"];
       var pass = true;
       check.forEach((item) => {
         if (!this.editedItem[item]) pass = false;
       });
-      console.log(pass);
+      //console.log(pass);
       return !pass;
     },
   },
 
   methods: {
+    dayFormat(date) {
+      return Number(date.split("-")[2]);
+    },
+
     loadData() {
-      getCategory({});
+      getCategory({}).then((res) => {
+        this.categoryItems = res.data.categorys;
+      });
     },
 
     //----------------------------------------------------------------------------------------
@@ -257,11 +259,32 @@ export default {
       }
     },
     add() {
-      addCategory({});
+      var args = { ...this.editedItem };
+      args.startTime = args.startTime.replaceAll("-", "/");
+      console.log(args);
+      addCategory(args)
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          this.loadData();
+        })
+        .catch(() => {
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC：上传失败");
+          }, 100);
+        });
       this.dialog = false;
     },
     edit() {
-      editCategory({});
+      editCategory(this.editedItem)
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          this.loadData();
+        })
+        .catch(() => {
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC：上传失败");
+          }, 100);
+        });
       this.dialog = false;
     },
     //----------------------------------------------------------------------------------------
