@@ -89,7 +89,7 @@
       </template>
     </v-data-table>
 
-    <!-- 新建员工Dialog -->
+    <!-- 员工信息Dialog -->
     <v-dialog v-model="userInfoDialog" max-width="500px">
       <v-card class="employee-dialog">
         <v-tabs v-model="tabs" align-with-title>
@@ -106,7 +106,7 @@
           <v-tab-item>
             <v-col class="px-7 py-7">
               <v-row>
-                <v-col cols="4">
+                <v-col cols="3">
                   <span class="text-body-2 text--secondary">姓名*</span>
                   <v-text-field
                     color="blue-grey lighten-1"
@@ -117,16 +117,22 @@
                   >
                   </v-text-field>
                 </v-col>
-                <v-col cols="2">
+                <v-col cols="3" class="pr-8">
                   <span class="text-body-2 text--secondary">性别</span>
-                  <v-text-field
+                  <v-select
                     color="blue-grey lighten-1"
                     outlined
                     dense
                     hide-details
+                    :items="[
+                      { k: '男', v: 1 },
+                      { k: '女', v: 0 },
+                    ]"
+                    item-text="k"
+                    item-value="v"
                     v-model="userInfoEdit.gender"
                   >
-                  </v-text-field>
+                  </v-select>
                 </v-col>
                 <v-col>
                   <span class="text-body-2 text--secondary">联系方式</span>
@@ -175,7 +181,9 @@
                     dense
                     hide-details
                     no-data-text="空！！"
-                    :items="userInfos.map((i) => i.nick)"
+                    :items="userInfos"
+                    item-text="nick"
+                    item-value="uid"
                     v-model="userInfoEdit.creatorId"
                   ></v-autocomplete>
                 </v-col>
@@ -205,9 +213,6 @@
                     class="ml-10 mt-0 pt-0"
                   />
                 </v-row>
-
-                {{ global.log(global.user) }}
-                {{ global.log(selectedPermission) }}
 
                 <v-expand-transition>
                   <v-row v-if="selectedPermission.a.a" class="mt-5">
@@ -333,11 +338,7 @@
           <v-btn color="blue darken-1" text @click="userInfoDialog = false"
             >取消</v-btn
           >
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="userAction"
-            :disabled="isEmpty"
+          <v-btn color="blue darken-1" text @click="save" :disabled="isEmpty"
             >保存</v-btn
           >
         </v-card-actions>
@@ -355,7 +356,7 @@
 <script>
 import { getSubUsers } from "@/settings/user";
 import { registUser } from "@/settings/user";
-import { modifyUsers } from "@/settings/user";
+import { modifyUser } from "@/settings/user";
 
 import { getDepartment } from "@/settings/department";
 import { getGroup } from "@/settings/group";
@@ -447,9 +448,10 @@ export default {
     deleteButton() {},
 
     editButton(item) {
-      this.userInfoEdit = Object.assign({}, item);
-      this.selectedPermission = this.userInfos.find((i) => i.nick == this.userInfoEdit.nick).calculatedPermission;
-      console.log(this.userInfoEdit);
+      this.userInfoEdit = { ...item };
+      this.selectedPermission = JSON.parse(
+        this.userInfos.find((i) => i.uid == item.uid).permission
+      );
       console.log(this.userInfos);
       this.mode = 1;
       this.userInfoDialog = true;
@@ -458,14 +460,15 @@ export default {
     editEmployee() {
       this.userInfoDialog = false;
 
-      var args = {
-        permission: JSON.stringify(this.selectedPermission),
-        ...this.userInfoEdit,
-      };
-      args.creatorId = this.userInfos.find((i) => i.nick == args.creatorId).uid;
+      var args = { ...this.userInfoEdit };
+
+      console.log(this.selectedPermission.a.a);
+      args.permission = JSON.stringify(this.selectedPermission);
+      args.note == null && delete args.note;
+      args.contact == null && delete args.contact;
 
       console.log(args);
-      modifyUsers(args)
+      modifyUser(args)
         .then((res) => {
           console.log(res);
           this.global.infoAlert("泼发EBC：" + res.data);
@@ -478,11 +481,12 @@ export default {
     newEmployee() {
       this.userInfoDialog = false;
 
+      console.log("------");
+      console.log(this.userInfoEdit);
       var args = {
         permission: JSON.stringify(this.selectedPermission),
         ...this.userInfoEdit,
       };
-      args.creatorId = this.userInfos.find((i) => i.nick == args.creatorId).uid;
 
       console.log(args);
       registUser(args)
@@ -495,7 +499,7 @@ export default {
       this.mode = 0;
     },
 
-    userAction() {
+    save() {
       if (this.mode == 0) {
         this.newEmployee();
       } else if (this.mode == 1) {
