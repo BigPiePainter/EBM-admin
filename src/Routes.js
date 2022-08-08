@@ -4,8 +4,10 @@ import Router from 'vue-router';
 import Layout from '@/components/Layout/Layout';
 
 // Pages
+import MainPage from '@/pages/MainPage/MainPage';
 import Dashboard from '@/pages/Dashboard/Dashboard';
 import PartnerGet from '@/pages/PartnerGet/PartnerGet'
+import Category from '@/pages/Category/Category'
 import ProductsGet from '@/pages/ProductsGet/ProductsGet'
 import ProductsPut from '@/pages/ProductsPut/ProductsPut'
 import Tables from '@/pages/Tables/Basic'
@@ -46,6 +48,11 @@ var routerConfig = {
       component: Layout,
       children: [
         {
+          path: 'mainpage',
+          name: 'MainPage',
+          component: MainPage,
+        },
+        {
           path: 'dashboard',
           name: 'Dashboard',
           component: Dashboard,
@@ -54,6 +61,11 @@ var routerConfig = {
           path: 'partnerget',
           name: 'PartnerGet',
           component: PartnerGet,
+        },
+        {
+          path: 'category',
+          name: 'Category',
+          component: Category,
         },
         {
           path: 'order',

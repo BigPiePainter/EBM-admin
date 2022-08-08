@@ -46,7 +46,8 @@ export default {
     return {
       moreInfo: false,
       orderItems: [],
-      Headers: [{ text: "子订单编号", value: "subOrderNumber" },
+      Headers: [
+        { text: "子订单编号", value: "subOrderNumber" },
         { text: "主订单编号", value: "mainOrderNumber" },
         { text: "买家应付邮费", value: "buyerPostage" },
         { text: "买家实际支付金额", value: "buyerActualPayment" },
@@ -62,7 +63,8 @@ export default {
         { text: "供应商名称", value: "suppilerName" },
         { text: "退款金额", value: "returnPrice" },
         { text: "颜色/尺码", value: "skuName" },
-        { text: "商品编码", value: "goodsId" },],
+        { text: "商品编码", value: "goodsId" },
+      ],
       orderHeader: [
         { text: "子订单编号", value: "subOrderNumber" },
         { text: "主订单编号", value: "mainOrderNumber" },
@@ -113,19 +115,23 @@ export default {
   },
 
   created() {
-    getOrder({});
+    this.loadData();
   },
 
   watch: {
-    moreInfo(){
-      if (this.moreInfo == false){
-        this.Headers=this.orderHeader
-      }else{
-        this.Headers=this.completeOrderHeader
+    moreInfo() {
+      if (this.moreInfo == false) {
+        this.Headers = this.orderHeader;
+      } else {
+        this.Headers = this.completeOrderHeader;
       }
-    }
+    },
   },
 
-  methods: {},
+  methods: {
+    loadData(){
+      getOrder({})
+    },
+  },
 };
 </script>

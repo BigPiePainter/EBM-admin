@@ -11,9 +11,12 @@
     :class="{ 'drawer-mini': !DRAWER_STATE }"
   >
     <v-list>
-      <template v-for="(item, i) in items" >
-        <div v-if="item.heading || item.divider || item.show" :key="item.heading">
-          <v-row v-if="item.heading"  align="center">
+      <template v-for="(item, i) in items">
+        <div
+          v-if="item.heading || item.divider || item.show"
+          :key="item.heading"
+        >
+          <v-row v-if="item.heading" align="center">
             <v-col cols="6" class="py-5">
               <span
                 style="padding-left: 32px"
@@ -107,7 +110,12 @@ export default {
     return {
       items: [
         { heading: "POFA1" },
-        //{ title: "主页", icon: "mdi-home", link: "/dashboard" },
+        {
+          title: "主页",
+          icon: "mdi-account-multiple",
+          link: "/mainpage",
+          show: true,
+        },
         {
           title: "商品管理",
           icon: "mdi-account-multiple",
@@ -123,6 +131,11 @@ export default {
               title: "认领大厅",
               icon: "mdi-account-multiple",
               link: "/partnerget",
+            },
+            {
+              title: "一级类目",
+              icon: "mdi-account-multiple",
+              link: "/category",
             },
           ],
         },
