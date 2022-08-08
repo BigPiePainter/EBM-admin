@@ -2,10 +2,17 @@
   <div style="width: 800px; margin: 0 auto">
     <v-card class="products-list mb-1">
       <v-data-table
+        fixed-header
+        loading-text="加载中... 请稍后"
+        no-data-text="空"
+        item-key="category"
+        show-expand
+        height="calc(100vh - 200px)"
+        :expanded.sync="expanded"
+        :loading="loading"
         :headers="categoryHeaders"
         :items="categoryItems"
         disable-sort
-        @click:row="clickRow"
       >
         <template v-slot:top>
           <v-toolbar flat>
@@ -13,6 +20,7 @@
             <v-divider class="mx-4" inset vertical></v-divider>
 
             <v-spacer></v-spacer>
+
             <v-dialog v-model="dialog" max-width="300px">
               <!--new item buttom-->
               <template v-slot:activator="{ on, attrs }">
@@ -22,7 +30,7 @@
                   color="primary"
                   v-bind="attrs"
                   v-on="on"
-                  @click="addMode"
+                  @click="addButton"
                 >
                   新增类目
                 </v-btn>
@@ -33,36 +41,82 @@
                   <v-row>
                     <span class="text-subtitle-1">类目信息</span>
                   </v-row>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="12">
                     <span class="text-body-2 text--secondary">名称*</span>
                     <v-text-field
                       outlined
                       dense
                       hide-details
                       v-model="editedItem.category"
+                      :readonly="checkReadOnly"
                     >
                     </v-text-field>
                   </v-col>
 
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="12">
                     <span class="text-body-2 text--secondary">品类扣点*</span>
                     <v-text-field
                       outlined
                       dense
                       hide-details
-                      v-model="editedItem.rate"
+                      v-model="editedItem.ratio"
                     ></v-text-field>
                   </v-col>
 
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="12">
                     <span class="text-body-2 text--secondary">品类运费险*</span>
-                    <v-select
+                    <v-text-field
                       outlined
                       dense
-                      v-model="editedItem.insurance"
                       hide-details
-                      single-line
-                    ></v-select>
+                      v-model="editedItem.insurance"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12">
+                    <span class="text-body-2 text--secondary">
+                      选择生效日期*
+                    </span>
+                    <v-menu
+                      ref="menu"
+                      v-model="datePicker"
+                      :close-on-content-click="false"
+                      :return-value.sync="editedItem.crateTime"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="editedItem.crateTime"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          outlined
+                          dense
+                          hide-details
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="editedItem.crateTime"
+                        no-title
+                        scrollable
+                        locale="zh-cn"
+                        first-day-of-week="1"
+                        :day-format="dayFormat"
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="datePicker = false">
+                          取消
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.menu.save(editedItem.crateTime)"
+                        >
+                          确定
+                        </v-btn>
+                      </v-date-picker>
+                    </v-menu>
                   </v-col>
                 </v-col>
 
@@ -87,51 +141,92 @@
               </v-card>
             </v-dialog>
           </v-toolbar>
-        </template></v-data-table
-      >
+        </template>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-btn
+            small
+            depressed
+            outlined
+            color="green"
+            @click="editButton(item)"
+            class="ml-1"
+          >
+            修改
+          </v-btn>
+
+          <v-btn
+            small
+            depressed
+            outlined
+            color="red lighten-2"
+            @click="deleteButton"
+            class="ml-1"
+          >
+            删除
+          </v-btn>
+          <v-dialog v-model="deleteDialog" max-width="190px">
+            <v-card class="pl-2 pt-2">
+              是否确定删除此条类目？
+              <v-card-actions>
+                <v-btn color="blue darken-1" text @click="deleteClose">
+                  取消
+                </v-btn>
+                <v-btn color="blue darken-1" text @click="deleteConfirm">
+                  确认
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </template>
+        <template v-slot:expanded-item="{ headers, item }">
+          <td :colspan="headers.length">More info about {{ item.category }}</td>
+        </template>
+      </v-data-table>
     </v-card>
   </div>
 </template>
 
 <script>
 import { getCategory } from "@/settings/category";
+import { addCategory } from "@/settings/category";
+import { editCategory } from "@/settings/category";
+import { deleteCategory } from "@/settings/category";
 export default {
   data() {
     return {
+        editedItem: [],
+      mode: 0,
+      checkReadOnly: true,
+      dialog: false,
+      deleteDialog: false,
       categoryHeaders: [
         { text: "一级类目", value: "category" },
-        { text: "品类扣点", valeu: "rate" },
+        { text: "品类扣点", value: "ratio" },
         { text: "品类运费险", value: "insurance" },
-        { text: "生效时间", valie: "creatTime" },
-        { text: "", value: "actions" },
+        { text: "生效时间", value: "crateTime" },
+        { text: "操作", value: "actions" },
       ],
-      categoryItems: [],
-      editedItem:[],
-      mode: 0,
+      categoryItems: [
+        { category: "1", ratio: "1111111", insurance: "1", creatTime: "11111" },
+      ],
     };
   },
 
   created() {
     this.loadData();
+    console.log(this.categoryItems);
   },
 
   computed: {
     isEmp: function () {
-      var check = [
-        "category",
-        "rate",
-        "insurance",
-      ]
-
+      var check = ["category", "ratio", "insurance", "crateTime"];
       var pass = true;
       check.forEach((item) => {
-        if (!this.editedItem[item]) pass = false
-      })
-
-      console.log(pass)
-
+        if (!this.editedItem[item]) pass = false;
+      });
+      console.log(pass);
       return !pass;
-    }
+    },
   },
 
   methods: {
@@ -139,6 +234,21 @@ export default {
       getCategory({});
     },
 
+    //----------------------------------------------------------------------------------------
+    addButton() {
+      this.mode = 1;
+      this.editedItem = [];
+      this.checkReadOnly = false;
+    },
+    editButton(item) {
+      this.mode = 2;
+      this.editedItem = Object.assign({}, item);
+      this.checkReadOnly = true;
+      this.dialog = true;
+    },
+    close() {
+      this.dialog = false;
+    },
     save() {
       if (this.mode == 1) {
         this.add();
@@ -146,18 +256,28 @@ export default {
         this.edit();
       }
     },
-
-    clickRow() {},
-
-    addMode() {
-        this.mode = 1;
+    add() {
+      addCategory({});
+      this.dialog = false;
     },
-    editMode(){
-        this.mode = 2;
+    edit() {
+      editCategory({});
+      this.dialog = false;
     },
-
-    add(){},
-    edit(){},
+    //----------------------------------------------------------------------------------------
+    deleteButton() {
+      this.deleteDialog = true;
+    },
+    deleteClose() {
+      this.deleteDialog = false;
+    },
+    deleteConfirm() {
+      this.deleteDialog = false;
+      this.delete();
+    },
+    delete() {
+      deleteCategory({});
+    },
   },
 };
 </script>
