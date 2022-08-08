@@ -47,27 +47,19 @@
         </template>
 
         <template v-slot:expanded-item="{ headers, item }">
-          <td :colspan="headers.length" class="sub-table pa-0">
-            <div class="sub-table-container elevation-20 ml-2 mb-3">
-              <SkuTable :productInfo="item" />
-            </div>
-            <v-progress-circular
-              class="ml-10 mb-2"
-              size="25"
-              width="3"
-              indeterminate
-              color="grey"
-            >
-            </v-progress-circular>
+          <td :colspan="headers.length" class="pa-0">
+            <SkuTable :productInfo="item" />
           </td>
         </template>
 
+        <template v-slot:[`item.department`]="{ item }">
+          {{ global.departmentIdToName[item.department] }}
+        </template>
+        <template v-slot:[`item.team`]="{ item }">
+          {{ global.teamIdToName[item.team] }}
+        </template>
         <template v-slot:[`item.owner`]="{ item }">
-          {{
-            subUsers.find((i) => i.uid == item.owner)
-              ? subUsers.find((i) => i.uid == item.owner).nick
-              : "..."
-          }}
+          {{ global.userIdToNick[item.owner] }}
         </template>
 
         <template v-slot:top>
@@ -228,12 +220,12 @@
                       ></v-combobox>
                     </v-col>
 
-                    <v-col
-                      :cols="editedItem.transportWay == '聚水潭' ? 8 : 8"
-                    >
+                    <v-col :cols="editedItem.transportWay == '聚水潭' ? 8 : 8">
                       <v-expand-x-transition>
                         <div v-if="editedItem.transportWay == '聚水潭'">
-                          <span class="text-body-2 text--secondary text-no-wrap">
+                          <span
+                            class="text-body-2 text--secondary text-no-wrap"
+                          >
                             <!-- {{ editedItem.transportWay == "聚水潭" ? "聚水潭仓库*" : "聚水潭仓库" }} -->
                             聚水潭仓库*
                           </span>
@@ -269,7 +261,7 @@
                     带*为必填项目
                   </p>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close">
+                  <v-btn color="blue darken-1" text @click="dialog = false">
                     取消
                   </v-btn>
                   <v-btn
@@ -442,6 +434,7 @@ export default {
 
       { text: "发货方式", value: "transportWay" },
       { text: "聚水潭仓库", value: "storehouse" },
+      { text: "备注", value: "note" },
       { text: "操作", value: "actions" },
     ],
 
@@ -475,10 +468,6 @@ export default {
   },
 
   watch: {
-    dialog(val) {
-      val || this.close();
-    },
-
     options: {
       handler() {
         this.loadData();
@@ -576,7 +565,7 @@ export default {
     editItem(item) {
       // this.editedIndex = this.products.indexOf(item);
       this.mode = 2; //修改
-      this.editedItem = Object.assign({}, item);
+      this.editedItem = { ...item };
       this.checkReadOnly = true;
       this.dialog = true;
     },
@@ -611,10 +600,6 @@ export default {
       console.log(this.deleteConfirm);
     },
 
-    close() {
-      this.dialog = false;
-    },
-
     // initialData() {
     //   var iniData = []
     //   for (let i = 0; i < Object.keys(iniData).length; i++) {
@@ -636,14 +621,13 @@ export default {
       } else if (this.mode == 2) {
         this.edit();
       }
+      this.dialog = false;
     },
 
     add() {
       if (/[^\d]/.test(this.editedItem.id)) {
         this.global.infoAlert("泼发EBC：商品ID格式错误");
         return;
-      } else {
-        this.close();
       }
       this.loading = true;
       console.log(this.editedItem);
@@ -669,6 +653,12 @@ export default {
       // console.log(args);
       // if (args.freightToPayment == null) { delete args.freightToPayment; }
       // console.log(args);
+
+      var args = { ...this.editedItem };
+
+      if (args.storehouse == null) delete args.storehouse;
+
+      console.log(args);
       editProduct(this.editedItem)
         .then((res) => {
           this.loading = false;

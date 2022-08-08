@@ -65,5 +65,13 @@ export default {
   },
 
   user: {},
+
+  allDepartments: [],
+  allTeams: [],
+  allUsers: [],
+
+  userIdToNick: {},
+  teamIdToName: {},
+  departmentIdToName: {},
 };
 </script>

@@ -191,12 +191,9 @@ export default {
       console.log(this.done);
       if (this.done.find((i) => !i) == false) return;
 
-      
-
       this.global.allDepartments = this.allDepartments;
       this.global.allTeams = this.allTeams;
       this.global.allUsers = this.allUsers;
-      
 
       if (this.global.user.uid == 1) {
         this.global.user.permission = this.global.allPermissions; //admin
@@ -217,6 +214,19 @@ export default {
           (i) => i.uid
         );
       }
+
+      this.global.departmentIdToName = {};
+      this.global.allDepartments.forEach((i) => {
+        this.global.departmentIdToName[i.uid] = i.name;
+      });
+      this.global.teamIdToName = {};
+      this.global.allTeams.forEach((i) => {
+        this.global.teamIdToName[i.uid] = i.name;
+      });
+      this.global.userIdToNick = {};
+      this.global.allUsers.forEach((i) => {
+        this.global.userIdToNick[i.uid] = i.nick;
+      });
 
       console.log("登陆跳转");
       console.log(this.global);

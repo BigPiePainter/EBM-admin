@@ -1,7 +1,7 @@
 
 <template>
   <div>
-    <div v-if="show">
+    <div v-if="show" class="sub-table elevation-20 ml-2 mb-3">
       <v-tabs v-model="tabs" align-with-title>
         <!-- align-with-title -->
         <!-- <v-tabs-slider color="yellow"></v-tabs-slider> -->
@@ -115,9 +115,14 @@
       </v-expand-transition>
     </div>
     <div v-else>
-      <!-- <v-card>
-        <v-progress-linear indeterminate color="green"> </v-progress-linear>
-      </v-card> -->
+      <v-progress-circular
+        class="ml-10 mb-2"
+        size="25"
+        width="3"
+        indeterminate
+        color="grey"
+      >
+      </v-progress-circular>
     </div>
 
     <!-- 删除SKU Dialog -->
@@ -853,6 +858,12 @@ export default {
 // .delete-table-container {
 //   width: fit-content;
 // }
+.sub-table {
+  width: fit-content;
+  // background-color: red;
+  transform: translateY(-5px);
+  border-radius: 20px;
+}
 
 .v-card__title {
   overflow: hidden;
