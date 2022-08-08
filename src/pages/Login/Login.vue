@@ -131,7 +131,7 @@ export default {
 
               this.userAnalyze();
 
-              this.$router.push("/partnerget");
+              this.$router.push("/mainpage");
               return;
             }
 
@@ -206,7 +206,7 @@ export default {
 
       this.userAnalyze();
 
-      this.$router.push("/partnerget");
+      this.$router.push("/mainpage");
     });
 
     //if (window.localStorage.getItem("authenticated") === "true") {
