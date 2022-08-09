@@ -2,7 +2,7 @@ import http from '@/libs/http'
 
 export const getOrder = data => {
     const args = {
-        url: '/Order/getOrder',
+        url: '/order/getOrder',
         method: 'POST',
         data,
 
@@ -12,7 +12,7 @@ export const getOrder = data => {
 
 export const addOrder = data => {
     const args = {
-        url: '/Order/addOrder',
+        url: '/order/addOrder',
         method: 'POST',
         data
     }
@@ -21,7 +21,7 @@ export const addOrder = data => {
 
 export const addBrush = data => {
     const args = {
-        url: '/Order/addBrush',
+        url: '/order/addBrush',
         method: 'POST',
         data
     }
@@ -30,7 +30,7 @@ export const addBrush = data => {
 
 export const getBrush = data => {
     const args = {
-        url: '/Order/getBrush',
+        url: '/order/getBrush',
         method: 'POST',
         data
     }
@@ -39,7 +39,7 @@ export const getBrush = data => {
 
 export const getReturn = data => {
     const args = {
-        url: '/Order/getReturn',
+        url: '/order/getReturn',
         method: 'POST',
         data
     }
@@ -48,7 +48,7 @@ export const getReturn = data => {
 
 export const addReturn = data => {
     const args = {
-        url: '/Order/addReturn',
+        url: '/order/addReturn',
         method: 'POST',
         data
     }
@@ -66,5 +66,16 @@ export const fileUpload = (data, event) => {
     }
     return http.request(args)
 }
+
+export const getFileProcessStates = data => {
+    const args = {
+        url: '/order/getFileProcessStates',
+        method: 'POST',
+        data,
+    }
+    return http.request(args)
+}
+
+
 
 

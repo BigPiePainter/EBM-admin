@@ -13,11 +13,11 @@
       @dragover.prevent=""
       @dragend.prevent=""
     >
-      <span>{{ status }}</span>
+      <span>{{ state }}</span>
     </v-card>
 
-    <v-row class="file-status">
-      <v-col v-for="(file, i) in uploadStatus" :key="i" cols="12" lg="6">
+    <v-row class="file-state">
+      <v-col v-for="(file, i) in uploadStates" :key="i" cols="12" lg="6">
         <v-card tile class="pt-3">
           <v-toolbar-items>
             <v-icon
@@ -27,13 +27,21 @@
             >
               mdi-alert-circle-outline
             </v-icon>
-            <v-icon v-else class="ml-4 mr-1 mb-1" color="primary">
+            <v-icon
+              v-else
+              class="ml-4 mr-1 mb-1"
+              :color="file.state == 'done' ? 'green darken-1' : 'primary'"
+            >
               mdi-file-excel
             </v-icon>
             <span>{{ file.name }}</span>
 
             <span v-if="file.error" class="ml-5 text--secondary">
-              {{file.errorReason}}
+              {{ file.errorReason }}
+            </span>
+
+            <span class="ml-5 text--secondary">
+              {{ file.state }}
             </span>
 
             <v-spacer></v-spacer>
@@ -44,20 +52,21 @@
             <span class="text--secondary"
               >{{ Math.floor(file.size / 1024) }} k</span
             >
-            <span class="text--secondary mx-5"
+            <span class="text--secondary ml-5 mr-4"
               >{{ Math.floor((file.uploaded * 100) / file.size) }} %</span
             >
+            <v-icon v-if="file.state == 'done'" class="mr-4 mb-1" color="green">
+              mdi-check-circle-outline
+            </v-icon>
           </v-toolbar-items>
           <v-progress-linear
-            :indeterminate="false"
+            :indeterminate="
+              file.state == 'processing' || file.state == 'waiting'
+            "
             :value="(file.uploaded * 100) / file.size"
             class="mt-2"
             :color="
-              file.error
-                ? 'red'
-                : file.uploaded == file.size
-                ? 'green'
-                : 'primary'
+              file.error ? 'red' : file.state == 'done' ? 'green' : 'primary'
             "
           >
           </v-progress-linear>
@@ -94,7 +103,8 @@
 </template>
 <script>
 import { fileUpload } from "@/settings/order";
-//import * as XLSX from "xlsx";
+import { getFileProcessStates } from "@/settings/order";
+
 export default {
   name: "SkuUpload",
   components: {},
@@ -104,7 +114,7 @@ export default {
   },
   data() {
     return {
-      status: "",
+      state: "",
       dialog: false,
       dropActive: false,
       historyHeaders: [
@@ -120,18 +130,60 @@ export default {
 
       loading: false,
 
-      uploadStatus: [],
+      uploadStates: [],
+
+      fileStates: [],
+
+      interval: 0,
     };
   },
   mounted() {
-    this.status = "拖拽上传订单信息";
+    this.state = "拖拽上传订单信息";
+
+    this.interval = setInterval(() => {
+      this.refreshFileStates();
+    }, 2000);
   },
   watch: {
     hover(value) {
-      this.status = value ? "松开上传" : "拖拽上传订单信息";
+      this.state = value ? "松开上传" : "拖拽上传订单信息";
     },
   },
+  beforeDestroy() {
+    clearInterval(this.interval);
+  },
   methods: {
+    refreshFileStates() {
+      console.log("refreshFileStates");
+      getFileProcessStates({})
+        .then((res) => {
+          console.log("完毕");
+          console.log(res.data.fileStates);
+          this.fileStates = res.data.fileStates;
+          this.fileStatesAnalyze();
+        })
+        .catch(() => {});
+    },
+    fileStatesAnalyze() {
+      for (let name in this.fileStates) {
+        console.log(name);
+
+        var file = this.uploadStates.find((i) => i.name == name);
+
+        if (file) {
+          file.state = this.fileStates[name].state;
+        } else {
+          this.uploadStates.push({
+            name,
+            size: this.fileStates[name].size,
+            uploaded: this.fileStates[name].size,
+            state: this.fileStates[name].state,
+            error: false,
+            errorReason: "",
+          });
+        }
+      }
+    },
     dragenter() {
       this.elevation = 15;
       this.hover = true;
@@ -154,22 +206,23 @@ export default {
       }
 
       for (let file of event.dataTransfer.files) {
-        let status = {};
+        let state = {};
 
         console.log(file.name);
 
-        status.name = file.name;
-        status.size = file.size;
-        status.uploaded = 0;
-        status.error = false;
-        status.errorReason = "";
+        state.name = file.name;
+        state.size = file.size;
+        state.uploaded = 0;
+        state.error = false;
+        state.errorReason = "";
+        state.state = "";
 
-        this.uploadStatus.push(status);
+        this.uploadStates.push(state);
 
         if (!file.name.endsWith(".xlsx")) {
           console.log("拦截");
-          status.error = true;
-          status.errorReason = "文件后缀错误, 跳过上传";
+          state.error = true;
+          state.errorReason = "文件后缀错误, 跳过上传";
           continue;
         }
 
@@ -184,9 +237,9 @@ export default {
           console.log(progressEvent);
           console.log("赋值");
           console.log(progressEvent.loaded);
-          status.size = progressEvent.total;
-          status.uploaded = progressEvent.loaded;
-          console.log(status);
+          state.size = progressEvent.total;
+          state.uploaded = progressEvent.loaded;
+          console.log(state);
         })
           .then((res) => {
             console.log("完毕");
@@ -194,8 +247,8 @@ export default {
           })
           .catch((error) => {
             console.log("错误！！", error);
-            status.error = true;
-            status.errorReason = "网络错误，上传失败";
+            state.error = true;
+            state.errorReason = "网络错误，上传失败";
           });
       }
 
