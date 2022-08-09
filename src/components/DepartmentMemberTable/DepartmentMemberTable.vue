@@ -1,6 +1,16 @@
 <template>
   <div>
-    <v-data-table :headers="headers" :items="memberItems"> </v-data-table>
+    <v-data-table
+      :hide-default-footer="memberItems.length <= 10"
+      :items-per-page="10"
+      :footer-props="{
+        'items-per-page-options': [10, 20, 50, 100],
+        'items-per-page-text': '每页显示条数',
+      }"
+      :headers="headers"
+      :items="memberItems"
+    >
+    </v-data-table>
   </div>
 </template>
 
