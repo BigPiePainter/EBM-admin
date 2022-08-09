@@ -92,6 +92,7 @@ import { userLogin } from "@/settings/user";
 import { getDepartment } from "@/settings/department";
 import { getTeam } from "@/settings/team";
 import { getAllUsers } from "@/settings/user";
+import { getCategory } from "@/settings/category";
 
 import { isLogin } from "@/settings/user";
 
@@ -117,8 +118,9 @@ export default {
       allTeams: [],
       allDepartments: [],
       allUsers: [],
+      allCategorys: [],
 
-      done: [false, false, false], //三个请求状态
+      done: [false, false, false, false], //三个请求状态
     };
   },
   methods: {
@@ -183,6 +185,10 @@ export default {
         this.allUsers = res.data.userInfos;
         this.requestDone(2);
       });
+      getCategory({}).then((res) => {
+        this.allCategorys = res.data.categorys;
+        this.requestDone(3);
+      });
     },
 
     requestDone(i) {
@@ -194,6 +200,7 @@ export default {
       this.global.allDepartments = this.allDepartments;
       this.global.allTeams = this.allTeams;
       this.global.allUsers = this.allUsers;
+      this.global.allCategorys = this.allCategorys;
 
       if (this.global.user.uid == 1) {
         this.global.user.permission = this.global.allPermissions; //admin
@@ -223,6 +230,11 @@ export default {
       this.global.allTeams.forEach((i) => {
         this.global.teamIdToName[i.uid] = i.name;
       });
+      this.global.categoryIdToName = {};
+      this.global.allCategorys.forEach((i) => {
+        this.global.categoryIdToName[i.uid] = i.name;
+      });
+
       this.global.userIdToNick = {};
       this.global.allUsers.forEach((i) => {
         this.global.userIdToNick[i.uid] = i.nick;

@@ -16,7 +16,7 @@
       <v-col>
         <v-chip>
           组别
-          <v-text-field v-model="searchItem.groupName"></v-text-field>
+          <v-text-field v-model="searchItem.team"></v-text-field>
         </v-chip>
       </v-col>
       <v-col>
@@ -156,7 +156,7 @@ export default {
     searchItem: {
       id: "",
       department: "",
-      groupName: "",
+      team: "",
       owner: "",
       shopName: "",
       productName: "",

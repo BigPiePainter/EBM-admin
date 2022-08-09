@@ -4,7 +4,8 @@ export const getOrder = data => {
     const args = {
         url: '/Order/getOrder',
         method: 'POST',
-        data
+        data,
+
     }
     return http.request(args)
 }
@@ -53,3 +54,17 @@ export const addReturn = data => {
     }
     return http.request(args)
 }
+
+
+export const fileUpload = (data, event) => {
+    const args = {
+        url: '/order/fileUpload',
+        method: 'POST',
+        data,
+        file: true,
+        onUploadProgress: event
+    }
+    return http.request(args)
+}
+
+

@@ -56,6 +56,23 @@
                 'items-per-page-text': '每页显示条数',
               }"
             >
+              <template v-slot:[`header.skuPrice`]="{ header }">
+                <span class="mr-1">
+                  {{ header.text }}
+                </span>
+              </template>
+              <template v-slot:[`header.skuCost`]="{ header }">
+               <span class="mr-2">
+                  {{ header.text }}
+                </span>
+              </template>
+              <template v-slot:[`item.skuPrice`]="{ item }">
+                {{ item.skuPrice }} ￥
+              </template>
+              <template v-slot:[`item.skuCost`]="{ item }">
+                {{ item.skuCost }} ￥
+              </template>
+
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn
                   small
@@ -86,6 +103,18 @@
                 'items-per-page-text': '每页显示条数',
               }"
             >
+              <template v-slot:[`item.freight`]="{ item }">
+                {{ item.freightToPayment == 0 ? item.freight + " ￥" : "" }}
+              </template>
+              <template v-slot:[`item.extraRatio`]="{ item }">
+                {{ item.freightToPayment == 0 ? item.extraRatio + " %" : "" }}
+              </template>
+              <template v-slot:[`item.freightToPayment`]="{ item }">
+                {{
+                  item.freightToPayment > 0 ? item.freightToPayment + " %" : ""
+                }}
+              </template>
+
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn
                   small
@@ -264,23 +293,42 @@
             </v-row>
             <v-row>
               <v-col cols="4">
-                <span class="text-body-2 text--secondary"> 每单运费 </span>
+                <span
+                  class="text-body-2 text--secondary"
+                  :class="
+                    manufacturerEdit.freightToPayment > 0 &&
+                    'text-decoration-line-through'
+                  "
+                >
+                  每单运费</span
+                >
                 <v-text-field
                   outlined
                   dense
                   hide-details
                   v-model="manufacturerEdit.freight"
+                  :disabled="manufacturerEdit.freightToPayment > 0"
+                  type="number"
                   suffix="￥"
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
-                <span class="text-body-2 text--secondary">
+                <span
+                  class="text-body-2 text--secondary"
+                  :class="
+                    manufacturerEdit.freightToPayment > 0 &&
+                    'text-decoration-line-through'
+                  "
+                >
                   子/主订单附带比
                 </span>
                 <v-text-field
                   outlined
                   dense
                   hide-details
+                  :disabled="manufacturerEdit.freightToPayment > 0"
+                  suffix="%"
+                  type="number"
                   v-model="manufacturerEdit.extraRatio"
                 ></v-text-field
               ></v-col>
@@ -290,6 +338,8 @@
                   outlined
                   dense
                   hide-details
+                  suffix="%"
+                  type="number"
                   v-model="manufacturerEdit.freightToPayment"
                 ></v-text-field
               ></v-col>
@@ -469,8 +519,8 @@ export default {
       headers: [
         { text: "SKUID", align: "start", value: "skuId" },
         { text: "SKU名称", align: "start", value: "skuName" },
-        { text: "售卖价", align: "start", value: "skuPrice" },
-        { text: "成本", align: "start", value: "skuCost" },
+        { text: "售卖价", align: "end", value: "skuPrice" },
+        { text: "成本", align: "end", value: "skuCost" },
         { text: "价格开始时间", align: "start", value: "calculatedStartTime" },
         //{ text: "价格截止时间", align: "start", value: "endTime" },
         { text: "销售子订单条数", align: "start", value: "orderNum" },
@@ -514,9 +564,24 @@ export default {
           align: "start",
           value: "manufacturerAddress",
         },
+        {
+          text: "每单运费",
+          align: "end",
+          value: "freight",
+        },
+        {
+          text: "自主订单附带比",
+          align: "end",
+          value: "extraRatio",
+        },
+        {
+          text: "运费/总货款",
+          align: "end",
+          value: "freightToPayment",
+        },
         { text: "厂家生效时间", align: "start", value: "calculatedStartTime" },
-        { text: "创建时间", align: "start", value: "calculatedCreateTime" },
-        { text: "修改时间", align: "start", value: "calculatedModifyTime" },
+        // { text: "创建时间", align: "start", value: "calculatedCreateTime" },
+        // { text: "修改时间", align: "start", value: "calculatedModifyTime" },
         { text: "备注", align: "start", value: "note" },
         { text: "操作", align: "start", value: "actions" },
       ],
@@ -832,15 +897,18 @@ export default {
 
     modifyManufacturer() {
       this.manufacturerInfoDialog = false;
-      var pars = { ...this.manufacturerEdit };
+      var args = { ...this.manufacturerEdit };
 
       //参数预处理
-      pars.startTime = pars.startTime.replaceAll("-", "/");
-      for (let name in pars) pars[name] == null && delete pars[name];
-      pars.manufacturerPaymentMethod || (pars.manufacturerPaymentMethod = "");
+      args.startTime = args.startTime.replaceAll("-", "/");
+      args.freight || (args.freight = 0);
+      args.extraRatio || (args.extraRatio = 0);
+      args.freightToPayment || (args.freightToPayment = 0);
+      for (let name in args) args[name] == null && delete args[name];
+      args.manufacturerPaymentMethod || (args.manufacturerPaymentMethod = "");
 
-      console.log(pars);
-      editManufacturer(pars)
+      console.log(args);
+      editManufacturer(args)
         .then((res) => {
           console.log(res);
           this.global.infoAlert(res.data);

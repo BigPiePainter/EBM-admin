@@ -162,7 +162,7 @@ export default {
               link: "/return",
             },
             {
-              title: "刷单",
+              title: "补单",
               icon: "mdi-book-variant-multiple",
               link: "/brush",
             },
@@ -180,7 +180,7 @@ export default {
           link: "/department",
           show: this.global.user.permission.d.a,
           children: [
-            { title: "部门", icon: "mdi-circle-small", link: "/department" },
+            { title: "事业部", icon: "mdi-circle-small", link: "/department" },
           ],
         },
 

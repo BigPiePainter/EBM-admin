@@ -15,20 +15,34 @@ class Http {
     if (options.json === true) {
       instance.defaults.headers.post['Content-Type'] = 'application/json'
       instance.defaults.headers.put['Content-Type'] = 'application/json'
+    } else if (options.file === true) {
+      console.log("formdata")
+      instance.defaults.headers.post['Content-Type'] = 'multipart/form-data'
     } else {
       instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
     }
-    if (localStorage.token){
+
+
+
+    if (localStorage.token) {
       instance.defaults.headers.pofatoken = localStorage.token
     }
     if (options.token) {
       instance.defaults.headers.pofatoken = options.token
     }
+    if (options.onUploadProgress) {
+      instance.defaults.onUploadProgress = options.onUploadProgress
+    }
+
     instance.defaults.transformRequest = [data => {
+      if (options.file) return data
+
       if (options.headers && options.headers['Content-Type']) {
+        console.log("预处1")
         return data
       }
       if (options.json === true && typeof data !== 'string') {
+        console.log("预处理2")
         return JSON.stringify(data)
       }
       return queryStringify(data)
@@ -58,6 +72,8 @@ class Http {
 
       return Promise.reject(error)
     })
+
+    console.log(options)
     return instance(options)
   }
 

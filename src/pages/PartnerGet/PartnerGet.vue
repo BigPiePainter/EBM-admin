@@ -9,8 +9,8 @@
         no-data-text="空"
         item-key="id"
         disable-sort
-        class="elevation-1"
         height="calc(100vh - 200px)"
+        class="card-shadow"
         :loading="loading"
         :headers="headers"
         :items="products"
@@ -121,14 +121,30 @@
                   <v-row>
                     <v-col cols="7">
                       <span class="text-body-2 text--secondary">一级类目*</span>
-                      <v-combobox
+                      <v-autocomplete
                         color="blue-grey lighten-1"
                         outlined
                         dense
                         hide-details
-                        :items="menu.firstCategory"
+                        :items="global.allCategorys"
+                        item-text="name"
+                        item-value="uid"
+                        no-data-text="无"
                         v-model="editedItem.firstCategory"
-                      ></v-combobox>
+                      >
+                        <template v-slot:item="data">
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              {{ data.item.name }}
+                            </v-list-item-title>
+                            <v-list-item-subtitle class="mt-1">
+                              扣点: {{ data.item.deduction }}
+                              运费险:
+                              {{ data.item.insurance }}
+                            </v-list-item-subtitle>
+                          </v-list-item-content>
+                        </template>
+                      </v-autocomplete>
                     </v-col>
                     <v-col cols="5">
                       <span class="text-body-2 text--secondary">店铺名*</span>
@@ -215,33 +231,31 @@
                         outlined
                         dense
                         hide-details
-                        :items="['手动', '聚水潭', '旺店通', '店管家', '其他']"
+                        :items="['手动', '聚水潭', '旺店通', '店管家']"
                         v-model="editedItem.transportWay"
                       ></v-combobox>
                     </v-col>
 
-                    <v-col :cols="editedItem.transportWay == '聚水潭' ? 8 : 8">
-                      <v-expand-x-transition>
-                        <div v-if="editedItem.transportWay == '聚水潭'">
-                          <span
-                            class="text-body-2 text--secondary text-no-wrap"
-                          >
-                            <!-- {{ editedItem.transportWay == "聚水潭" ? "聚水潭仓库*" : "聚水潭仓库" }} -->
-                            聚水潭仓库*
-                          </span>
-                          <v-text-field
-                            color="blue-grey lighten-1"
-                            outlined
-                            dense
-                            hide-details
-                            single-line
-                            v-model="editedItem.storehouse"
-                          ></v-text-field>
-                        </div>
-                      </v-expand-x-transition>
+                    <v-col cols="8" v-if="editedItem.transportWay == '聚水潭'">
+                      <span class="text-body-2 text--secondary text-no-wrap">
+                        <!-- {{ editedItem.transportWay == "聚水潭" ? "聚水潭仓库*" : "聚水潭仓库" }} -->
+                        聚水潭仓库*
+                      </span>
+                      <v-text-field
+                        color="blue-grey lighten-1"
+                        outlined
+                        dense
+                        hide-details
+                        single-line
+                        v-model="editedItem.storehouse"
+                      >
+                        <template v-slot:prepend-inner>
+                          <span style="margin-top:5px"> 聚水潭： </span>
+                        </template>
+                      </v-text-field>
                     </v-col>
 
-                    <v-col>
+                    <v-col :cols="editedItem.transportWay == '聚水潭' ? 12 : 8">
                       <span class="text-body-2 text--secondary">备注</span>
                       <v-text-field
                         color="blue-grey lighten-1"
@@ -278,28 +292,37 @@
           </v-toolbar>
         </template>
 
+        <template v-slot:[`header.actions`]="{ header }">
+          <div class="d-flex mr-11">
+            <v-spacer />
+            {{ header.text }}
+          </div>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn
-            small
-            depressed
-            outlined
-            color="green"
-            @click.stop="editItem(item)"
-            class="ml-1"
-          >
-            修改
-          </v-btn>
+          <div class="d-flex">
+            <v-spacer />
+            <v-btn
+              small
+              depressed
+              outlined
+              color="green"
+              @click.stop="editItem(item)"
+              class="ml-1"
+            >
+              修改
+            </v-btn>
 
-          <v-btn
-            small
-            depressed
-            outlined
-            color="red lighten-2"
-            @click.stop="deleteProduct(item)"
-            class="ml-1"
-          >
-            删除
-          </v-btn>
+            <v-btn
+              small
+              depressed
+              outlined
+              color="red lighten-2"
+              @click.stop="deleteProduct(item)"
+              class="ml-1"
+            >
+              删除
+            </v-btn>
+          </div>
         </template>
       </v-data-table>
     </v-card>

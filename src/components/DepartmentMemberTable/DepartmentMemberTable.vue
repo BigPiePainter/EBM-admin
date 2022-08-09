@@ -21,9 +21,9 @@ export default {
   data() {
     return {
       headers: [
-        { text: "部门员工姓名", value: "nick" },
+        { text: "商品录入权限", value: "nick" },
         { text: "账号", value: "username" },
-        { text: "所属部门", value: "calculatedPermission" },
+        { text: "账号下全部录入权限", value: "calculatedPermission" },
         { text: "联系方式", value: "contact" },
         { text: "备注", value: "note" },
       ],

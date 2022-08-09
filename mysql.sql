@@ -129,12 +129,25 @@ drop table if exists categorys;
 CREATE TABLE categorys (
   uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
   name VARCHAR(100) NOT NULL COMMENT '一级类目名称',
-  deduction DECIMAL(15, 5) COMMENT '品类扣点',
-  insurance DECIMAL(15, 5) COMMENT '品类运费险',
   note VARCHAR(5000) COMMENT '备注',
-  start_time DATE NOT NULL COMMENT '生效时间',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
   deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '一级类目';
+
+-- 一级类目历史表
+drop table if exists categoryhistorys;
+
+CREATE TABLE categoryhistorys (
+  uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
+  category_id BIGINT NOT NULL COMMENT '对应一级类目',
+  deduction DECIMAL(15, 5) COMMENT '品类扣点',
+  insurance DECIMAL(15, 5) COMMENT '品类运费险',
+  start_time DATE NOT NULL COMMENT '生效时间',
+  note VARCHAR(5000) COMMENT '备注',
+  create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
+  modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
+  deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
+  primary key (uid)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '一级类目历史';
