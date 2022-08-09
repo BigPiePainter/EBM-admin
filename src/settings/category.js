@@ -20,16 +20,34 @@ export const addCategory = data => {
 
 export const editCategory = data => {
     const args = {
-        url: '/category/edit',
+        url: '/category/modify',
         method: 'POST',
         data
     }
     return http.request(args)
 }
 
-export const deleteCategory = data => {
+export const addHistoryCategory = data => {
     const args = {
-        url: '/category/delete',
+        url: '/category/addHistory',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
+export const getHistoryCategory = data => {
+    const args = {
+        url: '/category/getHistorys',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
+export const editHistoryCategory = data => {
+    const args = {
+        url: '/category/modifyHistory',
         method: 'POST',
         data
     }

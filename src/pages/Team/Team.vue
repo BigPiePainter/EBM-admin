@@ -33,7 +33,7 @@
 
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
-          <div class="sub-table-container elevation-20 ml-2 mb-3">
+          <div style="width: 800px" class="sub-table-container elevation-20 ml-2 mb-3">
             <TeamMemberTable
               :teamInfo="item"
               :allUsers="allUsers"
