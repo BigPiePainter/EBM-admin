@@ -10,6 +10,11 @@
         :headers="categoryHeaders"
         :items="calculatedCategorys"
         disable-sort
+        :items-per-page="50"
+        :footer-props="{
+          'items-per-page-options': [10, 20, 50, 100],
+          'items-per-page-text': '每页显示条数',
+        }"
       >
         <template v-slot:top>
           <v-toolbar flat>
@@ -38,94 +43,104 @@
                   <v-row>
                     <span class="text-subtitle-1">类目信息</span>
                   </v-row>
-                  <v-col cols="12">
-                    <span class="text-body-2 text--secondary">名称*</span>
-                    <v-text-field
-                      outlined
-                      dense
-                      hide-details
-                      v-model="editedItem.name"
-                      :readonly="checkReadOnly"
-                    >
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" :hidden="newCate">
-                    <span class="text-body-2 text--secondary">品类扣点*</span>
-                    <v-text-field
-                      outlined
-                      dense
-                      hide-details
-                      v-model="editedItem.deduction"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" :hidden="newCate">
-                    <span class="text-body-2 text--secondary">品类运费险*</span>
-                    <v-text-field
-                      outlined
-                      dense
-                      hide-details
-                      v-model="editedItem.insurance"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" :hidden="newCate">
-                    <span class="text-body-2 text--secondary">
-                      选择生效日期*
-                    </span>
-                    <v-menu
-                      ref="menu"
-                      v-model="datePicker"
-                      :close-on-content-click="false"
-                      :return-value.sync="editedItem.startTime"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="editedItem.startTime"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          outlined
-                          dense
-                          hide-details
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="editedItem.startTime"
-                        no-title
-                        scrollable
-                        locale="zh-cn"
-                        first-day-of-week="1"
-                        :day-format="dayFormat"
+                  <v-row>
+                    <v-col cols="12">
+                      <span class="text-body-2 text--secondary">名称*</span>
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.name"
+                        :readonly="checkReadOnly"
                       >
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="datePicker = false">
-                          取消
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(editedItem.startTime)"
-                        >
-                          确定
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                  </v-col>
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="6" :hidden="newCate">
+                      <span class="text-body-2 text--secondary">品类扣点*</span>
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.deduction"
+                      ></v-text-field>
+                    </v-col>
 
-                  <v-col cols="12">
-                    <span class="text-body-2 text--secondary">备注</span>
-                    <v-text-field
-                      outlined
-                      dense
-                      hide-details
-                      v-model="editedItem.note"
-                    >
-                    </v-text-field>
-                  </v-col>
+                    <v-col cols="6" :hidden="newCate">
+                      <span class="text-body-2 text--secondary"
+                        >品类运费险*</span
+                      >
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.insurance"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" :hidden="newCate">
+                      <span class="text-body-2 text--secondary">
+                        选择生效日期*
+                      </span>
+                      <v-menu
+                        ref="menu"
+                        v-model="datePicker"
+                        :close-on-content-click="false"
+                        :return-value.sync="editedItem.startTime"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="editedItem.startTime"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            outlined
+                            dense
+                            hide-details
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="editedItem.startTime"
+                          no-title
+                          scrollable
+                          locale="zh-cn"
+                          first-day-of-week="1"
+                          :day-format="dayFormat"
+                        >
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="datePicker = false"
+                          >
+                            取消
+                          </v-btn>
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.menu.save(editedItem.startTime)"
+                          >
+                            确定
+                          </v-btn>
+                        </v-date-picker>
+                      </v-menu>
+                    </v-col>
+
+                    <v-col cols="12">
+                      <span class="text-body-2 text--secondary">备注</span>
+                      <v-text-field
+                        outlined
+                        dense
+                        hide-details
+                        v-model="editedItem.note"
+                      >
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
                 </v-col>
 
                 <!-- until there is dialog of new input-->
@@ -150,33 +165,50 @@
             </v-dialog>
           </v-toolbar>
         </template>
+        <template v-slot:[`header.actions`]="{ header }">
+          <div class="d-flex mr-11">
+            <v-spacer />
+            {{ header.text }}
+          </div>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn
-            small
-            depressed
-            outlined
-            color="green"
-            @click="editButton(item)"
-            class="ml-1"
-          >
-            变动
-          </v-btn>
+          <div class="d-flex">
+            <v-spacer />
+            <v-btn
+              small
+              depressed
+              outlined
+              color="green"
+              @click="editButton(item)"
+              class="ml-1"
+            >
+              变动
+            </v-btn>
 
-          <v-btn
-            small
-            depressed
-            outlined
-            color="red lighten-2"
-            @click="deleteButton(item)"
-            class="ml-1"
-          >
-            删除
-          </v-btn>
+            <v-btn
+              small
+              depressed
+              outlined
+              color="red lighten-2"
+              @click="deleteButton(item)"
+              class="ml-1"
+            >
+              删除
+            </v-btn>
+          </div>
         </template>
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length" class="px-0">
             <v-card tile elevation="0">
               <v-data-table
+                :hide-default-footer="
+                  allCategoryHistorys.filter((i) => item.uid == i.categoryId).length <= 10
+                "
+                :items-per-page="10"
+                :footer-props="{
+                  'items-per-page-options': [10, 20, 50, 100],
+                  'items-per-page-text': '每页显示条数',
+                }"
                 :headers="subHeaders"
                 :items="
                   allCategoryHistorys.filter((i) => item.uid == i.categoryId)
@@ -401,7 +433,7 @@ export default {
     //----------------------------------------------------------------------------------------
     deleteButton(item) {
       this.deleteDialog = true;
-      item
+      item;
     },
     deleteClose() {
       this.deleteDialog = false;
