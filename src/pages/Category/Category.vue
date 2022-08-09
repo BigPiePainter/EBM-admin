@@ -159,7 +159,7 @@
             @click="editButton(item)"
             class="ml-1"
           >
-            修改
+            变动
           </v-btn>
 
           <v-btn
@@ -167,24 +167,11 @@
             depressed
             outlined
             color="red lighten-2"
-            @click="deleteButton"
+            @click="deleteButton(item)"
             class="ml-1"
           >
             删除
           </v-btn>
-          <v-dialog v-model="deleteDialog" max-width="190px">
-            <v-card class="pl-2 pt-2">
-              是否确定删除此条类目？
-              <v-card-actions>
-                <v-btn color="blue darken-1" text @click="deleteClose">
-                  取消
-                </v-btn>
-                <v-btn color="blue darken-1" text @click="deleteConfirm">
-                  确认
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
         </template>
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length" class="px-0">
@@ -201,6 +188,18 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <v-dialog v-model="deleteDialog" max-width="190px">
+      <v-card class="pl-2 pt-2">
+        是否确定删除此条类目？
+        <v-card-actions>
+          <v-btn color="blue darken-1" text @click="deleteClose"> 取消 </v-btn>
+          <v-btn color="blue darken-1" text @click="deleteConfirm">
+            确认
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -400,8 +399,9 @@ export default {
       this.dialog = false;
     },
     //----------------------------------------------------------------------------------------
-    deleteButton() {
+    deleteButton(item) {
       this.deleteDialog = true;
+      item
     },
     deleteClose() {
       this.deleteDialog = false;
