@@ -17,6 +17,16 @@
           'items-per-page-text': '每页显示条数',
         }"
       >
+        <template v-slot:[`item.deduction`]="{ item }">
+          {{
+            item.deduction != "无数据" ? item.deduction + " %" : item.deduction
+          }}
+        </template>
+        <template v-slot:[`item.insurance`]="{ item }">
+          {{
+            item.insurance != "无数据" ? item.insurance + " ￥" : item.deduction
+          }}
+        </template>
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>一级类目管理</v-toolbar-title>
@@ -110,8 +120,10 @@
                     <v-col cols="6">
                       <span class="text-body-2 text--secondary">品类扣点*</span>
                       <v-text-field
+                        suffix="%"
                         outlined
                         dense
+                        type="number"
                         hide-details
                         v-model="editedItem.deduction"
                       ></v-text-field>
@@ -122,6 +134,8 @@
                         >品类运费险*</span
                       >
                       <v-text-field
+                        suffix="￥"
+                        type="number"
                         outlined
                         dense
                         hide-details
@@ -225,17 +239,7 @@
           <div class="d-flex">
             <v-spacer />
             <v-btn
-            width="60px"
-              small
-              depressed
-              outlined
-              color="green"
-              @click="editNameButton(item)"
-              class="ml-1"
-            >
-              修改名称
-            </v-btn>
-            <v-btn
+              width="60px"
               small
               depressed
               outlined
@@ -243,60 +247,65 @@
               @click="editButton(item)"
               class="ml-1"
             >
-              更新
+              更新信息
             </v-btn>
-            
+            <v-btn
+              width="60px"
+              small
+              depressed
+              outlined
+              color="#A9A9A9"
+              @click="editNameButton(item)"
+              class="ml-1"
+            >
+              修改名称
+            </v-btn>
           </div>
         </template>
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length" class="pa-0">
-
-              <div class="sub-table elevation-20 ml-2 mb-3 mr-12">
-                <v-card tile elevation="0" max-width="750px">
-                  <v-data-table
-                    disable-sort
-                    :hide-default-footer="
-                      allCategoryHistorys.filter(
-                        (i) => item.uid == i.categoryId
-                      ).length <= 10
-                    "
-                    :items-per-page="10"
-                    :footer-props="{
-                      'items-per-page-options': [10, 20, 50, 100],
-                      'items-per-page-text': '每页显示条数',
-                    }"
-                    :headers="subHeaders"
-                    :items="
-                      allCategoryHistorys.filter(
-                        (i) => item.uid == i.categoryId
-                      )
-                    "
-                  >
-                    <template v-slot:[`header.action`]="{ header }">
-                      <div class="d-flex mr-11">
-                        <v-spacer />
-                        {{ header.text }}
-                      </div>
-                    </template>
-                    <template v-slot:[`item.action`]="{ item }">
-                      <div class="d-flex">
-                        <v-spacer />
-                        <v-btn
-                          small
-                          depressed
-                          outlined
-                          color="green"
-                          @click="subEditButton(item)"
-                          class="ml-1"
-                        >
-                          修改
-                        </v-btn>
-                      </div>
-                    </template>
-                  </v-data-table>
-                </v-card>
-              </div>
-
+            <div class="sub-table elevation-20 ml-2 mb-3 mr-12">
+              <v-card tile elevation="0" max-width="750px">
+                <v-data-table
+                  disable-sort
+                  :hide-default-footer="
+                    allCategoryHistorys.filter((i) => item.uid == i.categoryId)
+                      .length <= 10
+                  "
+                  :items-per-page="10"
+                  :footer-props="{
+                    'items-per-page-options': [10, 20, 50, 100],
+                    'items-per-page-text': '每页显示条数',
+                  }"
+                  :headers="subHeaders"
+                  :items="
+                    allCategoryHistorys.filter((i) => item.uid == i.categoryId)
+                  "
+                >
+                  <template v-slot:[`header.action`]="{ header }">
+                    <div class="d-flex mr-11">
+                      <v-spacer />
+                      {{ header.text }}
+                    </div>
+                  </template>
+                  <template v-slot:[`item.action`]="{ item }">
+                    <div class="d-flex">
+                      <v-spacer />
+                      <v-btn
+                        small
+                        depressed
+                        outlined
+                        color="green"
+                        @click="subEditButton(item)"
+                        class="ml-1"
+                      >
+                        修改
+                      </v-btn>
+                    </div>
+                  </template>
+                </v-data-table>
+              </v-card>
+            </div>
           </td>
         </template>
       </v-data-table>
@@ -456,7 +465,7 @@ export default {
       this.checkReadOnly = true;
       this.dialog = true;
     },
-    editNameButton(item){
+    editNameButton(item) {
       this.mode = 4;
       this.editedItem = Object.assign({}, item);
       this.newDialog = true;
