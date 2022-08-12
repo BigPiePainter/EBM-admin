@@ -52,6 +52,27 @@ CREATE TABLE products (
   index index_owner(owner)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '商品信息';
 
+
+-- 商品内部归属表
+drop table if exists ascriptions;
+
+CREATE TABLE ascriptions (
+  uid BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '',
+  product BIGINT NOT NULL COMMENT '商品ID',
+  owner BIGINT COMMENT '持品人',
+  department BIGINT COMMENT '事业部',
+  team BIGINT COMMENT '组别',
+  start_time DATE NOT NULL COMMENT '生效时间',
+  note VARCHAR(5000) COMMENT '备注',
+  create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
+  modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
+  deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
+  primary key (uid),
+  index index_product(product)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '商品内部归属表';
+
+
+-- sku表
 drop table if exists skus;
 
 CREATE TABLE skus (
@@ -151,3 +172,80 @@ CREATE TABLE categoryhistorys (
   deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
   primary key (uid)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '一级类目历史';
+
+
+
+--订单数据库-临时
+drop table if exists refunds;
+
+CREATE TABLE refunds (
+  uid BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '退款单编号',
+  order_id BIGINT UNSIGNED NOT NULL COMMENT '订单编号',
+  product_id BIGINT UNSIGNED NOT NULL COMMENT '商品ID',
+  note VARCHAR(50) NOT NULL COMMENT '退款类型',
+  order_payment_time timestamp NOT NULL COMMENT '订单付款时间',
+  order_setup_time timestamp NOT NULL COMMENT '订单创建时间',
+  title VARCHAR(1000) NOT NULL COMMENT '宝贝标题',
+  transaction_amount DECIMAL(15, 5) UNSIGNED NOT NULL COMMENT '交易金额',
+  refund_amount DECIMAL(15, 5) UNSIGNED NOT NULL COMMENT '买家退款金额',
+  logistic_status VARCHAR(50) NOT NULL COMMENT '发货状态',
+  logistic_info VARCHAR(1000) COMMENT '发货物流信息',
+  item_return VARCHAR(10) NOT NULL COMMENT '是否需要退货',
+  refund_setup_time timestamp NOT NULL COMMENT '退款申请时间',
+  refund_status VARCHAR(50) NOT NULL COMMENT '退款状态',
+  customer_service_status VARCHAR(50) COMMENT '客服介入状态',
+  seller_address VARCHAR(1000) COMMENT '卖家退货地址',
+  express_number VARCHAR(1000) COMMENT '退货物流单号',
+  express_company VARCHAR(100) COMMENT '退货物流公司',
+  reason VARCHAR(100) COMMENT '买家退款原因',
+  end_time timestamp COMMENT '完结时间',
+  operator VARCHAR(100) COMMENT '退款操作人',
+  seller_note VARCHAR(5000) COMMENT '卖家备注',
+  shop_name VARCHAR(100) COMMENT '店铺',
+  primary key (uid)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '订单';
+
+
+
+--退单/退款申请数据库-临时
+drop table if exists refunds;
+
+CREATE TABLE refunds (
+  uid BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '退款单编号',
+  order_id BIGINT UNSIGNED NOT NULL COMMENT '订单编号',
+  product_id BIGINT UNSIGNED NOT NULL COMMENT '商品ID',
+  note VARCHAR(50) NOT NULL COMMENT '退款类型',
+  order_payment_time timestamp NOT NULL COMMENT '订单付款时间',
+  order_setup_time timestamp NOT NULL COMMENT '订单创建时间',
+  title VARCHAR(1000) NOT NULL COMMENT '宝贝标题',
+  transaction_amount DECIMAL(15, 5) UNSIGNED NOT NULL COMMENT '交易金额',
+  refund_amount DECIMAL(15, 5) UNSIGNED NOT NULL COMMENT '买家退款金额',
+  logistic_status VARCHAR(50) NOT NULL COMMENT '发货状态',
+  logistic_info VARCHAR(1000) COMMENT '发货物流信息',
+  item_return VARCHAR(10) NOT NULL COMMENT '是否需要退货',
+  refund_setup_time timestamp NOT NULL COMMENT '退款申请时间',
+  refund_status VARCHAR(50) NOT NULL COMMENT '退款状态',
+  customer_service_status VARCHAR(50) COMMENT '客服介入状态',
+  seller_address VARCHAR(1000) COMMENT '卖家退货地址',
+  express_number VARCHAR(1000) COMMENT '退货物流单号',
+  express_company VARCHAR(100) COMMENT '退货物流公司',
+  reason VARCHAR(100) COMMENT '买家退款原因',
+  end_time timestamp COMMENT '完结时间',
+  operator VARCHAR(100) COMMENT '退款操作人',
+  seller_note VARCHAR(5000) COMMENT '卖家备注',
+  shop_name VARCHAR(100) COMMENT '店铺',
+  primary key (uid)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '退单/退款申请';
+
+
+
+
+--订单表/数据汇总表
+drop table if exists daily_reports;
+CREATE TABLE daily_reports (
+  DATE NOT NULL COMMENT '生效时间',
+
+  uid BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '退款单编号',
+  
+  primary key (uid)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '退单/退款申请';

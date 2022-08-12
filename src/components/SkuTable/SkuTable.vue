@@ -11,6 +11,9 @@
         <v-tab>
           <span class="text-body-1">厂家信息</span>
         </v-tab>
+        <v-tab>
+          <span class="text-body-1">内部归属</span>
+        </v-tab>
         <v-toolbar flat v-if="tabs == 0" :key="1">
           <v-spacer />
           <v-switch
@@ -31,7 +34,7 @@
 
           <SkuUpload :product="productInfo" />
         </v-toolbar>
-        <v-toolbar flat v-else :key="2">
+        <v-toolbar flat v-else-if="tabs == 1" :key="2">
           <v-spacer />
           <v-btn small color="primary" @click="addManufacturerButton">
             新增厂家信息
@@ -45,10 +48,10 @@
               loading-text="加载中... 请稍后"
               no-data-text="空"
               :headers="headers"
-              :items="check ? validSkuInfo : skuInfo"
+              :items="check ? validSkuInfos : skuInfos"
               :loading="loading"
               :hide-default-footer="
-                (check ? validSkuInfo : skuInfo).length <= 10
+                (check ? validSkuInfos : skuInfos).length <= 10
               "
               :items-per-page="10"
               :footer-props="{
@@ -62,7 +65,7 @@
                 </span>
               </template>
               <template v-slot:[`header.skuCost`]="{ header }">
-               <span class="mr-2">
+                <span class="mr-2">
                   {{ header.text }}
                 </span>
               </template>
@@ -94,9 +97,9 @@
               loading-text="加载中... 请稍后"
               no-data-text="空"
               :headers="manufacturerHeaders"
-              :items="manufacturerInfo"
+              :items="manufacturerInfos"
               :loading="loading"
-              :hide-default-footer="manufacturerInfo.length <= 10"
+              :hide-default-footer="manufacturerInfos.length <= 10"
               :items-per-page="10"
               :footer-props="{
                 'items-per-page-options': [10, 20, 50, 100],
@@ -140,12 +143,58 @@
               </template>
             </v-data-table>
           </v-tab-item>
+          <v-tab-item>
+            <v-data-table
+              calculate-widths
+              loading-text="加载中... 请稍后"
+              no-data-text="空"
+              :headers="ascriptionHeaders"
+              :items="ascriptionInfos"
+              :loading="loading"
+              :sort-by="['startTime']"
+              :sort-desc="[true]"
+              :hide-default-footer="ascriptionInfos.length <= 10"
+              :items-per-page="10"
+              :footer-props="{
+                'items-per-page-options': [10, 20, 50, 100],
+                'items-per-page-text': '每页显示条数',
+              }"
+            >
+              <template v-slot:[`item.department`]="{ item }">
+                {{ global.departmentIdToName[item.department] }}
+              </template>
+              <template v-slot:[`item.team`]="{ item }">
+                {{ global.teamIdToName[item.team] }}
+              </template>
+              <template v-slot:[`item.owner`]="{ item }">
+                {{ global.userIdToNick[item.owner] }}
+              </template>
+              <template v-slot:[`item.startTime`]="{ item }">
+                <!-- {{ item.startTime == 0 ? "-" : parseDate(item.startTime) }} -->
+                {{ parseDate(item.startTime) }}
+              </template>
+
+              <template v-slot:[`item.actions`]="{ item }">
+                <v-btn
+                  small
+                  depressed
+                  outlined
+                  color="red lighten-2"
+                  @click="deleteManufacturerButton(item)"
+                  class="ml-1"
+                >
+                  <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
+                  删除
+                </v-btn>
+              </template>
+            </v-data-table>
+          </v-tab-item>
         </v-tabs-items>
       </v-expand-transition>
     </div>
     <div v-else>
       <v-progress-circular
-        class="ml-10 mb-2"
+        class="ml-10 mb-2 mt-2"
         size="25"
         width="3"
         indeterminate
@@ -466,6 +515,8 @@ import TableKV from "@/components/TableKV/TableKV";
 import { loadSkus } from "@/settings/sku";
 import { deleteSku } from "@/settings/sku";
 
+import { loadAscriptions } from "@/settings/ascription";
+
 import { loadManufacturers } from "@/settings/manufacturer";
 import { addManufacturer } from "@/settings/manufacturer";
 import { deleteManufacturer } from "@/settings/manufacturer";
@@ -485,7 +536,7 @@ export default {
   },
 
   props: {
-    //skuInfo: Array,
+    //skuInfos: Array,
     productInfo: Object,
   },
 
@@ -528,8 +579,8 @@ export default {
         { text: "创建时间", align: "start", value: "calculatedCreateTime" },
         { text: "操作", align: "start", value: "actions" },
       ],
-      skuInfo: [],
-      validSkuInfo: [],
+      skuInfos: [],
+      validSkuInfos: [],
 
       manufacturerHeaders: [
         { text: "厂家名", align: "start", value: "manufacturerName" },
@@ -585,13 +636,33 @@ export default {
         { text: "备注", align: "start", value: "note" },
         { text: "操作", align: "start", value: "actions" },
       ],
-      manufacturerInfo: [],
+      manufacturerInfos: [],
+
+      ascriptionHeaders: [
+        { text: "事业部", align: "start", value: "department" },
+        { text: "组别", align: "start", value: "team" },
+        {
+          text: "持品人",
+          align: "start",
+          value: "owner",
+        },
+        {
+          text: "生效时间",
+          align: "start",
+          value: "startTime",
+        },
+        { text: "备注", align: "start", value: "note" },
+        { text: "操作", align: "start", value: "actions" },
+      ],
+      ascriptionInfos: [],
 
       datePicker: false,
 
       loading: false,
 
       check: true,
+
+      done: [false, false, false],
     };
   },
 
@@ -612,13 +683,18 @@ export default {
   },
 
   methods: {
+    parseDate(date) {
+      return javaUTCDateToString(date);
+    },
     dayFormat(date) {
       return Number(date.split("-")[2]);
     },
 
-    initDone() {
-      console.log("check done");
-      if (!this.skuDone || !this.manufacturerDone) return;
+    requestDone(i) {
+      this.done[i] = true;
+      console.log("done");
+      console.log(this.done);
+      if (this.done.find((i) => !i) == false) return;
 
       console.log("显示");
       this.loading = false;
@@ -640,11 +716,10 @@ export default {
       loadSkus({ productId: this.productInfo.id })
         .then((res) => {
           console.log(res);
-          this.skuInfo = res.data.skus;
+          this.skuInfos = res.data.skus;
           //数据处理
           this.dataAnalyze();
-          this.skuDone = true;
-          this.initDone();
+          this.requestDone(0);
         })
         .catch(() => {
           this.loading = false;
@@ -652,11 +727,19 @@ export default {
       loadManufacturers({ productId: this.productInfo.id })
         .then((res) => {
           console.log(res);
-          this.manufacturerInfo = res.data.manufacturers;
+          this.manufacturerInfos = res.data.manufacturers;
           this.dataAnalyzeManufacturer();
-          this.manufacturerDone = true;
-          console.log(this.manufacturerInfo);
-          this.initDone();
+          console.log(this.manufacturerInfos);
+          this.requestDone(1);
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+      loadAscriptions({ productId: this.productInfo.id })
+        .then((res) => {
+          console.log(res);
+          this.ascriptionInfos = res.data.ascriptions;
+          this.requestDone(2);
         })
         .catch(() => {
           this.loading = false;
@@ -664,13 +747,13 @@ export default {
     },
 
     dataAnalyze() {
-      this.skuInfo.forEach((sku) => {
+      this.skuInfos.forEach((sku) => {
         sku.calculatedStartTime = javaUTCDateToString(sku.startTime);
         sku.calculatedCreateTime = javaDateTimeToString(sku.createTime);
       });
 
       var skuId = {};
-      this.skuInfo.forEach((sku) => {
+      this.skuInfos.forEach((sku) => {
         if (skuId[sku.skuId]) {
           skuId[sku.skuId].count++;
           if (skuId[sku.skuId].sku.startTime < sku.startTime) {
@@ -686,12 +769,12 @@ export default {
       });
       console.log(skuId);
 
-      this.validSkuInfo = [];
-      for (let id in skuId) this.validSkuInfo.push(skuId[id].sku);
+      this.validSkuInfos = [];
+      for (let id in skuId) this.validSkuInfos.push(skuId[id].sku);
     },
 
     dataAnalyzeManufacturer() {
-      this.manufacturerInfo.forEach((manufacturer) => {
+      this.manufacturerInfos.forEach((manufacturer) => {
         console.log(manufacturer);
         manufacturer.calculatedStartTime = javaUTCDateToString(
           manufacturer.startTime
@@ -707,7 +790,7 @@ export default {
 
     download() {
       var skuInfoCopy = [];
-      for (let sku of this.skuInfo) {
+      for (let sku of this.skuInfos) {
         console.log(sku);
         skuInfoCopy.push({
           productId: sku.productId,
@@ -721,7 +804,7 @@ export default {
 
       const XLSX = require("xlsx");
       console.log(skuInfoCopy);
-      const raw_data = skuInfoCopy; //this.check ? this.validSkuInfo : this.skuInfo;
+      const raw_data = skuInfoCopy; //this.check ? this.validSkuInfos : this.skuInfos;
       /*
       const prez = raw_data.filter((row) =>
         row.terms.some((term) => term.type === "prez")

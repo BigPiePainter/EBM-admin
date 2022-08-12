@@ -73,222 +73,9 @@
 
             <v-spacer></v-spacer>
 
-            <v-dialog v-model="dialog" max-width="550px">
-              <!--new item buttom-->
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  small
-                  depressed
-                  color="primary"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="addMode"
-                >
-                  新增商品信息
-                </v-btn>
-              </template>
-
-              <v-card>
-                <v-col class="px-10 py-10 product-dialog">
-                  <v-row>
-                    <span class="text-subtitle-1">商品信息</span>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="5">
-                      <span class="text-body-2 text--secondary">商品ID*</span>
-                      <v-text-field
-                        color="blue-grey lighten-1"
-                        :readonly="checkReadOnly"
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.id"
-                      >
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col cols="7">
-                      <span class="text-body-2 text--secondary">商品名*</span>
-                      <v-text-field
-                        color="blue-grey lighten-1"
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.productName"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="7">
-                      <span class="text-body-2 text--secondary">一级类目*</span>
-                      <v-autocomplete
-                        color="blue-grey lighten-1"
-                        outlined
-                        dense
-                        hide-details
-                        :items="global.allCategorys"
-                        item-text="name"
-                        item-value="uid"
-                        no-data-text="无"
-                        v-model="editedItem.firstCategory"
-                      >
-                        <template v-slot:item="data">
-                          <v-list-item-content>
-                            <v-list-item-title>
-                              {{ data.item.name }}
-                            </v-list-item-title>
-                            <v-list-item-subtitle class="mt-1">
-                              扣点: {{ data.item.deduction }}
-                              运费险:
-                              {{ data.item.insurance }}
-                            </v-list-item-subtitle>
-                          </v-list-item-content>
-                        </template>
-                      </v-autocomplete>
-                    </v-col>
-                    <v-col cols="5">
-                      <span class="text-body-2 text--secondary">店铺名*</span>
-                      <v-combobox
-                        color="blue-grey lighten-1"
-                        outlined
-                        dense
-                        hide-details
-                        :items="menu.shopName"
-                        v-model="editedItem.shopName"
-                      ></v-combobox>
-                    </v-col>
-                  </v-row>
-                  <v-divider class="my-8" />
-                  <v-row>
-                    <span class="text-subtitle-1">内部归属</span>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="5">
-                      <span class="text-body-2 text--secondary">事业部*</span>
-                      <v-autocomplete
-                        color="blue-grey lighten-1"
-                        outlined
-                        dense
-                        :items="
-                          global.allDepartments.filter((d) =>
-                            global.user.permission.a.d.find((i) => i == d.uid)
-                          )
-                        "
-                        no-data-text="无"
-                        v-model="editedItem.department"
-                        menu-props="auto"
-                        hide-details
-                        single-line
-                        item-text="name"
-                        item-value="uid"
-                      ></v-autocomplete>
-                    </v-col>
-
-                    <v-col cols="4">
-                      <span class="text-body-2 text--secondary">组别*</span>
-                      <v-autocomplete
-                        color="blue-grey lighten-1"
-                        outlined
-                        dense
-                        v-model="editedItem.team"
-                        :items="
-                          global.allTeams.filter((g) =>
-                            global.user.permission.a.g.find((i) => i == g.uid)
-                          )
-                        "
-                        no-data-text="无"
-                        menu-props="auto"
-                        hide-details
-                        item-text="name"
-                        item-value="uid"
-                        single-line
-                      ></v-autocomplete>
-                    </v-col>
-
-                    <v-col cols="3">
-                      <span class="text-body-2 text--secondary">持品人*</span>
-                      <v-autocomplete
-                        outlined
-                        dense
-                        color="blue-grey lighten-1"
-                        v-model="editedItem.owner"
-                        :items="subUsers"
-                        no-data-text="无"
-                        menu-props="auto"
-                        hide-details
-                        single-line
-                        item-text="nick"
-                        item-value="uid"
-                      ></v-autocomplete>
-                    </v-col>
-                  </v-row>
-                  <v-divider class="my-8" />
-                  <v-row>
-                    <v-col cols="4">
-                      <span class="text-body-2 text--secondary">发货方式</span>
-                      <v-combobox
-                        color="blue-grey lighten-1"
-                        outlined
-                        dense
-                        hide-details
-                        :items="['手动', '聚水潭', '旺店通', '店管家']"
-                        v-model="editedItem.transportWay"
-                      ></v-combobox>
-                    </v-col>
-
-                    <v-col cols="8" v-if="editedItem.transportWay == '聚水潭'">
-                      <span class="text-body-2 text--secondary text-no-wrap">
-                        <!-- {{ editedItem.transportWay == "聚水潭" ? "聚水潭仓库*" : "聚水潭仓库" }} -->
-                        聚水潭仓库*
-                      </span>
-                      <v-text-field
-                        color="blue-grey lighten-1"
-                        outlined
-                        dense
-                        hide-details
-                        single-line
-                        v-model="editedItem.storehouse"
-                      >
-                        <template v-slot:prepend-inner>
-                          <span style="margin-top:5px"> 聚水潭： </span>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col :cols="editedItem.transportWay == '聚水潭' ? 12 : 8">
-                      <span class="text-body-2 text--secondary">备注</span>
-                      <v-text-field
-                        color="blue-grey lighten-1"
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.note"
-                      >
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-col>
-
-                <!-- until there is dialog of new input-->
-                <v-card-actions>
-                  <p class="caption font-italic font-weight-thin">
-                    带*为必填项目
-                  </p>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="dialog = false">
-                    取消
-                  </v-btn>
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="save"
-                    :disabled="isEmp"
-                  >
-                    保存
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            <v-btn small depressed color="primary" @click="addButton">
+              新增商品信息
+            </v-btn>
           </v-toolbar>
         </template>
 
@@ -306,7 +93,7 @@
               depressed
               outlined
               color="green"
-              @click.stop="editItem(item)"
+              @click.stop="editButton(item)"
               class="ml-1"
             >
               修改
@@ -326,6 +113,309 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <!-- 商品信息Dialog -->
+    <v-dialog v-model="productInfoDialog" max-width="550px">
+      <v-card>
+        <v-col class="px-10 py-10 product-dialog">
+          <v-row>
+            <span class="text-subtitle-1">商品信息</span>
+          </v-row>
+          <v-row>
+            <v-col cols="5">
+              <span class="text-body-2 text--secondary">商品ID*</span>
+              <v-text-field
+                color="blue-grey lighten-1"
+                :readonly="mode == 2"
+                outlined
+                dense
+                hide-details
+                v-model="editedItem.id"
+              >
+              </v-text-field>
+            </v-col>
+
+            <v-col cols="7">
+              <span class="text-body-2 text--secondary">商品名*</span>
+              <v-text-field
+                color="blue-grey lighten-1"
+                outlined
+                dense
+                hide-details
+                v-model="editedItem.productName"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="7">
+              <span class="text-body-2 text--secondary">一级类目*</span>
+              <v-autocomplete
+                color="blue-grey lighten-1"
+                outlined
+                dense
+                hide-details
+                :items="global.allCategorys"
+                item-text="name"
+                item-value="uid"
+                no-data-text="无"
+                v-model="editedItem.firstCategory"
+              >
+                <template v-slot:item="data">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ data.item.name }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="mt-1">
+                      扣点: {{ data.item.deduction }}
+                      运费险:
+                      {{ data.item.insurance }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </template>
+              </v-autocomplete>
+            </v-col>
+            <v-col cols="5">
+              <span class="text-body-2 text--secondary">店铺名*</span>
+              <v-combobox
+                color="blue-grey lighten-1"
+                outlined
+                dense
+                hide-details
+                :items="menu.shopName"
+                v-model="editedItem.shopName"
+              ></v-combobox>
+            </v-col>
+          </v-row>
+          <v-divider class="my-8" />
+          <v-row>
+            <span class="text-subtitle-1">内部归属</span>
+          </v-row>
+          <v-row>
+            <v-col cols="5">
+              <span class="text-body-2 text--secondary">事业部*</span>
+              <v-autocomplete
+                color="blue-grey lighten-1"
+                outlined
+                dense
+                :items="
+                  global.allDepartments.filter((d) =>
+                    global.user.permission.a.d.find((i) => i == d.uid)
+                  )
+                "
+                no-data-text="无"
+                v-model="editedItem.department"
+                menu-props="auto"
+                hide-details
+                single-line
+                item-text="name"
+                item-value="uid"
+              ></v-autocomplete>
+            </v-col>
+
+            <v-col cols="4">
+              <span class="text-body-2 text--secondary">组别*</span>
+              <v-autocomplete
+                color="blue-grey lighten-1"
+                outlined
+                dense
+                v-model="editedItem.team"
+                :items="
+                  global.allTeams.filter((g) =>
+                    global.user.permission.a.g.find((i) => i == g.uid)
+                  )
+                "
+                no-data-text="无"
+                menu-props="auto"
+                hide-details
+                item-text="name"
+                item-value="uid"
+                single-line
+              ></v-autocomplete>
+            </v-col>
+
+            <v-col cols="3">
+              <span class="text-body-2 text--secondary">持品人*</span>
+              <v-autocomplete
+                outlined
+                dense
+                color="blue-grey lighten-1"
+                v-model="editedItem.owner"
+                :items="subUsers"
+                no-data-text="无"
+                menu-props="auto"
+                hide-details
+                single-line
+                item-text="nick"
+                item-value="uid"
+              ></v-autocomplete>
+            </v-col>
+          </v-row>
+          <v-divider class="my-8" />
+          <v-row>
+            <v-col cols="4">
+              <span class="text-body-2 text--secondary">发货方式</span>
+              <v-combobox
+                color="blue-grey lighten-1"
+                outlined
+                dense
+                hide-details
+                :items="['手动', '聚水潭', '旺店通', '店管家']"
+                v-model="editedItem.transportWay"
+              ></v-combobox>
+            </v-col>
+
+            <v-col cols="8" v-if="editedItem.transportWay == '聚水潭'">
+              <span class="text-body-2 text--secondary text-no-wrap">
+                <!-- {{ editedItem.transportWay == "聚水潭" ? "聚水潭仓库*" : "聚水潭仓库" }} -->
+                聚水潭仓库*
+              </span>
+              <v-text-field
+                color="blue-grey lighten-1"
+                outlined
+                dense
+                hide-details
+                single-line
+                v-model="editedItem.storehouse"
+              >
+                <template v-slot:prepend-inner>
+                  <span style="margin-top: 5px"> 聚水潭： </span>
+                </template>
+              </v-text-field>
+            </v-col>
+
+            <v-col :cols="editedItem.transportWay == '聚水潭' ? 12 : 8">
+              <span class="text-body-2 text--secondary">备注</span>
+              <v-text-field
+                color="blue-grey lighten-1"
+                outlined
+                dense
+                hide-details
+                v-model="editedItem.note"
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-col>
+
+        <v-card-actions>
+          <p class="caption font-italic font-weight-thin">带*为必填项目</p>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="productInfoDialog = false">
+            取消
+          </v-btn>
+          <v-btn color="blue darken-1" text @click="save" :disabled="isEmp">
+            保存
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- 归属变化Dialog -->
+    <v-dialog v-model="ascriptionChangeDialog" max-width="370px">
+      <v-card>
+        <v-card-title>
+          <span class="text-subtitle-1">商品归属发生变化, 请指定变化时间</span>
+        </v-card-title>
+
+        <div class="my-1">
+          <v-data-table
+            :headers="[
+              { align: 'start', value: 'a' },
+              { align: 'start', value: 'b', text: '旧数据' },
+              { align: 'start', value: 'c' },
+              { align: 'start', value: 'd', text: '新数据' },
+            ]"
+            :items="[
+              {
+                b: global.departmentIdToName[oldItem.department],
+                c: '👉👉👉',
+                d: global.departmentIdToName[editedItem.department],
+              },
+              {
+                b: global.teamIdToName[oldItem.team],
+                c: '👉👉👉',
+                d: global.teamIdToName[editedItem.team],
+              },
+              {
+                b: global.userIdToNick[oldItem.owner],
+                c: '👉👉👉',
+                d: global.userIdToNick[editedItem.owner],
+              },
+            ]"
+            
+            hide-default-footer
+            disable-sort
+          >
+          </v-data-table>
+        </div>
+        <v-col class="px-8 pt-3 pb-2 product-dialog">
+          <v-row>
+            <v-col>
+              <span class="text-body-2 text--secondary"> 选择变化日期* </span>
+              <v-menu
+                ref="menu"
+                v-model="datePicker"
+                :close-on-content-click="false"
+                :return-value.sync="editedItem.startTime"
+                offset-y
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="editedItem.startTime"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    dense
+                    hide-details
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="editedItem.startTime"
+                  no-title
+                  scrollable
+                  locale="zh-cn"
+                  first-day-of-week="1"
+                  :day-format="dayFormat"
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="datePicker = false">
+                    取消
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.menu.save(editedItem.startTime)"
+                  >
+                    确定
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+        </v-col>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="ascriptionChangeDialog = false"
+          >
+            取消
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="ascriptionSave"
+            :disabled="!editedItem.startTime"
+          >
+            保存
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <!-- 删除Dialog -->
     <v-dialog v-model="deleteDialog" max-width="450px">
@@ -400,7 +490,6 @@ export default {
   },
   data: () => ({
     mode: 0,
-    checkReadOnly: "",
 
     //筛选菜单
     menu: {}, //类别可选项
@@ -427,7 +516,7 @@ export default {
     totalProducts: 50,
     options: {},
 
-    dialog: false,
+    productInfoDialog: false,
 
     deleteDialog: false, //删除弹框
     deleteItem: {},
@@ -461,10 +550,14 @@ export default {
       { text: "操作", value: "actions" },
     ],
 
+    oldItem: {},
     editedItem: {},
 
     subUsers: [],
     idToNick: {},
+
+    ascriptionChangeDialog: false,
+    datePicker: false,
   }),
 
   computed: {
@@ -524,6 +617,9 @@ export default {
   },
 
   methods: {
+    dayFormat(date) {
+      return Number(date.split("-")[2]);
+    },
     init() {
       getClass({})
         .then((res) => {
@@ -537,11 +633,6 @@ export default {
       //有watch search.search, init时不需要loadData
     },
 
-    addMode() {
-      this.editedItem = {};
-      this.mode = 1; //新增
-      this.checkReadOnly = false;
-    },
     showHeaders() {
       this.headers = this.headersContent;
     },
@@ -585,12 +676,17 @@ export default {
         });
     },
 
-    editItem(item) {
-      // this.editedIndex = this.products.indexOf(item);
+    addButton() {
+      this.editedItem = {};
+      this.mode = 1; //新增
+      this.productInfoDialog = true;
+    },
+
+    editButton(item) {
       this.mode = 2; //修改
+      this.oldItem = { ...item };
       this.editedItem = { ...item };
-      this.checkReadOnly = true;
-      this.dialog = true;
+      this.productInfoDialog = true;
     },
 
     deleteProduct(item) {
@@ -623,28 +719,26 @@ export default {
       console.log(this.deleteConfirm);
     },
 
-    // initialData() {
-    //   var iniData = []
-    //   for (let i = 0; i < Object.keys(iniData).length; i++) {
-    //     setTimeout(function () {
-    //       console.log(iniData.length);
-    //       console.log(iniData[i]);
-    //       addProducts(iniData[i]).then(() => {
-    //         //刷新页面数据
-    //         //this.loadData();
-    //       });
-    //       console.log(i);
-    //     }, 100 * i);
-    //   }
-    // },
-
     save() {
+      this.productInfoDialog = false;
       if (this.mode == 1) {
         this.add();
-      } else if (this.mode == 2) {
-        this.edit();
+      } else {
+        if (
+          this.oldItem.department != this.editedItem.department ||
+          this.oldItem.team != this.editedItem.team ||
+          this.oldItem.owner != this.editedItem.owner
+        ) {
+          this.ascriptionChangeDialog = true;
+        } else {
+          this.edit();
+        }
       }
-      this.dialog = false;
+    },
+
+    ascriptionSave() {
+      this.ascriptionChangeDialog = false;
+      this.edit();
     },
 
     add() {
@@ -670,7 +764,6 @@ export default {
     },
 
     edit() {
-      this.loading = true;
       // var args = { ...this.editedItem };
       // console.log(this.editedItem);
       // console.log(args);
@@ -679,10 +772,13 @@ export default {
 
       var args = { ...this.editedItem };
 
+      //预处理
       if (args.storehouse == null) delete args.storehouse;
+      if (args.startTime) args.startTime = args.startTime.replaceAll("-", "/");
 
       console.log(args);
-      editProduct(this.editedItem)
+      this.loading = true;
+      editProduct(args)
         .then((res) => {
           this.loading = false;
           this.global.infoAlert("泼发EBC：" + res.data);
@@ -692,7 +788,7 @@ export default {
         .catch(() => {
           this.loading = false;
           setTimeout(() => {
-            this.global.infoAlert("泼发EBC：上传失败");
+            this.global.infoAlert("泼发EBC：修改失败");
           }, 100);
         });
     },

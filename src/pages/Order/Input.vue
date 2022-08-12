@@ -13,9 +13,8 @@
       @dragover.prevent=""
       @dragend.prevent=""
     >
-      <span>{{ state }}</span>
+      <span class="text-subtitle-1">{{ state }}</span>
     </v-card>
-
     <v-row class="file-state">
       <v-col v-for="(file, i) in uploadStates" :key="i" cols="12" lg="6">
         <v-card tile class="pt-3">
@@ -41,7 +40,13 @@
             </span>
 
             <span class="ml-5 text--secondary">
-              {{ file.state }}
+              {{
+                {
+                  done: "解析成功",
+                  processing: "服务器解析中",
+                  waiting: "上传成功-等待服务器解析",
+                }[file.state]
+              }}
             </span>
 
             <v-spacer></v-spacer>
@@ -139,7 +144,7 @@ export default {
   },
   mounted() {
     this.state = "拖拽上传订单信息";
-
+    this.refreshFileStates();
     this.interval = setInterval(() => {
       this.refreshFileStates();
     }, 2000);
@@ -206,6 +211,12 @@ export default {
       }
 
       for (let file of event.dataTransfer.files) {
+        if (this.uploadStates.find((i) => i.name == file.name)) {
+          console.log("拦截");
+          this.global.infoAlert("10分钟内上传过相同的文件，自动忽略，文件名：" + file.name);
+          continue;
+        }
+
         let state = {};
 
         console.log(file.name);

@@ -120,7 +120,7 @@ export default {
       allUsers: [],
       allCategorys: [],
 
-      done: [false, false, false, false], //三个请求状态
+      done: [false, false, false, false], //四个请求状态
     };
   },
   methods: {
