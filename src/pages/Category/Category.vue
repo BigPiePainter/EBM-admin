@@ -7,6 +7,7 @@
         no-data-text="空"
         item-key="uid"
         show-expand
+        :expanded.sync="expanded"
         height="calc(100vh - 200px)"
         :headers="categoryHeaders"
         :items="calculatedCategorys"
@@ -16,6 +17,7 @@
           'items-per-page-options': [10, 20, 50, 100],
           'items-per-page-text': '每页显示条数',
         }"
+        @click:row="clickRow"
       >
         <template v-slot:[`item.deduction`]="{ item }">
           {{
@@ -315,6 +317,7 @@ import { javaUTCDateToString } from "@/libs/utils";
 export default {
   data() {
     return {
+      expanded: [],
       datePicker: false,
       editedItem: [],
       mode: 0,
@@ -369,6 +372,14 @@ export default {
   },
 
   methods: {
+    clickRow(item, event) {
+      if (event.isExpanded) {
+        const index = this.expanded.findIndex((i) => i === item);
+        this.expanded.splice(index, 1);
+      } else {
+        this.expanded.push(item);
+      }
+    },
     dayFormat(date) {
       return Number(date.split("-")[2]);
     },
