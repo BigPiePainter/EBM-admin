@@ -64,16 +64,6 @@
                     >
                     </v-text-field>
                   </v-col>
-                  <!-- <v-col cols="12">
-                    <span class="text-body-2 text--secondary">备注</span>
-                    <v-text-field
-                      outlined
-                      dense
-                      hide-details
-                      v-model="editedItem.note"
-                    >
-                    </v-text-field>
-                  </v-col> -->
                 </v-col>
 
                 <!-- until there is dialog of new input-->
@@ -358,7 +348,6 @@ export default {
 
   created() {
     this.loadData();
-    console.log(this.editedItem.uid);
   },
 
   computed: {
@@ -375,7 +364,6 @@ export default {
           if (!this.editedItem[item]) pass = false;
         });
       }
-      //console.log(pass);
       return !pass;
     },
   },

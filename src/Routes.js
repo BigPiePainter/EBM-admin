@@ -7,6 +7,7 @@ import Layout from '@/components/Layout/Layout';
 import MainPage from '@/pages/MainPage/MainPage';
 import Dashboard from '@/pages/Dashboard/Dashboard';
 import PartnerGet from '@/pages/PartnerGet/PartnerGet'
+import Missings from '@/pages/Missings/Missings'
 import Category from '@/pages/Category/Category'
 import ProductsGet from '@/pages/ProductsGet/ProductsGet'
 import ProductsPut from '@/pages/ProductsPut/ProductsPut'
@@ -61,6 +62,11 @@ var routerConfig = {
           path: 'partnerget',
           name: 'PartnerGet',
           component: PartnerGet,
+        },
+        {
+          path: 'missings',
+          name: 'Missings',
+          component: Missings,
         },
         {
           path: 'category',

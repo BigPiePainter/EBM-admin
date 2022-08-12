@@ -124,17 +124,17 @@ export default {
           children: [
             {
               title: "商品清单",
-              icon: "mdi-account-multiple",
+              icon: "mdi-circle-small",
               link: "/partnerget",
             },
             {
               title: "认领大厅",
-              icon: "mdi-account-multiple",
-              link: "/partnerget",
+              icon: "mdi-circle-small",
+              link: "/missings",
             },
             {
               title: "一级类目",
-              icon: "mdi-account-multiple",
+              icon: "mdi-circle-small",
               link: "/category",
             },
           ],
@@ -148,27 +148,27 @@ export default {
           children: [
             {
               title: "导入",
-              icon: "mdi-book-variant-multiple",
+              icon: "mdi-circle-small",
               link: "/input",
             },
             {
               title: "订单",
-              icon: "mdi-book-variant-multiple",
+              icon: "mdi-circle-small",
               link: "/order",
             },
             {
               title: "退单",
-              icon: "mdi-book-variant-multiple",
+              icon: "mdi-circle-small",
               link: "/return",
             },
             {
               title: "补单",
-              icon: "mdi-book-variant-multiple",
+              icon: "mdi-circle-small",
               link: "/brush",
             },
             {
               title: "发退货",
-              icon: "mdi-book-variant-multiple",
+              icon: "mdi-circle-small",
               link: "/t",
             },
           ],
@@ -192,7 +192,7 @@ export default {
           children: [
             {
               title: "组别",
-              icon: "mdi-account-multiple",
+              icon: "mdi-circle-small",
               link: "/team",
             },
           ],
@@ -206,12 +206,12 @@ export default {
           children: [
             {
               title: "从属员工",
-              icon: "mdi-account-multiple",
+              icon: "mdi-circle-small",
               link: "/all_employees",
             },
             {
               title: "员工结构",
-              icon: "mdi-account-multiple",
+              icon: "mdi-circle-small",
               link: "/employee",
             },
           ],
