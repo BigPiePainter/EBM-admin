@@ -215,52 +215,84 @@
                 </v-row>
 
                 <v-expand-transition>
-                  <v-row v-if="selectedPermission.a.a" class="mt-5">
-                    <v-col>
-                      <span class="text-body-2 text--secondary">
-                        部门录入权限
-                      </span>
-                      <v-autocomplete
-                        v-model="selectedPermission.a.d"
-                        :items="
-                          allDepartment.filter((d) =>
-                            global.user.permission.a.d.find((i) => i == d.uid)
-                          )
-                        "
-                        no-data-text="无"
-                        outlined
-                        dense
-                        hide-details
-                        color="blue-grey lighten-1"
-                        item-text="name"
-                        item-value="uid"
-                        multiple
-                      >
-                      </v-autocomplete>
-                    </v-col>
-                    <v-col>
-                      <span class="text-body-2 text--secondary"
-                        >组别录入权限</span
-                      >
-                      <v-autocomplete
-                        v-model="selectedPermission.a.g"
-                        :items="
-                          allTeam.filter((g) =>
-                            global.user.permission.a.g.find((i) => i == g.uid)
-                          )
-                        "
-                        no-data-text="无"
-                        outlined
-                        dense
-                        hide-details
-                        color="blue-grey lighten-1"
-                        item-text="name"
-                        item-value="uid"
-                        multiple
-                      >
-                      </v-autocomplete>
-                    </v-col>
-                  </v-row>
+                  <v-container v-if="selectedPermission.a.a">
+                    <v-row class="mt-5">
+                      <v-col>
+                        <span class="text-body-2 text--secondary">
+                          部门录入权限
+                        </span>
+                        <v-autocomplete
+                          v-model="selectedPermission.a.d"
+                          :items="
+                            allDepartment.filter((d) =>
+                              global.user.permission.a.d.find((i) => i == d.uid)
+                            )
+                          "
+                          no-data-text="无"
+                          outlined
+                          dense
+                          hide-details
+                          color="blue-grey lighten-1"
+                          item-text="name"
+                          item-value="uid"
+                          multiple
+                        >
+                        </v-autocomplete>
+                      </v-col>
+                      <v-col>
+                        <span class="text-body-2 text--secondary"
+                          >组别录入权限</span
+                        >
+                        <v-autocomplete
+                          v-model="selectedPermission.a.g"
+                          :items="
+                            allTeam.filter((g) =>
+                              global.user.permission.a.g.find((i) => i == g.uid)
+                            )
+                          "
+                          no-data-text="无"
+                          outlined
+                          dense
+                          hide-details
+                          color="blue-grey lighten-1"
+                          item-text="name"
+                          item-value="uid"
+                          multiple
+                        >
+                        </v-autocomplete>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col>
+                        <v-checkbox
+                          v-model="selectedPermission.a.da"
+                          hide-details
+                          dense
+                          :disabled="!global.user.permission.a.da"
+                        >
+                          <template v-slot:label>
+                            <span class="text-subtitle-2"
+                              >删除商品归属变更记录</span
+                            >
+                          </template>
+                        </v-checkbox>
+                      </v-col>
+                      <v-col>
+                        <v-checkbox
+                          v-model="selectedPermission.a.fc"
+                          hide-details
+                          dense
+                          :disabled="!global.user.permission.a.fc"
+                        >
+                          <template v-slot:label>
+                            <span class="text-subtitle-2"
+                              >管理一级类目</span
+                            >
+                          </template>
+                        </v-checkbox>
+                      </v-col>
+                    </v-row>
+                  </v-container>
                 </v-expand-transition>
 
                 <v-divider class="my-8" v-if="global.user.permission.b.a" />

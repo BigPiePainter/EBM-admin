@@ -153,10 +153,10 @@
               :loading="loading"
               :sort-by="['startTime']"
               :sort-desc="[true]"
-              :hide-default-footer="ascriptionInfos.length <= 10"
-              :items-per-page="10"
+              :hide-default-footer="ascriptionInfos.length <= 3"
+              :items-per-page="3"
               :footer-props="{
-                'items-per-page-options': [10, 20, 50, 100],
+                'items-per-page-options': [3, 10, 20, 50],
                 'items-per-page-text': '每页显示条数',
               }"
             >
@@ -180,7 +180,7 @@
                   depressed
                   outlined
                   color="red lighten-2"
-                  @click="deleteManufacturerButton(item)"
+                  @click="deleteAscriptionButton(item)"
                   class="ml-1"
                 >
                   <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
@@ -220,6 +220,34 @@
             >取消</v-btn
           >
           <v-btn color="red darken-1" text @click="sureDeleteSkuButton">
+            <v-icon small class="mr-1"> mdi-delete </v-icon>删除</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- 删除商品归属信息 Dialog -->
+    <v-dialog v-model="deleteAscriptionDialog" max-width="360px">
+      <v-card>
+        <v-card-title class="text-subtitle-1"> 删除这条归属记录？ </v-card-title>
+
+        <div class="mt-2">
+          <TableKV :items="deleteAscriptionItemParse" />
+        </div>
+
+        <v-card-actions>
+          <span class="text--secondary caption font-italic font-weight-thin"
+            >无法恢复</span
+          >
+          <v-spacer />
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="deleteAscriptionDialog = false"
+          >
+            取消
+          </v-btn>
+          <v-btn color="red darken-1" text @click="sureDeleteAscriptionButton">
             <v-icon small class="mr-1"> mdi-delete </v-icon>删除</v-btn
           >
         </v-card-actions>
@@ -559,6 +587,10 @@ export default {
       deleteSkuItem: {}, //删除信息
       deleteSkuItemParse: {}, //删
 
+      deleteAscriptionDialog: false, //删除商品归属弹框
+      deleteAscriptionItem: {},
+      deleteAscriptionItemParse: {},
+
       deleteManufacturerDialog: false, //删除厂家弹框
       deleteManufacturerItem: {},
       deleteManufacturerItemParse: {},
@@ -893,6 +925,40 @@ export default {
           this.init();
         })
         .catch(() => {});
+    },
+
+    deleteAscriptionButton(item) {
+      console.log(item);
+      if (!this.global.user.permission.a.da){
+        this.global.infoAlert("泼发EBC：权限不足")
+        return
+      }
+
+      this.deleteAscriptionItem = { ...item };
+      this.deleteAscriptionItemParse = [
+        {
+          key: "事业部",
+          value: this.global.departmentIdToName[item.department],
+        },
+        {
+          key: "组别",
+          value: this.global.teamIdToName[item.team],
+        },
+        {
+          key: "持品人",
+          value: this.global.userIdToNick[item.owner],
+        },
+        {
+          key: "生效时间",
+          value: javaUTCDateToString(item.startTime),
+        },
+      ];
+
+      this.deleteAscriptionDialog = true;
+    },
+
+    sureDeleteAscriptionButton() {
+      this.deleteAscriptionDialog = false;
     },
 
     deleteManufacturerButton(item) {

@@ -169,7 +169,7 @@ export default {
             {
               title: "发退货",
               icon: "mdi-circle-small",
-              link: "/t",
+              link: "/brush",
             },
           ],
         },

@@ -61,6 +61,9 @@
         <template v-slot:[`item.owner`]="{ item }">
           {{ global.userIdToNick[item.owner] }}
         </template>
+        <template v-slot:[`item.firstCategory`]="{ item }">
+          {{ global.categoryIdToName[item.firstCategory] }}
+        </template>
 
         <template v-slot:top>
           <v-toolbar flat>
@@ -117,7 +120,7 @@
     <!-- 商品信息Dialog -->
     <v-dialog v-model="productInfoDialog" max-width="550px">
       <v-card>
-        <v-col class="px-10 py-10 product-dialog">
+        <v-container class="px-10 py-10 product-dialog">
           <v-row>
             <span class="text-subtitle-1">商品信息</span>
           </v-row>
@@ -165,10 +168,30 @@
                     <v-list-item-title>
                       {{ data.item.name }}
                     </v-list-item-title>
-                    <v-list-item-subtitle class="mt-1">
-                      扣点: {{ data.item.deduction }}
-                      运费险:
-                      {{ data.item.insurance }}
+                    <v-list-item-subtitle class="mt-1 caption">
+                      <span>👉</span>
+                      <span>
+                        扣点:
+                        {{
+                          typeof global.categoryIdToInfo[data.item.uid]
+                            .deduction == "string"
+                            ? global.categoryIdToInfo[data.item.uid].deduction
+                            : global.categoryIdToInfo[data.item.uid].deduction +
+                              "%"
+                        }}
+                      </span>
+                      <span>👈👉</span>
+                      <span>
+                        运费险:
+                        {{
+                          typeof global.categoryIdToInfo[data.item.uid]
+                            .insurance == "string"
+                            ? global.categoryIdToInfo[data.item.uid].insurance
+                            : global.categoryIdToInfo[data.item.uid].insurance +
+                              "￥"
+                        }}</span
+                      >
+                      <span>👈</span>
                     </v-list-item-subtitle>
                   </v-list-item-content>
                 </template>
@@ -176,14 +199,14 @@
             </v-col>
             <v-col cols="5">
               <span class="text-body-2 text--secondary">店铺名*</span>
-              <v-combobox
+              <v-autocomplete
                 color="blue-grey lighten-1"
                 outlined
                 dense
                 hide-details
-                :items="menu.shopName"
+                :items="global.allShops"
                 v-model="editedItem.shopName"
-              ></v-combobox>
+              ></v-autocomplete>
             </v-col>
           </v-row>
           <v-divider class="my-8" />
@@ -283,7 +306,7 @@
               </v-text-field>
             </v-col>
 
-            <v-col :cols="editedItem.transportWay == '聚水潭' ? 12 : 8">
+            <v-col cols="8" v-if="editedItem.transportWay != '聚水潭'">
               <span class="text-body-2 text--secondary">备注</span>
               <v-text-field
                 color="blue-grey lighten-1"
@@ -294,8 +317,25 @@
               >
               </v-text-field>
             </v-col>
+
+            <v-expand-transition>
+              <!-- 用一个container消除动画卡顿 -->
+              <v-container v-if="editedItem.transportWay == '聚水潭'">
+                <v-col cols="12">
+                  <span class="text-body-2 text--secondary">备注</span>
+                  <v-text-field
+                    color="blue-grey lighten-1"
+                    outlined
+                    dense
+                    hide-details
+                    v-model="editedItem.note"
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-container>
+            </v-expand-transition>
           </v-row>
-        </v-col>
+        </v-container>
 
         <v-card-actions>
           <p class="caption font-italic font-weight-thin">带*为必填项目</p>
@@ -342,7 +382,6 @@
                 d: global.userIdToNick[editedItem.owner],
               },
             ]"
-            
             hide-default-footer
             disable-sort
           >

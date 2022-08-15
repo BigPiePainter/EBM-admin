@@ -93,6 +93,7 @@ import { getDepartment } from "@/settings/department";
 import { getTeam } from "@/settings/team";
 import { getAllUsers } from "@/settings/user";
 import { getCategory } from "@/settings/category";
+import { getHistoryCategory } from "@/settings/category";
 
 import { isLogin } from "@/settings/user";
 
@@ -115,12 +116,7 @@ export default {
       ],
       loading: false,
 
-      allTeams: [],
-      allDepartments: [],
-      allUsers: [],
-      allCategorys: [],
-
-      done: [false, false, false, false], //四个请求状态
+      done: [false, false, false, false, true], //全部请求状态
     };
   },
   methods: {
@@ -174,20 +170,24 @@ export default {
       this.done.fill(false);
 
       getDepartment({}).then((res) => {
-        this.allDepartments = res.data.departments;
+        this.global.allDepartments = res.data.departments;
         this.requestDone(0);
       });
       getTeam({}).then((res) => {
-        this.allTeams = res.data.teams;
+        this.global.allTeams = res.data.teams;
         this.requestDone(1);
       });
       getAllUsers({}).then((res) => {
-        this.allUsers = res.data.userInfos;
+        this.global.allUsers = res.data.userInfos;
         this.requestDone(2);
       });
       getCategory({}).then((res) => {
-        this.allCategorys = res.data.categorys;
+        this.global.allCategorys = res.data.categorys;
         this.requestDone(3);
+      });
+      getHistoryCategory({}).then((res) => {
+        this.global.allCategoryHistorys = res.data.categoryHistorys;
+        this.requestDone(4);
       });
     },
 
@@ -196,11 +196,6 @@ export default {
       console.log("done");
       console.log(this.done);
       if (this.done.find((i) => !i) == false) return;
-
-      this.global.allDepartments = this.allDepartments;
-      this.global.allTeams = this.allTeams;
-      this.global.allUsers = this.allUsers;
-      this.global.allCategorys = this.allCategorys;
 
       if (this.global.user.uid == 1) {
         this.global.user.permission = this.global.allPermissions; //admin
@@ -230,18 +225,37 @@ export default {
       this.global.allTeams.forEach((i) => {
         this.global.teamIdToName[i.uid] = i.name;
       });
-      this.global.categoryIdToName = {};
-      this.global.allCategorys.forEach((i) => {
-        this.global.categoryIdToName[i.uid] = i.name;
-      });
 
       this.global.userIdToNick = {};
       this.global.allUsers.forEach((i) => {
         this.global.userIdToNick[i.uid] = i.nick;
       });
 
+      this.global.categoryIdToName = {};
+      this.global.categoryIdToInfo = {};
+      this.global.allCategorys.forEach((i) => {
+        this.global.categoryIdToName[i.uid] = i.name;
+        this.global.categoryIdToInfo[i.uid] = {
+          startTime: -1,
+          createTime: -1,
+          deduction: "空",
+          insurance: "空",
+        };
+      });
+      this.global.allCategoryHistorys.forEach((i) => {
+        if (i.startTime > this.global.categoryIdToInfo[i.categoryId].startTime) {
+          this.global.categoryIdToInfo[i.categoryId] = i;
+        } else if (
+          i.startTime == this.global.categoryIdToInfo[i.categoryId].startTime
+        ) {
+          if (i.createTime > this.global.categoryIdToInfo[i.categoryId].createTime) {
+            this.global.categoryIdToInfo[i.categoryId] = i;
+          }
+        }
+      });
+
       console.log("登陆跳转");
-      console.log(this.global);
+      console.log("全局Global", this.global);
       this.$router.push("/mainpage");
     },
   },

@@ -1,311 +1,412 @@
 <template>
-  <div style="width: 800px; margin: 0 auto">
-    <v-card class="products-list mb-1">
-      <v-data-table
-        class="card-shadow"
-        fixed-header
-        no-data-text="空"
-        item-key="uid"
-        show-expand
-        :expanded.sync="expanded"
-        height="calc(100vh - 200px)"
-        :headers="categoryHeaders"
-        :items="calculatedCategorys"
-        disable-sort
-        :items-per-page="50"
-        :footer-props="{
-          'items-per-page-options': [10, 20, 50, 100],
-          'items-per-page-text': '每页显示条数',
-        }"
-        @click:row="clickRow"
-      >
-        <template v-slot:[`item.deduction`]="{ item }">
-          {{
-            item.deduction != "无数据" ? item.deduction + " %" : item.deduction
-          }}
-        </template>
-        <template v-slot:[`item.insurance`]="{ item }">
-          {{
-            item.insurance != "无数据" ? item.insurance + " ￥" : item.deduction
-          }}
-        </template>
-        <template v-slot:top>
-          <v-toolbar flat>
-            <v-toolbar-title>一级类目管理</v-toolbar-title>
-            <v-divider class="mx-4" inset vertical></v-divider>
-
-            <v-spacer></v-spacer>
-
-            <v-dialog v-model="newDialog" max-width="300px">
-              <!--new item buttom-->
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  small
-                  depressed
-                  color="primary"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="addButton"
-                >
-                  新增类目
-                </v-btn>
+  <div>
+    <v-container class="main-container ma-0">
+      <v-row>
+        <v-col>
+          <v-card>
+            <v-data-table
+              class="card-shadow"
+              fixed-header
+              no-data-text="空"
+              item-key="uid"
+              show-expand
+              :expanded.sync="expanded"
+              height="calc(100vh - 151px)"
+              hide-default-footer
+              :headers="categoryHeaders"
+              :items="allCategorys"
+              disable-sort
+              :items-per-page="1000"
+              @click:row="clickRow"
+            >
+              <template v-slot:[`item.deduction`]="{ item }">
+                {{
+                  item.deduction != "空"
+                    ? item.deduction + " %"
+                    : item.deduction
+                }}
               </template>
+              <template v-slot:[`item.insurance`]="{ item }">
+                {{
+                  item.insurance != "空"
+                    ? item.insurance + " ￥"
+                    : item.deduction
+                }}
+              </template>
+              <template v-slot:top>
+                <v-toolbar flat>
+                  <v-toolbar-title>一级类目</v-toolbar-title>
+                  <v-divider class="mx-4" inset vertical></v-divider>
 
-              <v-card>
-                <v-col class="px-10 pt-10">
-                  <v-row>
-                    <span class="text-subtitle-1">类目信息</span>
-                  </v-row>
-                  <v-col cols="12">
-                    <span class="text-body-2 text--secondary">名称*</span>
-                    <v-text-field
-                      outlined
-                      dense
-                      hide-details
-                      v-model="editedItem.name"
+                  <v-spacer></v-spacer>
+
+                  <v-btn small depressed color="primary" @click="addButton">
+                    新增类目
+                  </v-btn>
+                </v-toolbar>
+              </template>
+              <template v-slot:[`header.actions`]="{ header }">
+                <div class="d-flex mr-4">
+                  <v-spacer />
+                  {{ header.text }}
+                </div>
+              </template>
+              <template v-slot:[`item.actions`]="{ item }">
+                <div class="d-flex">
+                  <v-spacer />
+                  <v-btn
+                    small
+                    depressed
+                    outlined
+                    color="green"
+                    @click.stop="editButton(item)"
+                    class="ml-1"
+                  >
+                    修改
+                  </v-btn>
+                </div>
+              </template>
+              <template v-slot:expanded-item="{ headers, item }">
+                <td :colspan="headers.length" class="pa-0">
+                  <div class="sub-table elevation-20 ml-2 mb-3 mr-12">
+                    <v-data-table
+                      no-data-text="空"
+                      :sort-by="['startTime']"
+                      :sort-desc="[true]"
+                      :hide-default-footer="
+                        allCategoryHistorys.filter(
+                          (i) => item.uid == i.categoryId
+                        ).length <= 10
+                      "
+                      :items-per-page="10"
+                      :footer-props="{
+                        'items-per-page-options': [10, 20, 50, 100],
+                        'items-per-page-text': '每页显示条数',
+                      }"
+                      :headers="subHeaders"
+                      :items="
+                        allCategoryHistorys.filter(
+                          (i) => item.uid == i.categoryId
+                        )
+                      "
                     >
-                    </v-text-field>
-                  </v-col>
-                </v-col>
+                      <template v-slot:[`item.startTime`]="{ item }">
+                        {{ parseDate(item.startTime) }}
+                      </template>
+                      <template v-slot:[`item.deduction`]="{ item }">
+                        {{ item.deduction + " %" }}
+                      </template>
+                      <template v-slot:[`item.insurance`]="{ item }">
+                        {{ item.insurance + " ￥" }}
+                      </template>
 
-                <!-- until there is dialog of new input-->
-                <v-card-actions>
-                  <p class="caption font-italic font-weight-thin">
-                    带*为必填项目
-                  </p>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close">
-                    取消
-                  </v-btn>
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="save"
-                    :disabled="isEmp"
-                  >
-                    保存
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-
-            <v-dialog v-model="dialog" max-width="300px">
-              <v-card>
-                <v-col class="px-10 pt-10">
-                  <v-row>
-                    <span class="text-subtitle-1">类目信息</span>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12" :hidden="hide">
-                      <span class="text-body-2 text--secondary">名称*</span>
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.name"
-                        :readonly="checkReadOnly"
-                      >
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="6">
-                      <span class="text-body-2 text--secondary">品类扣点*</span>
-                      <v-text-field
-                        suffix="%"
-                        outlined
-                        dense
-                        type="number"
-                        hide-details
-                        v-model="editedItem.deduction"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <span class="text-body-2 text--secondary"
-                        >品类运费险*</span
-                      >
-                      <v-text-field
-                        suffix="￥"
-                        type="number"
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.insurance"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12">
-                      <span class="text-body-2 text--secondary">
-                        选择生效日期*
-                      </span>
-                      <v-menu
-                        ref="menu"
-                        v-model="datePicker"
-                        :close-on-content-click="false"
-                        :return-value.sync="editedItem.startTime"
-                        offset-y
-                        min-width="auto"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                            v-model="editedItem.startTime"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
+                      <template v-slot:[`header.action`]="{ header }">
+                        <div class="d-flex mr-4">
+                          <v-spacer />
+                          {{ header.text }}
+                        </div>
+                      </template>
+                      <template v-slot:[`item.action`]="{ item }">
+                        <div class="d-flex">
+                          <v-spacer />
+                          <v-btn
+                            small
+                            depressed
                             outlined
-                            dense
-                            hide-details
-                          ></v-text-field>
-                        </template>
-                        <v-date-picker
-                          v-model="editedItem.startTime"
-                          no-title
-                          scrollable
-                          locale="zh-cn"
-                          first-day-of-week="1"
-                          :day-format="dayFormat"
-                        >
-                          <v-spacer></v-spacer>
-                          <v-btn
-                            text
-                            color="primary"
-                            @click="datePicker = false"
+                            color="red lighten-2"
+                            @click="deleteCategoryHistoryButton(item)"
+                            class="ml-1"
                           >
-                            取消
+                            <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
+                            删除
                           </v-btn>
-                          <v-btn
-                            text
-                            color="primary"
-                            @click="$refs.menu.save(editedItem.startTime)"
-                          >
-                            确定
-                          </v-btn>
-                        </v-date-picker>
-                      </v-menu>
-                    </v-col>
+                        </div>
+                      </template>
+                    </v-data-table>
+                  </div>
+                </td>
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-col>
+        <v-col>
+          <v-card>
+            <v-card-title> ..... </v-card-title>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
 
-                    <v-col cols="12">
-                      <span class="text-body-2 text--secondary">备注</span>
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        v-model="editedItem.note"
-                      >
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-col>
+    <!-- 类目名称 Dialog -->
+    <v-dialog v-model="categoryNameDialog" max-width="400px">
+      <v-card>
+        <v-card-title class="text-subtitle-1"> 类目名称 </v-card-title>
 
-                <!-- until there is dialog of new input-->
-                <v-card-actions>
-                  <p class="caption font-italic font-weight-thin">
-                    带*为必填项目
-                  </p>
+        <v-container class="px-7">
+          <v-row>
+            <v-col cols="12">
+              <v-text-field
+                color="blue-grey lighten-1"
+                outlined
+                dense
+                hide-details
+                v-model="editedItem.name"
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="categoryNameDialog = false">
+            取消
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="addCategorySaveButton"
+            :disabled="!editedItem.name || editedItem.name == ''"
+          >
+            新增
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- 删除一级类目历史信息 Dialog -->
+    <v-dialog v-model="deleteCategoryHistoryDialog" max-width="360px">
+      <v-card>
+        <v-card-title class="text-subtitle-1">
+          删除这条一级类目变更记录？
+        </v-card-title>
+
+        <div class="mt-2">
+          <TableKV :items="deleteCategoryHistoryItemParse" />
+        </div>
+
+        <v-card-actions>
+          <span class="text--secondary caption font-italic font-weight-thin"
+            >无法恢复</span
+          >
+          <v-spacer />
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="deleteCategoryHistoryDialog = false"
+          >
+            取消
+          </v-btn>
+          <v-btn
+            color="red darken-1"
+            text
+            @click="sureDeleteCategoryHistoryButton"
+          >
+            <v-icon small class="mr-1"> mdi-delete </v-icon>删除</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- 修改类目 Dialog -->
+    <v-dialog v-model="categoryInfoDialog" max-width="370px">
+      <v-card class="input-dialog">
+        <v-container class="px-8 pt-10 pb-8">
+          <v-row>
+            <span class="text-subtitle-1">类目信息</span>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <span class="text-body-2 text--secondary">名称*</span>
+              <v-text-field
+                color="blue-grey lighten-1"
+                outlined
+                dense
+                hide-details
+                v-model="editedItem.name"
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="6">
+              <span class="text-body-2 text--secondary">品类扣点*</span>
+              <v-text-field
+                color="blue-grey lighten-1"
+                suffix="%"
+                outlined
+                dense
+                type="number"
+                hide-details
+                v-model="editedItem.deduction"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="6">
+              <span class="text-body-2 text--secondary">品类运费险*</span>
+              <v-text-field
+                color="blue-grey lighten-1"
+                suffix="￥"
+                type="number"
+                outlined
+                dense
+                hide-details
+                v-model="editedItem.insurance"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+
+        <v-card-actions>
+          <p class="caption font-italic font-weight-thin">带*为必填项目</p>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="categoryInfoDialog = false">
+            取消
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="editCategorySaveButton"
+            :disabled="isEmp"
+          >
+            保存
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- 一级类目属性变化Dialog -->
+    <v-dialog v-model="categoryChangeDialog" max-width="400px">
+      <v-card>
+        <v-card-title>
+          <span class="text-subtitle-1">一级类目：{{ editedItem.name }}</span>
+        </v-card-title>
+
+        <div class="my-1">
+          <v-data-table
+            :headers="[
+              { align: 'right', value: 'a' },
+              { align: 'start', value: 'b', text: '旧数据' },
+              { align: 'start', value: 'c' },
+              { align: 'start', value: 'd', text: '新数据' },
+              { align: 'start', value: 'e' },
+            ]"
+            :items="[
+              {
+                a: '品类扣点',
+                b:
+                  typeof oldItem.deduction == 'string'
+                    ? '没有啊'
+                    : oldItem.deduction + ' %',
+                c: '👉👉👉',
+                d: editedItem.deduction + ' %',
+              },
+              {
+                a: '品类运费险',
+                b:
+                  typeof oldItem.insurance == 'string'
+                    ? '没有啊'
+                    : oldItem.insurance + ' %',
+                c: '👉👉👉',
+                d: editedItem.insurance + ' ￥',
+              },
+            ]"
+            hide-default-footer
+            disable-sort
+          >
+            <template v-slot:[`item.d`]="{ item }">
+              <span class="mr-3">
+                {{ item.d }}
+              </span>
+            </template>
+          </v-data-table>
+        </div>
+        <v-container class="px-8 pt-3 pb-7 input-dialog">
+          <v-row>
+            <v-col cols="5">
+              <span class="text-body-2 text--secondary"> 选择变化日期* </span>
+              <v-menu
+                ref="menu"
+                v-model="datePicker"
+                :close-on-content-click="false"
+                :return-value.sync="editedItem.startTime"
+                offset-y
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="editedItem.startTime"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    dense
+                    hide-details
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="editedItem.startTime"
+                  no-title
+                  scrollable
+                  locale="zh-cn"
+                  first-day-of-week="1"
+                  :day-format="dayFormat"
+                >
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close">
+                  <v-btn text color="primary" @click="datePicker = false">
                     取消
                   </v-btn>
                   <v-btn
-                    color="blue darken-1"
                     text
-                    @click="save"
-                    :disabled="isEmp"
+                    color="primary"
+                    @click="$refs.menu.save(editedItem.startTime)"
                   >
-                    保存
+                    确定
                   </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-toolbar>
-        </template>
-        <template v-slot:[`header.actions`]="{ header }">
-          <div class="d-flex mr-11">
-            <v-spacer />
-            {{ header.text }}
-          </div>
-        </template>
-        <template v-slot:[`item.actions`]="{ item }">
-          <div class="d-flex">
-            <v-spacer />
-            <v-btn
-              width="60px"
-              small
-              depressed
-              outlined
-              color="green"
-              @click="editButton(item)"
-              class="ml-1"
-            >
-              更新信息
-            </v-btn>
-            <v-btn
-              width="60px"
-              small
-              depressed
-              outlined
-              color="#A9A9A9"
-              @click="editNameButton(item)"
-              class="ml-1"
-            >
-              修改名称
-            </v-btn>
-          </div>
-        </template>
-        <template v-slot:expanded-item="{ headers, item }">
-          <td :colspan="headers.length" class="pa-0">
-            <div class="sub-table elevation-20 ml-2 mb-3 mr-12">
-              <v-card tile elevation="0" max-width="750px">
-                <v-data-table
-                  disable-sort
-                  :hide-default-footer="
-                    allCategoryHistorys.filter((i) => item.uid == i.categoryId)
-                      .length <= 10
-                  "
-                  :items-per-page="10"
-                  :footer-props="{
-                    'items-per-page-options': [10, 20, 50, 100],
-                    'items-per-page-text': '每页显示条数',
-                  }"
-                  :headers="subHeaders"
-                  :items="
-                    allCategoryHistorys.filter((i) => item.uid == i.categoryId)
-                  "
-                >
-                  <template v-slot:[`header.action`]="{ header }">
-                    <div class="d-flex mr-11">
-                      <v-spacer />
-                      {{ header.text }}
-                    </div>
-                  </template>
-                  <template v-slot:[`item.action`]="{ item }">
-                    <div class="d-flex">
-                      <v-spacer />
-                      <v-btn
-                        small
-                        depressed
-                        outlined
-                        color="green"
-                        @click="subEditButton(item)"
-                        class="ml-1"
-                      >
-                        修改
-                      </v-btn>
-                    </div>
-                  </template>
-                </v-data-table>
-              </v-card>
-            </div>
-          </td>
-        </template>
-      </v-data-table>
-    </v-card>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+            <v-col cols="7">
+              <span class="text-body-2 text--secondary"> 变化原因* </span>
+              <v-text-field
+                outlined
+                dense
+                hide-details
+                v-model="editedItem.note"
+              ></v-text-field
+            ></v-col>
+          </v-row>
+        </v-container>
+
+        <v-card-actions>
+          <p class="caption font-italic font-weight-thin">
+            重要数据发生变化，需要提供信息
+          </p>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="categoryChangeDialog = false"
+          >
+            取消
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="categorySave"
+            :disabled="!editedItem.startTime || !editedItem.note"
+          >
+            保存
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import TableKV from "@/components/TableKV/TableKV";
+
 import { getCategory } from "@/settings/category";
 import { addCategory } from "@/settings/category";
 import { editCategory } from "@/settings/category";
@@ -315,33 +416,48 @@ import { getHistoryCategory } from "@/settings/category";
 import { javaUTCDateToString } from "@/libs/utils";
 
 export default {
+  components: {
+    TableKV,
+  },
+
   data() {
     return {
       expanded: [],
       datePicker: false,
+
+      oldItem: [],
       editedItem: [],
-      mode: 0,
-      checkReadOnly: true,
-      newDialog: false,
-      dialog: false,
-      deleteDialog: false,
+
+      categoryNameDialog: false,
+      categoryInfoDialog: false,
+
+      deleteCategoryHistoryDialog: false, //删除一级类目弹框
+      deleteCategoryHistoryItem: {},
+      deleteCategoryHistoryItemParse: {},
+
+      categoryChangeDialog: false,
+
       categoryHeaders: [
         { text: "一级类目", value: "name" },
-        { text: "品类扣点", value: "deduction" },
-        { text: "品类运费险", value: "insurance" },
-        { text: "备注", value: "note" },
+        { text: "品类扣点", align: "right", value: "deduction" },
+        { text: "品类运费险", align: "right", value: "insurance" },
+        //{ text: "备注", value: "note" },
         { text: "操作", value: "actions" },
       ],
       calculatedCategorys: [],
 
       allCategorys: [],
+      categoryIdToInfo: {},
+
       subHeaders: [
-        { text: "品类扣点", value: "deduction" },
-        { text: "品类运费险", value: "insurance" },
-        { text: "生效时间", value: "calculatedStartTime" },
-        { text: "备注", value: "note" },
-        { text: "操作", value: "action" },
+        { text: "生效时间", value: "startTime" },
+        { text: "备注", value: "note", sortable: false },
+        { text: "品类扣点", align: "right", value: "deduction" },
+        { text: "品类运费险", align: "right", value: "insurance" },
+
+        { text: "操作", align: "right", value: "action", sortable: false },
       ],
+
       subItems: [],
       hide: false,
       allCategoryHistorys: [],
@@ -355,23 +471,21 @@ export default {
 
   computed: {
     isEmp: function () {
-      var check1 = ["name"];
-      var check = ["name", "deduction", "insurance", "startTime"];
+      var check = ["name", "deduction", "insurance"];
       var pass = true;
-      if (this.mode == 1) {
-        check1.forEach((item) => {
-          if (!this.editedItem[item]) pass = false;
-        });
-      } else if (this.mode == 2) {
-        check.forEach((item) => {
-          if (!this.editedItem[item]) pass = false;
-        });
-      }
+
+      check.forEach((item) => {
+        if (!this.editedItem[item]) pass = false;
+      });
+
       return !pass;
     },
   },
 
   methods: {
+    parseDate(date) {
+      return javaUTCDateToString(date);
+    },
     clickRow(item, event) {
       if (event.isExpanded) {
         const index = this.expanded.findIndex((i) => i === item);
@@ -405,20 +519,35 @@ export default {
     },
     //----------------------------------------------------------------------------------------
     dataAnalyze() {
-      this.allCategoryHistorys.forEach((i) => {
-        i.calculatedStartTime = javaUTCDateToString(i.startTime);
-      });
-      console.log("dataAnalyze1");
-      this.calculatedCategorys = [];
+      this.categoryIdToInfo = {};
       this.allCategorys.forEach((i) => {
-        this.calculatedCategorys.push({
-          name: i.name,
-          deduction: this.newest(this.allCategoryHistorys, i.uid).deduction,
-          insurance: this.newest(this.allCategoryHistorys, i.uid).insurance,
-          note: this.newest(this.allCategoryHistorys, i.uid).note,
-          uid: i.uid,
-        });
+        i.startTime = 0;
+        i.createTime = 0;
+        i.deduction = "空";
+        i.insurance = "空";
+        this.categoryIdToInfo[i.uid] = i;
       });
+
+      this.allCategoryHistorys.forEach((i) => {
+        if (i.startTime > this.categoryIdToInfo[i.categoryId].startTime) {
+          this.categoryIdToInfo[i.categoryId] = i;
+        } else if (
+          i.startTime == this.categoryIdToInfo[i.categoryId].startTime
+        ) {
+          if (i.createTime > this.categoryIdToInfo[i.categoryId].createTime) {
+            this.categoryIdToInfo[i.categoryId] = i;
+          }
+        }
+      });
+      console.log("idToInfo", this.categoryIdToInfo);
+
+      this.allCategorys.forEach((i) => {
+        i.deduction =  this.categoryIdToInfo[i.uid].deduction;
+        i.insurance =  this.categoryIdToInfo[i.uid].insurance;
+      });
+
+      console.log("最终", this.allCategorys);
+
       // console.log(this.calculatedCategorys);
       // console.log(this.allCategorys);
       // //this.calculatedCategorys = this.allCategorys;
@@ -453,68 +582,119 @@ export default {
     },
     //----------------------------------------------------------------------------------------
     addButton() {
-      this.mode = 1;
-      this.editedItem = [];
-      this.checkReadOnly = false;
-    },
-    editButton(item) {
-      this.mode = 2;
-      this.editedItem = Object.assign({}, item);
-      console.log(this.editedItem);
-      this.checkReadOnly = true;
-      this.dialog = true;
-    },
-    editNameButton(item) {
-      this.mode = 4;
-      this.editedItem = Object.assign({}, item);
-      this.newDialog = true;
-    },
-    subEditButton(item) {
-      this.mode = 3;
-      this.editedItem = Object.assign({}, item);
-      this.editedItem.startTime = javaUTCDateToString(
-        this.editedItem.startTime
-      );
-      this.checkReadOnly = true;
-      this.hide = true;
-      this.dialog = true;
-    },
-    close() {
-      this.dialog = false;
-      this.newDialog = false;
-    },
-    save() {
-      console.log(this.mode);
-      if (this.mode == 1) {
-        this.add();
-      } else if (this.mode == 2) {
-        this.edit();
-      } else if (this.mode == 3) {
-        this.subEdit();
-      } else if (this.mode == 4) {
-        this.nameEdit();
+      if (!this.global.user.permission.a.fc) {
+        this.global.infoAlert("泼发EBC：权限不足");
+        return;
       }
+
+      this.editedItem = [];
+      this.categoryNameDialog = true;
     },
-    add() {
-      this.hide = false;
-      var args = { ...this.editedItem };
-      addCategory(args)
+    addCategorySaveButton() {
+      addCategory({ name: this.editedItem.name })
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
           this.loadData();
         })
         .catch(() => {
           setTimeout(() => {
-            this.global.infoAlert("泼发EBC：上传失败");
+            this.global.infoAlert("泼发EBC：新增失败");
           }, 100);
         });
-      this.newDialog = false;
+      this.categoryNameDialog = false;
     },
-    edit() {
-      this.hide = false;
+
+    editButton(item) {
+      if (!this.global.user.permission.a.fc) {
+        this.global.infoAlert("泼发EBC：权限不足");
+        return;
+      }
+
+      this.oldItem = { ...item };
+      this.editedItem = { ...item };
+
+      typeof this.editedItem.deduction == "string" &&
+        (this.editedItem.deduction = null);
+      typeof this.editedItem.insurance == "string" &&
+        (this.editedItem.insurance = null);
+
+      console.log("editedItem", this.editedItem);
+
+      this.categoryInfoDialog = true;
+    },
+
+    deleteCategoryHistoryButton(item) {
+      if (!this.global.user.permission.a.fc) {
+        this.global.infoAlert("泼发EBC：权限不足");
+        return;
+      }
+      console.log("delete", item);
+      this.deleteCategoryHistoryItem = { ...item };
+      this.deleteCategoryHistoryItemParse = [
+        {
+          key: "生效时间",
+          value: javaUTCDateToString(item.startTime),
+        },
+        {
+          key: "备注",
+          value: item.note,
+        },
+        {
+          key: "品类扣点",
+          value: item.deduction + " %",
+        },
+        {
+          key: "品类运费险",
+          value: item.insurance + " ￥",
+        },
+      ];
+
+      this.deleteCategoryHistoryDialog = true;
+    },
+
+    sureDeleteCategoryHistoryButton() {
+      console.log("删除")
+    },
+
+    editCategorySaveButton() {
+      this.categoryInfoDialog = false;
+      if (
+        this.editedItem.deduction != this.oldItem.deduction ||
+        this.editedItem.insurance != this.oldItem.insurance
+      ) {
+        this.editedItem.startTime = "";
+        this.editedItem.note = "";
+        this.categoryChangeDialog = true;
+      } else {
+        this.modifyCategoryName();
+      }
+    },
+
+    categorySave() {
+      this.categoryChangeDialog = false;
+      this.modifyCategoryInfo();
+    },
+
+    modifyCategoryName() {
+      editCategory(this.editedItem)
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          this.loadData();
+        })
+        .catch(() => {
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC：修改失败");
+          }, 100);
+        });
+    },
+
+    modifyCategoryInfo() {
       var args = { ...this.editedItem };
+
+      //预处理
       args.categoryId = args.uid;
-      args.startTime = args.startTime.replaceAll("-", "/");
+      args.startTime && (args.startTime = args.startTime.replaceAll("-", "/"));
+
       console.log(args);
       addHistoryCategory(args)
         .then((res) => {
@@ -526,24 +706,9 @@ export default {
             this.global.infoAlert("泼发EBC：上传失败");
           }, 100);
         });
-      this.dialog = false;
+      this.categoryInfoDialog = false;
     },
-    nameEdit() {
-      this.hide = false;
-      var args = { ...this.editedItem };
-      console.log(args);
-      editCategory(args)
-        .then((res) => {
-          this.global.infoAlert("泼发EBC：" + res.data);
-          this.loadData();
-        })
-        .catch(() => {
-          setTimeout(() => {
-            this.global.infoAlert("泼发EBC：上传失败");
-          }, 100);
-        });
-      this.newDialog = false;
-    },
+
     subEdit() {
       var args = { ...this.editedItem };
       args.startTime = args.startTime.replaceAll("-", "/");
@@ -558,7 +723,7 @@ export default {
             this.global.infoAlert("泼发EBC：上传失败");
           }, 100);
         });
-      this.dialog = false;
+      this.categoryInfoDialog = false;
     },
     //----------------------------------------------------------------------------------------
     newest(array, id) {
@@ -572,3 +737,36 @@ export default {
   },
 };
 </script>
+
+
+<style scoped lang="scss">
+// .delete-table-container {
+//   width: fit-content;
+// }
+
+.sub-table {
+  width: fit-content;
+  // background-color: red;
+  transform: translateY(-5px);
+  border-radius: 20px;
+}
+
+.v-menu__content {
+  .v-list {
+    .v-list-item__title {
+      font-size: 15px;
+    }
+  }
+}
+
+.input-dialog {
+  .col {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .v-input {
+    font-size: 15px;
+  }
+}
+</style>
