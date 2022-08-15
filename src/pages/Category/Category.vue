@@ -652,7 +652,9 @@ export default {
       this.deleteCategoryHistoryDialog = true;
     },
 
-    sureDeleteCategoryHistoryButton() {},
+    sureDeleteCategoryHistoryButton() {
+      console.log("删除")
+    },
 
     editCategorySaveButton() {
       this.categoryInfoDialog = false;
