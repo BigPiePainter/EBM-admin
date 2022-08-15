@@ -44,6 +44,7 @@ CREATE TABLE products (
   product_name VARCHAR(200) COMMENT '产品名',
   transport_way VARCHAR(200) COMMENT '发货方式',
   storehouse VARCHAR(200) COMMENT '聚水潭仓库',
+  end_time DATE COMMENT '下架时间',
   note VARCHAR(5000) COMMENT '备注',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
