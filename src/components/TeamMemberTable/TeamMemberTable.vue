@@ -33,9 +33,9 @@ export default {
   data() {
     return {
       headers: [
-        { text: "组员姓名", value: "nick" },
+        { text: "拥有录入权限", value: "nick" },
         { text: "账号", value: "username" },
-        { text: "所属小组", value: "calculatedPermission" },
+        { text: "账号下全部组别录入权限", value: "calculatedPermission" },
         { text: "联系方式", value: "contact" },
         { text: "备注", value: "note" },
       ],

@@ -247,7 +247,8 @@ export default {
     ...mapActions(["TOGGLE_DRAWER"]),
     logOut: function () {
       localStorage.token = ""
-      this.$router.push("/login");
+      location.reload()
+      //this.$router.push("/login");
     },
   },
 };
