@@ -11,7 +11,7 @@
           height="80vh"
           :loading="loading"
           :headers="Headers"
-          :items="orderItems"
+          :items="allItems"
           :expanded.sync="expanded"
           :options.sync="options"
           :items-per-page="50"
@@ -26,8 +26,8 @@
               <v-divider class="mx-4" inset vertical></v-divider>
 
               <v-spacer></v-spacer>
-              <v-switch class="mt-5" label="展开更多信息" v-model="moreInfo">
-              </v-switch>
+              <!-- <v-switch class="mt-5" label="展开更多信息" v-model="moreInfo">
+              </v-switch> -->
             </v-toolbar>
           </template>
         </v-data-table>
@@ -39,77 +39,47 @@
 
 <script>
 import { getOrder } from "@/settings/order";
+import { getBrush } from "@/settings/order";
+import { getReturn } from "@/settings/order";
 
 export default {
   components: {},
   data() {
     return {
-      moreInfo: false,
+      allItems: [],
+      brushItems: [],
+      returnItems: [],
+      //moreInfo: false,
       orderItems: [],
+
       Headers: [
-        { text: "子订单编号", value: "subOrderNumber" },
-        { text: "主订单编号", value: "mainOrderNumber" },
-        { text: "买家应付邮费", value: "buyerPostage" },
-        { text: "买家实际支付金额", value: "buyerActualPayment" },
-        { text: "子单实际支付金额", value: "subActualPayment" },
-        { text: "订单状态", value: "orderStatu" },
-        { text: "订单创建时间", value: "orderCreateTime" },
-        { text: "订单付款时间", value: "orderPayTime" },
-        { text: "宝贝标题", value: "goodsTitle" },
-        { text: "宝贝数量", value: "goodsAmount" },
-        { text: "物流单号", value: "postId" },
-        { text: "物流公司", value: "postCompany" },
-        { text: "店铺名称", value: "shopName" },
-        { text: "供应商名称", value: "suppilerName" },
-        { text: "退款金额", value: "returnPrice" },
-        { text: "颜色/尺码", value: "skuName" },
-        { text: "商品编码", value: "goodsId" },
-      ],
-      orderHeader: [
-        { text: "子订单编号", value: "subOrderNumber" },
-        { text: "主订单编号", value: "mainOrderNumber" },
-        { text: "买家应付邮费", value: "buyerPostage" },
-        { text: "买家实际支付金额", value: "buyerActualPayment" },
-        { text: "子单实际支付金额", value: "subActualPayment" },
-        { text: "订单状态", value: "orderStatu" },
-        { text: "订单创建时间", value: "orderCreateTime" },
-        { text: "订单付款时间", value: "orderPayTime" },
-        { text: "宝贝标题", value: "goodsTitle" },
-        { text: "宝贝数量", value: "goodsAmount" },
-        { text: "物流单号", value: "postId" },
-        { text: "物流公司", value: "postCompany" },
-        { text: "店铺名称", value: "shopName" },
-        { text: "供应商名称", value: "suppilerName" },
-        { text: "退款金额", value: "returnPrice" },
-        { text: "颜色/尺码", value: "skuName" },
-        { text: "商品编码", value: "goodsId" },
-      ],
-      completeOrderHeader: [
-        { text: "子订单编号", value: "subOrderNumber" },
-        { text: "主订单编号", value: "mainOrderNumber" },
-        { text: "买家应付邮费", value: "buyerPostage" },
-        { text: "买家实际支付金额", value: "buyerActualPayment" },
-        { text: "子单实际支付金额", value: "subActualPayment" },
-        { text: "订单状态", value: "orderStatu" },
-        { text: "订单创建时间", value: "orderCreateTime" },
-        { text: "订单付款时间", value: "orderPayTime" },
-        { text: "宝贝标题", value: "goodsTitle" },
-        { text: "宝贝数量", value: "goodsAmount" },
-        { text: "物流单号", value: "postId" },
-        { text: "物流公司", value: "postCompany" },
-        { text: "店铺名称", value: "shopName" },
-        { text: "供应商名称", value: "suppilerName" },
-        { text: "退款金额", value: "returnPrice" },
-        { text: "颜色/尺码", value: "skuName" },
-        { text: "商品编码", value: "goodsId" },
-        //hide below
-        { text: "商家编码", value: "sellerId" },
-        { text: "仓发类型", value: "store" },
-        { text: "供应商ID", value: "suppilerId" },
-        { text: "店铺ID", value: "shopId" },
-        { text: "支付单号", value: "paymentNumber" },
-        { text: "买家应付货款", value: "buyerPrice" },
-        { text: "总金额", value: "totalPrice" },
+        { text: "店铺名称", value: "shopName" }, //订单
+        { text: "商品ID", value: "goodsId" }, //订单
+        { text: "子订单编号", value: "subOrderNumber" }, //订单
+        { text: "主订单编号", value: "mainOrderNumber" }, //订单
+        { text: "物流公司", value: "postCompany" }, //订单
+        { text: "物流单号", value: "postId" }, //订单
+        { text: "订单创建时间", value: "orderCreateTime" }, //订单
+        { text: "订单付款时间", value: "orderPayTime" }, //订单
+        { text: "成交金额", value: "subActualPayment" }, //子单实际支付金额//订单
+        { text: "付款状态", value: "paymentStatu" },
+        { text: "订单状态", value: "orderStatu" }, //订单
+        { text: "是否刷单", value: "ifBrush" },
+        { text: "是否刷大车", value: "ifBrushDache" },
+        { text: "本单佣金", value: "salary" },
+        { text: "订单sku名称", value: "skuName" }, //颜色/尺码//订单
+        { text: "sku成本", value: "skuCost" },
+        { text: "购买数量", value: "goodsAmount" }, //订单宝贝数量
+        { text: "实购数量", value: "paymentStatu" },
+        { text: "总成本", value: "paymentStatu" },
+        { text: "售价有误", value: "paymentStatu" },
+        { text: "原售价", value: "paymentStatu" },
+        { text: "退款申请日期", value: "paymentStatu" },
+        { text: "退款完结日期", value: "paymentStatu" },
+        { text: "发货状态", value: "paymentStatu" },
+        { text: "退款类型", value: "paymentStatu" },
+        { text: "退款金额", value: "paymentStatu" },
+        { text: "退款状态", value: "paymentStatu" },
       ],
     };
   },
@@ -119,18 +89,20 @@ export default {
   },
 
   watch: {
-    moreInfo() {
-      if (this.moreInfo == false) {
-        this.Headers = this.orderHeader;
-      } else {
-        this.Headers = this.completeOrderHeader;
-      }
-    },
+    // moreInfo() {
+    //   if (this.moreInfo == false) {
+    //     this.Headers = this.orderHeader;
+    //   } else {
+    //     this.Headers = this.completeOrderHeader;
+    //   }
+    // },
   },
 
   methods: {
-    loadData(){
-      getOrder({})
+    loadData() {
+      getOrder({});
+      getBrush({});
+      getReturn({});
     },
   },
 };
