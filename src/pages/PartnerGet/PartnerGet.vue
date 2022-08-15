@@ -180,7 +180,7 @@
                               "%"
                         }}
                       </span>
-                      <span>👈👉</span>
+                      <span>👉</span>
                       <span>
                         运费险:
                         {{
@@ -191,7 +191,6 @@
                               "￥"
                         }}</span
                       >
-                      <span>👈</span>
                     </v-list-item-subtitle>
                   </v-list-item-content>
                 </template>
