@@ -344,7 +344,7 @@ export default {
             colName = "售卖价";
             break;
           case 4:
-            colName = "单个成本";
+            colName = "成本";
             break;
           case 5:
             colName = "价格开始时间";
