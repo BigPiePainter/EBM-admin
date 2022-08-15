@@ -13,28 +13,32 @@ export default {
   },
   infoAlert(message) {
     Vue.prototype.$toast.info(message, {
+      transition: "Vue-Toastification__fade",
       position: "top-right",
-      timeout: 6000,
+      timeout: 2000,
       closeOnClick: true,
+      pauseOnFocusLoss: false,
       pauseOnHover: true,
       draggable: true,
       draggablePercent: 0.6,
       showCloseButtonOnHover: false,
-      hideProgressBar: true,
+      hideProgressBar: false,
       closeButton: "button",
       icon: true,
     });
   },
   errorAlert(message) {
     Vue.prototype.$toast.error(message, {
+      transition: "Vue-Toastification__fade",
       position: "top-right",
-      timeout: 6000,
+      timeout: 2000,
       closeOnClick: true,
+      pauseOnFocusLoss: false,
       pauseOnHover: true,
       draggable: true,
       draggablePercent: 0.6,
       showCloseButtonOnHover: false,
-      hideProgressBar: true,
+      hideProgressBar: false,
       closeButton: "button",
       icon: true,
     });

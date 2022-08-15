@@ -7,7 +7,7 @@ import Toast from "vue-toastification";
 import Global from './global'
 import "vue-toastification/dist/index.css";
 
-Vue.use(Toast);
+Vue.use(Toast, { transition: "Vue-Toastification__fade" });
 
 Vue.config.productionTip = false
 

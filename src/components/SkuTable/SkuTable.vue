@@ -822,11 +822,12 @@ export default {
 
     download() {
       var skuInfoCopy = [];
-      for (let sku of this.skuInfos) {
+
+      for (let sku of this.check ? this.validSkuInfos : this.skuInfos) {
         console.log(sku);
         skuInfoCopy.push({
-          productId: sku.productId,
-          skuId: sku.skuId,
+          productId: sku.productId + "",
+          skuId: sku.skuId + "",
           skuName: sku.skuName,
           skuPrice: sku.skuPrice,
           skuCost: sku.skuCost,
@@ -857,9 +858,6 @@ export default {
             "售卖价",
             "成本",
             "价格开始时间",
-            //"价格截止时间",
-            "销售子订单条数",
-            "销售数",
           ],
         ],
         {
@@ -868,15 +866,12 @@ export default {
       );
 
       worksheet["!cols"] = [
-        { wch: 10 },
-        { wch: 10 },
-        { wch: 7 },
-        { wch: 10 },
-        { wch: 5 },
-        { wch: 13 },
-        //{ wch: 13 },
         { wch: 14 },
-        { wch: 7 },
+        { wch: 14 },
+        { wch: 70 },
+        { wch: 8 },
+        { wch: 8 },
+        { wch: 13 },
       ];
 
       /* create an XLSX file and try to save to Presidents.xlsx */
