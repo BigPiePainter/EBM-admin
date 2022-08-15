@@ -58,14 +58,14 @@ export default {
         { text: "子订单编号", value: "subOrderNumber" }, //订单
         { text: "主订单编号", value: "mainOrderNumber" }, //订单
         { text: "物流公司", value: "postCompany" }, //订单
-        { text: "物流单号", value: "postId" }, //订单
+        { text: "运单号", value: "postId" }, //订单
         { text: "订单创建时间", value: "orderCreateTime" }, //订单
         { text: "订单付款时间", value: "orderPayTime" }, //订单
         { text: "成交金额", value: "subActualPayment" }, //子单实际支付金额//订单
         { text: "付款状态", value: "paymentStatu" },
         { text: "订单状态", value: "orderStatu" }, //订单
         { text: "是否刷单", value: "ifBrush" },
-        { text: "是否刷大车", value: "ifBrushDache" },
+        // { text: "是否刷大车", value: "ifBrushDache" },
         { text: "本单佣金", value: "salary" },
         { text: "订单sku名称", value: "skuName" }, //颜色/尺码//订单
         { text: "sku成本", value: "skuCost" },
