@@ -21,7 +21,7 @@
               <div class="login-wrapper pt-md-4 pt-0">
                 <v-tabs grow>
                   <v-tabs-slider></v-tabs-slider>
-                  <v-tab :href="`#tab-login`" loading> 登陆 </v-tab>
+                  <v-tab :href="`#tab-login`" loading> 登录 </v-tab>
 
                   <v-tab-item :value="'tab-login'">
                     <v-form>
@@ -58,7 +58,7 @@
                                 color="primary"
                                 @click="login"
                               >
-                                登陆</v-btn
+                                登录</v-btn
                               >
                               <v-btn
                                 large
@@ -128,7 +128,7 @@ export default {
           try {
             console.log(res);
             if (res.data.token && res.data.token.isLogin) {
-              this.infoAlert("泼发EBC：登陆成功");
+              this.infoAlert("泼发EBC：登录成功");
 
               //this.global.token = res.data.token.tokenValue
               localStorage.token = res.data.token.tokenValue;
@@ -140,13 +140,13 @@ export default {
 
             this.infoAlert("泼发EBC：" + res.data);
           } catch (error) {
-            this.infoAlert("泼发EBC：登陆失败");
+            this.infoAlert("泼发EBC：登录失败");
           }
         })
         .catch(() => {
           this.loading = false;
           setTimeout(() => {
-            this.infoAlert("泼发EBC：登陆失败");
+            this.infoAlert("泼发EBC：登录失败");
           }, 100);
         });
     },
@@ -254,7 +254,7 @@ export default {
         }
       });
 
-      console.log("登陆跳转");
+      console.log("登录跳转");
       console.log("全局Global", this.global);
       this.$router.push("/mainpage");
     },
@@ -266,7 +266,7 @@ export default {
 
       if (!res.data.isLogin) return;
 
-      this.infoAlert("泼发EBC：登陆成功");
+      this.infoAlert("泼发EBC：登录成功");
 
       //this.global.token = res.data.token.tokenValue
       localStorage.token = res.data.token.tokenValue;

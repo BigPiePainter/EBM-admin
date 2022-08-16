@@ -2,7 +2,7 @@
   <div>
     <v-dialog v-model="dialog" :max-width="maxWidth">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn color="red lighten-2" small dark v-bind="attrs" v-on="on">
+        <v-btn color="primary" small dark v-bind="attrs" v-on="on">
           导入SKU信息
         </v-btn>
       </template>
