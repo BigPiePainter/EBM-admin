@@ -248,9 +248,9 @@
           deleteSkuItem.skuName
         }}</v-card-title>
 
-        <div class="mt-2">
+        <!-- <div class="mt-2">
           <TableKV :items="deleteSkuItemParse" />
-        </div>
+        </div> -->
 
         <v-card-actions>
           <v-spacer />
@@ -1160,5 +1160,6 @@ console.log(this.selected)
     }
   }
 }
-
+//关山难越，谁悲失路之人
+//萍水相逢，尽是他乡之客
 </style>
