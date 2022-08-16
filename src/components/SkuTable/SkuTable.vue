@@ -14,49 +14,42 @@
         <v-tab>
           <span class="text-body-1">内部归属</span>
         </v-tab>
-        <v-toolbar flat v-if="tabs == 0" :key="1">
-          <v-spacer />
-                <v-btn
-                  small
-                  depressed
-                  outlined
-                  color="red lighten-2"
-                  @click="deleteSku"
-                  class="ml-1"
-                >
-                  <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
-                  删除
-                </v-btn>
-          <v-switch
-            v-model="check"
-            label="有效SKU"
-            class="pr-5 pt-6"
-          ></v-switch>
+      </v-tabs>
+      <v-toolbar flat v-if="tabs == 0" :key="1">
+       
+        <v-btn
+          small
+          depressed
+          outlined
+          color="red lighten-2"
+          @click="deleteSku"
+          class="ml-1"
+        >
+          <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
+          删除
+        </v-btn>
+        <v-switch v-model="check" label="有效SKU" class="pr-5 pt-6"></v-switch>
 
-          <v-btn
-            color="green lighten-2"
-            small
-            dark
-            @click="download"
-            class="mr-3"
-          >
-            导出
-          </v-btn>
+        <v-btn
+          color="green lighten-2"
+          small
+          dark
+          @click="download"
+          class="mr-3"
+        >
+          导出
+        </v-btn>
 
-          <SkuUpload :product="productInfo" @refresh="init" />
+        <SkuUpload :product="productInfo" @refresh="init" />
 
-          <v-switch
-            v-model="check"
-            label="有效SKU"
-            class="pl-5 pt-6"
-          ></v-switch>
-        </v-toolbar>
-        <v-toolbar flat v-else-if="tabs == 1" :key="2">
-          <v-btn small depressed color="primary" @click="addManufacturerButton">
-            新增厂家信息
-          </v-btn>
+        <v-switch v-model="check" label="有效SKU" class="pl-5 pt-6"></v-switch>
+      </v-toolbar>
+      <v-toolbar flat v-else-if="tabs == 1" :key="2">
+        <v-btn small depressed color="primary" @click="addManufacturerButton">
+          新增厂家信息
+        </v-btn>
 
-          <!-- <v-switch v-model="showRecipientInfo" class="pl-5 pt-5">
+        <!-- <v-switch v-model="showRecipientInfo" class="pl-5 pt-5">
             <template v-slot:label>
               <span class="text-body-2 mt-1">收款信息</span>
             </template>
@@ -67,33 +60,46 @@
             </template>
           </v-switch> -->
 
-          <v-btn small depressed class="ml-2">
-            <v-icon small class="mr-1">
-              mdi-export
-            </v-icon>
-            <span class="" color=""> 导出 </span>
-          </v-btn>
-          <v-btn small depressed class="ml-2" @click="showRecipientInfo = !showRecipientInfo">
-            <v-icon small class="mr-1">
-              {{showRecipientInfo ? "mdi-checkbox-marked-outline" : "mdi-checkbox-blank-outline"}}
-            </v-icon>
-            <span> 显示收款信息 </span>
-          </v-btn>
-          <v-btn small depressed class="ml-2" @click="showDeliveryInfo = !showDeliveryInfo">
-            <v-icon small class="mr-1">
-              {{showDeliveryInfo ? "mdi-checkbox-marked-outline" : "mdi-checkbox-blank-outline"}}
-            </v-icon>
-            <span> 显示退货信息 </span>
-          </v-btn>
-
-          
-        </v-toolbar>
-      </v-tabs>
+        <v-btn small depressed class="ml-2">
+          <v-icon small class="mr-1"> mdi-export </v-icon>
+          <span class="" color=""> 导出 </span>
+        </v-btn>
+        <v-btn
+          small
+          depressed
+          class="ml-2"
+          @click="showRecipientInfo = !showRecipientInfo"
+        >
+          <v-icon small class="mr-1">
+            {{
+              showRecipientInfo
+                ? "mdi-checkbox-marked-outline"
+                : "mdi-checkbox-blank-outline"
+            }}
+          </v-icon>
+          <span> 显示收款信息 </span>
+        </v-btn>
+        <v-btn
+          small
+          depressed
+          class="ml-2"
+          @click="showDeliveryInfo = !showDeliveryInfo"
+        >
+          <v-icon small class="mr-1">
+            {{
+              showDeliveryInfo
+                ? "mdi-checkbox-marked-outline"
+                : "mdi-checkbox-blank-outline"
+            }}
+          </v-icon>
+          <span> 显示退货信息 </span>
+        </v-btn>
+      </v-toolbar>
       <v-expand-transition>
         <v-tabs-items v-model="tabs" v-if="itemShow">
           <v-tab-item>
             <v-data-table
-            v-model="selected"
+              v-model="selected"
               loading-text="加载中... 请稍后"
               no-data-text="空"
               :headers="headers"
@@ -145,10 +151,10 @@
               }"
             >
               <template v-slot:[`item.freight`]="{ item }">
-                {{ item.freightToPayment == 0 ? item.freight + " ￥" : "" }}
+                {{ !item.freightToPayment ? item.freight + " ￥" : "" }}
               </template>
               <template v-slot:[`item.extraRatio`]="{ item }">
-                {{ item.freightToPayment == 0 ? item.extraRatio + " %" : "" }}
+                {{ !item.freightToPayment ? item.extraRatio + " %" : "" }}
               </template>
               <template v-slot:[`item.freightToPayment`]="{ item }">
                 {{
@@ -620,7 +626,7 @@ export default {
 
   data() {
     return {
-      selected:[],
+      selected: [],
       show: false,
       itemShow: false,
 
@@ -780,8 +786,8 @@ export default {
   },
 
   methods: {
-    showselect(){
-console.log(this.selected)
+    showselect() {
+      console.log(this.selected);
     },
     parseDate(date) {
       return javaUTCDateToString(date);
@@ -971,14 +977,14 @@ console.log(this.selected)
 
     sureDeleteSkuButton() {
       this.deleteSkuDialog = false;
-      for (let i = 0; i < this.deleteSkuItem.length; i ++){
-      deleteSku({ uid: this.deleteSkuItem[i].uid })
-        .then((res) => {
-          console.log(res);
-          this.global.infoAlert(res.data);
-          this.init();
-        })
-        .catch(() => {});
+      for (let i = 0; i < this.deleteSkuItem.length; i++) {
+        deleteSku({ uid: this.deleteSkuItem[i].uid })
+          .then((res) => {
+            console.log(res);
+            this.global.infoAlert(res.data);
+            this.init();
+          })
+          .catch(() => {});
       }
     },
 

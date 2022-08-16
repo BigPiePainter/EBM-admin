@@ -79,18 +79,7 @@ class Http {
 
   _errorHandle(data) {
     if (data.constructor.name == "AxiosError") {
-      Vue.prototype.$toast.error(data.code.toString(), {
-        position: "top-right",
-        timeout: 6000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: false,
-        hideProgressBar: true,
-        closeButton: "button",
-        icon: true,
-      });
+      Vue.prototype.global.errorAlert(data.code.toString())
     }
   }
 }
