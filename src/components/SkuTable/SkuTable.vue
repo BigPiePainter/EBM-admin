@@ -53,9 +53,6 @@
         </v-toolbar>
         <v-toolbar flat v-else-if="tabs == 1" :key="2">
           <v-btn small depressed color="primary" @click="addManufacturerButton">
-            <v-icon small class="mr-1">
-              mdi-plus
-            </v-icon>
             新增厂家信息
           </v-btn>
 
