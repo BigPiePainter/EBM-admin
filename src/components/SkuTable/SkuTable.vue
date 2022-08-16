@@ -43,7 +43,7 @@
             导出
           </v-btn>
 
-          <SkuUpload :product="productInfo" />
+          <SkuUpload :product="productInfo" @refresh="init"/>
         </v-toolbar>
         <v-toolbar flat v-else-if="tabs == 1" :key="2">
           <v-spacer />

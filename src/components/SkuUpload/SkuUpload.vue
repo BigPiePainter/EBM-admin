@@ -50,49 +50,41 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="loading" fullscreen persistent>
+    <v-dialog v-model="loading" fullscreen persistent transition="none">
       <v-overlay :value="true">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
     </v-dialog>
-    <v-scale-transition>
-      <v-dialog
-        v-if="checkInfoDialog"
-        v-model="checkInfoDialog"
-        fullscreen
-        class="checkInfo"
-        persistent
-      >
-        <div class="topBar">
-          <v-toolbar dark color="primary" dense>
-            <v-btn icon dark @click="cancel" :disabled="this.uploading">
-              <v-icon>mdi-close</v-icon>
+    <v-dialog v-model="checkInfoDialog" fullscreen class="checkInfo" persistent>
+      <div class="topBar">
+        <v-toolbar dark color="primary" dense>
+          <v-btn icon dark @click="cancel" :disabled="this.uploading">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>
+            {{
+              `${product.id}   ${product.productName}（${
+                global.categoryIdToName[product.firstCategory]
+              }）SKU上传检索`
+            }}
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn dark text> {{ wrong + " 格式错误" }}</v-btn>
+            <v-btn
+              dark
+              text
+              @click="upload"
+              :disabled="wrong > 0"
+              :loading="uploading"
+            >
+              确认上传
             </v-btn>
-            <v-toolbar-title>
-              {{
-                `${product.id}   ${product.productName}（${
-                  global.categoryIdToName[product.firstCategory]
-                }）SKU上传检索`
-              }}
-            </v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn dark text> {{ wrong + " 格式错误" }}</v-btn>
-              <v-btn
-                dark
-                text
-                @click="upload"
-                :disabled="wrong > 0"
-                :loading="uploading"
-              >
-                确认上传
-              </v-btn>
-            </v-toolbar-items>
-          </v-toolbar>
-        </div>
-        <div id="x-spreadsheet"></div>
-      </v-dialog>
-    </v-scale-transition>
+          </v-toolbar-items>
+        </v-toolbar>
+      </div>
+      <div id="x-spreadsheet"></div>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -129,10 +121,15 @@ export default {
       wrong: 0,
 
       uploading: false,
+
+      xs: null,
     };
   },
   mounted() {
     this.status = "点击 & 拖拽上传SKU信息";
+  },
+  created(){
+    console.log("created")
   },
   watch: {
     hover(value) {
@@ -147,7 +144,7 @@ export default {
   },
   methods: {
     downloadModel(){
-      window.open('/sku_upload_model.xlsx');
+      window.open('/SKU导入模板.xlsx');
     },
     upload() {
       this.uploading = true;
@@ -174,6 +171,7 @@ export default {
           this.uploading = false;
           this.checkInfoDialog = false;
           this.global.infoAlert("泼发EBC：" + res.data);
+          this.$emit("refresh")
         })
         .catch(() => {
           this.uploading = false;
@@ -490,35 +488,40 @@ export default {
     },
 
     dataInit(data) {
+
       Spreadsheet.locale("zh-cn", zhCN);
       console.log(data);
 
       this.$nextTick(() => {
-        var xs = new Spreadsheet("#x-spreadsheet", {
-          showToolbar: false,
-          showGrid: true,
-          showContextmenu: false,
-          view: {
-            height: () => document.documentElement.clientHeight - 48,
-            width: () => document.documentElement.clientWidth,
-          },
-        })
-          .loadData(data)
-          .change((cdata) => {
-            console.log(cdata);
-            console.log(">>>", xs.getData());
+        if (!this.xs) {
+          this.xs = new Spreadsheet("#x-spreadsheet", {
+            showToolbar: false,
+            showGrid: true,
+            showContextmenu: false,
+            view: {
+              height: () => document.documentElement.clientHeight - 48,
+              width: () => document.documentElement.clientWidth,
+            },
           });
+        }
 
-        var cellSellected;
-        xs.on("cell-selected", (cell, ri, ci) => {
-          cellSellected = cell;
-          console.log("cell:", cell, ", ri:", ri, ", ci:", ci);
-        }).on("cell-edited", (text, ri, ci) => {
-          console.log("text:", text, ", ri: ", ri, ", ci:", ci);
-          this.cellCheck(cellSellected, ri, ci);
+        this.xs.loadData(data).change((cdata) => {
+          console.log(cdata);
+          console.log(">>>", this.xs.getData());
         });
 
-        xs.reRender();
+        var cellSellected;
+        this.xs
+          .on("cell-selected", (cell, ri, ci) => {
+            cellSellected = cell;
+            console.log("cell:", cell, ", ri:", ri, ", ci:", ci);
+          })
+          .on("cell-edited", (text, ri, ci) => {
+            console.log("text:", text, ", ri: ", ri, ", ci:", ci);
+            this.cellCheck(cellSellected, ri, ci);
+          });
+
+        this.xs.reRender();
       });
     },
   },
