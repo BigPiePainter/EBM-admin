@@ -128,6 +128,9 @@ export default {
   mounted() {
     this.status = "点击 & 拖拽上传SKU信息";
   },
+  created(){
+    console.log("created")
+  },
   watch: {
     hover(value) {
       this.status = value ? "松开上传" : "点击 & 拖拽上传SKU信息";
@@ -141,7 +144,7 @@ export default {
   },
   methods: {
     downloadModel(){
-      window.open('/sku_upload_model.xlsx');
+      window.open('/SKU导入模板.xlsx');
     },
     upload() {
       this.uploading = true;
