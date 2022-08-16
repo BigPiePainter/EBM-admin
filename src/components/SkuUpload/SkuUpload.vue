@@ -45,7 +45,7 @@
         </v-expand-transition>
 
         <v-card-actions>
-          <v-btn color="blue lighten-2" text> 下载SKU导入模板 </v-btn>
+          <v-btn color="blue lighten-2" text @click="downloadModel"> 下载SKU导入模板 </v-btn>
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
@@ -140,6 +140,9 @@ export default {
     },
   },
   methods: {
+    downloadModel(){
+      window.open('/sku_upload_model.xlsx');
+    },
     upload() {
       this.uploading = true;
 
