@@ -416,6 +416,8 @@
                   locale="zh-cn"
                   first-day-of-week="1"
                   :day-format="dayFormat"
+                  min="2021-01-01"
+                  :max="parseDate(new Date())"
                 >
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="datePicker = false">
@@ -517,6 +519,8 @@ import { loadProducts } from "@/settings/product";
 import { getClass } from "@/settings/product";
 
 import { getSubUsers } from "@/settings/user";
+
+import { javaUTCDateToString } from "@/libs/utils";
 
 import SkuTable from "@/components/SkuTable/SkuTable";
 //import SelectDialog from "@/components/SelectDialog";
@@ -655,6 +659,9 @@ export default {
   },
 
   methods: {
+    parseDate(time) {
+      return javaUTCDateToString(time);
+    },
     dayFormat(date) {
       return Number(date.split("-")[2]);
     },

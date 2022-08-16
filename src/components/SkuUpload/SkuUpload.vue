@@ -180,23 +180,9 @@ export default {
         });
     },
 
-    showInfo(text) {
-      this.$toast.info(text, {
-        position: "top-right",
-        timeout: 6000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: false,
-        hideProgressBar: true,
-        closeButton: "button",
-        icon: true,
-      });
-    },
     cancel() {
       this.checkInfoDialog = false;
-      this.showInfo("泼发EBC：取消上传");
+      this.global.infoAlert("泼发EBC：取消上传");
     },
     dragenter() {
       this.maxWidth = 550;
@@ -219,7 +205,7 @@ export default {
 
       if (event.dataTransfer.files.length > 1) {
         console.log("拦截");
-        this.showInfo("泼发EBC：拖拽文件数量过多");
+        this.global.infoAlert("泼发EBC：拖拽文件数量过多");
         return;
       }
 
@@ -231,7 +217,7 @@ export default {
       console.log(this.file);
       if (!this.file.name.endsWith(".xlsx")) {
         console.log("拦截");
-        this.showInfo("泼发EBC: 只支持xlsx格式");
+        this.global.infoAlert("泼发EBC: 只支持xlsx格式");
         return;
       }
 

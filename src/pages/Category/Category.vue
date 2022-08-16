@@ -351,6 +351,8 @@
                   locale="zh-cn"
                   first-day-of-week="1"
                   :day-format="dayFormat"
+                  min="2021-01-01"
+                  :max="parseDate(new Date())"
                 >
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="datePicker = false">
