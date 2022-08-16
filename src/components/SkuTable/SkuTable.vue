@@ -16,6 +16,17 @@
         </v-tab>
         <v-toolbar flat v-if="tabs == 0" :key="1">
           <v-spacer />
+                <v-btn
+                  small
+                  depressed
+                  outlined
+                  color="red lighten-2"
+                  @click="deleteSku"
+                  class="ml-1"
+                >
+                  <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
+                  删除
+                </v-btn>
           <v-switch
             v-model="check"
             label="有效SKU"
@@ -55,11 +66,15 @@
         <v-tabs-items v-model="tabs" v-if="itemShow">
           <v-tab-item>
             <v-data-table
+            v-model="selected"
               loading-text="加载中... 请稍后"
               no-data-text="空"
               :headers="headers"
+              show-select
+              @click:row="showselect"
               :items="check ? validSkuInfos : skuInfos"
               :loading="loading"
+              item-key="uid"
               :hide-default-footer="
                 (check ? validSkuInfos : skuInfos).length <= 10
               "
@@ -84,20 +99,6 @@
               </template>
               <template v-slot:[`item.skuCost`]="{ item }">
                 {{ item.skuCost }} ￥
-              </template>
-
-              <template v-slot:[`item.actions`]="{ item }">
-                <v-btn
-                  small
-                  depressed
-                  outlined
-                  color="red lighten-2"
-                  @click="deleteSku(item)"
-                  class="ml-1"
-                >
-                  <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
-                  删除
-                </v-btn>
               </template>
             </v-data-table>
           </v-tab-item>
@@ -592,13 +593,14 @@ export default {
 
   data() {
     return {
+      selected:[],
       show: false,
       itemShow: false,
 
       tabs: 0,
 
       deleteSkuDialog: false, //删除SKU弹框
-      deleteSkuItem: {}, //删除信息
+      deleteSkuItem: [], //删除信息
       deleteSkuItemParse: {}, //删
 
       deleteAscriptionDialog: false, //删除商品归属弹框
@@ -751,6 +753,9 @@ export default {
   },
 
   methods: {
+    showselect(){
+console.log(this.selected)
+    },
     parseDate(date) {
       return javaUTCDateToString(date);
     },
@@ -908,45 +913,46 @@ export default {
       );
     },
 
-    deleteSku(item) {
-      console.log(item);
-
-      this.deleteSkuItem = { ...item };
-      this.deleteSkuItemParse = [
-        {
-          key: "SKUID",
-          value: item.skuId,
-        },
-        {
-          key: "售卖价",
-          value: item.skuPrice,
-        },
-        {
-          key: "单个成本",
-          value: item.skuCost,
-        },
-        {
-          key: "价格开始时间",
-          value: item.calculatedStartTime,
-        },
-        {
-          key: "创建时间",
-          value: item.calculatedCreateTime,
-        },
-      ];
+    deleteSku() {
+      console.log();
+      this.deleteSkuItem = this.selected;
+      // this.deleteSkuItemParse = [
+      //   {
+      //     key: "SKUID",
+      //     value: item.skuId,
+      //   },
+      //   {
+      //     key: "售卖价",
+      //     value: item.skuPrice,
+      //   },
+      //   {
+      //     key: "单个成本",
+      //     value: item.skuCost,
+      //   },
+      //   {
+      //     key: "价格开始时间",
+      //     value: item.calculatedStartTime,
+      //   },
+      //   {
+      //     key: "创建时间",
+      //     value: item.calculatedCreateTime,
+      //   },
+      // ];
 
       this.deleteSkuDialog = true;
     },
 
     sureDeleteSkuButton() {
       this.deleteSkuDialog = false;
-      deleteSku({ uid: this.deleteSkuItem.uid })
+      for (let i = 0; i < this.deleteSkuItem.length; i ++){
+      deleteSku({ uid: this.deleteSkuItem[i].uid })
         .then((res) => {
           console.log(res);
           this.global.infoAlert(res.data);
           this.init();
         })
         .catch(() => {});
+      }
     },
 
     deleteAscriptionButton(item) {
@@ -1127,4 +1133,5 @@ export default {
     }
   }
 }
+
 </style>
