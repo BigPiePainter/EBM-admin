@@ -43,23 +43,53 @@
             导出
           </v-btn>
 
-          <SkuUpload :product="productInfo" @refresh="init"/>
+          <SkuUpload :product="productInfo" @refresh="init" />
+
+          <v-switch
+            v-model="check"
+            label="有效SKU"
+            class="pl-5 pt-6"
+          ></v-switch>
         </v-toolbar>
         <v-toolbar flat v-else-if="tabs == 1" :key="2">
-          <v-spacer />
-          <v-switch dense v-model="showRecipientInfo" class="pr-5 pt-5">
-            <template v-slot:label>
-              <span class="text-body-2"> 收款信息 </span>
-            </template>
-          </v-switch>
-          <v-switch dense v-model="showDeliveryInfo" class="pr-5 pt-5">
-            <template v-slot:label>
-              <span class="text-body-2"> 退货信息 </span>
-            </template>
-          </v-switch>
-          <v-btn small color="primary" @click="addManufacturerButton">
+          <v-btn small depressed color="primary" @click="addManufacturerButton">
+            <v-icon small class="mr-1">
+              mdi-plus
+            </v-icon>
             新增厂家信息
           </v-btn>
+
+          <!-- <v-switch v-model="showRecipientInfo" class="pl-5 pt-5">
+            <template v-slot:label>
+              <span class="text-body-2 mt-1">收款信息</span>
+            </template>
+          </v-switch>
+          <v-switch v-model="showDeliveryInfo" class="pl-5 pt-5">
+            <template v-slot:label>
+              <span class="text-body-2 mt-1">退货信息</span>
+            </template>
+          </v-switch> -->
+
+          <v-btn small depressed class="ml-2">
+            <v-icon small class="mr-1">
+              mdi-export
+            </v-icon>
+            <span class="" color=""> 导出 </span>
+          </v-btn>
+          <v-btn small depressed class="ml-2" @click="showRecipientInfo = !showRecipientInfo">
+            <v-icon small class="mr-1">
+              {{showRecipientInfo ? "mdi-checkbox-marked-outline" : "mdi-checkbox-blank-outline"}}
+            </v-icon>
+            <span> 显示收款信息 </span>
+          </v-btn>
+          <v-btn small depressed class="ml-2" @click="showDeliveryInfo = !showDeliveryInfo">
+            <v-icon small class="mr-1">
+              {{showDeliveryInfo ? "mdi-checkbox-marked-outline" : "mdi-checkbox-blank-outline"}}
+            </v-icon>
+            <span> 显示退货信息 </span>
+          </v-btn>
+
+          
         </v-toolbar>
       </v-tabs>
       <v-expand-transition>
