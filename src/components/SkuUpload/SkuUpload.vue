@@ -10,7 +10,11 @@
       <v-card>
         <v-card-title>
           <p>
-            {{ `${product.productName}（${product.firstCategory}）上传SKU` }}
+            {{
+              `${product.productName}（${
+                global.categoryIdToName[product.firstCategory]
+              }）上传SKU`
+            }}
           </p>
         </v-card-title>
 
@@ -19,6 +23,7 @@
           class="d-flex align-center justify-center mx-10 my-5 transition-swing"
           :min-height="180"
           :color="hover ? '#fafafa' : '#fff'"
+          @click.stop="showFileSelect = true"
           @dragenter.prevent="dragenter($event)"
           @dragleave.prevent="dragleave($event)"
           @drop.prevent="drop($event)"
@@ -27,6 +32,17 @@
         >
           <h5>{{ status }}</h5>
         </v-card>
+
+        <v-expand-transition>
+          <v-file-input
+            v-if="showFileSelect"
+            accept=".xlsx"
+            prepend-icon="mdi-file-excel"
+            class="mx-8"
+            color="blue-grey lighten-1"
+            v-model="fileSelect"
+          ></v-file-input>
+        </v-expand-transition>
 
         <v-card-actions>
           <v-btn color="blue lighten-2" text @click="downloadModel"> 下载SKU导入模板 </v-btn>
@@ -49,18 +65,26 @@
       >
         <div class="topBar">
           <v-toolbar dark color="primary" dense>
-            <v-btn icon dark @click="cancel">
+            <v-btn icon dark @click="cancel" :disabled="this.uploading">
               <v-icon>mdi-close</v-icon>
             </v-btn>
             <v-toolbar-title>
               {{
-                `${product.id}   ${product.productName}（${product.firstCategory}）SKU上传检索`
+                `${product.id}   ${product.productName}（${
+                  global.categoryIdToName[product.firstCategory]
+                }）SKU上传检索`
               }}
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn dark text> {{ wrong + " 格式错误" }}</v-btn>
-              <v-btn dark text @click="upload" :disabled="wrong > 0">
+              <v-btn
+                dark
+                text
+                @click="upload"
+                :disabled="wrong > 0"
+                :loading="uploading"
+              >
                 确认上传
               </v-btn>
             </v-toolbar-items>
@@ -99,15 +123,26 @@ export default {
 
       loading: false,
 
+      showFileSelect: false,
+      fileSelect: null,
+
       wrong: 0,
+
+      uploading: false,
     };
   },
   mounted() {
-    this.status = "拖拽上传SKU信息";
+    this.status = "点击 & 拖拽上传SKU信息";
   },
   watch: {
     hover(value) {
-      this.status = value ? "松开上传" : "拖拽上传SKU信息";
+      this.status = value ? "松开上传" : "点击 & 拖拽上传SKU信息";
+    },
+    fileSelect(file) {
+      if (file) {
+        this.file = file;
+        this.fileProcess();
+      }
     },
   },
   methods: {
@@ -115,6 +150,8 @@ export default {
       window.open('/sku_upload_model.xlsx');
     },
     upload() {
+      this.uploading = true;
+
       var dataii = [];
       //处理data，数据展开
 
@@ -134,36 +171,21 @@ export default {
       console.log("done");
       addSkus({ data: dataii })
         .then((res) => {
-          this.loading = false;
+          this.uploading = false;
+          this.checkInfoDialog = false;
           this.global.infoAlert("泼发EBC：" + res.data);
-          //刷新页面数据
-          //this.loadData();
         })
         .catch(() => {
-          this.loading = false;
+          this.uploading = false;
           setTimeout(() => {
             this.global.infoAlert("泼发EBC：上传失败");
           }, 100);
         });
     },
 
-    showInfo(text) {
-      this.$toast.info(text, {
-        position: "top-right",
-        timeout: 6000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: false,
-        hideProgressBar: true,
-        closeButton: "button",
-        icon: true,
-      });
-    },
     cancel() {
       this.checkInfoDialog = false;
-      this.showInfo("泼发EBC：取消上传");
+      this.global.infoAlert("泼发EBC：取消上传");
     },
     dragenter() {
       this.maxWidth = 550;
@@ -186,16 +208,19 @@ export default {
 
       if (event.dataTransfer.files.length > 1) {
         console.log("拦截");
-        this.showInfo("泼发EBC：拖拽文件数量过多");
+        this.global.infoAlert("泼发EBC：拖拽文件数量过多");
         return;
       }
 
       this.file = event.dataTransfer.files[0];
-      console.log(this.file);
+      this.fileProcess();
+    },
 
+    fileProcess() {
+      console.log(this.file);
       if (!this.file.name.endsWith(".xlsx")) {
         console.log("拦截");
-        this.showInfo("泼发EBC: 只支持xlsx格式");
+        this.global.infoAlert("泼发EBC: 只支持xlsx格式");
         return;
       }
 
@@ -325,7 +350,7 @@ export default {
         reader.readAsArrayBuffer(this.file);
       }, 50);
     },
-    
+
     cellCheck(cell, row, col) {
       if (!cell) return;
 

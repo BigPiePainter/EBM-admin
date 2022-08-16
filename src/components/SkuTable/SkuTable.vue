@@ -36,6 +36,16 @@
         </v-toolbar>
         <v-toolbar flat v-else-if="tabs == 1" :key="2">
           <v-spacer />
+          <v-switch dense v-model="showRecipientInfo" class="pr-5 pt-5">
+            <template v-slot:label>
+              <span class="text-body-2"> 收款信息 </span>
+            </template>
+          </v-switch>
+          <v-switch dense v-model="showDeliveryInfo" class="pr-5 pt-5">
+            <template v-slot:label>
+              <span class="text-body-2"> 退货信息 </span>
+            </template>
+          </v-switch>
           <v-btn small color="primary" @click="addManufacturerButton">
             新增厂家信息
           </v-btn>
@@ -96,7 +106,7 @@
               calculate-widths
               loading-text="加载中... 请稍后"
               no-data-text="空"
-              :headers="manufacturerHeaders"
+              :headers="calculatedManufacturerHeaders"
               :items="manufacturerInfos"
               :loading="loading"
               :hide-default-footer="manufacturerInfos.length <= 10"
@@ -229,7 +239,9 @@
     <!-- 删除商品归属信息 Dialog -->
     <v-dialog v-model="deleteAscriptionDialog" max-width="360px">
       <v-card>
-        <v-card-title class="text-subtitle-1"> 删除这条归属记录？ </v-card-title>
+        <v-card-title class="text-subtitle-1">
+          删除这条归属记录？
+        </v-card-title>
 
         <div class="mt-2">
           <TableKV :items="deleteAscriptionItemParse" />
@@ -453,6 +465,8 @@
                     locale="zh-cn"
                     first-day-of-week="1"
                     :day-format="dayFormat"
+                    min="2021-01-01"
+                    :max="parseDate(new Date())"
                   >
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="datePicker = false">
@@ -693,6 +707,8 @@ export default {
       loading: false,
 
       check: true,
+      showRecipientInfo: false,
+      showDeliveryInfo: false,
 
       done: [false, false, false],
     };
@@ -711,6 +727,26 @@ export default {
       console.log(pass);
 
       return !pass;
+    },
+    calculatedManufacturerHeaders: function () {
+      var headers = this.manufacturerHeaders;
+      if (!this.showRecipientInfo) {
+        headers = headers.filter(
+          (i) =>
+            i.value != "manufacturerPaymentMethod" &&
+            i.value != "manufacturerPaymentName" &&
+            i.value != "manufacturerPaymentId"
+        );
+      }
+      if (!this.showDeliveryInfo) {
+        headers = headers.filter(
+          (i) =>
+            i.value != "manufacturerRecipient" &&
+            i.value != "manufacturerAddress" &&
+            i.value != "manufacturerPhone"
+        );
+      }
+      return headers;
     },
   },
 
@@ -822,11 +858,12 @@ export default {
 
     download() {
       var skuInfoCopy = [];
-      for (let sku of this.skuInfos) {
+
+      for (let sku of this.check ? this.validSkuInfos : this.skuInfos) {
         console.log(sku);
         skuInfoCopy.push({
-          productId: sku.productId,
-          skuId: sku.skuId,
+          productId: sku.productId + "",
+          skuId: sku.skuId + "",
           skuName: sku.skuName,
           skuPrice: sku.skuPrice,
           skuCost: sku.skuCost,
@@ -849,34 +886,19 @@ export default {
       /* fix headers */
       XLSX.utils.sheet_add_aoa(
         worksheet,
-        [
-          [
-            "商品ID",
-            "SKUID",
-            "SKU名称",
-            "售卖价",
-            "成本",
-            "价格开始时间",
-            //"价格截止时间",
-            "销售子订单条数",
-            "销售数",
-          ],
-        ],
+        [["商品ID", "SKUID", "SKU名称", "售卖价", "成本", "价格开始时间"]],
         {
           origin: "A1",
         }
       );
 
       worksheet["!cols"] = [
-        { wch: 10 },
-        { wch: 10 },
-        { wch: 7 },
-        { wch: 10 },
-        { wch: 5 },
-        { wch: 13 },
-        //{ wch: 13 },
         { wch: 14 },
-        { wch: 7 },
+        { wch: 14 },
+        { wch: 70 },
+        { wch: 8 },
+        { wch: 8 },
+        { wch: 13 },
       ];
 
       /* create an XLSX file and try to save to Presidents.xlsx */
@@ -929,9 +951,9 @@ export default {
 
     deleteAscriptionButton(item) {
       console.log(item);
-      if (!this.global.user.permission.a.da){
-        this.global.infoAlert("泼发EBC：权限不足")
-        return
+      if (!this.global.user.permission.a.da) {
+        this.global.infoAlert("泼发EBC：权限不足");
+        return;
       }
 
       this.deleteAscriptionItem = { ...item };
