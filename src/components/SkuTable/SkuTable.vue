@@ -27,7 +27,7 @@
             depressed
             class="ml-2"
             v-model="check"
-            @click="checkIfValidSku"
+            @click="check = !check"
           >
             <v-icon small class="mr-1">
               {{
@@ -38,22 +38,57 @@
             </v-icon>
             <span> 有效SKU </span>
           </v-btn>
-          <v-btn small depressed class="ml-2" >
-            <v-icon small> fa-list </v-icon>
-            <span>批量操作</span>
-          </v-btn>
-          <v-spacer />
+
           <v-btn
             small
             depressed
-            outlined
-            color="red lighten-2"
-            @click="deleteSku"
-            class="ml-1"
+            class="ml-2"
+            v-model="isMutiple"
+            @click="isMutiple = !isMutiple"
           >
-            删除
+            <v-icon small class="mr-1">
+              {{
+                isMutiple
+                  ? "mdi-checkbox-marked-outline"
+                  : "mdi-checkbox-blank-outline"
+              }}
+            </v-icon>
+            <span> 批量操作 </span>
           </v-btn>
-          
+          <!-- 
+          <v-btn
+            v-if="!isMutiple"
+            small
+            depressed
+            class="ml-2"
+          >
+            <v-icon small> fa-list </v-icon>
+            <span></span>
+          </v-btn>
+          <v-btn
+            v-else
+            small
+            depressed
+            class="ml-2"
+            @click="isMutiple = !isMutiple"
+          >
+            <span>取消</span>
+          </v-btn> -->
+
+          <v-spacer />
+          <template>
+            <v-btn
+              small
+              v-if="isMutiple && skuSelected.length > 0"
+              depressed
+              outlined
+              color="red lighten-2"
+              @click="deleteSku"
+              class="ml-1"
+            >
+              删除
+            </v-btn>
+          </template>
         </v-toolbar>
         <v-toolbar flat v-else-if="tabs == 1" :key="2">
           <v-btn small depressed color="primary" @click="addManufacturerButton">
@@ -115,7 +150,7 @@
               loading-text="加载中... 请稍后"
               no-data-text="空"
               :headers="headers"
-              show-select
+              :show-select="isMutiple"
               @click:row="showselect"
               :items="check ? validSkuInfos : skuInfos"
               :loading="loading"
@@ -648,6 +683,7 @@ export default {
 
   data() {
     return {
+      isMutiple: false,
       skuSelected: [],
       show: false,
       itemShow: false,
@@ -967,10 +1003,6 @@ export default {
         workbook,
         `${this.productInfo.owner}-${this.productInfo.productName}-${this.productInfo.id}.xlsx`
       );
-    },
-
-    checkIfValidSku() {
-      this.check = !this.check;
     },
 
     deleteSku() {
