@@ -15,41 +15,45 @@
           <span class="text-body-1">内部归属</span>
         </v-tab>
         <v-toolbar flat v-if="tabs == 0" :key="1">
-          <v-spacer />
-                <v-btn
-                  small
-                  depressed
-                  outlined
-                  color="red lighten-2"
-                  @click="deleteSku"
-                  class="ml-1"
-                >
-                  <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
-                  删除
-                </v-btn>
-          <v-switch
-            v-model="check"
-            label="有效SKU"
-            class="pr-5 pt-6"
-          ></v-switch>
-
-          <v-btn
-            color="green lighten-2"
-            small
-            dark
-            @click="download"
-            class="mr-3"
-          >
-            导出
-          </v-btn>
-
           <SkuUpload :product="productInfo" @refresh="init" />
 
-          <v-switch
+          <v-btn small depressed class="ml-2" @click="download">
+            <v-icon small class="mr-1"> mdi-export </v-icon>
+            <span class="" color=""> 导出 </span>
+          </v-btn>
+
+          <v-btn
+            small
+            depressed
+            class="ml-2"
             v-model="check"
-            label="有效SKU"
-            class="pl-5 pt-6"
-          ></v-switch>
+            @click="checkIfValidSku"
+          >
+            <v-icon small class="mr-1">
+              {{
+                check
+                  ? "mdi-checkbox-marked-outline"
+                  : "mdi-checkbox-blank-outline"
+              }}
+            </v-icon>
+            <span> 有效SKU </span>
+          </v-btn>
+          <v-btn small depressed class="ml-2" >
+            <v-icon small> fa-list </v-icon>
+            <span>批量操作</span>
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            small
+            depressed
+            outlined
+            color="red lighten-2"
+            @click="deleteSku"
+            class="ml-1"
+          >
+            删除
+          </v-btn>
+          
         </v-toolbar>
         <v-toolbar flat v-else-if="tabs == 1" :key="2">
           <v-btn small depressed color="primary" @click="addManufacturerButton">
@@ -68,32 +72,46 @@
           </v-switch> -->
 
           <v-btn small depressed class="ml-2">
-            <v-icon small class="mr-1">
-              mdi-export
-            </v-icon>
+            <v-icon small class="mr-1"> mdi-export </v-icon>
             <span class="" color=""> 导出 </span>
           </v-btn>
-          <v-btn small depressed class="ml-2" @click="showRecipientInfo = !showRecipientInfo">
+          <v-btn
+            small
+            depressed
+            class="ml-2"
+            @click="showRecipientInfo = !showRecipientInfo"
+          >
             <v-icon small class="mr-1">
-              {{showRecipientInfo ? "mdi-checkbox-marked-outline" : "mdi-checkbox-blank-outline"}}
+              {{
+                showRecipientInfo
+                  ? "mdi-checkbox-marked-outline"
+                  : "mdi-checkbox-blank-outline"
+              }}
             </v-icon>
             <span> 显示收款信息 </span>
           </v-btn>
-          <v-btn small depressed class="ml-2" @click="showDeliveryInfo = !showDeliveryInfo">
+          <v-btn
+            small
+            depressed
+            class="ml-2"
+            @click="showDeliveryInfo = !showDeliveryInfo"
+          >
             <v-icon small class="mr-1">
-              {{showDeliveryInfo ? "mdi-checkbox-marked-outline" : "mdi-checkbox-blank-outline"}}
+              {{
+                showDeliveryInfo
+                  ? "mdi-checkbox-marked-outline"
+                  : "mdi-checkbox-blank-outline"
+              }}
             </v-icon>
             <span> 显示退货信息 </span>
           </v-btn>
-
-          
         </v-toolbar>
       </v-tabs>
       <v-expand-transition>
         <v-tabs-items v-model="tabs" v-if="itemShow">
           <v-tab-item>
             <v-data-table
-            v-model="selected"
+              v-model="skuSelected"
               loading-text="加载中... 请稍后"
               no-data-text="空"
               :headers="headers"
@@ -208,7 +226,6 @@
                 {{ global.userIdToNick[item.owner] }}
               </template>
               <template v-slot:[`item.startTime`]="{ item }">
-                <!-- {{ item.startTime == 0 ? "-" : parseDate(item.startTime) }} -->
                 {{ parseDate(item.startTime) }}
               </template>
 
@@ -221,7 +238,6 @@
                   @click="deleteAscriptionButton(item)"
                   class="ml-1"
                 >
-                  <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
                   删除
                 </v-btn>
               </template>
@@ -244,17 +260,29 @@
     <!-- 删除SKU Dialog -->
     <v-dialog v-model="deleteSkuDialog" max-width="450px">
       <v-card>
-        <v-card-title class="text-subtitle-1">{{
-          deleteSkuItem.skuName
-        }}</v-card-title>
-
-        <!-- <div class="mt-2">
+        <div class="mt-2">
           <TableKV :items="deleteSkuItemParse" />
-        </div> -->
+        </div>
 
         <v-card-actions>
           <v-spacer />
           <v-btn color="blue darken-1" text @click="deleteSkuDialog = false"
+            >取消</v-btn
+          >
+          <v-btn color="red darken-1" text @click="sureDeleteSkuButton">
+            <v-icon small class="mr-1"> mdi-delete </v-icon>删除</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="mutipleDeleteDialog" max-width="450px">
+      <v-card>
+        <v-card-title class="text-subtitle-1">是否删除选中sku信息</v-card-title>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="blue darken-1" text @click="mutipleDeleteDialog = false"
             >取消</v-btn
           >
           <v-btn color="red darken-1" text @click="sureDeleteSkuButton">
@@ -620,14 +648,15 @@ export default {
 
   data() {
     return {
-      selected:[],
+      skuSelected: [],
       show: false,
       itemShow: false,
 
       tabs: 0,
 
       deleteSkuDialog: false, //删除SKU弹框
-      deleteSkuItem: [], //删除信息
+      mutipleDeleteDialog: false,
+      deleteSkuUid: [], //删除信息
       deleteSkuItemParse: {}, //删
 
       deleteAscriptionDialog: false, //删除商品归属弹框
@@ -780,8 +809,8 @@ export default {
   },
 
   methods: {
-    showselect(){
-console.log(this.selected)
+    showselect() {
+      console.log(this.skuSelected);
     },
     parseDate(date) {
       return javaUTCDateToString(date);
@@ -940,46 +969,55 @@ console.log(this.selected)
       );
     },
 
-    deleteSku() {
-      console.log();
-      this.deleteSkuItem = this.selected;
-      // this.deleteSkuItemParse = [
-      //   {
-      //     key: "SKUID",
-      //     value: item.skuId,
-      //   },
-      //   {
-      //     key: "售卖价",
-      //     value: item.skuPrice,
-      //   },
-      //   {
-      //     key: "单个成本",
-      //     value: item.skuCost,
-      //   },
-      //   {
-      //     key: "价格开始时间",
-      //     value: item.calculatedStartTime,
-      //   },
-      //   {
-      //     key: "创建时间",
-      //     value: item.calculatedCreateTime,
-      //   },
-      // ];
+    checkIfValidSku() {
+      this.check = !this.check;
+    },
 
-      this.deleteSkuDialog = true;
+    deleteSku() {
+      this.deleteSkuItemParse = [];
+      console.log(this.skuSelected);
+      this.deleteSkuUid = this.skuSelected.map((i) => i.uid);
+      if (this.deleteSkuUid.length == 1) {
+        this.deleteSkuItemParse = [
+          { key: "SKU名称", value: this.skuSelected[0].skuName },
+          {
+            key: "SKUID",
+            value: this.skuSelected[0].skuId,
+          },
+          {
+            key: "售卖价",
+            value: this.skuSelected[0].skuPrice,
+          },
+          {
+            key: "单个成本",
+            value: this.skuSelected[0].skuCost,
+          },
+          {
+            key: "价格开始时间",
+            value: this.skuSelected[0].calculatedStartTime,
+          },
+          {
+            key: "创建时间",
+            value: this.skuSelected[0].calculatedCreateTime,
+          },
+        ];
+        console.log(this.deleteSkuItemParse);
+        this.deleteSkuDialog = true;
+      } else {
+        this.mutipleDeleteDialog = true;
+      }
     },
 
     sureDeleteSkuButton() {
       this.deleteSkuDialog = false;
-      for (let i = 0; i < this.deleteSkuItem.length; i ++){
-      deleteSku({ uid: this.deleteSkuItem[i].uid })
+      deleteSku({ uids: this.deleteSkuUid.join() })
         .then((res) => {
           console.log(res);
           this.global.infoAlert(res.data);
           this.init();
         })
         .catch(() => {});
-      }
+      this.skuSelected = [];
     },
 
     deleteAscriptionButton(item) {
