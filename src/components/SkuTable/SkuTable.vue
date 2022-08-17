@@ -295,6 +295,12 @@
     <!-- 删除SKU Dialog -->
     <v-dialog v-model="deleteSkuDialog" max-width="450px">
       <v-card>
+        <div class="mx-5 pt-4">
+          <span>
+            {{ this.skuSelected[0] && this.skuSelected[0].skuName }}
+          </span>
+        </div>
+
         <div class="mt-2">
           <TableKV :items="deleteSkuItemParse" />
         </div>
@@ -1011,7 +1017,6 @@ export default {
       this.deleteSkuUid = this.skuSelected.map((i) => i.uid);
       if (this.deleteSkuUid.length == 1) {
         this.deleteSkuItemParse = [
-          { key: "SKU名称", value: this.skuSelected[0].skuName },
           {
             key: "SKUID",
             value: this.skuSelected[0].skuId,
