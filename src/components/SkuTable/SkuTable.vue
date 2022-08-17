@@ -86,7 +86,7 @@
               @click="deleteSku"
               class="ml-1"
             >
-              删除
+              删除{{skuSelected.length}}条
             </v-btn>
           </template>
         </v-toolbar>
@@ -723,7 +723,6 @@ export default {
         { text: "销售子订单条数", align: "start", value: "orderNum" },
         { text: "销售数", align: "start", value: "seleNum" },
         { text: "创建时间", align: "start", value: "calculatedCreateTime" },
-        { text: "操作", align: "start", value: "actions" },
       ],
       skuInfos: [],
       validSkuInfos: [],
