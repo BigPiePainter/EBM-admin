@@ -598,7 +598,12 @@ export default {
       addCategory({ name: this.editedItem.name })
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
-          this.loadData();
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllCategorys().then(() => {
+            this.loading = false;
+          });
         })
         .catch(() => {
           setTimeout(() => {
@@ -642,8 +647,14 @@ export default {
           this.global.infoAlert("泼发EBC：" + res.data);
           this.categoryDeleteDialog = false;
         })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllCategorys().then(() => {
+            this.loading = false;
+          });
+        })
         .catch((err) => {
-          console.log(err)
+          console.log(err);
           setTimeout(() => {
             this.global.infoAlert("泼发EBC： error");
           }, 100);
@@ -685,7 +696,12 @@ export default {
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
           this.deleteCategoryHistoryDialog = false;
-          this.loadData();
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllCategorys().then(() => {
+            this.loading = false;
+          });
         })
         .catch(() => {
           setTimeout(() => {
@@ -717,7 +733,12 @@ export default {
       editCategory(this.editedItem)
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
-          this.loadData();
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllCategorys().then(() => {
+            this.loading = false;
+          });
         })
         .catch(() => {
           setTimeout(() => {
@@ -734,10 +755,16 @@ export default {
       args.startTime && (args.startTime = args.startTime.replaceAll("-", "/"));
 
       console.log(args);
+      this.loading = true;
       addHistoryCategory(args)
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
-          this.loadData();
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllCategorys().then(() => {
+            this.loading = false;
+          });
         })
         .catch(() => {
           setTimeout(() => {
@@ -754,7 +781,12 @@ export default {
       editHistoryCategory(args)
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
-          this.loadData();
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllCategorys().then(() => {
+            this.loading = false;
+          });
         })
         .catch(() => {
           setTimeout(() => {
