@@ -59,6 +59,16 @@
                     depressed
                     outlined
                     color="green"
+                    @click.stop="deleteButton(item)"
+                    class="ml-1"
+                  >
+                    删除
+                  </v-btn>
+                  <v-btn
+                    small
+                    depressed
+                    outlined
+                    color="green"
                     @click.stop="editButton(item)"
                     class="ml-1"
                   >
@@ -204,6 +214,31 @@
           >
             <v-icon small class="mr-1"> mdi-delete </v-icon>删除</v-btn
           >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- 删除类目 dialog -->
+    <v-dialog v-model="categoryDeleteDialog">
+      <v-card>
+        <span>
+          是否删除此一级类目：{{
+            this.deleteCategory && this.deleteCategory.name
+          }}
+        </span>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="categoryDeleteDialog = false"
+          >
+            取消
+          </v-btn>
+          <v-btn color="blue darken-1" text @click="sureDeleteCategoryButton">
+            确定
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -415,6 +450,8 @@ import { addCategory } from "@/settings/category";
 import { editCategory } from "@/settings/category";
 import { addHistoryCategory } from "@/settings/category";
 import { editHistoryCategory } from "@/settings/category";
+import { deleteCategoryHistory } from "@/settings/category";
+import { deleteCategory } from "@/settings/category";
 import { javaUTCDateToString } from "@/libs/utils";
 
 export default {
@@ -438,6 +475,7 @@ export default {
       deleteCategoryHistoryItemParse: {},
 
       categoryChangeDialog: false,
+      categoryDeleteDialog: false,
 
       categoryHeaders: [
         { text: "一级类目", value: "name" },
@@ -583,6 +621,29 @@ export default {
       this.categoryInfoDialog = true;
     },
 
+    deleteButton(item) {
+      if (!this.global.user.permission.a.fc) {
+        this.global.infoAlert("泼发EBC：权限不足");
+        return;
+      }
+      this.deleteCategory = { ...item };
+      this.categoryDeleteDialog = true;
+    },
+
+    sureDeleteCategoryButton() {
+      deleteCategory({ uid: this.deleteCategory.uid })
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          this.categoryDeleteDialog = false;
+          this.loadData();
+        })
+        .catch(() => {
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC： error");
+          }, 100);
+        });
+    },
+
     deleteCategoryHistoryButton(item) {
       if (!this.global.user.permission.a.fc) {
         this.global.infoAlert("泼发EBC：权限不足");
@@ -613,7 +674,18 @@ export default {
     },
 
     sureDeleteCategoryHistoryButton() {
-      console.log("删除");
+      console.log(this.deleteCategoryHistoryItem.uid);
+      deleteCategoryHistory({ uid: this.deleteCategoryHistoryItem.uid })
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          this.deleteCategoryHistoryDialog = false;
+          this.loadData();
+        })
+        .catch(() => {
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC：error");
+          }, 100);
+        });
     },
 
     editCategorySaveButton() {
