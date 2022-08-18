@@ -1,7 +1,7 @@
 <template>
   <v-app-bar class="main-header" height="45" fixed color="primary" dense dark>
-    <v-btn icon class="ml-1" @click.stop="TOGGLE_DRAWER" large>
-      <template v-if="DRAWER_STATE">
+    <v-btn icon class="ml-1" @click.stop="setDrawer(!drawer)" large>
+      <template v-if="drawer">
         <v-icon small>mdi-arrow-left</v-icon>
       </template>
       <template v-else>
@@ -120,10 +120,10 @@
       </template>
       <v-list>
         <div class="text-h5 grey--text text--darken-3 px-4 pt-4">
-          {{global.user.nick}}
+          {{$store.state.user.nick}}
         </div>
         <div class="subtitle-2 primary--text font-weight-regular px-4">
-          {{global.user.username}}
+          {{$store.state.user.username}}
         </div>
         <div class="d-flex justify-center my-3">
           <v-btn
@@ -166,7 +166,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapMutations, mapState } from "vuex";
 import config from "../../config";
 
 export default {
@@ -237,14 +237,10 @@ export default {
   }),
   computed: {
     ...mapState(["drawer"]),
-    DRAWER_STATE: {
-      get() {
-        return this.drawer;
-      },
-    },
   },
   methods: {
-    ...mapActions(["TOGGLE_DRAWER"]),
+    ...mapMutations(["setDrawer"]),
+
     logOut: function () {
       localStorage.token = ""
       location.reload()

@@ -2,13 +2,13 @@
   <v-navigation-drawer
     app
     clipped
-    v-model="DRAWER_STATE"
-    :mini-variant="!DRAWER_STATE"
+    v-model="drawerState"
+    :mini-variant="!drawerState"
     :width="sidebarWidth"
     :permanent="$vuetify.breakpoint.mdAndUp"
     :temporary="$vuetify.breakpoint.smAndDown"
     :mini-variant-width="sidebarMinWidth"
-    :class="{ 'drawer-mini': !DRAWER_STATE }"
+    :class="{ 'drawer-mini': !drawerState }"
   >
     <v-list>
       <template v-for="(item, i) in items">
@@ -21,7 +21,7 @@
               <span
                 style="padding-left: 32px"
                 class="text-body-1 subheader"
-                :class="item.heading && DRAWER_STATE ? 'show ' : 'hide'"
+                :class="item.heading && drawerState ? 'show ' : 'hide'"
               >
                 {{ item.heading }}
               </span>
@@ -37,7 +37,7 @@
           ></v-divider>
 
           <v-list-group
-            v-else-if="item.children && DRAWER_STATE"
+            v-else-if="item.children && drawerState"
             color="primary"
             :key="item.title"
             v-model="item.model"
@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   props: {
@@ -120,7 +120,7 @@ export default {
           title: "商品管理",
           icon: "mdi-account-multiple",
           link: "/",
-          show: this.global.user.permission.a.a,
+          show: this.$store.state.user.permission.a.a,
           children: [
             {
               title: "商品清单",
@@ -144,7 +144,7 @@ export default {
           title: "订单管理",
           icon: "mdi-account-multiple",
           link: "",
-          show: this.global.user.permission.b.a,
+          show: this.$store.state.user.permission.b.a,
           children: [
             {
               title: "导入",
@@ -178,7 +178,7 @@ export default {
           title: "事业部管理",
           icon: "mdi-account-multiple",
           link: "/department",
-          show: this.global.user.permission.d.a,
+          show: this.$store.state.user.permission.d.a,
           children: [
             { title: "事业部", icon: "mdi-circle-small", link: "/department" },
           ],
@@ -188,7 +188,7 @@ export default {
           title: "组别管理",
           icon: "mdi-account-multiple",
           link: "/icons",
-          show: this.global.user.permission.e.a,
+          show: this.$store.state.user.permission.e.a,
           children: [
             {
               title: "组别",
@@ -202,7 +202,7 @@ export default {
           title: "员工管理",
           icon: "mdi-account-multiple",
           link: "/employee",
-          show: this.global.user.permission.c.a,
+          show: this.$store.state.user.permission.c.a,
           children: [
             {
               title: "从属员工",
@@ -228,18 +228,17 @@ export default {
   },
   computed: {
     ...mapState(["drawer"]),
-    DRAWER_STATE: {
+    drawerState: {
       get() {
         return this.drawer;
       },
       set(newValue) {
-        if (newValue === this.drawer) return;
-        this.TOGGLE_DRAWER();
+        this.setDrawer(newValue);
       },
     },
   },
   methods: {
-    ...mapActions(["TOGGLE_DRAWER"]),
+    ...mapMutations(["setDrawer"]),
   },
 };
 </script>

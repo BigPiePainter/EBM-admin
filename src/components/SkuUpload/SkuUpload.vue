@@ -12,7 +12,7 @@
           <p>
             {{
               `${product.productName}（${
-                global.categoryIdToName[product.firstCategory]
+                categoryIdToName[product.firstCategory]
               }）上传SKU`
             }}
           </p>
@@ -45,7 +45,9 @@
         </v-expand-transition>
 
         <v-card-actions>
-          <v-btn color="blue lighten-2" text @click="downloadModel"> 下载SKU导入模板 </v-btn>
+          <v-btn color="blue lighten-2" text @click="downloadModel">
+            下载SKU导入模板
+          </v-btn>
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
@@ -64,7 +66,7 @@
           <v-toolbar-title>
             {{
               `${product.id}   ${product.productName}（${
-                global.categoryIdToName[product.firstCategory]
+                categoryIdToName[product.firstCategory]
               }）SKU上传检索`
             }}
           </v-toolbar-title>
@@ -88,6 +90,8 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
+
 import { addSkus } from "@/settings/sku";
 import Spreadsheet from "x-data-spreadsheet";
 import zhCN from "x-data-spreadsheet/src/locale/zh-cn";
@@ -125,11 +129,27 @@ export default {
       xs: null,
     };
   },
+  computed: {
+    ...mapState([
+      "user",
+      "allDepartments",
+      "allTeams",
+      "allUsers",
+      "allCategorys",
+      "allCategoryHistorys",
+      "allShops",
+      "userIdToNick",
+      "teamIdToName",
+      "departmentIdToName",
+      "categoryIdToName",
+      "categoryIdToInfo",
+    ]),
+  },
   mounted() {
     this.status = "点击 & 拖拽上传SKU信息";
   },
-  created(){
-    console.log("created")
+  created() {
+    console.log("created");
   },
   watch: {
     hover(value) {
@@ -143,8 +163,8 @@ export default {
     },
   },
   methods: {
-    downloadModel(){
-      window.open('/SKU导入模板.xlsx');
+    downloadModel() {
+      window.open("/SKU导入模板.xlsx");
     },
     upload() {
       this.uploading = true;
@@ -171,7 +191,7 @@ export default {
           this.uploading = false;
           this.checkInfoDialog = false;
           this.global.infoAlert("泼发EBC：" + res.data);
-          this.$emit("refresh")
+          this.$emit("refresh");
         })
         .catch(() => {
           this.uploading = false;
@@ -488,7 +508,6 @@ export default {
     },
 
     dataInit(data) {
-
       Spreadsheet.locale("zh-cn", zhCN);
       console.log(data);
 

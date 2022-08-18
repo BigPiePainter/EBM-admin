@@ -7,7 +7,20 @@ import Toast from "vue-toastification";
 import Global from './global'
 import "vue-toastification/dist/index.css";
 
-Vue.use(Toast, { transition: "Vue-Toastification__fade" });
+Vue.use(Toast, {
+  transition: "Vue-Toastification__fade",
+  position: "top-right",
+  timeout: 2000,
+  closeOnClick: true,
+  pauseOnFocusLoss: false,
+  pauseOnHover: true,
+  draggable: true,
+  draggablePercent: 0.6,
+  showCloseButtonOnHover: false,
+  hideProgressBar: false,
+  closeButton: "button",
+  icon: true,
+});
 
 Vue.config.productionTip = false
 

@@ -53,16 +53,16 @@
         </template>
 
         <template v-slot:[`item.department`]="{ item }">
-          {{ global.departmentIdToName[item.department] }}
+          {{ departmentIdToName[item.department] }}
         </template>
         <template v-slot:[`item.team`]="{ item }">
-          {{ global.teamIdToName[item.team] }}
+          {{ teamIdToName[item.team] }}
         </template>
         <template v-slot:[`item.owner`]="{ item }">
-          {{ global.userIdToNick[item.owner] }}
+          {{ userIdToNick[item.owner] }}
         </template>
         <template v-slot:[`item.firstCategory`]="{ item }">
-          {{ global.categoryIdToName[item.firstCategory] }}
+          {{ categoryIdToName[item.firstCategory] }}
         </template>
 
         <template v-slot:top>
@@ -157,7 +157,7 @@
                 outlined
                 dense
                 hide-details
-                :items="global.allCategorys"
+                :items="allCategorys"
                 item-text="name"
                 item-value="uid"
                 no-data-text="无"
@@ -173,22 +173,20 @@
                       <span>
                         扣点:
                         {{
-                          typeof global.categoryIdToInfo[data.item.uid]
-                            .deduction == "string"
-                            ? global.categoryIdToInfo[data.item.uid].deduction
-                            : global.categoryIdToInfo[data.item.uid].deduction +
-                              "%"
+                          typeof categoryIdToInfo[data.item.uid].deduction ==
+                          "string"
+                            ? categoryIdToInfo[data.item.uid].deduction
+                            : categoryIdToInfo[data.item.uid].deduction + "%"
                         }}
                       </span>
                       <span>👉</span>
                       <span>
                         运费险:
                         {{
-                          typeof global.categoryIdToInfo[data.item.uid]
-                            .insurance == "string"
-                            ? global.categoryIdToInfo[data.item.uid].insurance
-                            : global.categoryIdToInfo[data.item.uid].insurance +
-                              "￥"
+                          typeof categoryIdToInfo[data.item.uid].insurance ==
+                          "string"
+                            ? categoryIdToInfo[data.item.uid].insurance
+                            : categoryIdToInfo[data.item.uid].insurance + "￥"
                         }}</span
                       >
                     </v-list-item-subtitle>
@@ -203,7 +201,7 @@
                 outlined
                 dense
                 hide-details
-                :items="global.allShops"
+                :items="allShops"
                 v-model="editedItem.shopName"
               ></v-autocomplete>
             </v-col>
@@ -220,8 +218,8 @@
                 outlined
                 dense
                 :items="
-                  global.allDepartments.filter((d) =>
-                    global.user.permission.a.d.find((i) => i == d.uid)
+                  allDepartments.filter((d) =>
+                    user.permission.a.d.find((i) => i == d.uid)
                   )
                 "
                 no-data-text="无"
@@ -242,8 +240,8 @@
                 dense
                 v-model="editedItem.team"
                 :items="
-                  global.allTeams.filter((g) =>
-                    global.user.permission.a.g.find((i) => i == g.uid)
+                  allTeams.filter((g) =>
+                    user.permission.a.g.find((i) => i == g.uid)
                   )
                 "
                 no-data-text="无"
@@ -366,19 +364,19 @@
             ]"
             :items="[
               {
-                b: global.departmentIdToName[oldItem.department],
+                b: departmentIdToName[oldItem.department],
                 c: '👉👉👉',
-                d: global.departmentIdToName[editedItem.department],
+                d: departmentIdToName[editedItem.department],
               },
               {
-                b: global.teamIdToName[oldItem.team],
+                b: teamIdToName[oldItem.team],
                 c: '👉👉👉',
-                d: global.teamIdToName[editedItem.team],
+                d: teamIdToName[editedItem.team],
               },
               {
-                b: global.userIdToNick[oldItem.owner],
+                b: userIdToNick[oldItem.owner],
                 c: '👉👉👉',
-                d: global.userIdToNick[editedItem.owner],
+                d: userIdToNick[editedItem.owner],
               },
             ]"
             hide-default-footer
@@ -513,6 +511,8 @@
 
 
 <script>
+import { mapState } from "vuex";
+
 import { addProducts } from "@/settings/product";
 import { editProduct } from "@/settings/product";
 import { loadProducts } from "@/settings/product";
@@ -603,6 +603,21 @@ export default {
   }),
 
   computed: {
+    ...mapState([
+      "user",
+      "allDepartments",
+      "allTeams",
+      "allUsers",
+      "allCategorys",
+      "allCategoryHistorys",
+      "allShops",
+      "userIdToNick",
+      "teamIdToName",
+      "departmentIdToName",
+      "categoryIdToName",
+      "categoryIdToInfo",
+    ]),
+
     isEmp: function () {
       var check = [
         "id",

@@ -407,14 +407,14 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 import TableKV from "@/components/TableKV/TableKV";
 
-import { getCategory } from "@/settings/category";
 import { addCategory } from "@/settings/category";
 import { editCategory } from "@/settings/category";
 import { addHistoryCategory } from "@/settings/category";
 import { editHistoryCategory } from "@/settings/category";
-import { getHistoryCategory } from "@/settings/category";
 import { javaUTCDateToString } from "@/libs/utils";
 
 export default {
@@ -448,9 +448,6 @@ export default {
       ],
       calculatedCategorys: [],
 
-      allCategorys: [],
-      categoryIdToInfo: {},
-
       subHeaders: [
         { text: "生效时间", value: "startTime" },
         { text: "备注", value: "note", sortable: false },
@@ -462,16 +459,25 @@ export default {
 
       subItems: [],
       hide: false,
-      allCategoryHistorys: [],
-      done: [false, false],
     };
   },
-
-  created() {
-    this.loadData();
-  },
-
+  
   computed: {
+    ...mapState([
+      "user",
+      "allDepartments",
+      "allTeams",
+      "allUsers",
+      "allCategorys",
+      "allCategoryHistorys",
+      "allShops",
+      "userIdToNick",
+      "teamIdToName",
+      "departmentIdToName",
+      "categoryIdToName",
+      "categoryIdToInfo",
+    ]),
+
     isEmp: function () {
       var check = ["name", "deduction", "insurance"];
       var pass = true;
@@ -485,6 +491,7 @@ export default {
   },
 
   methods: {
+    ...mapActions(["refreshAllCategorys"]),
     parseDate(date) {
       return javaUTCDateToString(date);
     },
@@ -499,89 +506,40 @@ export default {
     dayFormat(date) {
       return Number(date.split("-")[2]);
     },
-    loadData() {
-      this.done.fill(false);
-      getHistoryCategory({}).then((res) => {
-        this.allCategoryHistorys = res.data.categoryHistorys;
-        console.log(this.allCategoryHistorys);
-        this.requestDone(0);
-      });
-      getCategory({}).then((res) => {
-        this.allCategorys = res.data.categorys;
-        console.log(this.allCategorys);
-        console.log(this.allCategorys[0]);
-        this.requestDone(1);
-      });
-    },
-    requestDone(i) {
-      this.done[i] = true;
-      console.log("done");
-      if (this.done.find((i) => !i) == false) return;
-      this.dataAnalyze();
-    },
     //----------------------------------------------------------------------------------------
-    dataAnalyze() {
-      this.categoryIdToInfo = {};
-      this.allCategorys.forEach((i) => {
-        i.startTime = 0;
-        i.createTime = 0;
-        i.deduction = "空";
-        i.insurance = "空";
-        this.categoryIdToInfo[i.uid] = i;
-      });
-
-      this.allCategoryHistorys.forEach((i) => {
-        if (i.startTime > this.categoryIdToInfo[i.categoryId].startTime) {
-          this.categoryIdToInfo[i.categoryId] = i;
-        } else if (
-          i.startTime == this.categoryIdToInfo[i.categoryId].startTime
-        ) {
-          if (i.createTime > this.categoryIdToInfo[i.categoryId].createTime) {
-            this.categoryIdToInfo[i.categoryId] = i;
-          }
-        }
-      });
-      console.log("idToInfo", this.categoryIdToInfo);
-
-      this.allCategorys.forEach((i) => {
-        i.deduction =  this.categoryIdToInfo[i.uid].deduction;
-        i.insurance =  this.categoryIdToInfo[i.uid].insurance;
-      });
-
-      console.log("最终", this.allCategorys);
-
-      // console.log(this.calculatedCategorys);
-      // console.log(this.allCategorys);
-      // //this.calculatedCategorys = this.allCategorys;
-      // console.log("dataAnalyze");
-      // console.log(this.calculatedCategorys);
-      // console.log(this.allCategorys);
-      // for (let i = 0; i < this.allCategorys.length; i++) {
-      //   this.calculatedCategorys[i] = {};
-      //    this.subItems[i] = [];
-      //    for (let j = 0; j < this.allCategoryHistorys.length; j++) {
-      //      if (this.allCategoryHistorys[j].categoryId == this.allCategorys[i].uid) {
-      //        this.subItems[i].push(this.allCategoryHistorys[j]);
-      //      }
-      //    }
-      // }
-      //        if (
-      //          this.allCategoryHistorys[j + 1].startTime >
-      //          this.allCategoryHistorys[k].startTime
-      //        ) {
-      //          k = j + 1;
-      //        }
-      //     }
-      //    }
-      //    this.calculatedCategorys[i].note = this.allCategorys[i].note;
-      //    this.calculatedCategorys[i].name = this.allCategorys[i].name;
-      //     this.calculatedCategorys[i].calculatedStartTime = this.allCategoryHistorys[k].calculatedStartTime;
-      //     this.calculatedCategorys[i].deduction = this.allCategoryHistorys[k].deduction;
-      //     this.calculatedCategorys[i].insurance = this.allCategoryHistorys[k].insurance;
-      // }
-      // console.log(this.calculatedCategorys);
-      // console.log(this.subItems);
-    },
+    //dataAnalyze() {
+    // console.log(this.calculatedCategorys);
+    // console.log(this.allCategorys);
+    // //this.calculatedCategorys = this.allCategorys;
+    // console.log("dataAnalyze");
+    // console.log(this.calculatedCategorys);
+    // console.log(this.allCategorys);
+    // for (let i = 0; i < this.allCategorys.length; i++) {
+    //   this.calculatedCategorys[i] = {};
+    //    this.subItems[i] = [];
+    //    for (let j = 0; j < this.allCategoryHistorys.length; j++) {
+    //      if (this.allCategoryHistorys[j].categoryId == this.allCategorys[i].uid) {
+    //        this.subItems[i].push(this.allCategoryHistorys[j]);
+    //      }
+    //    }
+    // }
+    //        if (
+    //          this.allCategoryHistorys[j + 1].startTime >
+    //          this.allCategoryHistorys[k].startTime
+    //        ) {
+    //          k = j + 1;
+    //        }
+    //     }
+    //    }
+    //    this.calculatedCategorys[i].note = this.allCategorys[i].note;
+    //    this.calculatedCategorys[i].name = this.allCategorys[i].name;
+    //     this.calculatedCategorys[i].calculatedStartTime = this.allCategoryHistorys[k].calculatedStartTime;
+    //     this.calculatedCategorys[i].deduction = this.allCategoryHistorys[k].deduction;
+    //     this.calculatedCategorys[i].insurance = this.allCategoryHistorys[k].insurance;
+    // }
+    // console.log(this.calculatedCategorys);
+    // console.log(this.subItems);
+    //},
     //----------------------------------------------------------------------------------------
     addButton() {
       if (!this.global.user.permission.a.fc) {
@@ -655,7 +613,7 @@ export default {
     },
 
     sureDeleteCategoryHistoryButton() {
-      console.log("删除")
+      console.log("删除");
     },
 
     editCategorySaveButton() {
