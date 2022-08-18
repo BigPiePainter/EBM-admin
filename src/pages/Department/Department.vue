@@ -332,7 +332,6 @@ export default {
         .then(() => {
           this.loading = true;
           this.refreshAllDepartment().then(() => {
-            console.log("完毕完毕完毕完毕完毕完毕完毕完毕");
             this.loading = false;
           });
         });
