@@ -476,6 +476,7 @@ export default {
 
       categoryChangeDialog: false,
       categoryDeleteDialog: false,
+      deleteCategoryItem: [],
 
       categoryHeaders: [
         { text: "一级类目", value: "name" },
@@ -668,7 +669,7 @@ export default {
         this.global.infoAlert("泼发EBC：权限不足");
         return;
       }
-      this.deleteCategory = { ...item };
+      this.deleteCategoryItem = { ...item };
       this.categoryDeleteDialog = true;
     },
 
