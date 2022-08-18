@@ -86,7 +86,7 @@
               @click="deleteSku"
               class="ml-1"
             >
-              删除{{skuSelected.length}}条
+              删除{{ skuSelected.length }}条
             </v-btn>
           </template>
         </v-toolbar>
@@ -655,6 +655,7 @@ import { loadSkus } from "@/settings/sku";
 import { deleteSku } from "@/settings/sku";
 
 import { loadAscriptions } from "@/settings/ascription";
+import { deleteAscription } from "@/settings/ascription";
 
 import { loadManufacturers } from "@/settings/manufacturer";
 import { addManufacturer } from "@/settings/manufacturer";
@@ -1087,6 +1088,13 @@ export default {
     },
 
     sureDeleteAscriptionButton() {
+      console.log(this.deleteAscriptionItem.uid);
+      deleteAscription({ uid: this.deleteAscriptionItem.uid })
+        .then((res) => {
+          this.global.infoAlert(res.data);
+          this.init();
+        })
+        .catch(() => {});
       this.deleteAscriptionDialog = false;
     },
 
