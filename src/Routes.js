@@ -1,4 +1,5 @@
 import Vue from 'vue';
+
 import Router from 'vue-router';
 
 import Layout from '@/components/Layout/Layout';
@@ -166,14 +167,18 @@ var routerConfig = {
 var router = new Router(routerConfig)
 
 router.beforeEach((to, from, next) => {
+  console.log("检测到路由行为")
+  console.log("to", to)
+  console.log("from", from)
+
+
   if (to.name == "Login") { next(); return; }
 
-
+  console.log("检测登陆状态")
   isLogin({}).then((res) => {
-    console.log(res)
+    console.log("登陆状态", res)
     if (res.data.isLogin) {
-
-      if (!Vue.prototype.global.user.uid) {
+      if (!Vue.prototype.store.state.user.uid) {
         router.push("/login");
         return
       }
@@ -184,9 +189,7 @@ router.beforeEach((to, from, next) => {
     }
   })
 
-  console.log(to)
-  console.log(from)
-  console.log("？？？？？？？？？")
+
 
 });
 

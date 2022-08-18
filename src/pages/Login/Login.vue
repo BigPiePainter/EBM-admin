@@ -89,11 +89,8 @@
 
 <script>
 import { userLogin } from "@/settings/user";
-import { getDepartment } from "@/settings/department";
-import { getTeam } from "@/settings/team";
-import { getAllUsers } from "@/settings/user";
-import { getCategory } from "@/settings/category";
-import { getHistoryCategory } from "@/settings/category";
+
+import { mapActions, mapMutations } from "vuex";
 
 import { isLogin } from "@/settings/user";
 
@@ -120,6 +117,13 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["setToken", "setUser"]),
+    ...mapActions([
+      "refreshAllDepartment",
+      "refreshAllTeams",
+      "refreshAllUsers",
+      "refreshAllCategorys",
+    ]),
     login() {
       this.loading = true;
       userLogin({ username: this.email, password: this.password })
@@ -128,132 +132,33 @@ export default {
           try {
             console.log(res);
             if (res.data.token && res.data.token.isLogin) {
-              this.infoAlert("泼发EBC：登录成功");
+              this.global.infoAlert("泼发EBC：登录成功");
 
-              //this.global.token = res.data.token.tokenValue
-              localStorage.token = res.data.token.tokenValue;
-              this.global.user = res.data.user;
+              this.setUser(res.data.user);
+              this.setToken(res.data.token.tokenValue);
 
               this.globalInitAndJump();
               return;
             }
 
-            this.infoAlert("泼发EBC：" + res.data);
+            this.global.infoAlert("泼发EBC：" + res.data);
           } catch (error) {
-            this.infoAlert("泼发EBC：登录失败");
+            this.global.infoAlert("泼发EBC：登录失败");
           }
         })
         .catch(() => {
           this.loading = false;
           setTimeout(() => {
-            this.infoAlert("泼发EBC：登录失败");
+            this.global.infoAlert("泼发EBC：登录失败");
           }, 100);
         });
     },
 
-    infoAlert(message) {
-      this.$toast.info(message, {
-        position: "top-right",
-        timeout: 6000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: false,
-        hideProgressBar: true,
-        closeButton: "button",
-        icon: true,
-      });
-    },
-
     globalInitAndJump() {
-      this.done.fill(false);
-
-      getDepartment({}).then((res) => {
-        this.global.allDepartments = res.data.departments;
-        this.requestDone(0);
-      });
-      getTeam({}).then((res) => {
-        this.global.allTeams = res.data.teams;
-        this.requestDone(1);
-      });
-      getAllUsers({}).then((res) => {
-        this.global.allUsers = res.data.userInfos;
-        this.requestDone(2);
-      });
-      getCategory({}).then((res) => {
-        this.global.allCategorys = res.data.categorys;
-        this.requestDone(3);
-      });
-      getHistoryCategory({}).then((res) => {
-        this.global.allCategoryHistorys = res.data.categoryHistorys;
-        this.requestDone(4);
-      });
-    },
-
-    requestDone(i) {
-      this.done[i] = true;
-      console.log("done");
-      console.log(this.done);
-      if (this.done.find((i) => !i) == false) return;
-
-      if (this.global.user.uid == 1) {
-        this.global.user.permission = this.global.allPermissions; //admin
-      } else {
-        this.global.user.permission = JSON.parse(this.global.user.permission);
-      }
-
-      //如果拥有事业部管理权限，那么商品管理可录入的事业部为全部
-      if (this.global.user.permission.d.a) {
-        this.global.user.permission.a.d = this.global.allDepartments.map(
-          (i) => i.uid
-        );
-      }
-
-      //同上
-      if (this.global.user.permission.e.a) {
-        this.global.user.permission.a.g = this.global.allTeams.map(
-          (i) => i.uid
-        );
-      }
-
-      this.global.departmentIdToName = {};
-      this.global.allDepartments.forEach((i) => {
-        this.global.departmentIdToName[i.uid] = i.name;
-      });
-      this.global.teamIdToName = {};
-      this.global.allTeams.forEach((i) => {
-        this.global.teamIdToName[i.uid] = i.name;
-      });
-
-      this.global.userIdToNick = {};
-      this.global.allUsers.forEach((i) => {
-        this.global.userIdToNick[i.uid] = i.nick;
-      });
-
-      this.global.categoryIdToName = {};
-      this.global.categoryIdToInfo = {};
-      this.global.allCategorys.forEach((i) => {
-        this.global.categoryIdToName[i.uid] = i.name;
-        this.global.categoryIdToInfo[i.uid] = {
-          startTime: -1,
-          createTime: -1,
-          deduction: "空",
-          insurance: "空",
-        };
-      });
-      this.global.allCategoryHistorys.forEach((i) => {
-        if (i.startTime > this.global.categoryIdToInfo[i.categoryId].startTime) {
-          this.global.categoryIdToInfo[i.categoryId] = i;
-        } else if (
-          i.startTime == this.global.categoryIdToInfo[i.categoryId].startTime
-        ) {
-          if (i.createTime > this.global.categoryIdToInfo[i.categoryId].createTime) {
-            this.global.categoryIdToInfo[i.categoryId] = i;
-          }
-        }
-      });
-
+      this.refreshAllDepartment();
+      this.refreshAllTeams();
+      this.refreshAllUsers();
+      this.refreshAllCategorys();
       console.log("登录跳转");
       console.log("全局Global", this.global);
       this.$router.push("/mainpage");
@@ -266,11 +171,10 @@ export default {
 
       if (!res.data.isLogin) return;
 
-      this.infoAlert("泼发EBC：登录成功");
+      this.global.infoAlert("泼发EBC：登录成功");
 
-      //this.global.token = res.data.token.tokenValue
-      localStorage.token = res.data.token.tokenValue;
-      this.global.user = res.data.user;
+      this.setUser(res.data.user);
+      this.setToken(res.data.token.tokenValue);
 
       this.globalInitAndJump();
     });

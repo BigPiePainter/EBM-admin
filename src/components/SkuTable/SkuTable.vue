@@ -180,6 +180,13 @@
               <template v-slot:[`item.skuCost`]="{ item }">
                 {{ item.skuCost }} ￥
               </template>
+
+              <template v-slot:[`item.startTime`]="{ item }">
+                {{ parseDate(item.startTime) }}
+              </template>
+              <template v-slot:[`item.createTime`]="{ item }">
+                {{ parseDateTime(item.createTime) }}
+              </template>
             </v-data-table>
           </v-tab-item>
           <v-tab-item>
@@ -232,6 +239,10 @@
                   删除
                 </v-btn>
               </template>
+
+              <template v-slot:[`item.startTime`]="{ item }">
+                {{ parseDate(item.startTime) }}
+              </template>
             </v-data-table>
           </v-tab-item>
           <v-tab-item>
@@ -252,13 +263,13 @@
               }"
             >
               <template v-slot:[`item.department`]="{ item }">
-                {{ global.departmentIdToName[item.department] }}
+                {{ departmentIdToName[item.department] }}
               </template>
               <template v-slot:[`item.team`]="{ item }">
-                {{ global.teamIdToName[item.team] }}
+                {{ teamIdToName[item.team] }}
               </template>
               <template v-slot:[`item.owner`]="{ item }">
-                {{ global.userIdToNick[item.owner] }}
+                {{ userIdToNick[item.owner] }}
               </template>
               <template v-slot:[`item.startTime`]="{ item }">
                 {{ parseDate(item.startTime) }}
@@ -649,6 +660,8 @@
 
 
 <script>
+import { mapState } from "vuex";
+
 import SkuUpload from "@/components/SkuUpload/SkuUpload";
 import TableKV from "@/components/TableKV/TableKV";
 import { loadSkus } from "@/settings/sku";
@@ -719,11 +732,11 @@ export default {
         { text: "SKU名称", align: "start", value: "skuName" },
         { text: "售卖价", align: "end", value: "skuPrice" },
         { text: "成本", align: "end", value: "skuCost" },
-        { text: "价格开始时间", align: "start", value: "calculatedStartTime" },
+        { text: "价格开始时间", align: "start", value: "startTime" },
         //{ text: "价格截止时间", align: "start", value: "endTime" },
         { text: "销售子订单条数", align: "start", value: "orderNum" },
         { text: "销售数", align: "start", value: "seleNum" },
-        { text: "创建时间", align: "start", value: "calculatedCreateTime" },
+        { text: "创建时间", align: "start", value: "createTime" },
       ],
       skuInfos: [],
       validSkuInfos: [],
@@ -776,9 +789,9 @@ export default {
           align: "end",
           value: "freightToPayment",
         },
-        { text: "厂家生效时间", align: "start", value: "calculatedStartTime" },
-        // { text: "创建时间", align: "start", value: "calculatedCreateTime" },
-        // { text: "修改时间", align: "start", value: "calculatedModifyTime" },
+        { text: "厂家生效时间", align: "start", value: "startTime" },
+        // { text: "创建时间", align: "start", value: "createTime" },
+        // { text: "修改时间", align: "start", value: "modifyTime" },
         { text: "备注", align: "start", value: "note" },
         { text: "操作", align: "start", value: "actions" },
       ],
@@ -817,6 +830,20 @@ export default {
   watch: {},
 
   computed: {
+    ...mapState([
+      "user",
+      "allDepartments",
+      "allTeams",
+      "allUsers",
+      "allCategorys",
+      "allCategoryHistorys",
+      "allShops",
+      "userIdToNick",
+      "teamIdToName",
+      "departmentIdToName",
+      "categoryIdToName",
+      "categoryIdToInfo",
+    ]),
     isEmpty: function () {
       var check = ["manufacturerName", "startTime"];
       var pass = true;
@@ -857,72 +884,46 @@ export default {
     parseDate(date) {
       return javaUTCDateToString(date);
     },
+    parseDateTime(date) {
+      return javaDateTimeToString(date);
+    },
     dayFormat(date) {
       return Number(date.split("-")[2]);
-    },
-
-    requestDone(i) {
-      this.done[i] = true;
-      console.log("done");
-      console.log(this.done);
-      if (this.done.find((i) => !i) == false) return;
-
-      console.log("显示");
-      this.loading = false;
-      this.show = true;
-      //this.itemShow = true;
-
-      // setTimeout(() => {
-      //   this.itemShow = true;
-      // }, 0);
-
-      this.$nextTick(() => {
-        this.itemShow = true;
-      });
     },
 
     init() {
       this.loading = true;
       //加载数据
-      loadSkus({ productId: this.productInfo.id })
-        .then((res) => {
-          console.log(res);
-          this.skuInfos = res.data.skus;
-          //数据处理
-          this.dataAnalyze();
-          this.requestDone(0);
-        })
-        .catch(() => {
-          this.loading = false;
+      Promise.all([
+        loadSkus({ productId: this.productInfo.id }),
+        loadManufacturers({ productId: this.productInfo.id }),
+        loadAscriptions({ productId: this.productInfo.id }),
+      ]).then((res) => {
+        console.log("请求结束");
+        console.log(res);
+
+        this.skuInfos = res[0].data.skus;
+        this.manufacturerInfos = res[1].data.manufacturers;
+        this.ascriptionInfos = res[2].data.ascriptions;
+
+        this.dataAnalyze();
+
+        console.log("显示");
+        this.loading = false;
+        this.show = true;
+        //this.itemShow = true;
+
+        // setTimeout(() => {
+        //   this.itemShow = true;
+        // }, 0);
+
+        this.$nextTick(() => {
+          this.itemShow = true;
         });
-      loadManufacturers({ productId: this.productInfo.id })
-        .then((res) => {
-          console.log(res);
-          this.manufacturerInfos = res.data.manufacturers;
-          this.dataAnalyzeManufacturer();
-          console.log(this.manufacturerInfos);
-          this.requestDone(1);
-        })
-        .catch(() => {
-          this.loading = false;
-        });
-      loadAscriptions({ productId: this.productInfo.id })
-        .then((res) => {
-          console.log(res);
-          this.ascriptionInfos = res.data.ascriptions;
-          this.requestDone(2);
-        })
-        .catch(() => {
-          this.loading = false;
-        });
+      });
     },
 
     dataAnalyze() {
-      this.skuInfos.forEach((sku) => {
-        sku.calculatedStartTime = javaUTCDateToString(sku.startTime);
-        sku.calculatedCreateTime = javaDateTimeToString(sku.createTime);
-      });
-
       var skuId = {};
       this.skuInfos.forEach((sku) => {
         if (skuId[sku.skuId]) {
@@ -944,21 +945,6 @@ export default {
       for (let id in skuId) this.validSkuInfos.push(skuId[id].sku);
     },
 
-    dataAnalyzeManufacturer() {
-      this.manufacturerInfos.forEach((manufacturer) => {
-        console.log(manufacturer);
-        manufacturer.calculatedStartTime = javaUTCDateToString(
-          manufacturer.startTime
-        );
-        manufacturer.calculatedCreateTime = javaDateTimeToString(
-          manufacturer.createTime
-        );
-        manufacturer.calculatedModifyTime = javaDateTimeToString(
-          manufacturer.modifyTime
-        );
-      });
-    },
-
     download() {
       var skuInfoCopy = [];
 
@@ -970,7 +956,7 @@ export default {
           skuName: sku.skuName,
           skuPrice: sku.skuPrice,
           skuCost: sku.skuCost,
-          startTime: sku.calculatedStartTime,
+          startTime: sku.startTime,
         });
       }
 
@@ -1031,11 +1017,11 @@ export default {
           },
           {
             key: "价格开始时间",
-            value: this.skuSelected[0].calculatedStartTime,
+            value: this.parseDate(this.skuSelected[0].startTime),
           },
           {
             key: "创建时间",
-            value: this.skuSelected[0].calculatedCreateTime,
+            value: this.parseDateTime(this.skuSelected[0].createTime),
           },
         ];
         console.log(this.deleteSkuItemParse);
@@ -1059,7 +1045,7 @@ export default {
 
     deleteAscriptionButton(item) {
       console.log(item);
-      if (!this.global.user.permission.a.da) {
+      if (!this.user.permission.a.da) {
         this.global.infoAlert("泼发EBC：权限不足");
         return;
       }
@@ -1068,15 +1054,15 @@ export default {
       this.deleteAscriptionItemParse = [
         {
           key: "事业部",
-          value: this.global.departmentIdToName[item.department],
+          value: this.departmentIdToName[item.department],
         },
         {
           key: "组别",
-          value: this.global.teamIdToName[item.team],
+          value: this.teamIdToName[item.team],
         },
         {
           key: "持品人",
-          value: this.global.userIdToNick[item.owner],
+          value: this.userIdToNick[item.owner],
         },
         {
           key: "生效时间",
@@ -1125,7 +1111,7 @@ export default {
         },
         {
           key: "厂家生效时间",
-          value: item.calculatedStartTime,
+          value: this.parseDate(item.startTime),
         },
       ];
 
@@ -1149,8 +1135,9 @@ export default {
       this.manufacturerMode = 2; //"修改"模式
       this.manufacturerEdit = { ...item };
       //注意
-      this.manufacturerEdit.startTime =
-        this.manufacturerEdit.calculatedStartTime;
+      this.manufacturerEdit.startTime = this.parseDate(
+        this.manufacturerEdit.startTime
+      );
       this.manufacturerInfoDialog = true;
     },
 

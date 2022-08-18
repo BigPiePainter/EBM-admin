@@ -53,7 +53,7 @@
       </template>
 
       <template v-slot:[`item.password`]="{ item }">
-        {{ global.user.permission.c.b ? item.password : "隐藏" }}
+        {{ user.permission.c.b ? item.password : "隐藏" }}
       </template>
 
       <template v-slot:[`header.actions`]="{ header }">
@@ -204,7 +204,7 @@
           <v-tab-item>
             <div style="height: 350px; overflow: auto">
               <v-col class="px-10 py-10">
-                <v-row v-if="global.user.permission.a.a">
+                <v-row v-if="user.permission.a.a">
                   <span class="text-subtitle-1">商品管理模块</span>
                   <v-checkbox
                     v-model="selectedPermission.a.a"
@@ -221,11 +221,12 @@
                         <span class="text-body-2 text--secondary">
                           部门录入权限
                         </span>
+                        {{global.log("a", user.permission)}}
                         <v-autocomplete
                           v-model="selectedPermission.a.d"
                           :items="
-                            allDepartment.filter((d) =>
-                              global.user.permission.a.d.find((i) => i == d.uid)
+                            allDepartments.filter((d) =>
+                              user.permission.a.d.find((i) => i == d.uid)
                             )
                           "
                           no-data-text="无"
@@ -246,8 +247,8 @@
                         <v-autocomplete
                           v-model="selectedPermission.a.g"
                           :items="
-                            allTeam.filter((g) =>
-                              global.user.permission.a.g.find((i) => i == g.uid)
+                            allTeams.filter((g) =>
+                              user.permission.a.g.find((i) => i == g.uid)
                             )
                           "
                           no-data-text="无"
@@ -268,7 +269,7 @@
                           v-model="selectedPermission.a.da"
                           hide-details
                           dense
-                          :disabled="!global.user.permission.a.da"
+                          :disabled="!user.permission.a.da"
                         >
                           <template v-slot:label>
                             <span class="text-subtitle-2"
@@ -282,12 +283,10 @@
                           v-model="selectedPermission.a.fc"
                           hide-details
                           dense
-                          :disabled="!global.user.permission.a.fc"
+                          :disabled="!user.permission.a.fc"
                         >
                           <template v-slot:label>
-                            <span class="text-subtitle-2"
-                              >管理一级类目</span
-                            >
+                            <span class="text-subtitle-2">管理一级类目</span>
                           </template>
                         </v-checkbox>
                       </v-col>
@@ -295,8 +294,8 @@
                   </v-container>
                 </v-expand-transition>
 
-                <v-divider class="my-8" v-if="global.user.permission.b.a" />
-                <v-row v-if="global.user.permission.b.a">
+                <v-divider class="my-8" v-if="user.permission.b.a" />
+                <v-row v-if="user.permission.b.a">
                   <span class="text-subtitle-1">订单管理模块</span>
                   <v-checkbox
                     v-model="selectedPermission.b.a"
@@ -309,8 +308,8 @@
                     </template>
                   </v-checkbox>
                 </v-row>
-                <v-divider class="my-8" v-if="global.user.permission.c.a" />
-                <v-row v-if="global.user.permission.c.a">
+                <v-divider class="my-8" v-if="user.permission.c.a" />
+                <v-row v-if="user.permission.c.a">
                   <span class="text-subtitle-1">下级员工管理模块</span>
                   <v-checkbox
                     v-model="selectedPermission.c.a"
@@ -327,7 +326,7 @@
                         v-model="selectedPermission.c.b"
                         hide-details
                         dense
-                        :disabled="!global.user.permission.c.b"
+                        :disabled="!user.permission.c.b"
                       >
                         <template v-slot:label>
                           <span class="text-subtitle-2">查看员工密码</span>
@@ -338,8 +337,8 @@
                   </v-row>
                 </v-expand-transition>
 
-                <v-divider class="my-8" v-if="global.user.permission.d.a" />
-                <v-row v-if="global.user.permission.d.a">
+                <v-divider class="my-8" v-if="user.permission.d.a" />
+                <v-row v-if="user.permission.d.a">
                   <span class="text-subtitle-1">事业部管理模块</span>
                   <v-checkbox
                     v-model="selectedPermission.d.a"
@@ -349,8 +348,8 @@
                   />
                 </v-row>
 
-                <v-divider class="my-8" v-if="global.user.permission.e.a" />
-                <v-row v-if="global.user.permission.e.a">
+                <v-divider class="my-8" v-if="user.permission.e.a" />
+                <v-row v-if="user.permission.e.a">
                   <span class="text-subtitle-1">组别管理模块</span>
                   <v-checkbox
                     v-model="selectedPermission.e.a"
@@ -386,12 +385,11 @@
 
 
 <script>
+import { mapState } from "vuex";
+
 import { getSubUsers } from "@/settings/user";
 import { registUser } from "@/settings/user";
 import { modifyUser } from "@/settings/user";
-
-import { getDepartment } from "@/settings/department";
-import { getTeam } from "@/settings/team";
 
 export default {
   components: {},
@@ -435,11 +433,23 @@ export default {
       e: {},
     },
 
-    allDepartment: [],
-    allTeam: [],
   }),
 
   computed: {
+    ...mapState([
+      "user",
+      "allDepartments",
+      "allTeams",
+      "allUsers",
+      "allCategorys",
+      "allCategoryHistorys",
+      "allShops",
+      "userIdToNick",
+      "teamIdToName",
+      "departmentIdToName",
+      "categoryIdToName",
+      "categoryIdToInfo",
+    ]),
     isEmpty: function () {
       var check = ["nick", "username", "password", "creatorId"];
       var pass = true;
@@ -457,7 +467,7 @@ export default {
 
   created() {
     this.init();
-    console.log(this.global.user);
+    console.log(this.user);
   },
 
   methods: {
@@ -546,18 +556,13 @@ export default {
           this.userAnalyze();
 
           this.userInfosWithoutSelf = this.userInfos.filter(
-            (i) => i.uid != this.global.user.uid
+            (i) => i.uid != this.user.uid
           );
           //this.infoAlert("泼发EBC：" + res.data);
         })
         .catch(() => {
           this.loading = false;
         });
-
-      getDepartment({}).then(
-        (res) => (this.allDepartment = res.data.departments)
-      );
-      getTeam({}).then((res) => (this.allTeam = res.data.teams));
     },
     userAnalyze() {
       this.userInfos.forEach((user) => {

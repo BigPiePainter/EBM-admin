@@ -11,7 +11,7 @@
       height="calc(100vh - 200px)"
       :expanded.sync="expanded"
       :headers="headers"
-      :items="departmentInfo"
+      :items="allDepartments"
       :loading="loading"
       :items-per-page="50"
       :footer-props="{
@@ -39,18 +39,33 @@
 
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
-          <div style="width: 800px" class="sub-table-container elevation-20 ml-2 mb-3">
+          <div
+            style="width: 800px"
+            class="sub-table-container elevation-20 ml-2 mb-3"
+          >
             <DepartmentMemberTable
               :departmentInfo="item"
               :allUsers="allUsers"
-              :allDepartments="departmentInfo"
+              :allDepartments="allDepartments"
             />
           </div>
         </td>
       </template>
 
-      <template v-slot:[`item.calculatedAdmin`]="{ item }">
-        {{ item.calculatedAdmin.join("，") }}
+      <template v-slot:[`item.admin`]="{ item }">
+        {{
+          item.admin
+            .split(",")
+            .map((i) => userIdToNick[i])
+            .join("，")
+        }}
+      </template>
+      
+      <template v-slot:[`item.createTime`]="{ item }">
+        {{ parseDateTime(item.createTime) }}
+      </template>
+      <template v-slot:[`item.modifyTime`]="{ item }">
+        {{ parseDateTime(item.modifyTime) }}
       </template>
 
       <template v-slot:[`header.actions`]="{ header }">
@@ -175,12 +190,11 @@
 
 
 <script>
-import { getDepartment } from "@/settings/department";
+import { mapState, mapActions } from "vuex";
+
 import { addDepartment } from "@/settings/department";
 import { modifyDepartment } from "@/settings/department";
 import DepartmentMemberTable from "../../components/DepartmentMemberTable/DepartmentMemberTable.vue";
-
-import { getAllUsers } from "@/settings/user";
 
 import { javaDateTimeToString } from "@/libs/utils";
 
@@ -188,9 +202,6 @@ export default {
   data: () => ({
     autocompleteFocus: false,
     dialogPersistent: false,
-
-    allDepartments: [],
-    allUsers: [],
 
     selectedAdmin: [],
 
@@ -202,13 +213,12 @@ export default {
         value: "uid",
       },
       { text: "事业部名称", value: "name" },
-      { text: "管理员", value: "calculatedAdmin" },
+      { text: "管理员", value: "admin" },
       { text: "备注", value: "note" },
-      { text: "创建时间", value: "calculatedCreateTime" },
-      { text: "修改时间", value: "calculatedModifyTime" },
+      { text: "创建时间", value: "createTime" },
+      { text: "修改时间", value: "modifyTime" },
       { text: "操作", value: "actions", sortable: false },
     ],
-    departmentInfo: [],
     expanded: [],
 
     departmentInfoDialog: false,
@@ -221,8 +231,21 @@ export default {
     allUserDone: false,
   }),
 
-  created() {
-    this.init();
+  computed: {
+    ...mapState([
+      "user",
+      "allDepartments",
+      "allTeams",
+      "allUsers",
+      "allCategorys",
+      "allCategoryHistorys",
+      "allShops",
+      "userIdToNick",
+      "teamIdToName",
+      "departmentIdToName",
+      "categoryIdToName",
+      "categoryIdToInfo",
+    ]),
   },
 
   watch: {
@@ -238,66 +261,10 @@ export default {
   },
 
   methods: {
-    init() {
-      this.departmentDone = false;
-      this.allUserDone = false;
-      this.loading = true;
-      getDepartment({})
-        .then((res) => {
-          console.log(res.data.departments);
-          this.allDepartments = res.data.departments;
-          // this.departmentInfo = res.data.department;
-          this.departmentDone = true;
-          this.initDone();
-        })
-        .catch(() => {
-          this.loading = false;
-        });
-      getAllUsers({})
-        .then((res) => {
-          console.log(res);
-          this.allUsers = res.data.userInfos;
-          this.allUserDone = true;
-          this.initDone();
-        })
-        .catch(() => {
-          this.loading = false;
-        });
-    },
+    ...mapActions(["refreshAllDepartment"]),
 
-    initDone() {
-      if (!this.departmentDone || !this.allUserDone) return;
-
-      this.dataAnalyze();
-      this.loading = false;
-    },
-
-    dataAnalyze() {
-      console.log(this.allUsers);
-      this.allDepartments.forEach((department) => {
-        department.calculatedCreateTime = javaDateTimeToString(
-          department.createTime
-        );
-        department.calculatedModifyTime = javaDateTimeToString(
-          department.modifyTime
-        );
-
-        console.log("111");
-        console.log();
-
-        department.calculatedAdmin = [];
-        if (department.admin) {
-          department.calculatedAdmin = department.admin
-            .split(",")
-            .map(
-              (id) =>
-                this.allUsers.find((i) => i.uid == id) &&
-                this.allUsers.find((i) => i.uid == id).nick
-            );
-        }
-      });
-
-      this.departmentInfo = this.allDepartments;
+    parseDateTime(date) {
+      return javaDateTimeToString(date);
     },
 
     clickRow(item, event) {
@@ -338,11 +305,17 @@ export default {
       //预处理
       if (args.note == null) delete args.note;
 
-      addDepartment(args).then((res) => {
-        this.global.infoAlert("泼发EBC：" + res.data);
-        console.log(this.departmentEdit);
-        this.init();
-      });
+      addDepartment(args)
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          console.log(this.departmentEdit);
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllDepartment().then(() => {
+            this.loading = false;
+          });
+        });
     },
 
     editDepartment() {
@@ -351,11 +324,18 @@ export default {
       args.admin = this.selectedAdmin.join();
       console.log(args);
 
-      modifyDepartment(args).then((res) => {
-        this.global.infoAlert("泼发EBC：" + res.data);
-        console.log(this.departmentEdit);
-        this.init();
-      });
+      modifyDepartment(args)
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          console.log(this.departmentEdit);
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllDepartment().then(() => {
+            console.log("完毕完毕完毕完毕完毕完毕完毕完毕");
+            this.loading = false;
+          });
+        });
     },
   },
   components: { DepartmentMemberTable },
