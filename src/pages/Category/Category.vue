@@ -219,13 +219,17 @@
     </v-dialog>
 
     <!-- 删除类目 dialog -->
-    <v-dialog v-model="categoryDeleteDialog">
+    <v-dialog max-width="320px" v-model="categoryDeleteDialog">
       <v-card>
-        <span>
-          是否删除此一级类目：{{
-            this.deleteCategory && this.deleteCategory.name
-          }}
-        </span>
+        <v-card-title>
+          <span class="text-body-1"> 彻底删除此一级类目？ </span>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-title>
+          <span class="text-body-2">
+            {{ this.deleteCategoryItem && this.deleteCategoryItem.name }}
+          </span>
+        </v-card-title>
 
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -236,8 +240,9 @@
           >
             取消
           </v-btn>
-          <v-btn color="blue darken-1" text @click="sureDeleteCategoryButton">
-            确定
+          <v-btn color="red darken-1" text @click="sureDeleteCategoryButton">
+            <v-icon small class="mr-1">mdi-delete</v-icon>
+            删除
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -500,7 +505,7 @@ export default {
       hide: false,
     };
   },
-  
+
   computed: {
     ...mapState([
       "user",
@@ -632,13 +637,13 @@ export default {
     },
 
     sureDeleteCategoryButton() {
-      deleteCategory({ uid: this.deleteCategory.uid })
+      deleteCategory({ uid: this.deleteCategoryItem.uid })
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
           this.categoryDeleteDialog = false;
-          this.loadData();
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err)
           setTimeout(() => {
             this.global.infoAlert("泼发EBC： error");
           }, 100);
