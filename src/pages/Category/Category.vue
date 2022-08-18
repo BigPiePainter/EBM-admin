@@ -21,16 +21,16 @@
             >
               <template v-slot:[`item.deduction`]="{ item }">
                 {{
-                  item.deduction != "空"
-                    ? item.deduction + " %"
-                    : item.deduction
+                  categoryIdToInfo[item.uid].deduction != "空"
+                    ? categoryIdToInfo[item.uid].deduction + " %"
+                    : categoryIdToInfo[item.uid].deduction
                 }}
               </template>
               <template v-slot:[`item.insurance`]="{ item }">
                 {{
-                  item.insurance != "空"
-                    ? item.insurance + " ￥"
-                    : item.deduction
+                  categoryIdToInfo[item.uid].insurance != "空"
+                    ? categoryIdToInfo[item.uid].insurance + " ￥"
+                    : categoryIdToInfo[item.uid].deduction
                 }}
               </template>
               <template v-slot:top>
@@ -580,7 +580,7 @@ export default {
     //},
     //----------------------------------------------------------------------------------------
     addButton() {
-      if (!this.global.user.permission.a.fc) {
+      if (!this.user.permission.a.fc) {
         this.global.infoAlert("泼发EBC：权限不足");
         return;
       }
@@ -603,7 +603,7 @@ export default {
     },
 
     editButton(item) {
-      if (!this.global.user.permission.a.fc) {
+      if (!this.user.permission.a.fc) {
         this.global.infoAlert("泼发EBC：权限不足");
         return;
       }
@@ -622,7 +622,7 @@ export default {
     },
 
     deleteButton(item) {
-      if (!this.global.user.permission.a.fc) {
+      if (!this.user.permission.a.fc) {
         this.global.infoAlert("泼发EBC：权限不足");
         return;
       }
@@ -645,7 +645,7 @@ export default {
     },
 
     deleteCategoryHistoryButton(item) {
-      if (!this.global.user.permission.a.fc) {
+      if (!this.user.permission.a.fc) {
         this.global.infoAlert("泼发EBC：权限不足");
         return;
       }
