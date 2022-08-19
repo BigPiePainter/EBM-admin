@@ -10,6 +10,7 @@
               no-data-text="空"
               item-key="uid"
               show-expand
+              :loading="loading"
               :expanded.sync="expanded"
               height="calc(100vh - 151px)"
               hide-default-footer
@@ -466,6 +467,8 @@ export default {
 
   data() {
     return {
+      loading: false,
+
       expanded: [],
       datePicker: false,
 
@@ -755,7 +758,6 @@ export default {
       args.startTime && (args.startTime = args.startTime.replaceAll("-", "/"));
 
       console.log(args);
-      this.loading = true;
       addHistoryCategory(args)
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);

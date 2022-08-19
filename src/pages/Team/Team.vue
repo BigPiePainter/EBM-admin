@@ -261,7 +261,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(["refreshAllTeam"]),
+    ...mapActions(["refreshAllTeams"]),
 
     parseDateTime(date) {
       return javaDateTimeToString(date);
@@ -312,7 +312,7 @@ export default {
         })
         .then(() => {
           this.loading = true;
-          this.refreshAllTeam().then(() => {
+          this.refreshAllTeams().then(() => {
             this.loading = false;
           });
         });
@@ -331,7 +331,7 @@ export default {
         })
         .then(() => {
           this.loading = true;
-          this.refreshAllTeam().then(() => {
+          this.refreshAllTeams().then(() => {
             this.loading = false;
           });
         });

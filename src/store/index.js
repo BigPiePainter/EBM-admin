@@ -181,7 +181,7 @@ const store = new Vuex.Store({
 
   },
   actions: {
-    refreshAllDepartment({ commit }) {
+    refreshAllDepartments({ commit }) {
       return new Promise((resolve, reject) => {
         getDepartment({}).then((res) => {
           commit('setAllDepartment', res.data.departments);
@@ -192,13 +192,23 @@ const store = new Vuex.Store({
       });
     },
     refreshAllTeams({ commit }) {
-      getTeam({}).then((res) => {
-        commit('setAllTeams', res.data.teams);
+      return new Promise((resolve, reject) => {
+        getTeam({}).then((res) => {
+          commit('setAllTeams', res.data.teams);
+        }).then(resolve)
+          .catch(() => {
+            reject()
+          });
       });
     },
     refreshAllUsers({ commit }) {
-      getAllUsers({}).then((res) => {
-        commit('setAllUsers', res.data.userInfos);
+      return new Promise((resolve, reject) => {
+        getAllUsers({}).then((res) => {
+          commit('setAllUsers', res.data.userInfos);
+        }).then(resolve)
+          .catch(() => {
+            reject()
+          });
       });
     },
     refreshAllCategorys({ commit }) {
