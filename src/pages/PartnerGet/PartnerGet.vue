@@ -2,6 +2,8 @@
   <div>
     <v-card class="products-list mb-1">
       <v-data-table
+        :show-select="ifAction"
+        v-model="selectedProductItem"
         single-expand
         show-expand
         fixed-header
@@ -75,8 +77,56 @@
             }}</span>
 
             <v-spacer></v-spacer>
+            <v-btn
+              v-if="ifAction"
+              :disabled="selectedProductItem.length != 1"
+              small
+              depressed
+              outlined
+              color="green"
+              class="ml-1"
+              @click.stop="editProductButton"
+            >
+              修改
+            </v-btn>
 
-            <v-btn small depressed color="primary" @click="addButton">
+            <v-btn
+              v-if="ifAction"
+              :disabled="selectedProductItem.length != 1"
+              outlined
+              color="red lighten-2"
+              small
+              depressed
+              class="ml-2"
+              @click.stop="deleteProductItem"
+            >
+              <span> 下架 </span>
+            </v-btn>
+
+            <v-btn
+              small
+              depressed
+              class="ml-2"
+              v-model="ifAction"
+              @click="ifAction = !ifAction; this.selectedProductItem = []"
+            >
+              <v-icon small class="mr-1">
+                {{
+                  ifAction
+                    ? "mdi-checkbox-marked-outline"
+                    : "mdi-checkbox-blank-outline"
+                }}
+              </v-icon>
+              <span> 操作 </span>
+            </v-btn>
+
+            <v-btn
+              small
+              class="ml-2"
+              depressed
+              color="primary"
+              @click="addButton"
+            >
               新增商品信息
             </v-btn>
           </v-toolbar>
@@ -88,7 +138,7 @@
             {{ header.text }}
           </div>
         </template>
-        <template v-slot:[`item.actions`]="{ item }">
+        <!-- <template v-slot:[`item.actions`]="{ item }">
           <div class="d-flex">
             <v-spacer />
             <v-btn
@@ -96,7 +146,7 @@
               depressed
               outlined
               color="green"
-              @click.stop="editButton(item)"
+              @click.stop="editProductButton(item)"
               class="ml-1"
             >
               修改
@@ -107,13 +157,13 @@
               depressed
               outlined
               color="red lighten-2"
-              @click.stop="deleteProduct(item)"
+              @click.stop="deleteProductItem(item)"
               class="ml-1"
             >
               删除
             </v-btn>
           </div>
-        </template>
+        </template> -->
       </v-data-table>
     </v-card>
 
@@ -460,9 +510,6 @@
       <v-card class="delete-dialog">
         <v-card-title class="text-subtitle-1"
           >{{ deleteItem.productName }}
-          <span class="text--secondary text-body-2 ml-5 mt-1">
-            同时删除SKU与厂家信息
-          </span>
         </v-card-title>
 
         <div class="delete-table-container mt-2 mb-1">
@@ -482,15 +529,70 @@
               </div>
             </template>
           </v-data-table>
+          <div class="pl-3 pr-3">
+            <v-row>
+              <v-col cols="4">
+            <span class="text-body-2 text--secondary"> 选择变化日期* </span>
+              <v-menu
+                ref="menu"
+                v-model="datePicker"
+                :close-on-content-click="false"
+                :return-value.sync="editedItem.underTime"
+                offset-y
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="editedItem.underTime"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    dense
+                    hide-details
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="editedItem.underTime"
+                  no-title
+                  scrollable
+                  locale="zh-cn"
+                  first-day-of-week="1"
+                  :day-format="dayFormat"
+                  min="2021-01-01"
+                  :max="parseDate(new Date())"
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="datePicker = false">
+                    取消
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.menu.save(editedItem.underTime)"
+                  >
+                    确定
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+              </v-col>
+              <v-col cols="8">
+                <span class="text-body-2 text--secondary">下架原因</span>
+              <v-text-field
+                color="blue-grey lighten-1"
+                outlined
+                dense
+                hide-details
+                v-model="editedItem.note"
+              >
+              </v-text-field>
+              </v-col>
+            </v-row>
+          </div>
+
         </div>
 
         <v-card-actions>
-          <v-switch v-model="deleteConfirm" dense class="mt-1 mr-3"
-            ><template v-slot:label>
-              <span class="body-2">确定</span>
-            </template></v-switch
-          >
-
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="deleteDialog = false"
             >取消</v-btn
@@ -499,9 +601,9 @@
             color="red darken-1"
             text
             @click="sureDelete"
-            :disabled="!deleteConfirm"
+            :disabled="isConfirm"
           >
-            <v-icon small class="mr-1"> mdi-delete </v-icon>删除
+            <v-icon small class="mr-1"> mdi-delete </v-icon>下架
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -515,6 +617,7 @@ import { mapState } from "vuex";
 
 import { addProducts } from "@/settings/product";
 import { editProduct } from "@/settings/product";
+import { deleteProduct } from "@/settings/product";
 import { loadProducts } from "@/settings/product";
 import { getClass } from "@/settings/product";
 
@@ -531,6 +634,8 @@ export default {
     //SelectDialog,
   },
   data: () => ({
+    selectedProductItem: [],
+    ifAction: false,
     mode: 0,
 
     //筛选菜单
@@ -563,7 +668,6 @@ export default {
     deleteDialog: false, //删除弹框
     deleteItem: {},
     deleteItemParse: [],
-    deleteConfirm: false,
 
     //二级展开
     expanded: [],
@@ -589,7 +693,6 @@ export default {
       { text: "发货方式", value: "transportWay" },
       { text: "聚水潭仓库", value: "storehouse" },
       { text: "备注", value: "note" },
-      { text: "操作", value: "actions" },
     ],
 
     oldItem: {},
@@ -629,6 +732,18 @@ export default {
         "firstCategory",
       ];
 
+      var pass = true;
+      check.forEach((item) => {
+        if (!this.editedItem[item]) pass = false;
+      });
+
+      console.log(pass);
+
+      return !pass;
+    },
+
+    isConfirm: function () {
+      var check = ["note", "underTime"];
       var pass = true;
       check.forEach((item) => {
         if (!this.editedItem[item]) pass = false;
@@ -742,41 +857,53 @@ export default {
       this.productInfoDialog = true;
     },
 
-    editButton(item) {
+    editProductButton() {
       this.mode = 2; //修改
-      this.oldItem = { ...item };
-      this.editedItem = { ...item };
+      this.oldItem = { ...this.selectedProductItem[0] };
+      this.editedItem = { ...this.selectedProductItem[0] };
       this.productInfoDialog = true;
     },
 
-    deleteProduct(item) {
-      console.log(item);
-      this.deleteItem = item;
+    deleteProductItem() {
+      console.log(this.selectedProductItem);
+      this.deleteItem = this.selectedProductItem[0];
       this.deleteItemParse = [
         {
           key: "商品ID",
-          value: item.id,
+          value: this.selectedProductItem[0].id,
         },
         {
           key: "商品名",
-          value: item.productName,
+          value: this.selectedProductItem[0].productName,
         },
         {
           key: "店铺名",
-          value: item.shopName,
+          value: this.selectedProductItem[0].shopName,
         },
         {
           key: "一级类目",
-          value: item.firstCategory,
+          value: this.selectedProductItem[0].firstCategory,
         },
       ];
-      this.deleteConfirm = false;
 
       this.deleteDialog = true;
     },
 
     sureDelete() {
-      console.log(this.deleteConfirm);
+      deleteProduct({ id: this.selectedProductItem[0].id })
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          this.deleteDialog = false;
+          this.ifAction = false;
+          //刷新页面数据
+          this.loadData();
+        })
+        .catch(() => {
+          this.loading = false;
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC：error");
+          }, 100);
+        });
     },
 
     save() {
