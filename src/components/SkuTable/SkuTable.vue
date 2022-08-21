@@ -817,7 +817,7 @@ export default {
         // { text: "创建时间", align: "start", value: "createTime" },
         // { text: "修改时间", align: "start", value: "modifyTime" },
         { text: "备注", align: "start", value: "note" },
-        { text: "操作", align: "start", value: "actions" },
+        // { text: "操作", align: "start", value: "actions" },
       ],
       manufacturerInfos: [],
 

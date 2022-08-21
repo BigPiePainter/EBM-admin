@@ -5,7 +5,7 @@
         <v-col>
           <v-card>
             <v-data-table
-              :show-select ="categoryAction"
+              :show-select="categoryAction"
               v-model="selectedCategoryItem"
               class="card-shadow"
               fixed-header
@@ -87,7 +87,7 @@
                     class="ml-2"
                     @click.stop="deleteCategoryButton"
                   >
-                    <span> 下架 </span>
+                    <span> 删除 </span>
                   </v-btn>
                 </v-toolbar>
               </template>
@@ -97,7 +97,7 @@
                   {{ header.text }}
                 </div>
               </template>
-              <template v-slot:[`item.actions`]="{ item }">
+              <!-- <template v-slot:[`item.actions`]="{ item }">
                 <div class="d-flex">
                   <v-spacer />
                   <v-btn
@@ -121,7 +121,7 @@
                     修改
                   </v-btn>
                 </div>
-              </template>
+              </template> -->
               <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" class="pa-0">
                   <div class="sub-table elevation-20 ml-2 mb-3 mr-12">
@@ -538,7 +538,7 @@ export default {
         { text: "品类扣点", align: "right", value: "deduction" },
         { text: "品类运费险", align: "right", value: "insurance" },
         //{ text: "备注", value: "note" },
-        { text: "操作", value: "actions" },
+        // { text: "操作", value: "actions" },
       ],
       calculatedCategorys: [],
 
@@ -709,6 +709,7 @@ export default {
             this.global.infoAlert("泼发EBC： error");
           }, 100);
         });
+      this.selectedCategoryItem = [];
     },
 
     deleteCategoryHistoryButton(item) {
@@ -758,6 +759,7 @@ export default {
             this.global.infoAlert("泼发EBC：error");
           }, 100);
         });
+      this.selectedCategoryItem = [];
     },
 
     editCategorySaveButton() {
