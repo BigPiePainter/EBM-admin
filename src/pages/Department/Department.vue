@@ -261,7 +261,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(["refreshAllDepartment"]),
+    ...mapActions(["refreshAllDepartments"]),
 
     parseDateTime(date) {
       return javaDateTimeToString(date);
@@ -312,7 +312,7 @@ export default {
         })
         .then(() => {
           this.loading = true;
-          this.refreshAllDepartment().then(() => {
+          this.refreshAllDepartments().then(() => {
             this.loading = false;
           });
         });
@@ -331,8 +331,7 @@ export default {
         })
         .then(() => {
           this.loading = true;
-          this.refreshAllDepartment().then(() => {
-            console.log("完毕完毕完毕完毕完毕完毕完毕完毕");
+          this.refreshAllDepartments().then(() => {
             this.loading = false;
           });
         });

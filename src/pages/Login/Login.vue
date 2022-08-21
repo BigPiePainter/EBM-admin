@@ -119,7 +119,7 @@ export default {
   methods: {
     ...mapMutations(["setToken", "setUser"]),
     ...mapActions([
-      "refreshAllDepartment",
+      "refreshAllDepartments",
       "refreshAllTeams",
       "refreshAllUsers",
       "refreshAllCategorys",
@@ -155,7 +155,7 @@ export default {
     },
 
     globalInitAndJump() {
-      this.refreshAllDepartment();
+      this.refreshAllDepartments();
       this.refreshAllTeams();
       this.refreshAllUsers();
       this.refreshAllCategorys();

@@ -63,14 +63,15 @@
           <template>
             <v-btn
               small
-              v-if="skuAction && skuSelected.length > 0"
+              v-if="skuAction"
+              :disabled="skuSelected.length == 0"
               depressed
               outlined
               color="red lighten-2"
               @click="deleteSku"
               class="ml-1"
             >
-              删除{{ skuSelected.length }}条
+              {{ skuSelected.length == 0 ? "删除" : `删除${skuSelected.length}条` }}
             </v-btn>
           </template>
         </v-toolbar>

@@ -12,6 +12,7 @@
               no-data-text="空"
               item-key="uid"
               show-expand
+              :loading="loading"
               :expanded.sync="expanded"
               height="calc(100vh - 151px)"
               hide-default-footer
@@ -511,6 +512,8 @@ export default {
 
   data() {
     return {
+      loading: false,
+
       selectedCategoryItem: [],
       categoryAction: false,
       expanded: [],
@@ -645,7 +648,12 @@ export default {
       addCategory({ name: this.editedItem.name })
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
-          this.loadData();
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllCategorys().then(() => {
+            this.loading = false;
+          });
         })
         .catch(() => {
           setTimeout(() => {
@@ -688,6 +696,12 @@ export default {
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
           this.categoryDeleteDialog = false;
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllCategorys().then(() => {
+            this.loading = false;
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -732,7 +746,12 @@ export default {
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
           this.deleteCategoryHistoryDialog = false;
-          this.loadData();
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllCategorys().then(() => {
+            this.loading = false;
+          });
         })
         .catch(() => {
           setTimeout(() => {
@@ -764,7 +783,12 @@ export default {
       editCategory(this.editedItem)
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
-          this.loadData();
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllCategorys().then(() => {
+            this.loading = false;
+          });
         })
         .catch(() => {
           setTimeout(() => {
@@ -784,7 +808,12 @@ export default {
       addHistoryCategory(args)
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
-          this.loadData();
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllCategorys().then(() => {
+            this.loading = false;
+          });
         })
         .catch(() => {
           setTimeout(() => {
@@ -801,7 +830,12 @@ export default {
       editHistoryCategory(args)
         .then((res) => {
           this.global.infoAlert("泼发EBC：" + res.data);
-          this.loadData();
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllCategorys().then(() => {
+            this.loading = false;
+          });
         })
         .catch(() => {
           setTimeout(() => {

@@ -11,7 +11,7 @@
       height="calc(100vh - 200px)"
       :expanded.sync="expanded"
       :headers="headers"
-      :items="teamInfo"
+      :items="allTeams"
       :loading="loading"
       :items-per-page="50"
       :footer-props="{
@@ -25,7 +25,13 @@
           <v-toolbar-title>组别</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-btn small depressed color="primary" dark @click="addTeamButton">
+          <v-btn
+            small
+            depressed
+            color="primary"
+            dark
+            @click="addTeamButton"
+          >
             新组别
           </v-btn>
         </v-toolbar>
@@ -33,43 +39,33 @@
 
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="sub-table pa-0">
-          <div style="width: 800px" class="sub-table-container elevation-20 ml-2 mb-3">
+          <div
+            style="width: 800px"
+            class="sub-table-container elevation-20 ml-2 mb-3"
+          >
             <TeamMemberTable
               :teamInfo="item"
               :allUsers="allUsers"
-              :allTeams="teamInfo"
+              :allTeams="allTeams"
             />
           </div>
         </td>
       </template>
 
-      <template v-slot:[`header.calculatedCreateTime`]="{ header }">
-        <div class="d-flex mr-8">
-          <v-spacer />
-          {{ header.text }}
-        </div>
+      <template v-slot:[`item.admin`]="{ item }">
+        {{
+          item.admin
+            .split(",")
+            .map((i) => userIdToNick[i])
+            .join("，")
+        }}
       </template>
-      <template v-slot:[`item.calculatedCreateTime`]="{ item }">
-        <div class="d-flex">
-          <v-spacer />
-          {{ item.calculatedCreateTime }}
-        </div>
+      
+      <template v-slot:[`item.createTime`]="{ item }">
+        {{ parseDateTime(item.createTime) }}
       </template>
-      <template v-slot:[`header.calculatedModifyTime`]="{ header }">
-        <div class="d-flex mr-8">
-          <v-spacer />
-          {{ header.text }}
-        </div>
-      </template>
-      <template v-slot:[`item.calculatedModifyTime`]="{ item }">
-        <div class="d-flex">
-          <v-spacer />
-          {{ item.calculatedModifyTime }}
-        </div>
-      </template>
-
-      <template v-slot:[`item.calculatedAdmin`]="{ item }">
-        {{ item.calculatedAdmin.join("，") }}
+      <template v-slot:[`item.modifyTime`]="{ item }">
+        {{ parseDateTime(item.modifyTime) }}
       </template>
 
       <template v-slot:[`header.actions`]="{ header }">
@@ -95,7 +91,7 @@
       </template>
     </v-data-table>
 
-    <!-- 组别信息Dialog -->
+    <!-- 部门信息Dialog -->
     <v-dialog
       v-model="teamInfoDialog"
       max-width="450px"
@@ -178,7 +174,10 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="teamInfoDialog = false"
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="teamInfoDialog = false"
             >取消</v-btn
           >
           <v-btn color="blue darken-1" text @click="save">保存</v-btn>
@@ -191,23 +190,21 @@
 
 
 <script>
-import { getTeam } from "@/settings/team";
+import { mapState, mapActions } from "vuex";
+
 import { addTeam } from "@/settings/team";
 import { modifyTeam } from "@/settings/team";
-
-import { getAllUsers } from "@/settings/user";
+import TeamMemberTable from "../../components/TeamMemberTable/TeamMemberTable.vue";
 
 import { javaDateTimeToString } from "@/libs/utils";
-import TeamMemberTable from "../../components/TeamMemberTable/TeamMemberTable.vue";
 
 export default {
   data: () => ({
     autocompleteFocus: false,
     dialogPersistent: false,
 
-    allTeams: [],
-    allUsers: [],
     selectedAdmin: [],
+
     headers: [
       {
         text: "编号",
@@ -216,23 +213,39 @@ export default {
         value: "uid",
       },
       { text: "组别名称", value: "name" },
-      { text: "管理员", value: "calculatedAdmin" },
+      { text: "管理员", value: "admin" },
       { text: "备注", value: "note" },
-      { text: "创建时间", value: "calculatedCreateTime" },
-      { text: "修改时间", value: "calculatedModifyTime" },
+      { text: "创建时间", value: "createTime" },
+      { text: "修改时间", value: "modifyTime" },
       { text: "操作", value: "actions", sortable: false },
     ],
-    teamInfo: [],
     expanded: [],
+
     teamInfoDialog: false,
     teamEdit: {},
-    teamMode: 0,
+    teamMode: 0, // 1--添加模式,  2--修改模式
+
     loading: false,
+
     teamDone: false,
     allUserDone: false,
   }),
-  created() {
-    this.init();
+
+  computed: {
+    ...mapState([
+      "user",
+      "allTeams",
+      "allTeams",
+      "allUsers",
+      "allCategorys",
+      "allCategoryHistorys",
+      "allShops",
+      "userIdToNick",
+      "teamIdToName",
+      "teamIdToName",
+      "categoryIdToName",
+      "categoryIdToInfo",
+    ]),
   },
 
   watch: {
@@ -246,59 +259,14 @@ export default {
       }
     },
   },
-  methods: {
-    init() {
-      console.log("init");
-      this.teamDone = false;
-      this.allUserDone = false;
-      this.loading = true;
-      getTeam({})
-        .then((res) => {
-          console.log(res.data.teams);
-          this.allTeams = res.data.teams; //team => team
-          // this.teamInfo = res.data.team;
-          this.teamDone = true;
-          this.initDone();
-        })
-        .catch(() => {
-          this.loading = false;
-        });
-      getAllUsers({})
-        .then((res) => {
-          console.log(res);
-          this.allUsers = res.data.userInfos;
-          this.allUserDone = true;
-          this.initDone();
-        })
-        .catch(() => {
-          this.loading = false;
-        });
-    },
-    initDone() {
-      if (!this.teamDone || !this.allUserDone) return;
-      this.dataAnalyze();
-      this.loading = false;
-    },
-    dataAnalyze() {
-      console.log("dataAnalyze");
-      console.log(this.allUsers);
-      this.allTeams.forEach((team) => {
-        team.calculatedCreateTime = javaDateTimeToString(team.createTime);
-        team.calculatedModifyTime = javaDateTimeToString(team.modifyTime);
-        team.calculatedAdmin = [];
-        if (team.admin) {
-          team.calculatedAdmin = team.admin
-            .split(",")
-            .map(
-              (id) =>
-                this.allUsers.find((i) => i.uid == id) &&
-                this.allUsers.find((i) => i.uid == id).nick
-            );
-        }
-      });
 
-      this.teamInfo = this.allTeams; //team => team
+  methods: {
+    ...mapActions(["refreshAllTeams"]),
+
+    parseDateTime(date) {
+      return javaDateTimeToString(date);
     },
+
     clickRow(item, event) {
       if (event.isExpanded) {
         const index = this.expanded.findIndex((i) => i === item);
@@ -307,6 +275,7 @@ export default {
         this.expanded.push(item);
       }
     },
+
     editTeamButton(item) {
       this.teamMode = 2; //"修改"模式
       this.teamEdit = { ...item };
@@ -315,38 +284,57 @@ export default {
         : [];
       this.teamInfoDialog = true;
     },
+
     addTeamButton() {
       this.teamMode = 1; //"添加"模式
       this.teamEdit = {};
       this.selectedAdmin = [];
       this.teamInfoDialog = true;
     },
+
     save() {
       console.log(this.selectedAdmin);
       this.teamMode == 1 ? this.newTeam() : this.editTeam();
       this.teamInfoDialog = false;
     },
+
     newTeam() {
       var args = { admin: this.selectedAdmin.join(), ...this.teamEdit };
       console.log(args);
-      addTeam(args).then((res) => {
-        this.global.infoAlert("泼发EBC：" + res.data);
-        console.log(this.teamEdit);
-        this.init();
-      });
-    },
-    editTeam() {
-      var args = { ...this.teamEdit };
-      args.admin = this.selectedAdmin.join();
 
       //预处理
-      if (args.note == null) delete args.note
+      if (args.note == null) delete args.note;
 
-      modifyTeam(args).then((res) => {
-        this.global.infoAlert("泼发EBC：" + res.data);
-        console.log(this.teamEdit);
-        this.init();
-      });
+      addTeam(args)
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          console.log(this.teamEdit);
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllTeams().then(() => {
+            this.loading = false;
+          });
+        });
+    },
+
+    editTeam() {
+      var args = { ...this.teamEdit };
+
+      args.admin = this.selectedAdmin.join();
+      console.log(args);
+
+      modifyTeam(args)
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          console.log(this.teamEdit);
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllTeams().then(() => {
+            this.loading = false;
+          });
+        });
     },
   },
   components: { TeamMemberTable },
