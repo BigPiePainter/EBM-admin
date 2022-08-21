@@ -6,6 +6,7 @@
           <v-card>
             <v-data-table
               :show-select="categoryAction"
+              single-select
               v-model="selectedCategoryItem"
               class="card-shadow"
               fixed-header

@@ -101,7 +101,7 @@
                   : "mdi-checkbox-blank-outline"
               }}
             </v-icon>
-            <span> 批量操作 </span>
+            <span> 操作 </span>
           </v-btn>
           <v-btn
             small
@@ -214,6 +214,7 @@
               item-key="uid"
               v-model="manufactureSelected"
               :show-select="manufactureAction"
+              single-select
               calculate-widths
               loading-text="加载中... 请稍后"
               no-data-text="空"

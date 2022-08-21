@@ -3,6 +3,7 @@
     <v-card class="products-list mb-1">
       <v-data-table
         :show-select="ifAction"
+        single-select
         v-model="selectedProductItem"
         single-expand
         show-expand
