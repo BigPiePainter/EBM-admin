@@ -26,6 +26,26 @@
             small
             depressed
             class="ml-2"
+            v-model="skuAction"
+            @click="
+              skuAction = !skuAction;
+              skuSelected = [];
+            "
+          >
+            <v-icon small class="mr-1">
+              {{
+                skuAction
+                  ? "mdi-checkbox-marked-outline"
+                  : "mdi-checkbox-blank-outline"
+              }}
+            </v-icon>
+            <span> 批量操作 </span>
+          </v-btn>
+
+          <v-btn
+            small
+            depressed
+            class="ml-2"
             v-model="check"
             @click="check = !check"
           >
@@ -39,47 +59,11 @@
             <span> 有效SKU </span>
           </v-btn>
 
-          <v-btn
-            small
-            depressed
-            class="ml-2"
-            v-model="isMutiple"
-            @click="isMutiple = !isMutiple"
-          >
-            <v-icon small class="mr-1">
-              {{
-                isMutiple
-                  ? "mdi-checkbox-marked-outline"
-                  : "mdi-checkbox-blank-outline"
-              }}
-            </v-icon>
-            <span> 批量操作 </span>
-          </v-btn>
-          <!-- 
-          <v-btn
-            v-if="!isMutiple"
-            small
-            depressed
-            class="ml-2"
-          >
-            <v-icon small> fa-list </v-icon>
-            <span></span>
-          </v-btn>
-          <v-btn
-            v-else
-            small
-            depressed
-            class="ml-2"
-            @click="isMutiple = !isMutiple"
-          >
-            <span>取消</span>
-          </v-btn> -->
-
           <v-spacer />
           <template>
             <v-btn
               small
-              v-if="isMutiple && skuSelected.length > 0"
+              v-if="skuAction && skuSelected.length > 0"
               depressed
               outlined
               color="red lighten-2"
@@ -95,20 +79,28 @@
             新增厂家信息
           </v-btn>
 
-          <!-- <v-switch v-model="showRecipientInfo" class="pl-5 pt-5">
-            <template v-slot:label>
-              <span class="text-body-2 mt-1">收款信息</span>
-            </template>
-          </v-switch>
-          <v-switch v-model="showDeliveryInfo" class="pl-5 pt-5">
-            <template v-slot:label>
-              <span class="text-body-2 mt-1">退货信息</span>
-            </template>
-          </v-switch> -->
-
           <v-btn small depressed class="ml-2">
             <v-icon small class="mr-1"> mdi-export </v-icon>
             <span class="" color=""> 导出 </span>
+          </v-btn>
+          <v-btn
+            small
+            depressed
+            class="ml-2"
+            v-model="manufactureAction"
+            @click="
+              manufactureAction = !manufactureAction;
+              manufactureSelected = [];
+            "
+          >
+            <v-icon small class="mr-1">
+              {{
+                manufactureAction
+                  ? "mdi-checkbox-marked-outline"
+                  : "mdi-checkbox-blank-outline"
+              }}
+            </v-icon>
+            <span> 批量操作 </span>
           </v-btn>
           <v-btn
             small
@@ -140,6 +132,33 @@
             </v-icon>
             <span> 显示退货信息 </span>
           </v-btn>
+          <v-spacer />
+          <template>
+            <v-btn
+              small
+              v-if="manufactureAction"
+              :disabled="manufactureSelected.length != 1"
+              depressed
+              outlined
+              color="green"
+              @click="editManufacturerButton"
+              class="ml-1"
+            >
+              修改
+            </v-btn>
+            <v-btn
+              small
+              v-if="manufactureAction"
+              :disabled="manufactureSelected.length != 1"
+              depressed
+              outlined
+              color="red lighten-2"
+              @click="deleteManufacturerButton"
+              class="ml-1"
+            >
+              删除
+            </v-btn>
+          </template>
         </v-toolbar>
       </v-tabs>
       <v-expand-transition>
@@ -150,7 +169,7 @@
               loading-text="加载中... 请稍后"
               no-data-text="空"
               :headers="headers"
-              :show-select="isMutiple"
+              :show-select="skuAction"
               @click:row="showselect"
               :items="check ? validSkuInfos : skuInfos"
               :loading="loading"
@@ -191,6 +210,9 @@
           </v-tab-item>
           <v-tab-item>
             <v-data-table
+              item-key="uid"
+              v-model="manufactureSelected"
+              :show-select="manufactureAction"
               calculate-widths
               loading-text="加载中... 请稍后"
               no-data-text="空"
@@ -216,7 +238,7 @@
                 }}
               </template>
 
-              <template v-slot:[`item.actions`]="{ item }">
+              <!-- <template v-slot:[`item.actions`]="{ item }">
                 <v-btn
                   small
                   depressed
@@ -235,10 +257,9 @@
                   @click="deleteManufacturerButton(item)"
                   class="ml-1"
                 >
-                  <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
                   删除
                 </v-btn>
-              </template>
+              </template> -->
 
               <template v-slot:[`item.startTime`]="{ item }">
                 {{ parseDate(item.startTime) }}
@@ -615,7 +636,7 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="sureButton"
+            @click="sureManufactureAddOrEditButton"
             type="submit"
             :disabled="isEmpty"
           >
@@ -703,7 +724,9 @@ export default {
 
   data() {
     return {
-      isMutiple: false,
+      manufactureAction: false,
+      manufactureSelected: [],
+      skuAction: false,
       skuSelected: [],
       show: false,
       itemShow: false,
@@ -1084,34 +1107,34 @@ export default {
       this.deleteAscriptionDialog = false;
     },
 
-    deleteManufacturerButton(item) {
-      console.log(item);
+    deleteManufacturerButton() {
+      console.log(this.manufactureSelected[0]);
 
-      this.deleteManufacturerItem = { ...item };
+      this.deleteManufacturerItem = { ...this.manufactureSelected[0] };
       this.deleteManufacturerItemParse = [
         {
           key: "厂家名",
-          value: item.manufacturerName,
+          value: this.manufactureSelected[0].manufacturerName,
         },
         {
           key: "厂家群名",
-          value: item.manufacturerGroup,
+          value: this.manufactureSelected[0].manufacturerGroup,
         },
         {
           key: "厂家收款方式",
-          value: item.manufacturerPaymentMethod,
+          value: this.manufactureSelected[0].manufacturerPaymentMethod,
         },
         {
           key: "厂家收款人",
-          value: item.manufacturerPaymentName,
+          value: this.manufactureSelected[0].manufacturerPaymentName,
         },
         {
           key: "厂家收款号码",
-          value: item.manufacturerPaymentId,
+          value: this.manufactureSelected[0].manufacturerPaymentId,
         },
         {
           key: "厂家生效时间",
-          value: this.parseDate(item.startTime),
+          value: this.parseDate(this.manufactureSelected[0].startTime),
         },
       ];
 
@@ -1126,14 +1149,15 @@ export default {
         .then((res) => {
           console.log(res);
           this.global.infoAlert(res.data);
+          this.manufactureSelected = [];
           this.init();
         })
         .catch(() => {});
     },
 
-    editManufacturerButton(item) {
+    editManufacturerButton() {
       this.manufacturerMode = 2; //"修改"模式
-      this.manufacturerEdit = { ...item };
+      this.manufacturerEdit = { ...this.manufactureSelected[0] };
       //注意
       this.manufacturerEdit.startTime = this.parseDate(
         this.manufacturerEdit.startTime
@@ -1147,7 +1171,7 @@ export default {
       this.manufacturerInfoDialog = true;
     },
 
-    sureButton() {
+    sureManufactureAddOrEditButton() {
       this.manufacturerMode == 1
         ? this.newManufacturer()
         : this.modifyManufacturer();
@@ -1188,6 +1212,8 @@ export default {
           this.init();
         })
         .catch(() => {});
+
+      this.manufactureSelected = [];
     },
   },
 };

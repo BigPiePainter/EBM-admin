@@ -71,12 +71,34 @@
           <v-toolbar flat>
             <v-toolbar-title>商品清单</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
-
-            <span class="grey--text body-2 overflow-y-auto">{{
-              searchPreview
-            }}</span>
-
-            <v-spacer></v-spacer>
+            <v-btn
+              small
+              class="ml-2"
+              depressed
+              color="primary"
+              @click="addButton"
+            >
+              新增商品信息
+            </v-btn>
+            <v-btn
+              small
+              depressed
+              class="ml-2"
+              v-model="ifAction"
+              @click="
+                ifAction = !ifAction;
+                selectedProductItem = [];
+              "
+            >
+              <v-icon small class="mr-1">
+                {{
+                  ifAction
+                    ? "mdi-checkbox-marked-outline"
+                    : "mdi-checkbox-blank-outline"
+                }}
+              </v-icon>
+              <span> 操作 </span>
+            </v-btn>
             <v-btn
               v-if="ifAction"
               :disabled="selectedProductItem.length != 1"
@@ -89,7 +111,6 @@
             >
               修改
             </v-btn>
-
             <v-btn
               v-if="ifAction"
               :disabled="selectedProductItem.length != 1"
@@ -102,33 +123,10 @@
             >
               <span> 下架 </span>
             </v-btn>
-
-            <v-btn
-              small
-              depressed
-              class="ml-2"
-              v-model="ifAction"
-              @click="ifAction = !ifAction; this.selectedProductItem = []"
-            >
-              <v-icon small class="mr-1">
-                {{
-                  ifAction
-                    ? "mdi-checkbox-marked-outline"
-                    : "mdi-checkbox-blank-outline"
-                }}
-              </v-icon>
-              <span> 操作 </span>
-            </v-btn>
-
-            <v-btn
-              small
-              class="ml-2"
-              depressed
-              color="primary"
-              @click="addButton"
-            >
-              新增商品信息
-            </v-btn>
+            <v-spacer></v-spacer>
+            <span class="grey--text body-2 overflow-y-auto">{{
+              searchPreview
+            }}</span>
           </v-toolbar>
         </template>
 
@@ -532,64 +530,63 @@
           <div class="pl-3 pr-3">
             <v-row>
               <v-col cols="4">
-            <span class="text-body-2 text--secondary"> 选择变化日期* </span>
-              <v-menu
-                ref="menu"
-                v-model="datePicker"
-                :close-on-content-click="false"
-                :return-value.sync="editedItem.underTime"
-                offset-y
-                min-width="auto"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="editedItem.underTime"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    outlined
-                    dense
-                    hide-details
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="editedItem.underTime"
-                  no-title
-                  scrollable
-                  locale="zh-cn"
-                  first-day-of-week="1"
-                  :day-format="dayFormat"
-                  min="2021-01-01"
-                  :max="parseDate(new Date())"
+                <span class="text-body-2 text--secondary"> 选择变化日期* </span>
+                <v-menu
+                  ref="menu"
+                  v-model="datePicker"
+                  :close-on-content-click="false"
+                  :return-value.sync="editedItem.underTime"
+                  offset-y
+                  min-width="auto"
                 >
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="datePicker = false">
-                    取消
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.menu.save(editedItem.underTime)"
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="editedItem.underTime"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      outlined
+                      dense
+                      hide-details
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="editedItem.underTime"
+                    no-title
+                    scrollable
+                    locale="zh-cn"
+                    first-day-of-week="1"
+                    :day-format="dayFormat"
+                    min="2021-01-01"
+                    :max="parseDate(new Date())"
                   >
-                    确定
-                  </v-btn>
-                </v-date-picker>
-              </v-menu>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="datePicker = false">
+                      取消
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.menu.save(editedItem.underTime)"
+                    >
+                      确定
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
               </v-col>
               <v-col cols="8">
-                <span class="text-body-2 text--secondary">下架原因</span>
-              <v-text-field
-                color="blue-grey lighten-1"
-                outlined
-                dense
-                hide-details
-                v-model="editedItem.note"
-              >
-              </v-text-field>
+                <span class="text-body-2 text--secondary">下架原因*</span>
+                <v-text-field
+                  color="blue-grey lighten-1"
+                  outlined
+                  dense
+                  hide-details
+                  v-model="editedItem.note"
+                >
+                </v-text-field>
               </v-col>
             </v-row>
           </div>
-
         </div>
 
         <v-card-actions>
@@ -904,6 +901,7 @@ export default {
             this.global.infoAlert("泼发EBC：error");
           }, 100);
         });
+      this.selectedProductItem = [];
     },
 
     save() {
@@ -978,6 +976,7 @@ export default {
             this.global.infoAlert("泼发EBC：修改失败");
           }, 100);
         });
+      this.selectedProductItem = [];
     },
   },
 };
