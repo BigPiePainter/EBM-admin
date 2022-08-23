@@ -91,7 +91,6 @@ import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { VisualMapComponent } from "echarts/components";
 import VChart from "vue-echarts";
-import 'echarts-gl';
 
 use([CanvasRenderer, VisualMapComponent]);
 require("echarts/lib/component/graphic");
