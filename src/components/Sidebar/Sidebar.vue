@@ -175,6 +175,30 @@ export default {
         },
 
         {
+          title: "利润报表",
+          icon: "mdi-account-multiple",
+          link: "",
+          show: true,
+          children: [
+            {
+              title: "xxxx",
+              icon: "mdi-circle-small",
+              link: "/dashboard",
+            },
+            {
+              title: "总利润报表",
+              icon: "mdi-circle-small",
+              link: "/allProfit",
+            },
+            {
+              title: "部门利润报表",
+              icon: "mdi-circle-small",
+              link: "/departmentsProfit",
+            },
+          ],
+        },
+
+        {
           title: "事业部管理",
           icon: "mdi-account-multiple",
           link: "/department",
