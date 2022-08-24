@@ -1,7 +1,13 @@
 @import "../../styles/app";
+
 body {
-  background-color: #F6F7FF !important
+  background-color: #F6F7FF !important;
 }
+
+input:-webkit-autofill {
+  transition: background-color 50000000000s ease 50000000000s;
+}
+
 .container {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   padding: 0;
@@ -14,11 +20,13 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
     div {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+
       p {
         text-align: center;
         font-family: "Roboto", sans-serif;
@@ -26,46 +34,63 @@ body {
         color: white;
         font-weight: 500;
       }
+
       .v-image {
         margin-bottom: 32px;
       }
     }
 
   }
-  .login-part {
-    width: 100%;
-    height: 100vh;
-    background-color: #F6F7FF;
-    overflow-y: auto;
-    .login-wrapper {
-      width: 320px;
-      height: auto;
-      .login-slogan {
-        color: #4a4a4a;
-      }
-      .v-btn.google {
-        //box-shadow: $card-shadow!important;
-      }
-      .v-tabs {
-        .v-tab {
-          font-size: 18px;
-        }
-        .v-item-group {
-          background-color: #F6F7FF;
-        }
-      }
 
+
+
+
+  .v-label {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+}
+
+
+.bar-chart {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+.login-part {
+  width: 300px;
+  overflow-y: auto;
+  margin: auto;
+
+  .v-tabs {
+    .v-tabs-bar {
+      font-size: 18px;
+      background-color: transparent;
     }
-    .v-footer {
-      position: absolute;
-      bottom: 0;
-      background-color: #F6F7FF;
+
+    .v-tabs-items {
+      background-color: transparent;
     }
   }
 
+  .login-wrapper {
+    width: 320px;
+    height: auto;
 
-  .v-label{
-    padding-top: 0px;
-    padding-bottom: 0px;
+    .login-slogan {
+      color: #4a4a4a;
+    }
+
+    .v-btn.google {
+      //box-shadow: $card-shadow!important;
+    }
+
+  }
+
+  .v-footer {
+    position: absolute;
+    bottom: 0;
+    background-color: #F6F7FF;
   }
 }
