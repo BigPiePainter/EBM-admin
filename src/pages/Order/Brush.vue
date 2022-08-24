@@ -39,13 +39,14 @@
 
 
 <script>
-
 import { getBrush } from "@/settings/order";
 
 export default {
-  components: {  },
+  components: {},
   data() {
     return {
+      totalBrushItems: 50,
+      options: {},
       moreInfo: false,
       brushItems: [],
       brushHeader: [
@@ -65,11 +66,28 @@ export default {
   },
 
   created() {
-    getBrush({});
+    this.loadData();
   },
 
-  watch() {},
+  watch: {},
 
-  methods: {},
+  methods: {
+    loadData() {
+      this.loading = true;
+      const { page, itemsPerPage } = this.options;
+      console.log({ page, itemsPerPage });
+      getBrush({ page, itemsPerPage })
+        .then((res) => {
+          this.loading = false;
+          console.log(res.data);
+          this.brushItems = res.data.brushItems;
+          this.totalBrushItems = res.data.total;
+          //this.global.infoAlert("泼发EBC：" + res.data);
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+    },
+  },
 };
 </script>

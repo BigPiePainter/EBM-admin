@@ -343,9 +343,9 @@ export default {
           viewControl: {
             autoRotate:  true,
             autoRotateSpeed: 0.7,
-            alpha: 10.916265504094035,
-            beta: 21.862276171842225,
-            distance: 80.74508240915316,
+            alpha: -30,
+            beta: 15,
+            distance: 70,
           },
         },
         series: [
@@ -385,13 +385,13 @@ export default {
               top: "center",
               style: {
                 text: "POFA EBC",
-                fontSize: 80,
-                fontWeight: "bold",
+                fontSize: 70,
+                fontWeight: "400",
                 lineDash: [0, 200],
-                lineDashOffset: 0,
-                fill: "#fff",
+                lineDashOffset: 10,
+                fill: "#fff0",
                 stroke: "#536DFE",
-                lineWidth: 3,
+                lineWidth: 2,
               },
               keyframeAnimation: {
                 duration: 3000,
@@ -400,7 +400,7 @@ export default {
                   {
                     percent: 0.7,
                     style: {
-                      fill: "#fff",
+                      fill: "#fff0",
                       lineDashOffset: 200,
                       lineDash: [200, 0],
                     },
@@ -409,7 +409,7 @@ export default {
                     // Stop for a while.
                     percent: 0.8,
                     style: {
-                      fill: "#fff",
+                      fill: "#fff0",
                     },
                   },
                   {
