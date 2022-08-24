@@ -2,7 +2,7 @@
   <v-container fluid id="mainContainer">
     <div class="dashboard-page">
       <v-row no-gutters class="d-flex justify-space-between mt-2">
-        <h1 class="page-title">利润报表</h1>
+        <h1 class="page-title">利润报表--本月数据</h1>
       </v-row>
 
       <v-row>
@@ -10,10 +10,14 @@
           <v-card class="mx-1 mb-1">
             <v-card-title>
               <p class="caption">今日总销售额/退款额/毛利润</p>
+              <v-spacer />
+              <v-btn small color="primary" @click.stop="totalChartButton"
+                ><span>完整图表</span></v-btn
+              >
             </v-card-title>
             <v-chart
               style="height: 500px"
-              :option="allTurnoverBarOption"
+              :option="totalChartOption"
               ref="echartA"
             ></v-chart>
           </v-card>
@@ -22,6 +26,10 @@
           <v-card class="mx-1 mb-1">
             <v-card-title>
               <p class="caption">部门毛利润比较折线图</p>
+              <v-spacer />
+              <v-btn small color="primary" @click="departmentProfitChartButton"
+                ><span>完整图表</span></v-btn
+              >
             </v-card-title>
             <v-chart
               style="height: 500px"
@@ -34,6 +42,13 @@
           <v-card class="mx-1 mb-1">
             <v-card-title>
               <p class="caption">部门销售额比较折线图</p>
+              <v-spacer />
+              <v-btn
+                small
+                color="primary"
+                @click="departmentTurnoverChartButton"
+                ><span>完整图表</span></v-btn
+              >
             </v-card-title>
             <v-chart
               style="height: 500px"
@@ -48,6 +63,10 @@
           <v-card class="mx-1 mb-1">
             <v-card-title>
               <p class="caption">小组毛利润汇总条形图</p>
+              <v-spacer />
+              <v-btn small color="primary" @click="groupProfitChartButton"
+                ><span>完整图表</span></v-btn
+              >
             </v-card-title>
             <v-chart
               style="height: 500px"
@@ -57,14 +76,28 @@
           </v-card>
         </v-col>
       </v-row>
+      <template>
+        <v-dialog v-model="showTotalChartDialog"
+          ><v-card
+            >
+            <v-card-title><p class="caption">总销售额/退款额/毛利润</p></v-card-title><v-chart
+              style="height: 500px"
+              :option="totalChartOption"
+              ref="echartA"
+            ></v-chart></v-card
+        ></v-dialog>
+        <v-dialog v-model="showGroupProfitChartDialog"
+          ><v-card></v-card
+        ></v-dialog>
+        <v-dialog v-model="showDepartmentProfitChartDialog"
+          ><v-card></v-card
+        ></v-dialog>
+        <v-dialog v-model="showDepartmentTurnoverChartDialog"
+          ><v-card></v-card
+        ></v-dialog>
+      </template>
     </div>
   </v-container>
-  <!-- <v-card style="margin-right: 10px">
-        <div>
-       position:absolute;   <v-chart class="chart"
-        style="width:100px;height:1000px" :option="option"></v-chart>
-        </div>
-      </v-card> -->
 </template>
 
 <script>
@@ -103,6 +136,10 @@ export default {
   },
   data() {
     return {
+      showTotalChartDialog: false,
+      showGroupProfitChartDialog: false,
+      showDepartmentProfitChartDialog: false,
+      showDepartmentTurnoverChartDialog: false,
       departmentsTurnoverLineOption: {
         tooltip: {
           trigger: "axis",
@@ -215,7 +252,7 @@ export default {
           },
         ],
       },
-      allTurnoverBarOption: {
+      totalChartOption: {
         tooltip: {
           trigger: "axis",
           axisPointer: {
@@ -449,7 +486,20 @@ export default {
     observer.observe(document.querySelector("#mainContainer"));
   },
 
-  method: {},
+  methods: {
+    totalChartButton() {
+      this.showTotalChartDialog = true;
+    },
+    departmentProfitChartButton() {
+      this.showTotalChartDialog = true;
+    },
+    departmentTurnoverChartButton() {
+      this.showTotalChartDialog = true;
+    },
+    groupProfitChartButton() {
+      this.showTotalChartDialog = true;
+    },
+  },
 };
 </script>
 

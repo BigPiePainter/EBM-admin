@@ -2,45 +2,71 @@
   <v-container fluid id="mainContainer">
     <div class="dashboard-page">
       <v-row no-gutters class="d-flex justify-space-between mt-2">
-        <h1 class="page-title">利润报表</h1>
+        <h1 class="page-title">POFA EBC--今日统计</h1>
       </v-row>
 
       <v-row>
-        <v-col lg="4" md="6" sm="12">
+        <v-col cols="4">
           <v-card class="mx-1 mb-1">
             <v-card-title>
               <p class="caption">今日总销售额/退款额/毛利润</p>
             </v-card-title>
             <v-chart
-              style="height: 500px"
+              style="height: 480px"
               :option="allTurnoverBarOption"
               ref="echartA"
             ></v-chart>
           </v-card>
         </v-col>
-        <v-col lg="4" md="6" sm="12">
-          <v-card class="mx-1 mb-1">
-            <v-card-title>
-              <p class="caption">部门毛利润比较折线图</p>
-            </v-card-title>
-            <v-chart
-              style="height: 500px"
-              :option="departmentsProfitLineOption"
-              ref="echartB"
-            ></v-chart>
-          </v-card>
-        </v-col>
-        <v-col lg="4" md="6" sm="12">
-          <v-card class="mx-1 mb-1">
-            <v-card-title>
-              <p class="caption">部门销售额比较折线图</p>
-            </v-card-title>
-            <v-chart
-              style="height: 500px"
-              :option="departmentsTurnoverLineOption"
-              ref="echartC"
-            ></v-chart>
-          </v-card>
+
+        <v-col cols="8">
+          <v-row>
+            <v-col cols="6">
+              <v-card
+                class="mx-1 mb-1"
+                style="position: relative; height: 250px"
+                ><v-card-title class="pb-0" style="height: 0px"
+                  ><p>今日数据</p></v-card-title
+                >
+                <v-chart
+                  style="height: 235px"
+                  :option="dataCardChart"
+                  ref="dataCardChart"
+                >
+                </v-chart>
+              </v-card>
+            </v-col>
+
+            <v-col cols="6">
+              <v-card class="mx-1 mb-1"
+                ><v-chart
+                  style="height: 250px"
+                  :option="departmentsTurnoverPieOption"
+                  ref="pieA"
+                ></v-chart>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="6">
+              <v-card class="mx-1 mb-1"
+                ><v-chart
+                  style="height: 250px"
+                  :option="departmentsProfitPieOption"
+                  ref="pieB"
+                ></v-chart>
+              </v-card>
+            </v-col>
+            <v-col cols="6">
+              <v-card class="mx-1 mb-1"
+                ><v-chart
+                  style="height: 250px"
+                  :option="departmentsRteurnPieOption"
+                  ref="pieC"
+                ></v-chart>
+              </v-card>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
       <v-row>
@@ -59,12 +85,6 @@
       </v-row>
     </div>
   </v-container>
-  <!-- <v-card style="margin-right: 10px">
-        <div>
-       position:absolute;   <v-chart class="chart"
-        style="width:100px;height:1000px" :option="option"></v-chart>
-        </div>
-      </v-card> -->
 </template>
 
 <script>
@@ -79,12 +99,13 @@ import {
   ToolboxComponent,
 } from "echarts/components";
 
-import { BarChart, LineChart } from "echarts/charts";
+import { BarChart, LineChart, PieChart } from "echarts/charts";
 
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 
 use([
+  PieChart,
   TooltipComponent,
   GridComponent,
   LegendComponent,
@@ -103,118 +124,6 @@ export default {
   },
   data() {
     return {
-      departmentsTurnoverLineOption: {
-        tooltip: {
-          trigger: "axis",
-        },
-        legend: {
-          data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"],
-        },
-        grid: {
-          left: "3%",
-          right: "4%",
-          bottom: "3%",
-          containLabel: true,
-        },
-        toolbox: {
-          feature: {
-            saveAsImage: {},
-          },
-        },
-        xAxis: {
-          type: "category",
-          boundaryGap: false,
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        },
-        yAxis: {
-          type: "value",
-        },
-        series: [
-          {
-            name: "Email",
-            type: "line",
-
-            data: [120, 132, 101, 134, 90, 230, 210],
-          },
-          {
-            name: "Union Ads",
-            type: "line",
-
-            data: [220, 182, 191, 234, 290, 330, 310],
-          },
-          {
-            name: "Video Ads",
-            type: "line",
-
-            data: [150, 232, 201, 154, 190, 330, 410],
-          },
-          {
-            name: "Direct",
-            type: "line",
-
-            data: [320, 332, 301, 334, 390, 330, 320],
-          },
-          {
-            name: "Search Engine",
-            type: "line",
-
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
-          },
-        ],
-      },
-      departmentsProfitLineOption: {
-        tooltip: {
-          trigger: "axis",
-        },
-        legend: {
-          data: ["Email", "Union Ads", "Video Ads", "Direct"],
-        },
-        grid: {
-          left: "3%",
-          right: "4%",
-          bottom: "3%",
-          containLabel: true,
-        },
-        toolbox: {
-          feature: {
-            saveAsImage: {},
-          },
-        },
-        xAxis: {
-          type: "category",
-          boundaryGap: false,
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        },
-        yAxis: {
-          type: "value",
-        },
-        series: [
-          {
-            name: "Email",
-            type: "line",
-
-            data: [120, 132, 101, 134, 90, 230, 210],
-          },
-          {
-            name: "Union Ads",
-            type: "line",
-
-            data: [220, 182, 191, 234, 290, 330, 310],
-          },
-          {
-            name: "Video Ads",
-            type: "line",
-
-            data: [150, 232, 201, 154, 190, 330, 410],
-          },
-          {
-            name: "Direct",
-            type: "line",
-
-            data: [320, 332, 301, 334, 390, 330, 320],
-          },
-        ],
-      },
       allTurnoverBarOption: {
         tooltip: {
           trigger: "axis",
@@ -237,7 +146,7 @@ export default {
         xAxis: [
           {
             type: "category",
-            data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            data: ["部门A", "部门B", "部门C"],
           },
         ],
         yAxis: [
@@ -247,99 +156,182 @@ export default {
         ],
         series: [
           {
-            name: "Direct",
+            name: "退款",
             type: "bar",
-            emphasis: {
-              focus: "series",
-            },
-            data: [320, 332, 301, 334, 390, 330, 320],
+            data: [20, 32, 31],
           },
           {
-            name: "Email",
+            name: "毛利润",
             type: "bar",
-            stack: "Ad",
-            emphasis: {
-              focus: "series",
-            },
-            data: [120, 132, 101, 134, 90, 230, 210],
+            data: [60, 40, 60],
           },
           {
-            name: "Union Ads",
+            name: "营业额",
             type: "bar",
-            stack: "Ad",
-            emphasis: {
-              focus: "series",
-            },
-            data: [220, 182, 191, 234, 290, 330, 310],
-          },
-          {
-            name: "Video Ads",
-            type: "bar",
-            stack: "Ad",
-            emphasis: {
-              focus: "series",
-            },
-            data: [150, 232, 201, 154, 190, 330, 410],
-          },
-          {
-            name: "Search Engine",
-            type: "bar",
-            data: [862, 1018, 964, 1026, 1679, 1600, 1570],
-            emphasis: {
-              focus: "series",
-            },
-            markLine: {
-              lineStyle: {
-                type: "dashed",
-              },
-              data: [[{ type: "min" }, { type: "max" }]],
-            },
-          },
-          {
-            name: "Baidu",
-            type: "bar",
-            barWidth: 5,
-            stack: "Search Engine",
-            emphasis: {
-              focus: "series",
-            },
-            data: [620, 732, 701, 734, 1090, 1130, 1120],
-          },
-          {
-            name: "Google",
-            type: "bar",
-            stack: "Search Engine",
-            emphasis: {
-              focus: "series",
-            },
-            data: [120, 132, 101, 134, 290, 230, 220],
-          },
-          {
-            name: "Bing",
-            type: "bar",
-            stack: "Search Engine",
-            emphasis: {
-              focus: "series",
-            },
-            data: [60, 72, 71, 74, 190, 130, 110],
-          },
-          {
-            name: "Others",
-            type: "bar",
-            stack: "Search Engine",
-            emphasis: {
-              focus: "series",
-            },
-            data: [62, 82, 91, 84, 109, 110, 120],
+            data: [90, 78, 110],
           },
         ],
       },
+
+      dataCardChart: {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "shadow",
+          },
+        },
+        legend: {},
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        toolbox: {},
+        xAxis: [
+          {
+            type: "category",
+            data: ["营业额", "毛利", "退款"],
+          },
+        ],
+        yAxis: [
+          {
+            type: "value",
+          },
+        ],
+        series: [
+          {
+            type: "bar",
+            data: [60, 30, 20],
+          },
+        ],
+      },
+
+      departmentsTurnoverPieOption: {
+        legend: {
+          top: "bottom",
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            restore: { show: true },
+            saveAsImage: { show: true },
+          },
+        },
+        series: [
+          {
+            name: "营业额饼图",
+            type: "pie",
+            radius: [30, 100],
+            center: ["70%", "50%"],
+            roseType: "area",
+            itemStyle: {
+              borderRadius: 3,
+            },
+            labelLine: {
+              normal: {
+                show: false,
+                length: 45,
+                length2: 45,
+              },
+            },
+            label: { normal: { show: false } },
+            data: [
+              { value: 40, name: "部门A" },
+              { value: 38, name: "部门B" },
+              { value: 32, name: "部门C" },
+            ],
+          },
+        ],
+      },
+
+      departmentsProfitPieOption: {
+        legend: {
+          top: "bottom",
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            restore: { show: true },
+            saveAsImage: { show: true },
+          },
+        },
+        series: [
+          {
+            name: "营业额饼图",
+            type: "pie",
+            radius: [30, 100],
+            center: ["70%", "50%"],
+            roseType: "area",
+            itemStyle: {
+              borderRadius: 3,
+            },
+            labelLine: {
+              normal: {
+                show: false,
+                length: 45,
+                length2: 45,
+              },
+            },
+            label: { normal: { show: false } },
+            data: [
+              { value: 40, name: "部门A" },
+              { value: 38, name: "部门B" },
+              { value: 32, name: "部门C" },
+            ],
+          },
+        ],
+      },
+
+      departmentsRteurnPieOption: {
+        legend: {
+          top: "bottom",
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            restore: { show: true },
+            saveAsImage: { show: true },
+          },
+        },
+        series: [
+          {
+            name: "营业额饼图",
+            type: "pie",
+            radius: [30, 100],
+            center: ["70%", "50%"],
+            roseType: "area",
+            itemStyle: {
+              borderRadius: 3,
+            },
+            labelLine: {
+              normal: {
+                show: false,
+                length: 45,
+                length2: 45,
+              },
+            },
+            label: { normal: { show: false } },
+            data: [
+              { value: 40, name: "部门A" },
+              { value: 38, name: "部门B" },
+              { value: 32, name: "部门C" },
+            ],
+          },
+        ],
+      },
+
       groupsProfitBarOption: {
         tooltip: {
           trigger: "axis",
           axisPointer: {
-            // Use axis to trigger tooltip
-            type: "shadow", // 'shadow' as default; can also be 'line' or 'shadow'
+            type: "shadow",
           },
         },
         legend: {},
@@ -359,68 +351,49 @@ export default {
         },
         yAxis: {
           type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          axisTick: {
+            show: false,
+          },
+          data: ["YJX", "WQ", "JY", "PL", "AY", "QJH1/WXF1", "CJY", "HWX", "XW", "ZC", "QJH/WXF"],
         },
         series: [
           {
-            name: "Direct",
+            name: "营业额",
             type: "bar",
-            stack: "total",
+            barWidth: 2,
             label: {
               show: true,
             },
-            emphasis: {
-              focus: "series",
+            data: [640, 600, 630, 688, 800, 600, 640, 600, 630, 688, 640],
+          },
+          
+          {
+            name: "毛利润",
+            type: "bar",
+            stack: 'Total',
+            label: {
+              show: true,
             },
-            data: [320, 302, 301, 334, 390, 330, 320],
+            data: [320, 302, 301, 334, 390, 330, 320, 302, 301, 334, 320],
           },
           {
-            name: "Mail Ad",
+            name: "成本",
             type: "bar",
-            stack: "total",
+            stack: 'Total',
             label: {
               show: true,
             },
-            emphasis: {
-              focus: "series",
-            },
-            data: [120, 132, 101, 134, 90, 230, 210],
+            data: [320, 298, 329, 354, 410, 270, 320, 298, 329, 354, 320],
           },
           {
-            name: "Affiliate Ad",
+            name: "退款",
             type: "bar",
-            stack: "total",
+            stack: 'Total',
             label: {
               show: true,
+              position: "left",
             },
-            emphasis: {
-              focus: "series",
-            },
-            data: [220, 182, 191, 234, 290, 330, 310],
-          },
-          {
-            name: "Video Ad",
-            type: "bar",
-            stack: "total",
-            label: {
-              show: true,
-            },
-            emphasis: {
-              focus: "series",
-            },
-            data: [150, 212, 201, 154, 190, 330, 410],
-          },
-          {
-            name: "Search Engine",
-            type: "bar",
-            stack: "total",
-            label: {
-              show: true,
-            },
-            emphasis: {
-              focus: "series",
-            },
-            data: [820, 832, 901, 934, 1290, 1330, 1320],
+            data: [-120, -132, -101, -134, -190, -230, -210, -101, -134, -190, -230],
           },
         ],
       },
@@ -442,9 +415,11 @@ export default {
   mounted() {
     var observer = new ResizeObserver(() => {
       this.$refs.echartA.resize();
-      this.$refs.echartB.resize();
-      this.$refs.echartC.resize();
       this.$refs.echartD.resize();
+      this.$refs.dataCardChart.resize();
+      this.$refs.pieA.resize();
+      this.$refs.pieB.resize();
+      this.$refs.pieC.resize();
     });
     observer.observe(document.querySelector("#mainContainer"));
   },

@@ -984,5 +984,8 @@ export default {
 </script>
 
 <style src="./PartnerGet.scss" lang="scss">
+//we grow, we sow, we feed our people;
+//we learn, we build, we protect our people.
+//keep forward, we are the proletariet.
 </style>
 
