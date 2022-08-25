@@ -7,8 +7,8 @@ import Layout from '@/components/Layout/Layout';
 // Pages
 import MainPage from '@/pages/MainPage/MainPage';
 import Dashboard from '@/pages/Dashboard/Dashboard';
-import AllProfit from '@/pages/Dashboard/AllProfit';
-import DepartmentsProfit from '@/pages/Dashboard/DepartmentsProfit';
+import ProfitChart from '@/pages/Dashboard/ProfitChart';
+import ProfitTable from '@/pages/Dashboard/ProfitTable';
 import PartnerGet from '@/pages/PartnerGet/PartnerGet'
 import Missings from '@/pages/Missings/Missings'
 import Category from '@/pages/Category/Category'
@@ -62,14 +62,14 @@ var routerConfig = {
           component: Dashboard,
         },
         {
-          path: 'allProfit',
-          name: 'AllProfit',
-          component: AllProfit,
+          path: 'profitChart',
+          name: 'ProfitChart',
+          component: ProfitChart,
         },
         {
-          path: 'departmentsProfit',
-          name: 'DepartmentsProfit',
-          component: DepartmentsProfit,
+          path: 'profitTable',
+          name: 'ProfitTable',
+          component: ProfitTable,
         },
         {
           path: 'partnerget',

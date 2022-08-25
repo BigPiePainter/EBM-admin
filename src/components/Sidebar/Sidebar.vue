@@ -186,14 +186,14 @@ export default {
             //   link: "/dashboard",
             // },
             {
-              title: "总利润报表",
+              title: "利润统计图",
               icon: "mdi-circle-small",
-              link: "/allProfit",
+              link: "/profitChart",
             },
             {
-              title: "部门利润报表",
+              title: "利润报表",
               icon: "mdi-circle-small",
-              link: "/departmentsProfit",
+              link: "/profitTable",
             },
           ],
         },
