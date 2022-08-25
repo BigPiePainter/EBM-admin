@@ -175,6 +175,7 @@ export default {
   name: "Header",
   components: {},
   data: () => ({
+    loading: false,
     config,
     searchCollapse: true,
     notifications: [
