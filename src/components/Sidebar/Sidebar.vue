@@ -180,11 +180,11 @@ export default {
           link: "",
           show: true,
           children: [
-            {
-              title: "xxxx",
-              icon: "mdi-circle-small",
-              link: "/dashboard",
-            },
+            // {
+            //   title: "xxxx",
+            //   icon: "mdi-circle-small",
+            //   link: "/dashboard",
+            // },
             {
               title: "总利润报表",
               icon: "mdi-circle-small",
