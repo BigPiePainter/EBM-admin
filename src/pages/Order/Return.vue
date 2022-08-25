@@ -15,8 +15,8 @@
           :loading="loading"
           :headers="returnHeader"
           :items="returnItems"
-          :expanded.sync="expanded"
           :options.sync="options"
+          :server-items-length="totalReturnItems"
           :items-per-page="50"
           :footer-props="{
             'items-per-page-options': [10, 20, 50, 100],
@@ -45,6 +45,8 @@ export default {
   components: {},
   data() {
     return {
+      totalReturnItems: 50,
+      options: {},
       moreInfo: false,
       returnItems: [],
       returnHeader: [
@@ -71,11 +73,29 @@ export default {
   },
 
   created() {
-    getReturn({});
+    this.loadData();
   },
 
-  watch() {},
+  watch: {
+  },
 
-  methods: {},
+  methods: {
+    loadData() {
+      this.loading = true;
+      const { page, itemsPerPage } = this.options;
+      console.log({ page, itemsPerPage});
+      getReturn({ page, itemsPerPage})
+        .then((res) => {
+          this.loading = false;
+          console.log(res.data);
+          this.returnItems = res.data.returnItems;
+          this.totalReturnItems = res.data.total;
+          //this.global.infoAlert("泼发EBC：" + res.data);
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+    },
+  },
 };
 </script>

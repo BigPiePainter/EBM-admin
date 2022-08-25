@@ -5,6 +5,9 @@
         <v-col>
           <v-card>
             <v-data-table
+              :show-select="categoryAction"
+              single-select
+              v-model="selectedCategoryItem"
               class="card-shadow"
               fixed-header
               no-data-text="空"
@@ -38,11 +41,54 @@
                 <v-toolbar flat>
                   <v-toolbar-title>一级类目</v-toolbar-title>
                   <v-divider class="mx-4" inset vertical></v-divider>
+                  <v-btn small depressed color="primary" @click="addButton">
+                    新增类目
+                  </v-btn>
+                  <v-btn
+                    small
+                    depressed
+                    class="ml-2"
+                    v-model="ifAction"
+                    @click="
+                      categoryAction = !categoryAction;
+                      selectedCategoryItem = [];
+                    "
+                  >
+                    <v-icon small class="mr-1">
+                      {{
+                        categoryAction
+                          ? "mdi-checkbox-marked-outline"
+                          : "mdi-checkbox-blank-outline"
+                      }}
+                    </v-icon>
+                    <span> 操作 </span>
+                  </v-btn>
 
                   <v-spacer></v-spacer>
 
-                  <v-btn small depressed color="primary" @click="addButton">
-                    新增类目
+                  <v-btn
+                    v-if="categoryAction"
+                    :disabled="selectedCategoryItem.length != 1"
+                    small
+                    depressed
+                    outlined
+                    color="green"
+                    class="ml-1"
+                    @click.stop="editCategoryButton"
+                  >
+                    修改
+                  </v-btn>
+                  <v-btn
+                    v-if="categoryAction"
+                    :disabled="selectedCategoryItem.length != 1"
+                    outlined
+                    color="red lighten-2"
+                    small
+                    depressed
+                    class="ml-2"
+                    @click.stop="deleteCategoryButton"
+                  >
+                    <span> 删除 </span>
                   </v-btn>
                 </v-toolbar>
               </template>
@@ -52,7 +98,7 @@
                   {{ header.text }}
                 </div>
               </template>
-              <template v-slot:[`item.actions`]="{ item }">
+              <!-- <template v-slot:[`item.actions`]="{ item }">
                 <div class="d-flex">
                   <v-spacer />
                   <v-btn
@@ -60,7 +106,7 @@
                     depressed
                     outlined
                     color="green"
-                    @click.stop="deleteButton(item)"
+                    @click.stop="deleteCategoryButton(item)"
                     class="ml-1"
                   >
                     删除
@@ -70,13 +116,13 @@
                     depressed
                     outlined
                     color="green"
-                    @click.stop="editButton(item)"
+                    @click.stop="editCategoryButton(item)"
                     class="ml-1"
                   >
                     修改
                   </v-btn>
                 </div>
-              </template>
+              </template> -->
               <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" class="pa-0">
                   <div class="sub-table elevation-20 ml-2 mb-3 mr-12">
@@ -469,6 +515,8 @@ export default {
     return {
       loading: false,
 
+      selectedCategoryItem: [],
+      categoryAction: false,
       expanded: [],
       datePicker: false,
 
@@ -491,7 +539,7 @@ export default {
         { text: "品类扣点", align: "right", value: "deduction" },
         { text: "品类运费险", align: "right", value: "insurance" },
         //{ text: "备注", value: "note" },
-        { text: "操作", value: "actions" },
+        // { text: "操作", value: "actions" },
       ],
       calculatedCategorys: [],
 
@@ -616,14 +664,14 @@ export default {
       this.categoryNameDialog = false;
     },
 
-    editButton(item) {
+    editCategoryButton() {
       if (!this.user.permission.a.fc) {
         this.global.infoAlert("泼发EBC：权限不足");
         return;
       }
 
-      this.oldItem = { ...item };
-      this.editedItem = { ...item };
+      this.oldItem = { ...this.selectedCategoryItem[0] };
+      this.editedItem = { ...this.selectedCategoryItem[0] };
 
       typeof this.editedItem.deduction == "string" &&
         (this.editedItem.deduction = null);
@@ -635,12 +683,12 @@ export default {
       this.categoryInfoDialog = true;
     },
 
-    deleteButton(item) {
+    deleteCategoryButton() {
       if (!this.user.permission.a.fc) {
         this.global.infoAlert("泼发EBC：权限不足");
         return;
       }
-      this.deleteCategoryItem = { ...item };
+      this.deleteCategoryItem = { ...this.selectedCategoryItem[0] };
       this.categoryDeleteDialog = true;
     },
 
@@ -662,6 +710,7 @@ export default {
             this.global.infoAlert("泼发EBC： error");
           }, 100);
         });
+      this.selectedCategoryItem = [];
     },
 
     deleteCategoryHistoryButton(item) {
@@ -711,6 +760,7 @@ export default {
             this.global.infoAlert("泼发EBC：error");
           }, 100);
         });
+      this.selectedCategoryItem = [];
     },
 
     editCategorySaveButton() {

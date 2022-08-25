@@ -7,6 +7,8 @@ import Layout from '@/components/Layout/Layout';
 // Pages
 import MainPage from '@/pages/MainPage/MainPage';
 import Dashboard from '@/pages/Dashboard/Dashboard';
+import AllProfit from '@/pages/Dashboard/AllProfit';
+import DepartmentsProfit from '@/pages/Dashboard/DepartmentsProfit';
 import PartnerGet from '@/pages/PartnerGet/PartnerGet'
 import Missings from '@/pages/Missings/Missings'
 import Category from '@/pages/Category/Category'
@@ -58,6 +60,16 @@ var routerConfig = {
           path: 'dashboard',
           name: 'Dashboard',
           component: Dashboard,
+        },
+        {
+          path: 'allProfit',
+          name: 'AllProfit',
+          component: AllProfit,
+        },
+        {
+          path: 'departmentsProfit',
+          name: 'DepartmentsProfit',
+          component: DepartmentsProfit,
         },
         {
           path: 'partnerget',
