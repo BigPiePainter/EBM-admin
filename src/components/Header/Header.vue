@@ -132,6 +132,7 @@
             color="primary"
             class="text-capitalize"
             @click="logOut"
+            :loading="loading"
             >登出
           </v-btn>
         </div>
