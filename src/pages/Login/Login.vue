@@ -266,7 +266,6 @@ export default {
   data() {
     return {
       bgOption: {
-        tooltip: {},
         visualMap: {
           max: 30,
           inRange: {

@@ -47,6 +47,7 @@
               </v-card>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col cols="6">
               <v-card class="mx-1 mb-1"
@@ -57,6 +58,7 @@
                 ></v-chart>
               </v-card>
             </v-col>
+
             <v-col cols="6">
               <v-card class="mx-1 mb-1"
                 ><v-chart
@@ -69,6 +71,7 @@
           </v-row>
         </v-col>
       </v-row>
+
       <v-row>
         <v-col cols="12">
           <v-card class="mx-1 mb-1">
@@ -83,13 +86,13 @@
           </v-card>
         </v-col>
       </v-row>
+      
     </div>
   </v-container>
 </template>
 
 <script>
 import VChart from "vue-echarts";
-
 import {
   TooltipComponent,
   GridComponent,
@@ -98,9 +101,7 @@ import {
   TitleComponent,
   ToolboxComponent,
 } from "echarts/components";
-
 import { BarChart, LineChart, PieChart } from "echarts/charts";
-
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 
