@@ -120,10 +120,10 @@
       </template>
       <v-list>
         <div class="text-h5 grey--text text--darken-3 px-4 pt-4">
-          {{$store.state.user.nick}}
+          {{ $store.state.user.nick }}
         </div>
         <div class="subtitle-2 primary--text font-weight-regular px-4">
-          {{$store.state.user.username}}
+          {{ $store.state.user.username }}
         </div>
         <div class="d-flex justify-center my-3">
           <v-btn
@@ -167,6 +167,8 @@
 
 <script>
 import { mapMutations, mapState } from "vuex";
+import { userLogout } from "@/settings/user";
+
 import config from "../../config";
 
 export default {
@@ -242,9 +244,15 @@ export default {
     ...mapMutations(["setDrawer"]),
 
     logOut: function () {
-      localStorage.token = ""
-      location.reload()
       //this.$router.push("/login");
+      this.loading = true;
+      userLogout({})
+        .then((res) => {
+          console.log(res.data);
+          localStorage.token = "";
+          location.reload();
+        })
+        .catch(() => {});
     },
   },
 };

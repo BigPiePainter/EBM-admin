@@ -340,7 +340,7 @@ export default {
             },
           },
           viewControl: {
-            autoRotate:  true,
+            autoRotate: true,
             autoRotateSpeed: 0.7,
             alpha: -30,
             beta: 15,
@@ -505,7 +505,6 @@ export default {
       this.globalInitAndJump();
     });
 
-
     //if (window.localStorage.getItem("authenticated") === "true") {
     //  this.$router.push("/partnerget");
     //}
@@ -518,6 +517,10 @@ export default {
 
       console.log(this.$refs.barChart.getOption());
     };
+  },
+
+  beforeDestroy() {
+    window.onresize = function () {};
   },
 };
 </script>

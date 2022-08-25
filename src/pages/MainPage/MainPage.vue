@@ -71,7 +71,7 @@
           </v-row>
         </v-col>
       </v-row>
-
+      
       <v-row>
         <v-col cols="12">
           <v-card class="mx-1 mb-1">
@@ -86,7 +86,6 @@
           </v-card>
         </v-col>
       </v-row>
-      
     </div>
   </v-container>
 </template>

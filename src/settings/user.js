@@ -9,6 +9,15 @@ export const userLogin = data => {
     return http.request(args)
 }
 
+export const userLogout = data => {
+    const args = {
+        url: '/user/logout',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
 export const isLogin = data => {
     const args = {
         url: '/user/isLogin',
