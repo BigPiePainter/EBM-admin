@@ -131,7 +131,7 @@
             outlined
             color="primary"
             class="text-capitalize"
-            @click="logOut"
+            @click.stop="logOut"
             :loading="loading"
             >登出
           </v-btn>
@@ -248,13 +248,15 @@ export default {
     logOut: function () {
       //this.$router.push("/login");
       this.loading = true;
-      userLogout({})
-        .then((res) => {
-          console.log(res.data);
-          localStorage.token = "";
-          location.reload();
-        })
-        .catch(() => {});
+      setTimeout(() => {
+        userLogout({})
+          .then((res) => {
+            console.log(res.data);
+            localStorage.token = "";
+            location.reload();
+          })
+          .catch(() => {});
+      }, 300);
     },
   },
 };
