@@ -1,18 +1,19 @@
 <template>
   <v-app>
-    <div style="position: absolute; width: 100%; height: 100%">
+    <div style="position: absolute; width: 100vw; height: 100vh">
       <v-chart :option="bgOption" ref="barChart"></v-chart>
     </div>
 
-    <div>
-      <div style="margin: 0 auto; margin-top: 100px">
-        <v-chart
-          style="margin: 0 auto; width: 500px; height: 182px"
-          ref="title"
-          :option="option"
-        ></v-chart>
-      </div>
-      <div class="login-part">
+    <div
+      class="d-flex flex-column justify-space-around align-center"
+      style="height: 100vh"
+    >
+      <v-chart
+        style="margin: 0 auto; width: 500px; height: 182px; z-index: 0"
+        ref="title"
+        :option="option"
+      ></v-chart>
+      <div class="login-part mb-15">
         <v-tabs grow>
           <v-tabs-slider></v-tabs-slider>
           <v-tab :href="`#tab-login`" loading> 登录 </v-tab>
@@ -57,16 +58,16 @@
                     </v-col>
                   </v-form>
                 </v-row>
-                <div
-                  class="primary--text"
-                  style="position: relative; top: 10px"
-                >
-                  © 浙江泼发进出口贸易有限公司
-                </div>
               </v-container>
             </v-form>
           </v-tab-item>
         </v-tabs>
+      </div>
+      <div class="d-flex mt-15">
+        <v-spacer></v-spacer>
+        <span class="primary--text pb-2 pr-5" style="z-index: 999"
+          >© 浙江泼发进出口贸易有限公司</span
+        >
       </div>
     </div>
   </v-app>
