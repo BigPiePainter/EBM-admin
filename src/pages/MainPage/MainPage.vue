@@ -424,6 +424,10 @@ export default {
     observer.observe(document.querySelector("#mainContainer"));
   },
 
+  beforeDestroy() {
+    window.onresize = function () {};
+  },
+
   method: {},
 };
 </script>

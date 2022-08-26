@@ -482,7 +482,6 @@ export default {
     window.onresize = () => {
       this.$refs.barChart.resize();
       this.$refs.title.resize();
-
       console.log(this.$refs.barChart.getOption());
     };
   },

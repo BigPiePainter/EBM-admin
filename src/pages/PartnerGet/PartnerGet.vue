@@ -35,7 +35,7 @@
             {{ props.header.text }}
             <template v-slot:input>
               <div class="d-flex align-center">
-                <span class=""> {{ props.header.text }} </span>
+                <span> {{ props.header.text }} </span>
                 <v-text-field
                   color="blue-grey lighten-1"
                   v-model="search.search[props.header.value]"
@@ -632,6 +632,7 @@ export default {
     //SelectDialog,
   },
   data: () => ({
+    categoryInfo: {},
     selectedProductItem: [],
     ifAction: false,
     mode: 0,
@@ -680,14 +681,11 @@ export default {
     headersContent: [
       { text: "商品ID", value: "id" },
       { text: "商品名", value: "productName" },
-
       { text: "事业部", value: "department" },
       { text: "组别", value: "team" },
       { text: "持品人", value: "owner" },
       { text: "店铺名", value: "shopName" },
-
       { text: "一级类目", value: "firstCategory" },
-
       { text: "发货方式", value: "transportWay" },
       { text: "聚水潭仓库", value: "storehouse" },
       { text: "备注", value: "note" },
@@ -734,9 +732,6 @@ export default {
       check.forEach((item) => {
         if (!this.editedItem[item]) pass = false;
       });
-
-      console.log(pass);
-
       return !pass;
     },
 
@@ -746,9 +741,6 @@ export default {
       check.forEach((item) => {
         if (!this.editedItem[item]) pass = false;
       });
-
-      console.log(pass);
-
       return !pass;
     },
   },
@@ -764,6 +756,12 @@ export default {
     "search.search": {
       handler() {
         this.searchPreview = "";
+        console.log(this.search.search.department)
+        console.log(this.allCategorys.length)
+        var xxx = {...this.search}
+        if (xxx.search.department == "1"){
+          this.search.search.department = "2"
+        }
         for (let name in this.search.search) {
           if (!this.search.search[name]) continue;
           this.search.search[name] = this.search.search[name].trim();
@@ -786,7 +784,7 @@ export default {
     this.init();
   },
 
-  methods: {
+  methods: { 
     parseDate(time) {
       return javaUTCDateToString(time);
     },
@@ -797,7 +795,7 @@ export default {
       getClass({})
         .then((res) => {
           this.menu = res.data;
-          console.log("this.menu");
+          console.log(this.menu);
           console.log(res.data);
         })
         .catch(() => {});
@@ -808,6 +806,7 @@ export default {
 
     showHeaders() {
       this.headers = this.headersContent;
+      console.log(this.search)
     },
 
     refreshData(a) {
@@ -820,7 +819,7 @@ export default {
     },
 
     clickRow(item, event) {
-      console.log(this.departmentList);
+      // console.log(this.departmentList);
       if (event.isExpanded) {
         const index = this.expanded.findIndex((i) => i === item);
         this.expanded.splice(index, 1);
@@ -829,16 +828,16 @@ export default {
       }
     },
 
+    
+
     loadData() {
       this.loading = true;
       const { page, itemsPerPage } = this.options;
-      console.log({ page, itemsPerPage, match: JSON.stringify(this.search) });
+      // console.log({ page, itemsPerPage, match: JSON.stringify(this.search) });
       loadProducts({ page, itemsPerPage, match: JSON.stringify(this.search) })
         .then((res) => {
           this.loading = false;
-
           console.log(res.data);
-
           this.showHeaders();
           this.products = res.data.products;
           this.totalProducts = res.data.total;
@@ -863,7 +862,7 @@ export default {
     },
 
     deleteProductItem() {
-      console.log(this.selectedProductItem);
+      // console.log(this.selectedProductItem);
       this.deleteItem = this.selectedProductItem[0];
       this.deleteItemParse = [
         {
@@ -933,7 +932,7 @@ export default {
         return;
       }
       this.loading = true;
-      console.log(this.editedItem);
+      // console.log(this.editedItem);
       addProducts(this.editedItem)
         .then((res) => {
           this.loading = false;
@@ -962,7 +961,7 @@ export default {
       if (args.storehouse == null) delete args.storehouse;
       if (args.startTime) args.startTime = args.startTime.replaceAll("-", "/");
 
-      console.log(args);
+      // console.log(args);
       this.loading = true;
       editProduct(args)
         .then((res) => {
