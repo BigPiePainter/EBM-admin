@@ -231,9 +231,9 @@
               <template v-slot:[`item.freight`]="{ item }">
                 {{ !item.freightToPayment ? item.freight + " ￥" : "" }}
               </template>
-              <template v-slot:[`item.extraRatio`]="{ item }">
+              <!-- <template v-slot:[`item.extraRatio`]="{ item }">
                 {{ !item.freightToPayment ? item.extraRatio + " %" : "" }}
-              </template>
+              </template> -->
               <template v-slot:[`item.freightToPayment`]="{ item }">
                 {{
                   item.freightToPayment > 0 ? item.freightToPayment + " %" : ""
@@ -512,7 +512,7 @@
               <span class="text-subtitle-1">运费信息</span>
             </v-row>
             <v-row>
-              <v-col cols="4">
+              <v-col cols="6">
                 <span
                   class="text-body-2 text--secondary"
                   :class="
@@ -532,7 +532,7 @@
                   suffix="￥"
                 ></v-text-field>
               </v-col>
-              <v-col cols="4">
+              <!-- <v-col cols="4">
                 <span
                   class="text-body-2 text--secondary"
                   :class="
@@ -551,9 +551,9 @@
                   type="number"
                   v-model="manufacturerEdit.extraRatio"
                 ></v-text-field
-              ></v-col>
-              <v-col>
-                <span class="text-body-2 text--secondary"> 运费/总货款 </span>
+              ></v-col> -->
+              <v-col cols="6">
+                <span class="text-body-2 text--secondary"> 运费/货品成本 </span>
                 <v-text-field
                   outlined
                   dense
@@ -804,13 +804,13 @@ export default {
           align: "end",
           value: "freight",
         },
+        // {
+        //   text: "子/主订单附带比",
+        //   align: "end",
+        //   value: "extraRatio",
+        // },
         {
-          text: "自主订单附带比",
-          align: "end",
-          value: "extraRatio",
-        },
-        {
-          text: "运费/总货款",
+          text: "运费/货品成本",
           align: "end",
           value: "freightToPayment",
         },
@@ -818,7 +818,6 @@ export default {
         // { text: "创建时间", align: "start", value: "createTime" },
         // { text: "修改时间", align: "start", value: "modifyTime" },
         { text: "备注", align: "start", value: "note" },
-        // { text: "操作", align: "start", value: "actions" },
       ],
       manufacturerInfos: [],
 
@@ -924,24 +923,19 @@ export default {
         loadManufacturers({ productId: this.productInfo.id }),
         loadAscriptions({ productId: this.productInfo.id }),
       ]).then((res) => {
-        console.log("请求结束");
-        console.log(res);
-
+        // console.log("请求结束");
+        // console.log(res);
         this.skuInfos = res[0].data.skus;
         this.manufacturerInfos = res[1].data.manufacturers;
         this.ascriptionInfos = res[2].data.ascriptions;
-
         this.dataAnalyze();
-
-        console.log("显示");
+        // console.log("显示");
         this.loading = false;
         this.show = true;
         //this.itemShow = true;
-
         // setTimeout(() => {
         //   this.itemShow = true;
         // }, 0);
-
         this.$nextTick(() => {
           this.itemShow = true;
         });
@@ -1202,7 +1196,7 @@ export default {
       //参数预处理
       args.startTime = args.startTime.replaceAll("-", "/");
       args.freight || (args.freight = 0);
-      args.extraRatio || (args.extraRatio = 0);
+      // args.extraRatio || (args.extraRatio = 0);
       args.freightToPayment || (args.freightToPayment = 0);
       for (let name in args) args[name] == null && delete args[name];
       args.manufacturerPaymentMethod || (args.manufacturerPaymentMethod = "");

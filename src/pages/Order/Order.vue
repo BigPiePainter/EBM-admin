@@ -38,9 +38,7 @@
 
 
 <script>
-import { getOrder } from "@/settings/order";
-import { getBrush } from "@/settings/order";
-import { getReturn } from "@/settings/order";
+import { getDailyReport } from "@/settings/order";
 
 export default {
   components: {},
@@ -53,8 +51,8 @@ export default {
       orderItems: [],
 
       Headers: [
-        { text: "店铺名称", value: "shopName" }, //订单
-        { text: "商品ID", value: "goodsId" }, //订单
+        { text: "店铺名称", value: "shop" }, //订单1
+        { text: "商品ID", value: "productId" }, //订单1
         { text: "子订单编号", value: "subOrderNumber" }, //订单
         { text: "主订单编号", value: "mainOrderNumber" }, //订单
         { text: "物流公司", value: "postCompany" }, //订单
@@ -100,9 +98,11 @@ export default {
 
   methods: {
     loadData() {
-      getOrder({});
-      getBrush({});
-      getReturn({});
+      getDailyReport({date: "2022/8/21" })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch(() => {});
     },
   },
 };

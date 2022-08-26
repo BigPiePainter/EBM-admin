@@ -76,6 +76,15 @@ export const getFileProcessStates = data => {
     return http.request(args)
 }
 
+export const getDailyReport = data => {
+    const args = {
+        url: '/order/getDailyReport',
+        method: 'POST',
+        data,
+    }
+    return http.request(args)
+}
+
 
 
 
