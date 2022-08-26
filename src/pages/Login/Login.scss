@@ -12,43 +12,6 @@ input:-webkit-autofill {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   padding: 0;
 
-  .main-part {
-    width: 100%;
-    height: 100vh;
-    background-color: $primary;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    div {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-
-      p {
-        text-align: center;
-        font-family: "Roboto", sans-serif;
-        font-size: 84px;
-        color: white;
-        font-weight: 500;
-      }
-
-      .v-image {
-        margin-bottom: 32px;
-      }
-    }
-
-  }
-
-
-
-
-  .v-label {
-    padding-top: 0px;
-    padding-bottom: 0px;
-  }
 }
 
 
@@ -61,7 +24,6 @@ input:-webkit-autofill {
 .login-part {
   width: 300px;
   overflow-y: auto;
-  margin: auto;
 
   .v-tabs {
     .v-tabs-bar {
