@@ -981,13 +981,14 @@ export default {
           skuName: sku.skuName,
           skuPrice: sku.skuPrice,
           skuCost: sku.skuCost,
-          startTime: sku.startTime,
+          startTime: javaUTCDateToString(sku.startTime),
         });
       }
 
       const XLSX = require("xlsx");
       console.log(skuInfoCopy);
-      const raw_data = skuInfoCopy; //this.check ? this.validSkuInfos : this.skuInfos;
+      const raw_data = skuInfoCopy; 
+      //this.check ? this.validSkuInfos : this.skuInfos;
       /*
       const prez = raw_data.filter((row) =>
         row.terms.some((term) => term.type === "prez")

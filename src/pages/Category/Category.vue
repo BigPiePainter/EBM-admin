@@ -2,7 +2,7 @@
   <div>
     <v-container class="main-container ma-0">
       <v-row>
-        <v-col>
+        <v-col style="margin:0 auto" cols="6">
           <v-card>
             <v-data-table
               :show-select="categoryAction"
@@ -186,11 +186,11 @@
             </v-data-table>
           </v-card>
         </v-col>
-        <v-col>
+        <!-- <v-col>
           <v-card>
             <v-card-title> ..... </v-card-title>
           </v-card>
-        </v-col>
+        </v-col> -->
       </v-row>
     </v-container>
 
