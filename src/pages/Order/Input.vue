@@ -16,7 +16,7 @@
       <span class="text-subtitle-1">{{ state }}</span>
     </v-card>
     <v-row>
-      <v-col v-for="(file, i) in uploadStates" :key="i" cols="12" lg="6">
+      <v-col v-for="(file, i) in uploadStates" :key="i" cols="12">
         <v-scroll-x-transition>
           <v-card tile class="pt-3" v-if="true">
             <v-toolbar-items>
