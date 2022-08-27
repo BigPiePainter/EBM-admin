@@ -199,12 +199,12 @@ export default {
         },
 
         {
-          title: "事业部管理",
+          title: "部门管理",
           icon: "mdi-domain",
           link: "/department",
           show: this.$store.state.user.permission.d.a,
           children: [
-            { title: "事业部", icon: "mdi-circle-small", link: "/department" },
+            { title: "部门", icon: "mdi-circle-small", link: "/department" },
           ],
         },
 

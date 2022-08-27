@@ -22,7 +22,7 @@
     >
       <template v-slot:top>
         <v-toolbar flat color="white" dense>
-          <v-toolbar-title>事业部</v-toolbar-title>
+          <v-toolbar-title>部门</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-btn
@@ -32,7 +32,7 @@
             dark
             @click="addDepartmentButton"
           >
-            新事业部
+            新部门
           </v-btn>
         </v-toolbar>
       </template>
@@ -101,7 +101,7 @@
         <v-col class="px-10 pt-10 department-dialog">
           <v-row>
             <span color="" class="text-subtitle-1">{{
-              departmentMode == 1 ? "新事业部" : "编辑事业部"
+              departmentMode == 1 ? "新部门" : "编辑部门"
             }}</span>
           </v-row>
           <v-row>
@@ -212,7 +212,7 @@ export default {
         sortable: false,
         value: "uid",
       },
-      { text: "事业部名称", value: "name" },
+      { text: "部门名称", value: "name" },
       { text: "管理员", value: "admin" },
       { text: "备注", value: "note" },
       { text: "创建时间", value: "createTime" },

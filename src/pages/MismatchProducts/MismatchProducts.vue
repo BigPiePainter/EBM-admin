@@ -53,7 +53,7 @@
       </template>
 
       <template v-slot:[`item.totalAmount`]="{ item }">
-        {{ "￥ " + amountFormat(item.totalAmount) }}
+        {{ "￥ " + amountFormat(item.totalAmount, 2, 0) }}
       </template>
 
       <template v-slot:[`header.actions`]="{ header }">

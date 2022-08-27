@@ -44,7 +44,7 @@
                 a: "商品管理",
                 b: "订单管理",
                 c: "员工管理",
-                d: "事业部管理",
+                d: "部门管理",
                 e: "组别管理",
               }[key] + ","
             }}
@@ -339,7 +339,7 @@
 
                 <v-divider class="my-8" v-if="user.permission.d.a" />
                 <v-row v-if="user.permission.d.a">
-                  <span class="text-subtitle-1">事业部管理模块</span>
+                  <span class="text-subtitle-1">部门管理模块</span>
                   <v-checkbox
                     v-model="selectedPermission.d.a"
                     label="授权"

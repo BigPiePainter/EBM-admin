@@ -62,7 +62,7 @@ const store = new Vuex.Store({
       a: {
         //商品管理模块
         a: true, //avaliable
-        d: [], //可录入的事业部     如果拥有事业部管理权限，那么可录入的事业部为全部
+        d: [], //可录入的部门     如果拥有部门管理权限，那么可录入的部门为全部
         g: [], //可录入的组别       同上
         da: true, //删除商品归属记录的权限 da-deleteAscription
         fc: true, //管理一级类目的权限 fc-firstCategory
@@ -77,7 +77,7 @@ const store = new Vuex.Store({
         b: true, //查看下级员工密码的权限
       },
       d: {
-        //事业部管理
+        //部门管理
         a: true, //avaliable
       },
       e: {
@@ -99,7 +99,7 @@ const store = new Vuex.Store({
       } else {
         state.user.permission = JSON.parse(state.user.permission);
       }
-      //如果拥有事业部管理权限，那么商品管理可录入的事业部为全部
+      //如果拥有部门管理权限，那么商品管理可录入的部门为全部
       if (state.user.permission.d.a) {
         state.user.permission.a.d = state.allDepartments.map(
           (i) => i.uid

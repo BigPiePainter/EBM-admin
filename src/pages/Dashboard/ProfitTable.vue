@@ -33,11 +33,10 @@
 
         <template v-slot:[`item.deduction`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.deduction" class="mr-1">{{ "￥  " }} </span>
             <span>
               {{
                 item.deduction
-                  ? item.deduction.toFixed(2) + "%"
+                  ? (item.deduction * 100).toFixed(1) + " %"
                   : "   " + "————"
               }}
             </span>
@@ -69,6 +68,14 @@
               {{ item.totalFakeAmount && item.totalFakeAmount.toFixed(2) }}
             </span>
           </div>
+        </template>
+
+        <template v-slot:[`item.freight`]="{ item }">
+          {{
+            item.freightToPayment
+              ? (item.freightToPayment * 100).toFixed(2) + "%"
+              : "￥" + item.freight
+          }}
         </template>
 
         <template v-slot:[`item.totalCost`]="{ item }">
@@ -121,17 +128,11 @@
           </div>
         </template>
 
-        <template v-slot:[`item.originalTotalPrice`]="{ item }">
+        <template v-slot:[`item.totalPrice`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.originalTotalPrice" class="mr-1"
-              >{{ "￥  " }}
-            </span>
+            <span v-if="item.totalPrice" class="mr-1">{{ "￥  " }} </span>
             <span>
-              {{
-                item.originalTotalPrice
-                  ? item.originalTotalPrice.toFixed(2)
-                  : "————"
-              }}
+              {{ item.totalPrice ? item.totalPrice.toFixed(2) : "————" }}
             </span>
           </div>
         </template>
@@ -161,11 +162,11 @@
         </template>
 
         <template v-slot:[`item.calculatedCostRatio`]="{ item }">
-          {{ item.calculatedCostRatio.toFixed(2) + "%" }}
+          {{ (item.calculatedCostRatio * 100).toFixed(2) + "%" }}
         </template>
 
         <template v-slot:[`item.calculatedProfitRatio`]="{ item }">
-          {{ item.calculatedProfitRatio.toFixed(2) + "%" }}
+          {{ (item.calculatedProfitRatio * 100).toFixed(2) + "%" }}
         </template>
 
         <template v-slot:[`item.calculatedActualIncome`]="{ item }">
@@ -202,7 +203,28 @@
         </template>
 
         <template v-slot:[`item.calculatedTmallTokeRatio`]="{ item }">
-          {{ item.calculatedTmallTokeRatio.toFixed(2) + "%" }}
+          <div class="d-flex">
+            <span v-if="item.calculatedTmallTokeRatio" class="mr-1"
+              >{{ "￥  " }}
+            </span>
+            <span>
+              {{ amountFormat(item.calculatedTmallTokeRatio, 2, "————") }}
+            </span>
+          </div>
+        </template>
+
+        <template v-slot:[`item.department`]="{ item }">
+          {{ global.log(departmentIdToName) }}
+          {{ departmentIdToName[item.department] }}
+        </template>
+        <template v-slot:[`item.team`]="{ item }">
+          {{ teamIdToName[item.team] }}
+        </template>
+        <template v-slot:[`item.owner`]="{ item }">
+          {{ userIdToNick[item.owner] }}
+        </template>
+        <template v-slot:[`item.firstCategory`]="{ item }">
+          {{ categoryIdToName[item.firstCategory] }}
         </template>
 
         <template v-slot:[`item.calculatedTotalFreight`]="{ item }">
@@ -227,56 +249,82 @@
           </div>
         </template>
 
+        <template v-slot:[`item.wrongCount`]="{ item }">
+          <span :style="item.wrongCount == 0 ? `` : `color:red`">
+            {{ item.wrongCount }}
+          </span>
+        </template>
+
         <template v-slot:[`item.calculatedActualProfit`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.calculatedActualProfit" class="mr-1"
-              >{{ "￥  " }}
-            </span>
+          <div class="d-flex" :style="item.wrongCount == 0 ? `` : `color:red`">
+            <span v-if="item.calculatedActualProfit">{{ "￥ " }} </span>
             <span>
-              {{ amountFormat(item.calculatedActualProfit, 2, "————") }}
+              <span>
+                {{
+                  item.wrongCount != 0
+                    ? "0.00"
+                    : amountFormat(item.calculatedActualProfit, 2, "————")
+                }}
+              </span>
             </span>
           </div>
         </template>
 
         <template v-slot:[`item.calculatedActualProfitRatio`]="{ item }">
-          {{
-            item.calculatedActualProfitRatio >= 0
-              ? item.calculatedActualProfitRatio.toFixed(2) + "%"
-              : "————"
-          }}
+          <span :style="item.wrongCount == 0 ? `` : `color:red`">
+            {{
+              item.wrongCount == 0
+                ? item.calculatedActualProfitRatio >= 0
+                  ? (item.calculatedActualProfitRatio * 100).toFixed(2) + " %"
+                  : "————"
+                : "0.00 %"
+            }}
+          </span>
         </template>
 
         <template v-slot:[`item.calculatedDiscount`]="{ item }">
-          {{ item.calculatedDiscount.toFixed(2) + "%" }}
+          <span :style="item.wrongCount == 0 ? `` : `color:red`">
+            {{
+              item.calculatedDiscount == Infinity
+                ? Infinity
+                : (item.calculatedDiscount * 100).toFixed(2) + " %"
+            }}
+          </span>
         </template>
 
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>利润报表（单日）</v-toolbar-title>
             <v-divider class="mx-1" inset vertical></v-divider>
-            <span class="ml-1">选择日期</span>
+
+            <span
+              class="text-subtitle-2 ml-3 mr-1 text--secondary"
+              style="margin-top: 2px"
+            >
+              日期选择
+            </span>
             <v-menu
               ref="menu"
               v-model="datePicker"
               :close-on-content-click="false"
-              :return-value.sync="date"
+              :return-value.sync="startTime"
               offset-y
-              min-width="auto"
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                  class="shrink ml-1"
-                  v-model="date"
+                  class="shrink ml-1 date-picker-textfield"
+                  v-model="startTime"
                   readonly
                   v-bind="attrs"
                   v-on="on"
                   outlined
                   dense
                   hide-details
+                  color="blue-grey lighten-1"
                 ></v-text-field>
               </template>
               <v-date-picker
-                v-model="date"
+                v-model="startTime"
                 no-title
                 scrollable
                 locale="zh-cn"
@@ -293,7 +341,7 @@
                   text
                   color="primary"
                   @click="
-                    $refs.menu.save(date);
+                    $refs.menu.save(startTime);
                     loadData();
                   "
                 >
@@ -301,28 +349,35 @@
                 </v-btn>
               </v-date-picker>
             </v-menu>
-            <!-- <v-menu
-              ref="menu"
-              v-model="datePicker"
+            <span
+              class="text-subtitle-2 ml-3 mr-2 text--secondary"
+              style="margin-top: 2px"
+            >
+              ~
+            </span>
+            <v-menu
+              ref="menu2"
+              v-model="datePicker2"
               :close-on-content-click="false"
-              :return-value.sync="date"
+              :return-value.sync="endTime"
               offset-y
-              min-width="auto"
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                  class="shrink ml-1"
-                  v-model="dateEnd"
+                  class="shrink ml-1 date-picker-textfield"
+                  v-model="endTime"
                   readonly
                   v-bind="attrs"
                   v-on="on"
                   outlined
                   dense
                   hide-details
+                  color="blue-grey lighten-1"
+                  disabled
                 ></v-text-field>
               </template>
               <v-date-picker
-                v-model="dateEnd"
+                v-model="endTime"
                 no-title
                 scrollable
                 locale="zh-cn"
@@ -332,26 +387,27 @@
                 :max="parseDate(new Date())"
               >
                 <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="datePicker = false">
+                <v-btn text color="primary" @click="datePicker2 = false">
                   取消
                 </v-btn>
                 <v-btn
                   text
                   color="primary"
                   @click="
-                    $refs.menu.save(dateEnd);
+                    $refs.menu.save(endTime);
                     loadData();
                   "
                 >
                   确定
                 </v-btn>
               </v-date-picker>
-            </v-menu> -->
+            </v-menu>
+
             <v-btn
+              text
               small
               depressed
-              class="ml-2"
-              v-model="check"
+              class="mx-2 ml-5"
               @click="check = !check"
             >
               <v-icon small class="mr-1">
@@ -375,12 +431,22 @@
 import { amountBeautify } from "@/libs/utils";
 import { javaUTCDateToString } from "@/libs/utils";
 import { getDailyReport } from "@/settings/order";
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
-      date: "",
+      startTime: "",
+      endTime: "",
+
       dateEnd: "",
+
+      menu: null,
+      menu2: null,
+
       datePicker: false,
+      datePicker2: false,
+
       check: false,
       loading: false,
       profitItems: [],
@@ -388,15 +454,15 @@ export default {
         { text: "日期", value: "date" },
         { text: "部门", value: "department" },
         { text: "组别", value: "team" }, //1
-        { text: "店铺", value: "shop" }, //1
+        { text: "店铺", value: "shopName" }, //1
         { text: "持品人", value: "owner" }, //1
         { text: "产品名称", value: "productName" }, //1
         { text: "一级类目", value: "firstCategory" }, //1
         //_____________________________________________________________筛选
-        { text: "商品编码ID", value: "productId" }, //1
+        { text: "商品ID", value: "productId" }, //1
         { text: "扣点", value: "deduction" }, //1
         { text: "运费险", value: "insurance" }, //1
-        { text: "运费", value: "calculatedFreight" }, //1,2 freight or topayment1
+        { text: "运费", value: "freight" }, //1,2 freight or topayment1
         { text: "子/主", value: "extraRatio" }, //1
         { text: "成交额", value: "totalAmount" }, //1
         { text: "订单数", value: "orderCount" }, //1
@@ -421,11 +487,10 @@ export default {
         { text: "刷单佣金", value: "totalBrokerage" }, //1
         { text: "售后毛利润", value: "calculatedActualProfit" }, //净收入额-拿货成本（售后）-平台扣点-运费险-快递费-刷单佣金1
         { text: "售后利润率", value: "calculatedActualProfitRatio" }, //售后毛利润/净收入额(为负时显示"-")
-        { text: "SKU", value: "calculatedSkuCorrection" }, //ok or 有误
-        { text: "错数", value: "skuWithNoCostCount" }, //1
+        { text: "SKU未匹配", value: "wrongCount" }, //1
         { text: "折扣", value: "calculatedDiscount" }, //成交额/原售价
         { text: "错数", value: "operatorGivenWrongPriceCount" }, //(定价<实际成交价 的订单条数)
-        { text: "原售价", value: "originalTotalPrice" }, //1
+        { text: "原售价", value: "totalPrice" }, //1
         //{ text: "厂家返款", value: "" },
         //----------------------------------------------------------------------
       ],
@@ -433,38 +498,48 @@ export default {
         { text: "日期", value: "date" },
         { text: "持品人", value: "owner" }, //1
         { text: "产品名称", value: "productName" }, //1
-        { text: "商品编码ID", value: "productId" }, //1
         { text: "真实金额", value: "calculatedActualAmount" }, //2
         { text: "真实单数", value: "calculatedActualOrderCount" }, //2
-        { text: "单均价", value: "calculatedActualAverageAmount" }, //真实金额/真实单数
         { text: "拿货成本", value: "totalCost" }, //1
         { text: "成本率", value: "calculatedCostRatio" },
         { text: "利润率", value: "calculatedProfitRatio" },
         { text: "退款金额", value: "totalRefundAmount" }, //1
-        { text: "净收入额", value: "calculatedActualIncome" },
         { text: "未发仅退", value: "totalRefundWithNoShipAmount" }, //1
         { text: "未发退本", value: "calculatedRefundWithNoShipAmount" },
-        { text: "未发数", value: "refundWithNoShipCount" }, //1
+        { text: "净收入额", value: "calculatedActualIncome" },
         { text: "拿货成本（售后）", value: "calculatedActualCost" }, //2
-        { text: "平台扣点", value: "calculatedTmallTokeRatio" }, //2
-        { text: "快递费", value: "calculatedTotalFreight" },
-        { text: "运费险", value: "calculatedTotalInsurance" }, //2
-        { text: "刷单佣金", value: "totalBrokerage" },
         { text: "售后毛利润", value: "calculatedActualProfit" },
         { text: "售后利润率", value: "calculatedActualProfitRatio" },
-        { text: "SKU", value: "calculatedSkuCorrection" },
-        { text: "错数", value: "skuWithNoCostCount" },
+        { text: "SKU未匹配", value: "wrongCount" },
         { text: "折扣", value: "calculatedDiscount" },
         { text: "错数", value: "operatorGivenWrongPriceCount" },
-        { text: "原售价", value: "originalTotalPrice" },
         //----------------------------------------------------------------------
       ],
     };
   },
 
   created() {
-    this.date = this.parseDate(new Date());
+    var date = new Date();
+    date.setDate(date.getDate() - 1);
+    this.startTime = javaUTCDateToString(date);
     this.loadData();
+  },
+
+  computed: {
+    ...mapState([
+      "user",
+      "allDepartments",
+      "allTeams",
+      "allUsers",
+      "allCategorys",
+      "allCategoryHistorys",
+      "allShops",
+      "userIdToNick",
+      "teamIdToName",
+      "departmentIdToName",
+      "categoryIdToName",
+      "categoryIdToInfo",
+    ]),
   },
 
   methods: {
@@ -481,34 +556,39 @@ export default {
     },
 
     loadData() {
-      var args = { date: this.date };
+      var args = { date: this.startTime };
       args.date = args.date.replaceAll("-", "/");
 
       this.loading = true;
+
+      console.log("接口调用", args);
       getDailyReport(args)
         .then((res) => {
           this.loading = false;
           console.log(res.data);
           for (let name in res.data) {
             this.profitItems = res.data[name];
+            this.dataAnalyze(name);
             break;
           }
-          this.dataAnalyze();
         })
         .catch(() => {
           this.loading = false;
         });
     },
-    dataAnalyze() {
+    dataAnalyze(date) {
       this.profitItems.forEach((item) => {
-        item.calculatedFreight = item.freightToPayment
-          ? item.freightToPayment + "%"
-          : "￥" + item.freight;
+        item.date = date;
+        item.deduction /= 100;
+        item.freightToPayment /= 100;
+
         item.calculatedActualAmount = item.totalAmount - item.totalFakeAmount;
         item.calculatedActualOrderCount = item.orderCount - item.fakeOrderCount;
         item.calculatedActualAverageAmount =
           item.calculatedActualAmount / item.calculatedActualOrderCount;
+
         item.calculatedCostRatio = item.totalCost / item.calculatedActualAmount;
+
         item.calculatedProfitRatio = item.freightToPayment
           ? item.calculatedActualAmount -
             item.totalCost -
@@ -519,14 +599,18 @@ export default {
             item.totalCost -
             item.deduction * item.calculatedActualAmount -
             (item.insurance + item.freight) * item.calculatedActualOrderCount;
+        item.calculatedProfitRatio /= item.calculatedActualAmount;
+
         item.calculatedActualIncome =
           item.calculatedActualAmount - item.totalRefundAmount;
         item.calculatedRefundWithNoShipAmount =
           item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
         item.calculatedActualCost =
           item.totalCost - item.calculatedRefundWithNoShipAmount;
+
         item.calculatedTmallTokeRatio =
           item.deduction * (item.totalAmount - item.totalRefundAmount);
+
         item.calculatedTotalFreight = item.freightToPayment
           ? item.freightToPayment * item.calculatedActualCost
           : item.freight *
@@ -544,12 +628,7 @@ export default {
         item.calculatedActualProfitRatio =
           item.calculatedActualProfit / item.calculatedActualIncome;
 
-        if (item.skuWithNoCostCount > 0) {
-          item.calculatedSkuCorrection = "有误";
-        } else {
-          item.calculatedSkuCorrection = "ok";
-        }
-        item.calculatedDiscount = item.totalAmount / item.originalTotalPrice;
+        item.calculatedDiscount = item.totalAmount / item.totalPrice;
       });
     },
   },
@@ -560,7 +639,20 @@ export default {
 .profit-table {
   tr {
     td {
-      height: 15px !important;
+      height: 23px !important;
+    }
+  }
+}
+
+.date-picker-textfield {
+  max-width: 125px;
+  .v-input__slot {
+    min-height: 0px !important;
+
+    .v-text-field__slot > input {
+      padding-top: 4px !important;
+      padding-bottom: 4px !important;
+      font-size: 15px;
     }
   }
 }

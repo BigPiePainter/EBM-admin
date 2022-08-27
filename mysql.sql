@@ -85,7 +85,7 @@ CREATE TABLE skus (
   uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
   product_id BIGINT NOT NULL COMMENT '商品id',
   sku_id BIGINT NOT NULL COMMENT 'id',
-  sku_name VARCHAR(1000) NOT NULL COMMENT 'SKU名称',
+  sku_name VARCHAR(100) NOT NULL COMMENT 'SKU名称',
   sku_price DECIMAL(15, 5) NOT NULL COMMENT '售卖价',
   sku_cost DECIMAL(15, 5) NOT NULL COMMENT '售卖成本',
   start_time DATE NOT NULL COMMENT '生效时间',
@@ -94,7 +94,8 @@ CREATE TABLE skus (
   modify_time timestamp NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
   deprecated TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否弃用',
   primary key (uid),
-  index index_product_id(product_id)
+  index index_product_id(product_id),
+  index index_sku_name(sku_name)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'SKU';
 
 -- 厂家信息
@@ -5074,244 +5075,7 @@ drop table if exists orders;
 
 -- -------------------------------------------------------------------
 -- -------------------------------------------------------------------
-WITH a AS (
-  SELECT
-    product_id,
-    count(*) as order_count,
-    sum(product_count) as product_count,
-    sum(actual_amount) as total_amount
-  FROM
-    pofa.z_orders_20220821
-  GROUP BY
-    product_id
-),
-refund_order AS (
-  SELECT
-    product_id,
-    refund_amount,
-    express_status
-  FROM
-    pofa.z_refundorders_finished_202208
-  where
-    refund_end_time = 20220821
-    AND refund_status = 1
-),
-b AS (
-  select
-    total_refund_amount.product_id as refund_product_id,
-    total_refund_amount,
-    total_refund_with_no_ship_amount
-  from
-    (
-      SELECT
-        product_id,
-        sum(refund_amount) as total_refund_amount
-      FROM
-        refund_order
-      group by
-        product_id
-    ) as total_refund_amount
-    left join (
-      SELECT
-        product_id,
-        sum(refund_amount) as total_refund_with_no_ship_amount
-      FROM
-        refund_order
-      where
-        express_status = false
-      group by
-        product_id
-    ) as refund_with_no_ship on total_refund_amount.product_id = refund_with_no_ship.product_id
-),
-c AS (
-  select
-    id
-  from
-    z_fakeorders_purchased_202208
-  where
-    order_payment_time = 20220821
-),
-d AS (
-  select
-    order_id,
-    actual_amount,
-    product_id
-  from
-    z_orders_20220821
-),
-e AS (
-  SELECT
-    product_id,
-    sum(refund_amount)
-  FROM
-    pofa.z_refundorders_finished_202208
-  where
-    refund_end_time = 20220821
-    AND refund_status = 1
-    AND express_status = false
-  group by
-    product_id
-)
-select
-  product_id,
-  total_amount,
-  order_count,
-  product_count,
-  total_refund_amount,
-  total_refund_with_no_ship_amount,
-  fake_order_count,
-  total_fake_amount
-from
-  (
-    SELECT
-      ifnull(product_id, refund_product_id) as product_id,
-      order_count,
-      product_count,
-      total_amount,
-      total_refund_amount,
-      total_refund_with_no_ship_amount
-    from
-      (
-        SELECT
-          *
-        FROM
-          a
-          LEFT JOIN b ON a.product_id = b.refund_product_id
-        UNION
-        SELECT
-          *
-        FROM
-          a
-          RIGHT JOIN b ON a.product_id = b.refund_product_id
-      ) as z
-  ) as g
-  left join (
-    select
-      product_id as fake_order_product_id,
-      count(*) as fake_order_count,
-      sum(actual_amount) as total_fake_amount
-    from
-      c
-      left join d on c.id = d.order_id
-    group by
-      fake_order_product_id
-  ) as h on g.product_id = h.fake_order_product_id;
-
--- -------------------------------------------------------------------
-WITH a AS (
-  SELECT
-    product_id,
-    count(*) as order_count,
-    sum(product_count) as product_count,
-    sum(actual_amount) as total_amount
-  FROM
-    pofa.z_orders_20220821
-  GROUP BY
-    product_id
-),
-refund_order AS (
-  SELECT
-    product_id,
-    refund_amount,
-    express_status
-  FROM
-    pofa.z_refundorders_finished_202208
-  where
-    refund_end_time = 20220821
-    AND refund_status = 1
-),
-b AS (
-  select
-    total_refund_amount.product_id as refund_product_id,
-    total_refund_amount,
-    total_refund_with_no_ship_amount
-  from
-    (
-      SELECT
-        product_id,
-        sum(refund_amount) as total_refund_amount
-      FROM
-        refund_order
-      group by
-        product_id
-    ) as total_refund_amount
-    left join (
-      SELECT
-        product_id,
-        sum(refund_amount) as total_refund_with_no_ship_amount
-      FROM
-        refund_order
-      where
-        express_status = false
-      group by
-        product_id
-    ) as refund_with_no_ship on total_refund_amount.product_id = refund_with_no_ship.product_id
-),
-c AS (
-  select
-    id,
-    brokerage
-  from
-    z_fakeorders_purchased_202208
-  where
-    order_payment_time = 20220821
-),
-d AS (
-  select
-    order_id,
-    actual_amount,
-    product_id
-  from
-    z_orders_20220821
-)
-select
-  product_id,
-  total_amount,
-  order_count,
-  product_count,
-  total_refund_amount,
-  total_refund_with_no_ship_amount,
-  fake_order_count,
-  total_fake_amount,
-  total_brokerage
-from
-  (
-    SELECT
-      ifnull(product_id, refund_product_id) as product_id,
-      order_count,
-      product_count,
-      total_amount,
-      total_refund_amount,
-      total_refund_with_no_ship_amount
-    from
-      (
-        SELECT
-          *
-        FROM
-          a
-          LEFT JOIN b ON a.product_id = b.refund_product_id
-        UNION
-        SELECT
-          *
-        FROM
-          a
-          RIGHT JOIN b ON a.product_id = b.refund_product_id
-      ) as z
-  ) as g
-  left join (
-    select
-      product_id as fake_order_product_id,
-      count(*) as fake_order_count,
-      sum(actual_amount) as total_fake_amount,
-      sum(brokerage) as total_brokerage
-    from
-      c
-      left join d on c.id = d.order_id
-    group by
-      fake_order_product_id
-  ) as h on g.product_id = h.fake_order_product_id;
-
--- ----------------------
+-- ----------------------------------------------------------------------------------------------------------------------------------
 WITH product_ascription AS (
   SELECT
     a.product,
@@ -5355,7 +5119,7 @@ manufacturers_temp AS (
     ) as b on a.product_id = b.product_id
     and a.start_time = b.start_time
 ),
-manufacturers AS (
+product_manufacturers AS (
   SELECT
     a.product_id,
     freight,
@@ -5415,11 +5179,12 @@ first_category AS (
     ) as b on a.category_id = b.category_id
     and a.create_time = b.create_time
 ),
-orders AS (
+product_orders AS (
   select
     z_orders_20220821.product_id,
     product_count,
-    actual_amount
+    actual_amount,
+    sku_name
   from
     product_ascription
     join z_orders_20220821 on z_orders_20220821.product_id = product_ascription.product
@@ -5431,8 +5196,87 @@ a AS (
     sum(product_count) as product_count,
     sum(actual_amount) as total_amount
   FROM
-    orders
+    product_orders
   GROUP BY
+    product_id
+),
+skus_temp AS (
+  SELECT
+    a.sku_id,
+    sku_name,
+    sku_price,
+    sku_cost,
+    a.product_id,
+    a.start_time,
+    create_time
+  FROM
+    pofa.skus a
+    join (
+      SELECT
+        sku_id,
+        max(start_time) as start_time
+      FROM
+        pofa.skus
+      where
+        start_time <= 20220821
+      group by
+        sku_id
+    ) as b on a.sku_id = b.sku_id
+    and a.start_time = b.start_time
+),
+product_sku AS(
+  SELECT
+    a.sku_id,
+    a.product_id,
+    sku_price,
+    sku_cost,
+    sku_name,
+    a.start_time
+  FROM
+    skus_temp a
+    join (
+      SELECT
+        sku_id,
+        max(create_time) as create_time
+      FROM
+        skus_temp
+      group by
+        sku_id
+    ) as b on a.sku_id = b.sku_id
+    and a.create_time = b.create_time
+),
+sku_info AS (
+  select
+    product_id,
+    sum(total_price) as total_price,
+    sum(total_cost) as total_cost,
+    count(*) - count(sku_price) as wrong_count
+  from
+    (
+      select
+        a.product_id,
+        a.sku_name,
+        product_count,
+        sku_price,
+        sku_cost,
+        product_count * sku_price as total_price,
+        product_count * sku_cost as total_cost
+      from
+        (
+          select
+            product_id,
+            sku_name,
+            sum(product_count) as product_count
+          from
+            product_orders
+          group by
+            product_id,
+            sku_name
+        ) as a
+        left join product_sku on a.sku_name = product_sku.sku_name
+        and a.product_id = product_sku.product_id
+    ) as b
+  group by
     product_id
 ),
 refund_order AS (
@@ -5510,7 +5354,10 @@ SELECT
   total_refund_with_no_ship_amount,
   fake_order_count,
   total_fake_amount,
-  total_brokerage
+  total_brokerage,
+  total_price,
+  total_cost,
+  wrong_count
 from
   (
     SELECT
@@ -5552,6 +5399,8 @@ from
   ) as i
   join product_ascription on i.product_id = product_ascription.product
   join pofa.products on i.product_id = pofa.products.id
-  left join manufacturers on i.product_id = manufacturers.product_id
-  left join first_category on pofa.products.first_category = first_category.category_id;
-  
+  left join product_manufacturers on i.product_id = product_manufacturers.product_id
+  left join first_category on pofa.products.first_category = first_category.category_id
+  left join sku_info on i.product_id = sku_info.product_id;
+
+-- -------------------------------

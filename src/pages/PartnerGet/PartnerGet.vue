@@ -261,7 +261,7 @@
           </v-row>
           <v-row>
             <v-col cols="5">
-              <span class="text-body-2 text--secondary">事业部*</span>
+              <span class="text-body-2 text--secondary">部门*</span>
               <v-autocomplete
                 color="blue-grey lighten-1"
                 outlined
@@ -681,7 +681,7 @@ export default {
     headersContent: [
       { text: "商品ID", value: "id" },
       { text: "商品名", value: "productName" },
-      { text: "事业部", value: "department" },
+      { text: "部门", value: "department" },
       { text: "组别", value: "team" },
       { text: "持品人", value: "owner" },
       { text: "店铺名", value: "shopName" },

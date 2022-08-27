@@ -263,8 +263,7 @@
               }"
             >
               <template v-slot:[`item.freight`]="{ item }">
-                <v-span :v-if="!item.freightToPayment">￥</v-span>
-                {{ !item.freightToPayment ? " ￥" + item.freight : "" }}
+                {{ !item.freightToPayment ? "￥ " + item.freight : "" }}
               </template>
               <!-- <template v-slot:[`item.extraRatio`]="{ item }">
                 {{ !item.freightToPayment ? item.extraRatio + " %" : "" }}
@@ -850,7 +849,7 @@ export default {
       manufacturerInfos: [],
 
       ascriptionHeaders: [
-        { text: "事业部", align: "start", value: "department" },
+        { text: "部门", align: "start", value: "department" },
         { text: "组别", align: "start", value: "team" },
         {
           text: "持品人",
@@ -1101,7 +1100,7 @@ export default {
       this.deleteAscriptionItem = { ...this.ascriptionSelected[0] };
       this.deleteAscriptionItemParse = [
         {
-          key: "事业部",
+          key: "部门",
           value: this.departmentIdToName[this.ascriptionSelected[0].department],
         },
         {
