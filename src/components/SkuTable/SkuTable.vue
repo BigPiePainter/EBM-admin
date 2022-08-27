@@ -26,7 +26,6 @@
             small
             depressed
             class="ml-2"
-            v-model="skuAction"
             @click="
               skuAction = !skuAction;
               skuSelected = [];
@@ -46,7 +45,6 @@
             small
             depressed
             class="ml-2"
-            v-model="check"
             @click="check = !check"
           >
             <v-icon small class="mr-1">
@@ -71,7 +69,9 @@
               @click="deleteSku"
               class="ml-1"
             >
-              {{ skuSelected.length == 0 ? "删除" : `删除${skuSelected.length}条` }}
+              {{
+                skuSelected.length == 0 ? "删除" : `删除${skuSelected.length}条`
+              }}
             </v-btn>
           </template>
         </v-toolbar>
@@ -88,7 +88,6 @@
             small
             depressed
             class="ml-2"
-            v-model="manufactureAction"
             @click="
               manufactureAction = !manufactureAction;
               manufactureSelected = [];
@@ -161,6 +160,41 @@
             </v-btn>
           </template>
         </v-toolbar>
+        <v-toolbar flat v-else-if="tabs == 2" :key="3">
+          <v-btn
+            small
+            depressed
+            class="ml-2"
+            @click="
+              ascriptionAction = !ascriptionAction;
+              ascriptionSelected = [];
+            "
+          >
+            <v-icon small class="mr-1">
+              {{
+                ascriptionAction
+                  ? "mdi-checkbox-marked-outline"
+                  : "mdi-checkbox-blank-outline"
+              }}
+            </v-icon>
+            <span> 操作 </span>
+          </v-btn>
+          <v-spacer />
+          <template>
+            <v-btn
+              small
+              v-if="ascriptionAction"
+              :disabled="ascriptionSelected.length != 1 || ascriptionSelected[0].startTime <= 0"
+              depressed
+              outlined
+              color="red lighten-2"
+              @click="deleteAscriptionButton"
+              class="ml-1"
+            >
+              删除
+            </v-btn>
+          </template>
+        </v-toolbar>
       </v-tabs>
       <v-expand-transition>
         <v-tabs-items v-model="tabs" v-if="itemShow">
@@ -195,10 +229,10 @@
                 </span>
               </template>
               <template v-slot:[`item.skuPrice`]="{ item }">
-                {{ item.skuPrice }} ￥
+                ￥{{ item.skuPrice }} 
               </template>
               <template v-slot:[`item.skuCost`]="{ item }">
-                {{ item.skuCost }} ￥
+                ￥{{ item.skuCost }} 
               </template>
 
               <template v-slot:[`item.startTime`]="{ item }">
@@ -229,7 +263,8 @@
               }"
             >
               <template v-slot:[`item.freight`]="{ item }">
-                {{ !item.freightToPayment ? item.freight + " ￥" : "" }}
+                <v-span :v-if="!item.freightToPayment">￥</v-span>
+                {{ !item.freightToPayment ? " ￥" + item.freight : "" }}
               </template>
               <!-- <template v-slot:[`item.extraRatio`]="{ item }">
                 {{ !item.freightToPayment ? item.extraRatio + " %" : "" }}
@@ -270,6 +305,9 @@
           </v-tab-item>
           <v-tab-item>
             <v-data-table
+              item-key="uid"
+              v-model="ascriptionSelected"
+              :show-select="ascriptionAction"
               calculate-widths
               loading-text="加载中... 请稍后"
               no-data-text="空"
@@ -298,18 +336,6 @@
                 {{ parseDate(item.startTime) }}
               </template>
 
-              <template v-slot:[`item.actions`]="{ item }">
-                <v-btn
-                  small
-                  depressed
-                  outlined
-                  color="red lighten-2"
-                  @click="deleteAscriptionButton(item)"
-                  class="ml-1"
-                >
-                  删除
-                </v-btn>
-              </template>
             </v-data-table>
           </v-tab-item>
         </v-tabs-items>
@@ -726,6 +752,8 @@ export default {
 
   data() {
     return {
+      ascriptionSelected: [],
+      ascriptionAction: false,
       manufactureAction: false,
       manufactureSelected: [],
       skuAction: false,
@@ -981,7 +1009,7 @@ export default {
 
       const XLSX = require("xlsx");
       console.log(skuInfoCopy);
-      const raw_data = skuInfoCopy; 
+      const raw_data = skuInfoCopy;
       //this.check ? this.validSkuInfos : this.skuInfos;
       /*
       const prez = raw_data.filter((row) =>
@@ -1063,30 +1091,30 @@ export default {
       this.skuSelected = [];
     },
 
-    deleteAscriptionButton(item) {
-      console.log(item);
+    deleteAscriptionButton() {
+      console.log(this.ascriptionSelected);
       if (!this.user.permission.a.da) {
         this.global.infoAlert("泼发EBC：权限不足");
         return;
       }
 
-      this.deleteAscriptionItem = { ...item };
+      this.deleteAscriptionItem = { ...this.ascriptionSelected[0] };
       this.deleteAscriptionItemParse = [
         {
           key: "事业部",
-          value: this.departmentIdToName[item.department],
+          value: this.departmentIdToName[this.ascriptionSelected[0].department],
         },
         {
           key: "组别",
-          value: this.teamIdToName[item.team],
+          value: this.teamIdToName[this.ascriptionSelected[0].team],
         },
         {
           key: "持品人",
-          value: this.userIdToNick[item.owner],
+          value: this.userIdToNick[this.ascriptionSelected[0].owner],
         },
         {
           key: "生效时间",
-          value: javaUTCDateToString(item.startTime),
+          value: javaUTCDateToString(this.ascriptionSelected[0].startTime),
         },
       ];
 

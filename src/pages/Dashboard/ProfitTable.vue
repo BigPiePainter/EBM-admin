@@ -35,7 +35,11 @@
           <div class="d-flex">
             <span v-if="item.deduction" class="mr-1">{{ "￥  " }} </span>
             <span>
-              {{ item.deduction ? item.deduction.toFixed(2) + "%" : "   " + "————" }}
+              {{
+                item.deduction
+                  ? item.deduction.toFixed(2) + "%"
+                  : "   " + "————"
+              }}
             </span>
           </div>
         </template>
@@ -44,9 +48,7 @@
           <div class="d-flex">
             <span v-if="item.extraRatio" class="mr-1">{{ "￥  " }} </span>
             <span>
-              {{
-                item.extraRatio ? item.extraRatio.toFixed(2) + "%" : "————"
-              }}
+              {{ item.extraRatio ? item.extraRatio.toFixed(2) + "%" : "————" }}
             </span>
           </div>
         </template>
@@ -55,7 +57,7 @@
           <div class="d-flex">
             <span v-if="item.totalAmount" class="mr-1">{{ "￥  " }} </span>
             <span>
-              {{ item.totalAmount ? item.totalAmount.toFixed(2) : "————" }}
+              {{ amountFormat(item.totalAmount, 2, "————") }}
             </span>
           </div>
         </template>
@@ -73,14 +75,16 @@
           <div class="d-flex">
             <span v-if="item.totalCost" class="mr-1">{{ "￥  " }} </span>
             <span>
-              {{ item.totalCost ? item.totalCost.toFixed(2) : "————" }}
+              {{ amountFormat(item.totalCost, 2, "————") }}
             </span>
           </div>
         </template>
 
         <template v-slot:[`item.totalRefundAmount`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.totalRefundAmount" class="mr-1">{{ "￥  " }} </span>
+            <span v-if="item.totalRefundAmount" class="mr-1"
+              >{{ "￥  " }}
+            </span>
             <span>
               {{
                 item.totalRefundAmount
@@ -93,7 +97,9 @@
 
         <template v-slot:[`item.totalRefundWithNoShipAmount`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.totalRefundWithNoShipAmount" class="mr-1">{{ "￥  " }} </span>
+            <span v-if="item.totalRefundWithNoShipAmount" class="mr-1"
+              >{{ "￥  " }}
+            </span>
             <span>
               {{
                 item.totalRefundWithNoShipAmount
@@ -117,7 +123,9 @@
 
         <template v-slot:[`item.originalTotalPrice`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.originalTotalPrice" class="mr-1">{{ "￥  " }} </span>
+            <span v-if="item.originalTotalPrice" class="mr-1"
+              >{{ "￥  " }}
+            </span>
             <span>
               {{
                 item.originalTotalPrice
@@ -128,12 +136,11 @@
           </div>
         </template>
 
-
         <template v-slot:[`item.calculatedActualAmount`]="{ item }">
           <div class="d-flex">
             <span v-if="item.calculatedActualAmount" class="mr-1">￥</span>
             <span>
-              {{ item.calculatedActualAmount.toFixed(2) }}
+              {{ amountFormat(item.calculatedActualAmount, 2, "————") }}
             </span>
           </div>
         </template>
@@ -144,7 +151,9 @@
 
         <template v-slot:[`item.calculatedActualAverageAmount`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedActualAverageAmount" class="mr-1">{{ "￥  " }} </span>
+            <span v-if="item.calculatedActualAverageAmount" class="mr-1"
+              >{{ "￥  " }}
+            </span>
             <span>
               {{ item.calculatedActualAverageAmount.toFixed(2) }}
             </span>
@@ -161,16 +170,20 @@
 
         <template v-slot:[`item.calculatedActualIncome`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedActualIncome" class="mr-1">{{ "￥  " }} </span>
+            <span v-if="item.calculatedActualIncome" class="mr-1"
+              >{{ "￥  " }}
+            </span>
             <span>
-              {{ item.calculatedActualIncome.toFixed(2) }}
+              {{ amountFormat(item.calculatedActualIncome, 2, "————") }}
             </span>
           </div>
         </template>
 
         <template v-slot:[`item.calculatedRefundWithNoShipAmount`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedRefundWithNoShipAmount" class="mr-1">{{ "￥  " }} </span>
+            <span v-if="item.calculatedRefundWithNoShipAmount" class="mr-1"
+              >{{ "￥  " }}
+            </span>
             <span>
               {{ item.calculatedRefundWithNoShipAmount.toFixed(2) }}
             </span>
@@ -179,7 +192,9 @@
 
         <template v-slot:[`item.calculatedActualCost`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedActualCost" class="mr-1">{{ "￥  " }} </span>
+            <span v-if="item.calculatedActualCost" class="mr-1"
+              >{{ "￥  " }}
+            </span>
             <span>
               {{ item.calculatedActualCost.toFixed(2) }}
             </span>
@@ -192,7 +207,9 @@
 
         <template v-slot:[`item.calculatedTotalFreight`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedTotalFreight" class="mr-1">{{ "￥  " }} </span>
+            <span v-if="item.calculatedTotalFreight" class="mr-1"
+              >{{ "￥  " }}
+            </span>
             <span>
               {{ item.calculatedTotalFreight.toFixed(2) }}
             </span>
@@ -201,7 +218,9 @@
 
         <template v-slot:[`item.calculatedTotalInsurance`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedTotalInsurance" class="mr-1">{{ "￥  " }} </span>
+            <span v-if="item.calculatedTotalInsurance" class="mr-1"
+              >{{ "￥  " }}
+            </span>
             <span>
               {{ item.calculatedTotalInsurance.toFixed(2) }}
             </span>
@@ -210,9 +229,11 @@
 
         <template v-slot:[`item.calculatedActualProfit`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedActualProfit" class="mr-1">{{ "￥  " }} </span>
+            <span v-if="item.calculatedActualProfit" class="mr-1"
+              >{{ "￥  " }}
+            </span>
             <span>
-              {{ item.calculatedActualProfit.toFixed(2) }}
+              {{ amountFormat(item.calculatedActualProfit, 2, "————") }}
             </span>
           </div>
         </template>
@@ -351,6 +372,7 @@
 
 
 <script>
+import { amountBeautify } from "@/libs/utils";
 import { javaUTCDateToString } from "@/libs/utils";
 import { getDailyReport } from "@/settings/order";
 export default {
@@ -446,6 +468,10 @@ export default {
   },
 
   methods: {
+    amountFormat() {
+      return amountBeautify(...arguments);
+    },
+
     parseDate(date) {
       return javaUTCDateToString(date);
     },

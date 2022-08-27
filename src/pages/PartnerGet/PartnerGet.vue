@@ -85,7 +85,6 @@
               small
               depressed
               class="ml-2"
-              v-model="ifAction"
               @click="
                 ifAction = !ifAction;
                 selectedProductItem = [];
@@ -100,6 +99,11 @@
               </v-icon>
               <span> 操作 </span>
             </v-btn>
+            <v-spacer></v-spacer>
+            <span class="grey--text body-2 overflow-y-auto mr-3">{{
+              searchPreview
+            }}</span>
+
             <v-btn
               v-if="ifAction"
               :disabled="selectedProductItem.length != 1"
@@ -124,10 +128,6 @@
             >
               <span> 下架 </span>
             </v-btn>
-            <v-spacer></v-spacer>
-            <span class="grey--text body-2 overflow-y-auto">{{
-              searchPreview
-            }}</span>
           </v-toolbar>
         </template>
 
@@ -860,7 +860,7 @@ export default {
     },
 
     addButtonAutoCompleteId(id) {
-      this.editedItem = {id};
+      this.editedItem = { id };
       this.mode = 1; //新增
       this.productInfoDialog = true;
     },
