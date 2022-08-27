@@ -10,7 +10,7 @@ import Dashboard from '@/pages/Dashboard/Dashboard';
 import ProfitChart from '@/pages/Dashboard/ProfitChart';
 import ProfitTable from '@/pages/Dashboard/ProfitTable';
 import PartnerGet from '@/pages/PartnerGet/PartnerGet'
-import Missings from '@/pages/Missings/Missings'
+import MismatchProducts from '@/pages/MismatchProducts/MismatchProducts'
 import Category from '@/pages/Category/Category'
 import ProductsGet from '@/pages/ProductsGet/ProductsGet'
 import ProductsPut from '@/pages/ProductsPut/ProductsPut'
@@ -77,9 +77,9 @@ var routerConfig = {
           component: PartnerGet,
         },
         {
-          path: 'missings',
-          name: 'Missings',
-          component: Missings,
+          path: 'mismatchProducts',
+          name: 'MismatchProducts',
+          component: MismatchProducts,
         },
         {
           path: 'category',

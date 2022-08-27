@@ -528,10 +528,10 @@
               </div>
             </template>
           </v-data-table>
-          <div class="pl-3 pr-3">
+          <div class="px-7 mt-3">
             <v-row>
               <v-col cols="4">
-                <span class="text-body-2 text--secondary"> 选择变化日期* </span>
+                <span class="text-body-2 text--secondary"> 选择下架日期* </span>
                 <v-menu
                   ref="menu"
                   v-model="datePicker"
@@ -756,11 +756,11 @@ export default {
     "search.search": {
       handler() {
         this.searchPreview = "";
-        console.log(this.search.search.department)
-        console.log(this.allCategorys.length)
-        var xxx = {...this.search}
-        if (xxx.search.department == "1"){
-          this.search.search.department = "2"
+        console.log(this.search.search.department);
+        console.log(this.allCategorys.length);
+        var xxx = { ...this.search };
+        if (xxx.search.department == "1") {
+          this.search.search.department = "2";
         }
         for (let name in this.search.search) {
           if (!this.search.search[name]) continue;
@@ -784,7 +784,14 @@ export default {
     this.init();
   },
 
-  methods: { 
+  mounted() {
+    if (localStorage.ProductIdAutoComplete) {
+      this.addButtonAutoCompleteId(localStorage.ProductIdAutoComplete);
+      localStorage.removeItem("ProductIdAutoComplete");
+    }
+  },
+
+  methods: {
     parseDate(time) {
       return javaUTCDateToString(time);
     },
@@ -806,7 +813,7 @@ export default {
 
     showHeaders() {
       this.headers = this.headersContent;
-      console.log(this.search)
+      console.log(this.search);
     },
 
     refreshData(a) {
@@ -828,8 +835,6 @@ export default {
       }
     },
 
-    
-
     loadData() {
       this.loading = true;
       const { page, itemsPerPage } = this.options;
@@ -850,6 +855,12 @@ export default {
 
     addButton() {
       this.editedItem = {};
+      this.mode = 1; //新增
+      this.productInfoDialog = true;
+    },
+
+    addButtonAutoCompleteId(id) {
+      this.editedItem = {id};
       this.mode = 1; //新增
       this.productInfoDialog = true;
     },

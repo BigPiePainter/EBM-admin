@@ -2,7 +2,7 @@
   <v-container fluid id="mainContainer">
     <div class="dashboard-page">
       <v-row no-gutters class="d-flex justify-space-between mt-2">
-        <h1 class="page-title">利润报表--本月数据</h1>
+        <h1 class="page-title">利润报表--还在做呢</h1>
       </v-row>
 
       <v-row>

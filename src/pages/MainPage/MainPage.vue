@@ -2,7 +2,7 @@
   <v-container fluid id="mainContainer">
     <div class="dashboard-page">
       <v-row no-gutters class="d-flex justify-space-between mt-2">
-        <h1 class="page-title">POFA EBC--今日统计</h1>
+        <h1 class="page-title">今日统计 还在做呢</h1>
       </v-row>
 
       <v-row>
@@ -71,7 +71,7 @@
           </v-row>
         </v-col>
       </v-row>
-      
+
       <v-row>
         <v-col cols="12">
           <v-card class="mx-1 mb-1">
@@ -354,7 +354,19 @@ export default {
           axisTick: {
             show: false,
           },
-          data: ["YJX", "WQ", "JY", "PL", "AY", "QJH1/WXF1", "CJY", "HWX", "XW", "ZC", "QJH/WXF"],
+          data: [
+            "YJX",
+            "WQ",
+            "JY",
+            "PL",
+            "AY",
+            "QJH1/WXF1",
+            "CJY",
+            "HWX",
+            "XW",
+            "ZC",
+            "QJH/WXF",
+          ],
         },
         series: [
           {
@@ -366,11 +378,11 @@ export default {
             },
             data: [640, 600, 630, 688, 800, 600, 640, 600, 630, 688, 640],
           },
-          
+
           {
             name: "毛利润",
             type: "bar",
-            stack: 'Total',
+            stack: "Total",
             label: {
               show: true,
             },
@@ -379,7 +391,7 @@ export default {
           {
             name: "成本",
             type: "bar",
-            stack: 'Total',
+            stack: "Total",
             label: {
               show: true,
             },
@@ -388,12 +400,14 @@ export default {
           {
             name: "退款",
             type: "bar",
-            stack: 'Total',
+            stack: "Total",
             label: {
               show: true,
               position: "left",
             },
-            data: [-120, -132, -101, -134, -190, -230, -210, -101, -134, -190, -230],
+            data: [
+              -120, -132, -101, -134, -190, -230, -210, -101, -134, -190, -230,
+            ],
           },
         ],
       },

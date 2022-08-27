@@ -45,3 +45,13 @@ export const getClass = data => {
     }
     return http.request(args)
 }
+
+
+export const getMismatchProducts = data => {
+    const args = {
+        url: '/product/getMismatchProducts',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}

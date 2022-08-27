@@ -130,7 +130,7 @@ export default {
             {
               title: "认领大厅",
               icon: "mdi-circle-small",
-              link: "/missings",
+              link: "/mismatchProducts",
             },
             {
               title: "一级类目",
