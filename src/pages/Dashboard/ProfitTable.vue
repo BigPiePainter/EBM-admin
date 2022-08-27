@@ -1,132 +1,134 @@
 <template>
   <div>
-    <v-card class="products-list mb-1">
-      <v-data-table
-        fixed-header
-        :items-per-page="50"
-        :footer-props="{
-          'items-per-page-options': [10, 20, 50, 100, 500],
-          'items-per-page-text': '每页显示条数',
-        }"
-        :items="profitItems"
-        :headers="check ? profitHeadersAll : profitHeadersHide"
-        :loading="loading"
-      >
-
-        <template v-slot:[`item.calculatedActualAmount`]="{ item }">
-          {{ "￥ " + item.calculatedActualAmount }}
-        </template>
-        <template v-slot:[`item.calculatedActualOrderCount`]="{ item }">
-          {{ item.calculatedActualOrderCount }}
-        </template>
-        <template v-slot:[`item.calculatedAveragePriceOfSubOrder`]="{ item }">
-          {{ "￥ " + item.calculatedAveragePriceOfSubOrder }}
-        </template>
-        <template v-slot:[`item.calculatedCostRatio`]="{ item }">
-          {{ item.calculatedCostRatio + "%"}}
-        </template>
-        <template v-slot:[`item.calculatedProfitRatio`]="{ item }">
-          {{ item.calculatedProfitRatio + "%"}}
-        </template>
-        <template v-slot:[`item.calculatedActualIncome`]="{ item }">
-          {{ "￥ " + item.calculatedActualIncome }}
-        </template>
-        <template v-slot:[`item.calculatedRefundWithNoShipAmount`]="{ item }">
-          {{ "￥ " + item.calculatedRefundWithNoShipAmount }}
-        </template>
-        <template v-slot:[`item.calculatedActualCost`]="{ item }">
-          {{ "￥ " + item.calculatedActualCost }}
-        </template>
-        <template v-slot:[`item.calculatedTmallTokeRatio`]="{ item }">
-          {{ item.calculatedTmallTokeRatio + "%" }}
-        </template>
-        <template v-slot:[`item.calculatedTotalFreight`]="{ item }">
-          {{ "￥ " + item.calculatedTotalFreight }}
-        </template>
-        <template v-slot:[`item.calculatedTotalInsurance`]="{ item }">
-          {{ "￥ " + item.calculatedTotalInsurance }}
-        </template>
-        <template v-slot:[`item.calculatedActualProfit`]="{ item }">
-          {{ "￥ " + item.calculatedActualProfit }}
-        </template>
-        <template v-slot:[`item.calculatedActualProfitRatio`]="{ item }">
-          {{ item.calculatedActualProfitRatio }}
-        </template>
-        <template v-slot:[`item.calculatedDiscount`]="{ item }">
-          {{ item.calculatedDiscount + "%" }}
-        </template>
-        <template v-slot:top>
-          <v-toolbar flat>
-            <v-toolbar-title>利润报表（单日）</v-toolbar-title>
-            <v-divider class="mx-1" inset vertical></v-divider>
-            <span class="ml-1">选择日期</span>
-            <v-menu
-              ref="menu"
-              v-model="datePicker"
-              :close-on-content-click="false"
-              :return-value.sync="date"
-              offset-y
-              min-width="auto"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  class="shrink ml-1"
-                  v-model="date"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                  outlined
-                  dense
-                  hide-details
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="date"
-                no-title
-                scrollable
-                locale="zh-cn"
-                first-day-of-week="1"
-                :day-format="dayFormat"
-                min="2021-01-01"
-                :max="parseDate(new Date())"
+    <v-container class="main-container ma-0">
+      <v-card class="products-list mb-1">
+        <v-data-table
+          height="calc(100vh - 155px)"
+          fixed-header
+          :items-per-page="50"
+          :footer-props="{
+            'items-per-page-options': [10, 20, 50, 100, 500],
+            'items-per-page-text': '每页显示条数',
+          }"
+          :items="profitItems"
+          :headers="check ? profitHeadersAll : profitHeadersHide"
+          :loading="loading"
+        >
+          <template v-slot:[`item.calculatedActualAmount`]="{ item }">
+            {{ "￥ " + item.calculatedActualAmount }}
+          </template>
+          <template v-slot:[`item.calculatedActualOrderCount`]="{ item }">
+            {{ item.calculatedActualOrderCount }}
+          </template>
+          <template v-slot:[`item.calculatedAveragePriceOfSubOrder`]="{ item }">
+            {{ "￥ " + item.calculatedAveragePriceOfSubOrder }}
+          </template>
+          <template v-slot:[`item.calculatedCostRatio`]="{ item }">
+            {{ item.calculatedCostRatio + "%" }}
+          </template>
+          <template v-slot:[`item.calculatedProfitRatio`]="{ item }">
+            {{ item.calculatedProfitRatio + "%" }}
+          </template>
+          <template v-slot:[`item.calculatedActualIncome`]="{ item }">
+            {{ "￥ " + item.calculatedActualIncome }}
+          </template>
+          <template v-slot:[`item.calculatedRefundWithNoShipAmount`]="{ item }">
+            {{ "￥ " + item.calculatedRefundWithNoShipAmount }}
+          </template>
+          <template v-slot:[`item.calculatedActualCost`]="{ item }">
+            {{ "￥ " + item.calculatedActualCost }}
+          </template>
+          <template v-slot:[`item.calculatedTmallTokeRatio`]="{ item }">
+            {{ item.calculatedTmallTokeRatio + "%" }}
+          </template>
+          <template v-slot:[`item.calculatedTotalFreight`]="{ item }">
+            {{ "￥ " + item.calculatedTotalFreight }}
+          </template>
+          <template v-slot:[`item.calculatedTotalInsurance`]="{ item }">
+            {{ "￥ " + item.calculatedTotalInsurance }}
+          </template>
+          <template v-slot:[`item.calculatedActualProfit`]="{ item }">
+            {{ "￥ " + item.calculatedActualProfit }}
+          </template>
+          <template v-slot:[`item.calculatedActualProfitRatio`]="{ item }">
+            {{ item.calculatedActualProfitRatio }}
+          </template>
+          <template v-slot:[`item.calculatedDiscount`]="{ item }">
+            {{ item.calculatedDiscount + "%" }}
+          </template>
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title>利润报表（单日）</v-toolbar-title>
+              <v-divider class="mx-1" inset vertical></v-divider>
+              <span class="ml-1">选择日期</span>
+              <v-menu
+                ref="menu"
+                v-model="datePicker"
+                :close-on-content-click="false"
+                :return-value.sync="date"
+                offset-y
+                min-width="auto"
               >
-                <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="datePicker = false">
-                  取消
-                </v-btn>
-                <v-btn
-                  text
-                  color="primary"
-                  @click="
-                    $refs.menu.save(date);
-                    loadData();
-                  "
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    class="shrink ml-1"
+                    v-model="date"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    dense
+                    hide-details
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="date"
+                  no-title
+                  scrollable
+                  locale="zh-cn"
+                  first-day-of-week="1"
+                  :day-format="dayFormat"
+                  min="2021-01-01"
+                  :max="parseDate(new Date())"
                 >
-                  确定
-                </v-btn>
-              </v-date-picker>
-            </v-menu>
-            <v-btn
-              small
-              depressed
-              class="ml-2"
-              v-model="check"
-              @click="check = !check"
-            >
-              <v-icon small class="mr-1">
-                {{
-                  check
-                    ? "mdi-checkbox-marked-outline"
-                    : "mdi-checkbox-blank-outline"
-                }}
-              </v-icon>
-              <span> 展开全部列 </span>
-            </v-btn>
-            <v-btn @click="showDate"></v-btn>
-          </v-toolbar>
-        </template>
-      </v-data-table>
-    </v-card>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="datePicker = false">
+                    取消
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="
+                      $refs.menu.save(date);
+                      loadData();
+                    "
+                  >
+                    确定
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+              <v-btn
+                small
+                depressed
+                class="ml-2"
+                v-model="check"
+                @click="check = !check"
+              >
+                <v-icon small class="mr-1">
+                  {{
+                    check
+                      ? "mdi-checkbox-marked-outline"
+                      : "mdi-checkbox-blank-outline"
+                  }}
+                </v-icon>
+                <span> 展开全部列 </span>
+              </v-btn>
+              <v-btn @click="showDate"></v-btn>
+            </v-toolbar>
+          </template>
+        </v-data-table>
+      </v-card>
+    </v-container>
   </div>
 </template>
 
@@ -186,7 +188,7 @@ export default {
         //----------------------------------------------------------------------
       ],
       profitHeadersHide: [
-        { text: "日期", value: "date" },
+        { text: "部门", value: "department" },
         { text: "持品人", value: "owner" }, //1
         { text: "产品名称", value: "productName" }, //1
         { text: "商品编码ID", value: "productId" }, //1
@@ -195,25 +197,24 @@ export default {
         { text: "单均价", value: "calculated" }, //真实金额/真实单数
         { text: "拿货成本", value: "totalCost" }, //1
         { text: "成本率", value: "calculated" },
-        { text: "利润率", value: "" },
+        { text: "利润率", value: "calculatedProfitRatio" },
         { text: "退款金额", value: "totalRefundAmount" }, //1
-        { text: "净入金额", value: "" },
+        { text: "净收入额", value: "calculatedActualIncome" },
         { text: "未发仅退", value: "totalRefundWithNoShipAmount" }, //1
-        { text: "未发退本", value: "" },
+        { text: "未发退本", value: "calculatedRefundWithNoShipAmount" },
         { text: "未发数", value: "refundWithNoShipCount" }, //1
         { text: "拿货成本（售后）", value: "calculatedActualCost" }, //2
         { text: "平台扣点", value: "calculatedTmallTokeRatio" }, //2
-        { text: "快递费", value: "" },
+        { text: "快递费", value: "calculatedTotalFreight" },
         { text: "运费险", value: "calculatedTotalInsurance" }, //2
-        { text: "刷单佣金", value: "" },
-        { text: "售后毛利润", value: "" },
-        { text: "售后利润率", value: "" },
-        { text: "SKU", value: "" },
-        { text: "错数", value: "" },
-        { text: "折扣", value: "" },
-        { text: "错数", value: "" },
-        { text: "原售价", value: "" },
-        { text: "厂家返款", value: "" },
+        { text: "刷单佣金", value: "totalBrokerage" },
+        { text: "售后毛利润", value: "calculatedActualProfit" },
+        { text: "售后利润率", value: "calculatedActualProfitRatio" },
+        { text: "SKU", value: "calculatedSkuCorrection" },
+        { text: "错数", value: "skuWithNoCostCount" },
+        { text: "折扣", value: "calculatedDiscount" },
+        { text: "错数", value: "operatorGivenWrongPriceCount" },
+        { text: "原售价", value: "originalTotalPrice" },
         //----------------------------------------------------------------------
       ],
     };
@@ -259,8 +260,8 @@ export default {
     dataAnalyze() {
       this.profitItems.forEach((item) => {
         item.calculatedFreight = item.freightToPayment
-          ? item.freightToPayment+"%"
-          : "￥"+item.freight;
+          ? item.freightToPayment + "%"
+          : "￥" + item.freight;
         item.calculatedActualAmount = item.totalAmount - item.totalFakeAmount;
         item.calculatedActualOrderCount = item.orderCount - item.fakeOrderCount;
         item.calculatedAveragePriceOfSubOrder =
@@ -314,3 +315,9 @@ export default {
   },
 };
 </script>
+
+<style lang="css">
+tr {
+  height: 10px !important;
+}
+</style>
