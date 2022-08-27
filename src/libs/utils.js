@@ -66,5 +66,11 @@ export const javaDateTimeToString = (dateNum) => {
 
 
 export const zeroPadding = (num) => {
-  return num < 10 ? "0" + num : num;
+  return (num + "").padStart(2, 0)
+};
+
+
+const reg = /\d{1,3}(?=(\d{3})+(\.|$))/gy
+export const amountBeautify = (str) => {
+  return str.replace(reg, '$&,')
 };

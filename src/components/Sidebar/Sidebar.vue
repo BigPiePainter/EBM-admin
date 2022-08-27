@@ -112,13 +112,13 @@ export default {
         { heading: "POFA1" },
         {
           title: "主页",
-          icon: "mdi-account-multiple",
+          icon: "mdi-home",
           link: "/mainpage",
           show: true,
         },
         {
           title: "商品管理",
-          icon: "mdi-account-multiple",
+          icon: "mdi-package-variant-closed",
           link: "/",
           show: this.$store.state.user.permission.a.a,
           children: [
@@ -142,7 +142,7 @@ export default {
 
         {
           title: "订单管理",
-          icon: "mdi-account-multiple",
+          icon: "mdi-reorder-horizontal",
           link: "",
           show: this.$store.state.user.permission.b.a,
           children: [
@@ -176,7 +176,7 @@ export default {
 
         {
           title: "利润报表",
-          icon: "mdi-account-multiple",
+          icon: "mdi-cash-multiple",
           link: "",
           show: true,
           children: [
@@ -200,7 +200,7 @@ export default {
 
         {
           title: "事业部管理",
-          icon: "mdi-account-multiple",
+          icon: "mdi-domain",
           link: "/department",
           show: this.$store.state.user.permission.d.a,
           children: [
@@ -210,7 +210,7 @@ export default {
 
         {
           title: "组别管理",
-          icon: "mdi-account-multiple",
+          icon: "mdi-account-group",
           link: "/icons",
           show: this.$store.state.user.permission.e.a,
           children: [
