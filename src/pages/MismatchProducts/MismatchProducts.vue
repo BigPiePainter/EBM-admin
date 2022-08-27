@@ -95,9 +95,9 @@
           <TableKV :items="productItemParse" />
         </div>
 
-        <v-container class="px-7 mt-3 my-2">
+        <v-container class="px-7 mt-3 mt-2 mb-1">
           <span class="text-body-2 text--secondary">
-            请输入12位商品ID认领
+            输入12位商品ID自动跳转到录入界面
           </span>
           <v-text-field
             outlined
@@ -114,8 +114,8 @@
           <v-btn color="blue darken-1" text @click="acceptDialog = false"
             >取消</v-btn
           >
-          <v-btn color="green darken-1" text @click="sureAcceptButton">
-            <v-icon small class="mr-1"> mdi-pencel </v-icon>认领</v-btn
+          <v-btn color="blue darken-1" text @click="sureAcceptButton">
+            <v-icon small class="mr-1"> mdi-pencel </v-icon>跳转</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -164,7 +164,7 @@ export default {
         });
     },
     accept(item) {
-      console.log(item);
+      //console.log(item);
       this.productIdEdited = "";
       this.acceptItem = item;
       this.productItemParse = [
@@ -177,7 +177,7 @@ export default {
         },
         {
           key: "30天内销售额",
-          value: item.totalAmount,
+          value: "￥ " + item.totalAmount,
         },
       ];
       this.acceptDialog = true;
