@@ -1,0 +1,200 @@
+<template>
+  <div>
+    <v-data-table
+      fixed-header
+      loading-text="加载中... 请稍后"
+      no-data-text="空"
+      item-key="id"
+      height="calc(100vh - 200px)"
+      class="card-shadow"
+      sort-by="totalAmount"
+      sort-desc
+      :loading="loading"
+      :headers="[
+        { text: '商品ID', value: 'id', sortable: false },
+        { text: '宝贝标题', value: 'productTitle', sortable: false },
+        { text: '30天内成交额', value: 'totalAmount' },
+        { text: '操作', value: 'actions', sortable: false },
+      ]"
+      :items="allMismatchProducts"
+      :items-per-page="20"
+      :footer-props="{
+        'items-per-page-options': [10, 20, 50, 100],
+        'items-per-page-text': '每页显示条数',
+      }"
+    >
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>失物招领大厅</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
+        </v-toolbar>
+      </template>
+
+      <template v-slot:[`header.id`]="{ header }">
+        <span class="ml-15">
+          {{ header.text }}
+        </span>
+      </template>
+
+      <template v-slot:[`header.productTitle`]="{ header }">
+        <span style="margin-left: 150px">
+          {{ header.text }}
+        </span>
+      </template>
+
+      <template v-slot:[`item.id`]="{ item }">
+        <span class="ml-10">
+          {{
+            item.id.toString().substring(0, 4) +
+            "****" +
+            item.id.toString().substr(-4)
+          }}
+        </span>
+      </template>
+
+      <template v-slot:[`item.totalAmount`]="{ item }">
+        {{ "￥ " + item.totalAmount }}
+      </template>
+
+      <template v-slot:[`header.actions`]="{ header }">
+        <span class="ml-4">
+          {{ header.text }}
+        </span>
+      </template>
+
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-btn
+          small
+          depressed
+          outlined
+          color="green"
+          class="ml-1"
+          @click.stop="accept(item)"
+        >
+          认领
+        </v-btn>
+      </template>
+
+      <template v-slot:[`item.productTitle`]="{ item }">
+        {{
+          item.productTitle[0] == "【"
+            ? item.productTitle.substr(item.productTitle.lastIndexOf("】") + 1)
+            : item.productTitle
+        }}
+      </template>
+    </v-data-table>
+
+    <!-- 认领商品 Dialog -->
+    <v-dialog v-model="acceptDialog" max-width="350px">
+      <v-card>
+        <div class="mx-5 pt-4">
+          <span> {{ acceptItem.productTitle }} </span>
+        </div>
+
+        <div class="mt-5">
+          <TableKV :items="productItemParse" />
+        </div>
+
+        <v-container class="px-7 mt-3 my-2">
+          <span class="text-body-2 text--secondary">
+            请输入12位商品ID认领
+          </span>
+          <v-text-field
+            outlined
+            dense
+            hide-details
+            type="number"
+            v-model="productIdEdited"
+          >
+          </v-text-field>
+        </v-container>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="blue darken-1" text @click="acceptDialog = false"
+            >取消</v-btn
+          >
+          <v-btn color="green darken-1" text @click="sureAcceptButton">
+            <v-icon small class="mr-1"> mdi-pencel </v-icon>认领</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+<script>
+import { getMismatchProducts } from "@/settings/product";
+
+import TableKV from "@/components/TableKV/TableKV";
+
+export default {
+  name: "MismatchProducts",
+  components: {
+    TableKV,
+  },
+  data() {
+    return {
+      loading: false,
+      allMismatchProducts: [],
+
+      productItemParse: [],
+      acceptDialog: false,
+      acceptItem: {},
+      productIdEdited: "",
+    };
+  },
+
+  created() {
+    this.loadData();
+  },
+
+  methods: {
+    loadData() {
+      this.loading = true;
+      getMismatchProducts({})
+        .then((res) => {
+          console.log("接口读取测试", res);
+          this.loading = false;
+          this.allMismatchProducts = res.data.mismatchProducts;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loading = false;
+        });
+    },
+    accept(item) {
+      console.log(item);
+      this.productIdEdited = "";
+      this.acceptItem = item;
+      this.productItemParse = [
+        {
+          key: "商品ID",
+          value:
+            item.id.toString().substring(0, 4) +
+            "****" +
+            item.id.toString().substr(-4),
+        },
+        {
+          key: "30天内销售额",
+          value: item.totalAmount,
+        },
+      ];
+      this.acceptDialog = true;
+    },
+
+    sureAcceptButton() {
+      if (this.productIdEdited == this.acceptItem.id) {
+        localStorage.ProductIdAutoComplete = this.acceptItem.id;
+        this.$router.push("/partnerget");
+        return;
+      } else {
+        this.global.infoAlert("泼发EBC：输入的ID不正确");
+      }
+    },
+  },
+};
+</script>
+
+<style scoped>
+</style>
