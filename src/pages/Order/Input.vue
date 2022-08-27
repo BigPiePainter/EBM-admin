@@ -82,7 +82,7 @@
       item-key=""
       hide-default-footer
       class="card-shadow mt-5"
-      height="500px"
+      height="calc(100vh - 340px)"
       :loading="loading"
       :headers="historyHeaders"
       :items="historyItems"

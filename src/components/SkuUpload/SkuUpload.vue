@@ -249,119 +249,124 @@ export default {
       setTimeout(() => {
         var reader = new FileReader();
         reader.onload = (e) => {
-          console.log("加载完毕");
+          try {
+            console.log("加载完毕");
 
-          console.log("数据处理");
+            console.log("数据处理");
 
-          var data = new Uint8Array(e.target.result);
-          data = this.stox(XLSX.read(data, { type: "array" }));
-          this.dataCopy = data;
+            var data = new Uint8Array(e.target.result);
+            data = this.stox(XLSX.read(data, { type: "array" }));
+            this.dataCopy = data;
 
-          //额外处理
-          //data[0].freeze = "A2",
+            //额外处理
+            //data[0].freeze = "A2",
 
-          data[0].cols = {
-            0: { width: 113 },
-            1: { width: 113 },
-            2: { width: 750 },
-            3: { width: 80 },
-            4: { width: 80 },
-            5: { width: 100 },
-            // 6: { width: 100 },
-          };
+            data[0].cols = {
+              0: { width: 113 },
+              1: { width: 113 },
+              2: { width: 750 },
+              3: { width: 80 },
+              4: { width: 80 },
+              5: { width: 100 },
+              // 6: { width: 100 },
+            };
 
-          // /4FF200
+            // /4FF200
 
-          var warning = {
-            //bgcolor: "#f4f5f8",
-            color: "#ff0000",
-            border: {
-              top: ["thin", "#ff0000"],
-              bottom: ["thin", "#ff0000"],
-              right: ["thin", "#ff0000"],
-              left: ["thin", "#ff0000"],
-            },
-          };
+            var warning = {
+              //bgcolor: "#f4f5f8",
+              color: "#ff0000",
+              border: {
+                top: ["thin", "#ff0000"],
+                bottom: ["thin", "#ff0000"],
+                right: ["thin", "#ff0000"],
+                left: ["thin", "#ff0000"],
+              },
+            };
 
-          var success = {
-            bgcolor: "#E5FFE5",
-            //color: "#99CC66",
-            border: {
-              //top: ["thin", "#00CC99"],
-              //bottom: ["thin", "#00CC99"],
-              //right: ["thin", "#00CC99"],
-              //left: ["thin", "#00CC99"],
-            },
-          };
+            var success = {
+              bgcolor: "#E5FFE5",
+              //color: "#99CC66",
+              border: {
+                //top: ["thin", "#00CC99"],
+                //bottom: ["thin", "#00CC99"],
+                //right: ["thin", "#00CC99"],
+                //left: ["thin", "#00CC99"],
+              },
+            };
 
-          data[0].styles = [];
-          data[0].styles.push({
-            align: "center",
-          });
-          data[0].styles.push({
-            align: "left",
-          });
-          data[0].styles.push({
-            align: "right",
-          });
+            data[0].styles = [];
+            data[0].styles.push({
+              align: "center",
+            });
+            data[0].styles.push({
+              align: "left",
+            });
+            data[0].styles.push({
+              align: "right",
+            });
 
-          data[0].styles.push({
-            align: "center",
-            ...warning,
-          });
-          data[0].styles.push({
-            align: "left",
-            ...warning,
-          });
-          data[0].styles.push({
-            align: "right",
-            ...warning,
-          });
+            data[0].styles.push({
+              align: "center",
+              ...warning,
+            });
+            data[0].styles.push({
+              align: "left",
+              ...warning,
+            });
+            data[0].styles.push({
+              align: "right",
+              ...warning,
+            });
 
-          data[0].styles.push({
-            align: "center",
-            ...success,
-          });
-          data[0].styles.push({
-            align: "left",
-            ...success,
-          });
-          data[0].styles.push({
-            align: "right",
-            ...success,
-          });
+            data[0].styles.push({
+              align: "center",
+              ...success,
+            });
+            data[0].styles.push({
+              align: "left",
+              ...success,
+            });
+            data[0].styles.push({
+              align: "right",
+              ...success,
+            });
 
-          data[0].styles.push({
-            font: {
-              bold: true,
-            },
-            ...success,
-          });
-          data[0].styles.push({
-            font: {
-              bold: true,
-            },
-            ...warning,
-          });
+            data[0].styles.push({
+              font: {
+                bold: true,
+              },
+              ...success,
+            });
+            data[0].styles.push({
+              font: {
+                bold: true,
+              },
+              ...warning,
+            });
 
-          this.wrong = 0;
-          for (let row in data[0].rows) {
-            if (!data[0].rows[row].cells) continue;
-            for (let col = 0; col < 6; col++) {
-              var cell = data[0].rows[row].cells[col];
-              if (!cell) data[0].rows[row].cells[col] = { test: "" };
-              cell = data[0].rows[row].cells[col];
+            this.wrong = 0;
+            for (let row in data[0].rows) {
+              if (!data[0].rows[row].cells) continue;
+              for (let col = 0; col < 6; col++) {
+                var cell = data[0].rows[row].cells[col];
+                if (!cell) data[0].rows[row].cells[col] = { test: "" };
+                cell = data[0].rows[row].cells[col];
 
-              this.cellCheck(cell, row, col);
+                this.cellCheck(cell, row, col);
+              }
             }
+
+            console.log(data);
+            console.log("数据处理完毕");
+
+            this.loading = false;
+            this.checkInfoDialog = true;
+            this.dataInit(data);
+          } catch (error) {
+            this.loading = false;
+            this.global.infoAlert("泼发EBC：文件有点问题啊。。。")
           }
-
-          console.log(data);
-          console.log("数据处理完毕");
-
-          this.loading = false;
-          this.checkInfoDialog = true;
-          this.dataInit(data);
         };
 
         console.log("加载文件");
