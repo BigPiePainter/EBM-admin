@@ -9,11 +9,8 @@
           disable-sort
           class="elevation-1"
           height="80vh"
-          :loading="loading"
           :headers="Headers"
           :items="allItems"
-          :expanded.sync="expanded"
-          :options.sync="options"
           :items-per-page="50"
           :footer-props="{
             'items-per-page-options': [10, 20, 50, 100],

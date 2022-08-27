@@ -2,7 +2,7 @@
   <v-container fluid id="mainContainer">
     <div class="dashboard-page">
       <v-row no-gutters class="d-flex justify-space-between mt-2">
-        <h1 class="page-title">今日统计 还在做呢</h1>
+        <h1 class="page-title">今日统计 （等待数据）</h1>
       </v-row>
 
       <v-row>

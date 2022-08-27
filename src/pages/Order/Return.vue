@@ -39,7 +39,7 @@
 
 
 <script>
-import { getReturn } from "@/settings/order";
+// import { getReturn } from "@/settings/order";
 
 export default {
   components: {},
@@ -80,22 +80,22 @@ export default {
   },
 
   methods: {
-    loadData() {
-      this.loading = true;
-      const { page, itemsPerPage } = this.options;
-      console.log({ page, itemsPerPage});
-      getReturn({ page, itemsPerPage})
-        .then((res) => {
-          this.loading = false;
-          console.log(res.data);
-          this.returnItems = res.data.returnItems;
-          this.totalReturnItems = res.data.total;
-          //this.global.infoAlert("泼发EBC：" + res.data);
-        })
-        .catch(() => {
-          this.loading = false;
-        });
-    },
+    // loadData() {
+    //   this.loading = true;
+    //   const { page, itemsPerPage } = this.options;
+    //   console.log({ page, itemsPerPage});
+    //   getReturn({ page, itemsPerPage})
+    //     .then((res) => {
+    //       this.loading = false;
+    //       console.log(res.data);
+    //       this.returnItems = res.data.returnItems;
+    //       this.totalReturnItems = res.data.total;
+    //       //this.global.infoAlert("泼发EBC：" + res.data);
+    //     })
+    //     .catch(() => {
+    //       this.loading = false;
+    //     });
+    // },
   },
 };
 </script>

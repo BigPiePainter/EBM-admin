@@ -25,7 +25,7 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>失物招领大厅</v-toolbar-title>
+          <v-toolbar-title @click="showMissMoney">失物招领大厅</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
         </v-toolbar>
       </template>
@@ -53,7 +53,7 @@
       </template>
 
       <template v-slot:[`item.totalAmount`]="{ item }">
-        {{ "￥ " + item.totalAmount }}
+        {{ "￥ " + amountFormat(item.totalAmount) }}
       </template>
 
       <template v-slot:[`header.actions`]="{ header }">
@@ -124,6 +124,7 @@
 </template>
 
 <script>
+import { amountBeautify } from "@/libs/utils";
 import { getMismatchProducts } from "@/settings/product";
 
 import TableKV from "@/components/TableKV/TableKV";
@@ -150,6 +151,18 @@ export default {
   },
 
   methods: {
+    amountFormat() {
+      return amountBeautify(...arguments);
+    },
+
+    showMissMoney() {
+      var money = 0;
+      for (let i = 0; i < this.allMismatchProducts.length; i++) {
+        money = money + this.allMismatchProducts[i].totalAmount;
+      }
+      console.log(money+0.0000000001);
+    },
+
     loadData() {
       this.loading = true;
       getMismatchProducts({})
