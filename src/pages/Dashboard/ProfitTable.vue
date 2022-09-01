@@ -294,7 +294,7 @@
 
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>利润报表（单日）</v-toolbar-title>
+            <v-toolbar-title>利润报表</v-toolbar-title>
             <v-divider class="mx-1" inset vertical></v-divider>
 
             <span

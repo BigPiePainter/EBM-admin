@@ -176,7 +176,7 @@ export default {
 
         {
           title: "利润报表",
-          icon: "mdi-cash-multiple",
+          icon: "mdi-chart-areaspline",
           link: "",
           show: true,
           children: [
@@ -186,7 +186,7 @@ export default {
             //   link: "/dashboard",
             // },
             {
-              title: "利润统计图",
+              title: "统计图",
               icon: "mdi-circle-small",
               link: "/profitChart",
             },

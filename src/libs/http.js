@@ -5,8 +5,8 @@ import {
 } from '@/libs/utils'
 class Http {
   constructor() {
-    this.baseUrl = 'http://192.168.10.2:8087/pofa' //后端网址
-    //this.baseUrl = 'http://127.0.0.1:8087/pofa' //后端网址
+    this.baseUrl = 'http://192.168.10.10:8087/pofa' //后端网址
+    this.baseUrl = 'http://127.0.0.1:8087/pofa' //后端网址
   }
 
   request(options) {
