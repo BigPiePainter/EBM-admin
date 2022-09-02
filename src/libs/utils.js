@@ -61,7 +61,7 @@ export const javaUTCDateToString = (dateNum) => {
 export const javaDateTimeToString = (dateNum) => {
   var date = new Date()
   date.setTime(dateNum);
-  return `${date.getFullYear()}-${zeroPadding(date.getMonth())}-${zeroPadding(date.getDate())} ${zeroPadding(date.getHours())}:${zeroPadding(date.getMinutes())}:${zeroPadding(date.getSeconds())}`;
+  return `${date.getFullYear()}-${zeroPadding(date.getMonth() + 1)}-${zeroPadding(date.getDate())} ${zeroPadding(date.getHours())}:${zeroPadding(date.getMinutes())}:${zeroPadding(date.getSeconds())}`;
 };
 
 
