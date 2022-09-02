@@ -49,6 +49,7 @@
                         :disabled="password.length === 0 || email.length === 0"
                         color="primary"
                         @click="login"
+                        :loading="loading"
                       >
                         登录</v-btn
                       >

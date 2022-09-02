@@ -149,7 +149,7 @@
               <v-divider class="my-8" />
               <v-row>
                 <v-col>
-                  <span class="text-body-2 text--secondary">登陆账号*</span>
+                  <span class="text-body-2 text--secondary">登录账号*</span>
                   <v-text-field
                     color="blue-grey lighten-1"
                     outlined
@@ -160,7 +160,7 @@
                   </v-text-field>
                 </v-col>
                 <v-col>
-                  <span class="text-body-2 text--secondary">登陆密码*</span>
+                  <span class="text-body-2 text--secondary">登录密码*</span>
                   <v-text-field
                     color="blue-grey lighten-1"
                     outlined
@@ -402,8 +402,8 @@ export default {
       { text: "权限", value: "calculatedPermission" },
       { text: "上级", value: "calculatedCreator" },
 
-      { text: "登陆账号", value: "username" },
-      { text: "登陆密码", value: "password" },
+      { text: "登录账号", value: "username" },
+      { text: "登录密码", value: "password" },
 
       { text: "备注", value: "note" },
 
