@@ -1,104 +1,101 @@
 <template>
   <div>
-    <v-container class="main-container ma-0">
-      <v-row>
-        <v-col style="margin:0 auto" cols="6">
-          <v-card>
-            <v-data-table
-              :show-select="categoryAction"
-              single-select
-              v-model="selectedCategoryItem"
-              class="card-shadow"
-              fixed-header
-              no-data-text="空"
-              item-key="uid"
-              show-expand
-              :loading="loading"
-              :expanded.sync="expanded"
-              height="calc(100vh - 151px)"
-              hide-default-footer
-              :headers="categoryHeaders"
-              :items="allCategorys"
-              disable-sort
-              :items-per-page="1000"
-              @click:row="clickRow"
+    <v-card>
+      <v-data-table
+        :show-select="categoryAction"
+        single-select
+        v-model="selectedCategoryItem"
+        class="card-shadow"
+        fixed-header
+        no-data-text="空"
+        item-key="uid"
+        show-expand
+        :loading="loading"
+        :expanded.sync="expanded"
+        height="calc(100vh - 151px)"
+        hide-default-footer
+        :headers="categoryHeaders"
+        :items="allCategorys"
+        disable-sort
+        :items-per-page="1000"
+        @click:row="clickRow"
+      >
+        <template v-slot:[`item.deduction`]="{ item }">
+          {{
+            categoryIdToInfo[item.uid].deduction != "空"
+              ? categoryIdToInfo[item.uid].deduction + " %"
+              : categoryIdToInfo[item.uid].deduction
+          }}
+        </template>
+        <template v-slot:[`item.insurance`]="{ item }">
+          {{
+            categoryIdToInfo[item.uid].insurance != "空"
+              ? categoryIdToInfo[item.uid].insurance + " ￥"
+              : categoryIdToInfo[item.uid].deduction
+          }}
+        </template>
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>一级类目</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
+            <v-btn small depressed color="primary" @click="addButton">
+              新增类目
+            </v-btn>
+            <v-btn
+              small
+              depressed
+              class="ml-2"
+              v-model="ifAction"
+              @click="
+                categoryAction = !categoryAction;
+                selectedCategoryItem = [];
+              "
             >
-              <template v-slot:[`item.deduction`]="{ item }">
+              <v-icon small class="mr-1">
                 {{
-                  categoryIdToInfo[item.uid].deduction != "空"
-                    ? categoryIdToInfo[item.uid].deduction + " %"
-                    : categoryIdToInfo[item.uid].deduction
+                  categoryAction
+                    ? "mdi-checkbox-marked-outline"
+                    : "mdi-checkbox-blank-outline"
                 }}
-              </template>
-              <template v-slot:[`item.insurance`]="{ item }">
-                {{
-                  categoryIdToInfo[item.uid].insurance != "空"
-                    ? categoryIdToInfo[item.uid].insurance + " ￥"
-                    : categoryIdToInfo[item.uid].deduction
-                }}
-              </template>
-              <template v-slot:top>
-                <v-toolbar flat>
-                  <v-toolbar-title>一级类目</v-toolbar-title>
-                  <v-divider class="mx-4" inset vertical></v-divider>
-                  <v-btn small depressed color="primary" @click="addButton">
-                    新增类目
-                  </v-btn>
-                  <v-btn
-                    small
-                    depressed
-                    class="ml-2"
-                    v-model="ifAction"
-                    @click="
-                      categoryAction = !categoryAction;
-                      selectedCategoryItem = [];
-                    "
-                  >
-                    <v-icon small class="mr-1">
-                      {{
-                        categoryAction
-                          ? "mdi-checkbox-marked-outline"
-                          : "mdi-checkbox-blank-outline"
-                      }}
-                    </v-icon>
-                    <span> 操作 </span>
-                  </v-btn>
+              </v-icon>
+              <span> 操作 </span>
+            </v-btn>
 
-                  <v-spacer></v-spacer>
+            <v-spacer></v-spacer>
 
-                  <v-btn
-                    v-if="categoryAction"
-                    :disabled="selectedCategoryItem.length != 1"
-                    small
-                    depressed
-                    outlined
-                    color="green"
-                    class="ml-1"
-                    @click.stop="editCategoryButton"
-                  >
-                    修改
-                  </v-btn>
-                  <v-btn
-                    v-if="categoryAction"
-                    :disabled="selectedCategoryItem.length != 1"
-                    outlined
-                    color="red lighten-2"
-                    small
-                    depressed
-                    class="ml-2"
-                    @click.stop="deleteCategoryButton"
-                  >
-                    <span> 删除 </span>
-                  </v-btn>
-                </v-toolbar>
-              </template>
-              <template v-slot:[`header.actions`]="{ header }">
-                <div class="d-flex mr-4">
-                  <v-spacer />
-                  {{ header.text }}
-                </div>
-              </template>
-              <!-- <template v-slot:[`item.actions`]="{ item }">
+            <v-btn
+              v-if="categoryAction"
+              :disabled="selectedCategoryItem.length != 1"
+              small
+              depressed
+              outlined
+              color="green"
+              class="ml-1"
+              @click.stop="editCategoryButton"
+            >
+              修改
+            </v-btn>
+            <v-btn
+              v-if="categoryAction"
+              :disabled="selectedCategoryItem.length != 1"
+              outlined
+              color="red lighten-2"
+              small
+              depressed
+              class="ml-2"
+              @click.stop="deleteCategoryButton"
+            >
+              <span> 删除 </span>
+            </v-btn>
+          </v-toolbar>
+        </template>
+        <template v-slot:[`header.actions`]="{ header }">
+          <div class="d-flex mr-4">
+            <v-spacer />
+            {{ header.text }}
+          </div>
+        </template>
+        <!-- <template v-slot:[`item.actions`]="{ item }">
                 <div class="d-flex">
                   <v-spacer />
                   <v-btn
@@ -123,76 +120,65 @@
                   </v-btn>
                 </div>
               </template> -->
-              <template v-slot:expanded-item="{ headers, item }">
-                <td :colspan="headers.length" class="pa-0">
-                  <div class="sub-table elevation-20 ml-2 mb-3 mr-12">
-                    <v-data-table
-                      no-data-text="空"
-                      :sort-by="['startTime']"
-                      :sort-desc="[true]"
-                      :hide-default-footer="
-                        allCategoryHistorys.filter(
-                          (i) => item.uid == i.categoryId
-                        ).length <= 10
-                      "
-                      :items-per-page="10"
-                      :footer-props="{
-                        'items-per-page-options': [10, 20, 50, 100],
-                        'items-per-page-text': '每页显示条数',
-                      }"
-                      :headers="subHeaders"
-                      :items="
-                        allCategoryHistorys.filter(
-                          (i) => item.uid == i.categoryId
-                        )
-                      "
-                    >
-                      <template v-slot:[`item.startTime`]="{ item }">
-                        {{ parseDate(item.startTime) }}
-                      </template>
-                      <template v-slot:[`item.deduction`]="{ item }">
-                        {{ item.deduction + " %" }}
-                      </template>
-                      <template v-slot:[`item.insurance`]="{ item }">
-                        {{ item.insurance + " ￥" }}
-                      </template>
+        <template v-slot:expanded-item="{ headers, item }">
+          <td :colspan="headers.length" class="pa-0">
+            <div class="sub-table elevation-20 ml-2 mb-3 mr-12">
+              <v-data-table
+                no-data-text="空"
+                :sort-by="['startTime']"
+                :sort-desc="[true]"
+                :hide-default-footer="
+                  allCategoryHistorys.filter((i) => item.uid == i.categoryId)
+                    .length <= 10
+                "
+                :items-per-page="10"
+                :footer-props="{
+                  'items-per-page-options': [10, 20, 50, 100],
+                  'items-per-page-text': '每页显示条数',
+                }"
+                :headers="subHeaders"
+                :items="
+                  allCategoryHistorys.filter((i) => item.uid == i.categoryId)
+                "
+              >
+                <template v-slot:[`item.startTime`]="{ item }">
+                  {{ parseDate(item.startTime) }}
+                </template>
+                <template v-slot:[`item.deduction`]="{ item }">
+                  {{ item.deduction + " %" }}
+                </template>
+                <template v-slot:[`item.insurance`]="{ item }">
+                  {{ item.insurance + " ￥" }}
+                </template>
 
-                      <template v-slot:[`header.action`]="{ header }">
-                        <div class="d-flex mr-4">
-                          <v-spacer />
-                          {{ header.text }}
-                        </div>
-                      </template>
-                      <template v-slot:[`item.action`]="{ item }">
-                        <div class="d-flex">
-                          <v-spacer />
-                          <v-btn
-                            small
-                            depressed
-                            outlined
-                            color="red lighten-2"
-                            @click="deleteCategoryHistoryButton(item)"
-                            class="ml-1"
-                          >
-                            <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
-                            删除
-                          </v-btn>
-                        </div>
-                      </template>
-                    </v-data-table>
+                <template v-slot:[`header.action`]="{ header }">
+                  <div class="d-flex mr-4">
+                    <v-spacer />
+                    {{ header.text }}
                   </div>
-                </td>
-              </template>
-            </v-data-table>
-          </v-card>
-        </v-col>
-        <!-- <v-col>
-          <v-card>
-            <v-card-title> ..... </v-card-title>
-          </v-card>
-        </v-col> -->
-      </v-row>
-    </v-container>
+                </template>
+                <template v-slot:[`item.action`]="{ item }">
+                  <div class="d-flex">
+                    <v-spacer />
+                    <v-btn
+                      small
+                      depressed
+                      outlined
+                      color="red lighten-2"
+                      @click="deleteCategoryHistoryButton(item)"
+                      class="ml-1"
+                    >
+                      <!-- <v-icon small class="mr-1"> mdi-delete </v-icon> -->
+                      删除
+                    </v-btn>
+                  </div>
+                </template>
+              </v-data-table>
+            </div>
+          </td>
+        </template>
+      </v-data-table>
+    </v-card>
 
     <!-- 类目名称 Dialog -->
     <v-dialog v-model="categoryNameDialog" max-width="400px">
