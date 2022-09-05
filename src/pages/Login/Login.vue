@@ -9,11 +9,11 @@
       style="height: 100vh"
     >
       <v-chart
-        style="margin: 0 auto; width: 500px; height: 182px; z-index: 0"
+        style="margin: 0 auto; width: 500px; height: 80px; z-index: 0"
         ref="title"
         :option="option"
       ></v-chart>
-      <div class="login-part mb-15">
+      <div class="login-part">
         <v-tabs grow>
           <v-tabs-slider></v-tabs-slider>
           <v-tab :href="`#tab-login`" loading> 登录 </v-tab>
@@ -49,6 +49,7 @@
                         :disabled="password.length === 0 || email.length === 0"
                         color="primary"
                         @click="login"
+                        :loading="loading"
                       >
                         登录</v-btn
                       >
@@ -63,7 +64,7 @@
           </v-tab-item>
         </v-tabs>
       </div>
-      <div class="d-flex mt-15">
+      <div class="d-flex">
         <v-spacer></v-spacer>
         <span class="primary--text pb-2 pr-5" style="z-index: 999"
           >© 浙江泼发进出口贸易有限公司</span

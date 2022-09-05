@@ -13,7 +13,7 @@
                 :color="config.light.primary"
                 to="/"
             >
-              返回登陆页面
+              返回登录页面
             </v-btn>
           </div>
         </v-col>

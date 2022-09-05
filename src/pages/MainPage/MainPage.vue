@@ -2,10 +2,10 @@
   <v-container fluid id="mainContainer">
     <div class="dashboard-page">
       <v-row no-gutters class="d-flex justify-space-between mt-2">
-        <h1 class="page-title">今日统计 （等待数据）</h1>
+        <h1 class="page-title">今日统计 （等待数据）</h1 >
       </v-row>
 
-      <v-row>
+      <!-- <v-row>
         <v-col cols="4">
           <v-card class="mx-1 mb-1">
             <v-card-title>
@@ -70,7 +70,7 @@
             </v-col>
           </v-row>
         </v-col>
-      </v-row>
+      </v-row> 
 
       <v-row>
         <v-col cols="12">
@@ -86,12 +86,13 @@
           </v-card>
         </v-col>
       </v-row>
+      -->
     </div>
   </v-container>
 </template>
 
 <script>
-import VChart from "vue-echarts";
+//import VChart from "vue-echarts";
 import {
   TooltipComponent,
   GridComponent,
@@ -120,7 +121,7 @@ use([
 export default {
   name: "HelloWorld",
   components: {
-    VChart,
+    //VChart,
   },
   data() {
     return {

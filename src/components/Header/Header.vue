@@ -113,9 +113,7 @@
     <v-menu min-width="180" offset-y bottom left nudge-bottom="10">
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="mr-0" icon v-bind="attrs" v-on="on">
-          <v-icon style="font-size: 28px" :color="config.light.iconColor"
-            >mdi-account</v-icon
-          >
+          <v-icon :color="config.light.iconColor">mdi-account</v-icon>
         </v-btn>
       </template>
       <v-list>
@@ -138,7 +136,7 @@
         </div>
       </v-list>
     </v-menu>
-    <v-btn
+    <!-- <v-btn
       @click="
         notificationsBadge ? (notificationsBadge = !notificationsBadge) : ''
       "
@@ -159,10 +157,7 @@
       <v-badge :value="messageBadge" color="warning" content="3" overlap>
         <v-icon :color="config.light.iconColor"> mdi-email-outline</v-icon>
       </v-badge>
-    </v-btn>
-    <v-btn class="mr-0" icon>
-      <v-icon :color="config.light.iconColor">mdi-account</v-icon>
-    </v-btn>
+    </v-btn> -->
   </v-app-bar>
 </template>
 

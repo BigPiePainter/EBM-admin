@@ -119,7 +119,7 @@ export default {
         {
           title: "商品管理",
           icon: "mdi-package-variant-closed",
-          link: "/",
+          link: "/partnerget",
           show: this.$store.state.user.permission.a.a,
           children: [
             {
@@ -143,7 +143,7 @@ export default {
         {
           title: "订单管理",
           icon: "mdi-reorder-horizontal",
-          link: "",
+          link: "/input",
           show: this.$store.state.user.permission.b.a,
           children: [
             {
@@ -176,8 +176,8 @@ export default {
 
         {
           title: "利润报表",
-          icon: "mdi-cash-multiple",
-          link: "",
+          icon: "mdi-chart-areaspline",
+          link: "/profitChart",
           show: true,
           children: [
             // {
@@ -186,7 +186,7 @@ export default {
             //   link: "/dashboard",
             // },
             {
-              title: "利润统计图",
+              title: "统计图",
               icon: "mdi-circle-small",
               link: "/profitChart",
             },
@@ -211,7 +211,7 @@ export default {
         {
           title: "组别管理",
           icon: "mdi-account-group",
-          link: "/icons",
+          link: "/team",
           show: this.$store.state.user.permission.e.a,
           children: [
             {
@@ -267,4 +267,4 @@ export default {
 };
 </script>
 
-<style src="./Sidebar.scss" lang="scss" scoped/>
+<style src="./Sidebar.scss" lang="scss"/>
