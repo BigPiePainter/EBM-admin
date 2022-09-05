@@ -86,5 +86,17 @@ export const getDailyReport = data => {
 }
 
 
+export const deleteFileProcessState = data => {
+    const args = {
+        url: '/order/deleteFileProcessState',
+        method: 'POST',
+        data,
+    }
+    return http.request(args)
+}
+
+
+
+
 
 
