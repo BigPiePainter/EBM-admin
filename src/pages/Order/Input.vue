@@ -15,64 +15,96 @@
     >
       <span class="text-subtitle-1">{{ state }}</span>
     </v-card>
+    <v-row v-if="uploadStates.length > 0">
+      <v-col class="d-flex">
+        <span class="text-body-2"
+          >解析状态 共有{{ uploadStates.length }} 上传中
+          {{ uploadStates.filter((i) => i.uploaded != i.size).length }} 解析中
+          {{
+            uploadStates.filter((i) => i.code == 1 || i.code == 0).length
+          }}
+          成功 {{ uploadStates.filter((i) => i.code == 2).length }} 出错
+          {{ uploadStates.filter((i) => !i.code >= 0).length }}</span
+        >
+        <v-spacer />
+        <!-- <v-btn text small>
+          清除
+        </v-btn> -->
+      </v-col>
+    </v-row>
     <v-row>
-      <v-col v-for="(file, i) in uploadStates" :key="i" cols="12">
-        <v-scroll-x-transition>
-          <v-card tile class="pt-3" v-if="true">
-            <v-toolbar-items>
-              <v-icon
-                v-if="file.code == -1"
-                class="ml-4 mr-1 mb-1"
-                color="red lighten-2"
-              >
-                mdi-alert-circle-outline
-              </v-icon>
-
-              <v-icon
-                v-else
-                class="ml-4 mr-1 mb-1"
-                :color="file.state == 'done' ? 'green darken-1' : 'primary'"
-              >
-                mdi-file-excel
-              </v-icon>
-
-              <span>{{ file.name }}</span>
-
-              <span class="ml-5 text--secondary">
-                {{ file.state }}
-              </span>
-
-              <v-spacer></v-spacer>
-              <span class="text--secondary"
-                >{{ Math.floor(file.uploaded / 1024) }} k</span
-              >
-              <span class="mx-1"> / </span>
-              <span class="text--secondary"
-                >{{ Math.floor(file.size / 1024) }} k</span
-              >
-              <span class="text--secondary ml-5 mr-4"
-                >{{ Math.floor((file.uploaded * 100) / file.size) }} %</span
-              >
-              <v-icon v-if="file.code == 2" class="mr-4 mb-1" color="green">
-                mdi-check-circle-outline
-              </v-icon>
-            </v-toolbar-items>
-            <v-progress-linear
-              :height="file.code == -1 ? 2 : 3"
-              :indeterminate="file.code == 1"
-              :value="(file.uploaded * 100) / file.size"
-              class="mt-2"
-              :color="
-                file.code == -1 ? 'red' : file.code == 2 ? 'green' : 'primary'
-              "
+      <v-col
+        v-for="(file, i) in uploadStates.slice(
+          10 * (page - 1),
+          10 * (page - 1) + 10
+        )"
+        :key="i"
+        cols="12"
+        class="pt-0"
+      >
+        <v-card tile class="pt-2">
+          <v-toolbar-items>
+            <v-icon
+              v-if="file.code < 0"
+              class="ml-3 mr-2 mb-1 mt-1"
+              color="red lighten-2"
+              small
             >
-            </v-progress-linear>
+              mdi-alert-circle-outline
+            </v-icon>
 
-            <v-expand-transition>
-              <div v-if="file.process">123</div>
-            </v-expand-transition>
-          </v-card>
-        </v-scroll-x-transition>
+            <v-icon v-else class="ml-3 mr-2 mb-1 mt-1" color="primary" small>
+              mdi-file-excel
+            </v-icon>
+
+            <span class="text-body-2 pt-1">{{ file.name }}</span>
+
+            <span class="ml-5 pt-1 text--secondary text-body-2">
+              {{ file.state }}
+            </span>
+
+            <v-spacer></v-spacer>
+            <span class="text--secondary text-body-2 pt-1"
+              >{{ Math.floor(file.uploaded / 1024) }} k</span
+            >
+            <span class="mx-1 text-body-2 pt-1"> / </span>
+            <span class="text--secondary text-body-2 pt-1"
+              >{{ Math.floor(file.size / 1024) }} k</span
+            >
+            <span class="text--secondary ml-3 mr-3 text-body-2 pt-1"
+              >{{ Math.floor((file.uploaded * 100) / file.size) }} %</span
+            >
+            <v-icon v-if="file.code == 2" class="mr-4 mb-1" color="green">
+              mdi-check-circle-outline
+            </v-icon>
+
+            <v-btn
+              v-if="file.code == 2 || file.code < 0"
+              icon
+              @click="deleteFileState(file, i)"
+            >
+              <v-icon color="grey" small> mdi-close </v-icon>
+            </v-btn>
+          </v-toolbar-items>
+          <v-progress-linear
+            :height="file.code < 0 ? 2 : 3"
+            :indeterminate="file.code == 1"
+            :value="(file.uploaded * 100) / file.size"
+            class="mt-2"
+            :color="
+              file.code < 0 ? 'red' : file.code == 2 ? 'green' : 'primary'
+            "
+          >
+          </v-progress-linear>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row v-if="uploadStates.length > 0">
+      <v-col>
+        <v-pagination
+          v-model="page"
+          :length="Math.ceil(uploadStates.length / 10)"
+        ></v-pagination>
       </v-col>
     </v-row>
 
@@ -102,6 +134,7 @@
 <script>
 import { fileUpload } from "@/settings/order";
 import { getFileProcessStates } from "@/settings/order";
+import { deleteFileProcessState } from "@/settings/order";
 
 export default {
   name: "SkuUpload",
@@ -112,6 +145,7 @@ export default {
   },
   data() {
     return {
+      page: 1,
       state: "",
       dialog: false,
       dropActive: false,
@@ -148,6 +182,17 @@ export default {
     clearTimeout(this.timeout);
   },
   methods: {
+    deleteFileState(file, i) {
+      console.log(file, i);
+      this.uploadStates.splice(i, 1)
+      deleteFileProcessState({fileName: file.name})
+        .then((res) => {
+          console.log("完毕", res);
+        })
+        .catch(() => {
+
+        });
+    },
     refreshFileStates() {
       console.log("refreshFileStates");
       getFileProcessStates({})
@@ -229,8 +274,9 @@ export default {
 
         if (!file.name.endsWith(".xlsx")) {
           console.log("拦截");
-          fileState.code = -1;
+          fileState.code = -2;
           fileState.state = "文件后缀错误, 跳过上传";
+          fileState.size = 0;
           continue;
         }
 
@@ -255,7 +301,7 @@ export default {
           })
           .catch((error) => {
             console.log("错误！！", error);
-            fileState.code = -1;
+            fileState.code = -3;
             fileState.state = "网络错误，上传失败";
           });
       }

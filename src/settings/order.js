@@ -105,5 +105,17 @@ export const getMismatchFakeOrder = data => {
 
 
 
+export const deleteFileProcessState = data => {
+    const args = {
+        url: '/order/deleteFileProcessState',
+        method: 'POST',
+        data,
+    }
+    return http.request(args)
+}
+
+
+
+
 
 
