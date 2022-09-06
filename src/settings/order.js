@@ -85,18 +85,18 @@ export const getDailyReport = data => {
     return http.request(args)
 }
 
-export const getMismatchRefundOrder = data => {
+export const getMismatchRefundOrders = data => {
     const args = {
-        url: '/order/mismatchRefundOrder',
+        url: '/order/getMismatchRefundOrders',
         method: 'POST',
         data,
     }
     return http.request(args)
 }
 
-export const getMismatchFakeOrder = data => {
+export const getMismatchFakeOrders = data => {
     const args = {
-        url: '/order/getMismatchFakeOrder',
+        url: '/order/getMismatchFakeOrders',
         method: 'POST',
         data,
     }
