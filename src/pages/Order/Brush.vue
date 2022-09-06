@@ -61,7 +61,6 @@ export default {
       brushHeader: [
         { text: "主订单编号", value: "id" },
         { text: "诉求日期", value: "requestTime" },
-        { text: "订单付款时间", value: "orderPaymentTime" },
         { text: "品数/子订单数", value: "productCount" },
         { text: "子订单佣金", value: "brokerage" },
         { text: "团队", value: "team" },
