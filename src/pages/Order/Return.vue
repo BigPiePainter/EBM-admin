@@ -83,7 +83,7 @@ export default {
         { text: "退款类型", value: "refundType" },
         { text: "订单创建时间", value: "orderSetupTime" },
         { text: "订单付款时间", value: "orderPaymentTime" },
-        
+
         { text: "订单交易金额", value: "orderAmount" },
         { text: "买家退款金额", value: "refundAmount" },
         { text: "发货状态/是否发货", value: "expressStatus" },
@@ -149,48 +149,100 @@ export default {
     },
     dataAnalyze() {
       for (let i = 0; i < this.refundItems.length; i++)
-        if (this.refundItems[i].refundType == 1) {
-          this.refundItems[i].refundType = "仅退款";
-        } else if (this.refundItems[i].refundType == 2) {
-          this.refundItems[i].refundType = "退货退款";
-        } else {
-          this.refundItems[i].refundType = "未知";
+        switch (this.refundItems[i].refundType) {
+          case 1:
+            this.refundItems[i].refundType = "仅退款";
+            break;
+          case 2:
+            this.refundItems[i].refundType = "退货退款";
+            break;
+          default:
+            this.refundItems[i].refundType = "未知";
         }
+      // if (this.refundItems[i].refundType == 1) {
+      //   this.refundItems[i].refundType = "仅退款";
+      // } else if (this.refundItems[i].refundType == 2) {
+      //   this.refundItems[i].refundType = "退货退款";
+      // } else {
+      //   this.refundItems[i].refundType = "未知";
+      // }
 
       for (let i = 0; i < this.refundItems.length; i++)
-        if (this.refundItems[i].refundStatus == 1) {
-          this.refundItems[i].refundStatus = "退款成功";
-        } else if (this.refundItems[i].refundStatus == 2) {
-          this.refundItems[i].refundStatus = "待买家发货";
-        } else if (this.refundItems[i].refundStatus == 3) {
-          this.refundItems[i].refundStatus = "待商家收货";
-        } else if (this.refundItems[i].refundStatus == 4) {
-          this.refundItems[i].refundStatus = "退款待处理";
-        } else if (this.refundItems[i].refundStatus == 5) {
-          this.refundItems[i].refundStatus = "退款关闭";
-        } else if (this.refundItems[i].refundStatus == 6) {
-          this.refundItems[i].refundStatus = "已拒绝退款";
-        } else {
-          this.refundItems[i].refundType = "未知";
+        switch (this.refundItems[i].refundStatus) {
+          case 1:
+            this.refundItems[i].refundStatus = "退款成功";
+            break;
+          case 2:
+            this.refundItems[i].refundStatus = "待买家发货";
+            break;
+          case 3:
+            this.refundItems[i].refundStatus = "待商家收货";
+            break;
+          case 4:
+            this.refundItems[i].refundStatus = "退款待处理";
+            break;
+          case 5:
+            this.refundItems[i].refundStatus = "退款关闭";
+            break;
+          case 6:
+            this.refundItems[i].refundStatus = "已拒绝退款";
+            break;
+          default:
+            this.refundItems[i].refundStatus = "未知";
         }
+      // if (this.refundItems[i].refundStatus == 1) {
+      //   this.refundItems[i].refundStatus = "退款成功";
+      // } else if (this.refundItems[i].refundStatus == 2) {
+      //   this.refundItems[i].refundStatus = "待买家发货";
+      // } else if (this.refundItems[i].refundStatus == 3) {
+      //   this.refundItems[i].refundStatus = "待商家收货";
+      // } else if (this.refundItems[i].refundStatus == 4) {
+      //   this.refundItems[i].refundStatus = "退款待处理";
+      // } else if (this.refundItems[i].refundStatus == 5) {
+      //   this.refundItems[i].refundStatus = "退款关闭";
+      // } else if (this.refundItems[i].refundStatus == 6) {
+      //   this.refundItems[i].refundStatus = "已拒绝退款";
+      // } else {
+      //   this.refundItems[i].refundType = "未知";
+      // }
 
       for (let i = 0; i < this.refundItems.length; i++)
-        if (this.refundItems[i].needReturn == true) {
-          this.refundItems[i].needReturn = "需要退货";
-        } else if (this.refundItems[i].needReturn == false) {
-          this.refundItems[i].needReturn = "不退货";
-        } else {
-          this.refundItems[i].needReturn = "未知";
+        switch (this.refundItems[i].needReturn) {
+          case true:
+            this.refundItems[i].needReturn = "需要退货";
+            break;
+          case false:
+            this.refundItems[i].needReturn = "不退货";
+            break;
+          default:
+            this.refundItems[i].needReturn = "未知";
         }
+      // if (this.refundItems[i].needReturn == true) {
+      //   this.refundItems[i].needReturn = "需要退货";
+      // } else if (this.refundItems[i].needReturn == false) {
+      //   this.refundItems[i].needReturn = "不退货";
+      // } else {
+      //   this.refundItems[i].needReturn = "未知";
+      // }
 
       for (let i = 0; i < this.refundItems.length; i++)
-        if (this.refundItems[i].expressStatus == true) {
-          this.refundItems[i].expressStatus = "已发货";
-        } else if (this.refundItems[i].expressStatus == false) {
-          this.refundItems[i].expressStatus = "未发货";
-        } else {
-          this.refundItems[i].expressStatus = "未知";
+        switch (this.refundItems[i].expressStatus) {
+          case true:
+            this.refundItems[i].expressStatus = "已发货";
+            break;
+          case false:
+            this.refundItems[i].expressStatus = "未发货";
+            break;
+          default:
+            this.refundItems[i].expressStatus = "未知";
         }
+      // if (this.refundItems[i].expressStatus == true) {
+      //   this.refundItems[i].expressStatus = "已发货";
+      // } else if (this.refundItems[i].expressStatus == false) {
+      //   this.refundItems[i].expressStatus = "未发货";
+      // } else {
+      //   this.refundItems[i].expressStatus = "未知";
+      // }
     },
   },
 };
