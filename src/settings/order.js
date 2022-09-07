@@ -85,6 +85,25 @@ export const getDailyReport = data => {
     return http.request(args)
 }
 
+export const getMismatchRefundOrders = data => {
+    const args = {
+        url: '/order/getMismatchRefundOrders',
+        method: 'POST',
+        data,
+    }
+    return http.request(args)
+}
+
+export const getMismatchFakeOrders = data => {
+    const args = {
+        url: '/order/getMismatchFakeOrders',
+        method: 'POST',
+        data,
+    }
+    return http.request(args)
+}
+
+
 
 export const deleteFileProcessState = data => {
     const args = {
