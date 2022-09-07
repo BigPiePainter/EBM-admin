@@ -2,7 +2,7 @@
   <v-card>
     <v-card-title> 测试TEST </v-card-title>
 
-    <v-row class="pa-4" justify="space-between">
+    <v-row class="pa-4" justify="space-between" v-if="false">
       <v-col md="auto">
         <v-text-field
           v-model="search"
@@ -69,7 +69,7 @@
           </div>
         </v-scroll-y-transition>
       </v-col>
-    </v-row>
+    </v-row> -->
   </v-card>
 </template>
 

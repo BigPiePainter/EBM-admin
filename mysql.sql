@@ -11,12 +11,15 @@ drop table if exists users;
 
 CREATE TABLE users (
   uid BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
-  creator_id BIGINT NOT NULL COMMENT '用户创建人',
-  gender TINYINT(1) COMMENT '性别',
+  -- creator_id BIGINT NOT NULL COMMENT '用户创建人',
+  gender TINYINT(4) COMMENT '性别',
   contact VARCHAR(1000) COMMENT '联系方式',
   permission VARCHAR(5000) COMMENT '权限json',
-  username VARCHAR(100) NOT NULL COMMENT '用户名',
-  password VARCHAR(100) NOT NULL COMMENT '密码',
+  department BIGINT COMMENT '事业部',
+  salary DECIMAL(15, 5) COMMENT '薪水',
+  username VARCHAR(100) NOT NULL COMMENT '登陆用户名',
+  password VARCHAR(100) NOT NULL COMMENT '登陆密码',
+  onboarding_time DATE NOT NULL COMMENT '入职时间',
   nick VARCHAR(100) COMMENT '昵称/姓名',
   note VARCHAR(5000) COMMENT '备注',
   create_time timestamp NOT NULL DEFAULT NOW() COMMENT '创建时间',
@@ -29,14 +32,14 @@ CREATE TABLE users (
 insert into
   users(
     uid,
-    creator_id,
     permission,
     username,
     password,
+    onboarding_time,
     nick
   )
 values
-  (1, 0, '{}', 'admin', '88888888', "admin");
+  (1, '{}', 'admin', '88888888', 20111111,"admin");
 
 -- 商品信息
 drop table if exists products;

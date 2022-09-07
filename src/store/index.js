@@ -53,6 +53,7 @@ const store = new Vuex.Store({
     userIdToNick: {},
     teamIdToName: {},
     departmentIdToName: {},
+    departmentIdToInfo: {},
     categoryIdToName: {},
     categoryIdToInfo: {},
 
@@ -72,9 +73,11 @@ const store = new Vuex.Store({
         a: true, //avaliable
       },
       c: {
-        //下级员工管理
+        //员工管理
         a: true, //avaliable
-        b: true, //查看下级员工密码的权限
+        b: true, //查看员工密码的权限
+
+        d: [], //可管理的部门     如果拥有部门管理权限，那么可管理的部门为全部
       },
       d: {
         //部门管理
@@ -104,6 +107,10 @@ const store = new Vuex.Store({
         state.user.permission.a.d = state.allDepartments.map(
           (i) => i.uid
         );
+        //员工管理同理
+        state.user.permission.c.d = state.allDepartments.map(
+          (i) => i.uid
+        );
       }
       //同上
       if (state.user.permission.e.a) {
@@ -119,11 +126,16 @@ const store = new Vuex.Store({
     setAllDepartment(state, data) {
       state.allDepartments = data;
       state.departmentIdToName = {};
+      state.departmentIdToInfo = {};
       state.allDepartments.forEach((i) => {
         state.departmentIdToName[i.uid] = i.name;
+        state.departmentIdToInfo[i.uid] = i;
       });
       if (state.user.permission.d.a) {
         state.user.permission.a.d = state.allDepartments.map(
+          (i) => i.uid
+        );
+        state.user.permission.c.d = state.allDepartments.map(
           (i) => i.uid
         );
       }

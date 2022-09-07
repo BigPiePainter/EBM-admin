@@ -2,7 +2,7 @@
   <v-container fluid id="mainContainer">
     <div class="dashboard-page">
       <v-row no-gutters class="d-flex justify-space-between mt-2">
-        <h1 class="page-title">今日统计 （等待数据）</h1 >
+        <h1 class="page-title">今日统计 （等待数据）</h1>
       </v-row>
 
       <!-- <v-row>
@@ -125,6 +125,7 @@ export default {
   },
   data() {
     return {
+      observer: null,
       allTurnoverBarOption: {
         tooltip: {
           trigger: "axis",
@@ -428,7 +429,7 @@ export default {
   },
 
   mounted() {
-    var observer = new ResizeObserver(() => {
+    this.observer = new ResizeObserver(() => {
       this.$refs.echartA.resize();
       this.$refs.echartD.resize();
       this.$refs.dataCardChart.resize();
@@ -436,11 +437,11 @@ export default {
       this.$refs.pieB.resize();
       this.$refs.pieC.resize();
     });
-    observer.observe(document.querySelector("#mainContainer"));
+    this.observer.observe(document.querySelector("#mainContainer"));
   },
 
   beforeDestroy() {
-    window.onresize = function () {};
+    this.observer.unobserve(document.querySelector("#mainContainer"));
   },
 
   method: {},

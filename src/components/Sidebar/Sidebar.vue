@@ -12,10 +12,7 @@
   >
     <v-list>
       <template v-for="(item, i) in items">
-        <div
-          v-if="item.heading || item.divider || item.show"
-          :key="item.heading"
-        >
+        <div :key="item.heading">
           <v-row v-if="item.heading" align="center">
             <v-col cols="6" class="py-5">
               <span
@@ -59,6 +56,7 @@
             <v-list-item
               v-for="(child, i) in item.children"
               :key="i"
+              :disabled="!item.show"
               :to="child.link"
               link
             >
@@ -77,6 +75,7 @@
           <v-list-item
             color="primary"
             v-else
+            :disabled="!item.show"
             :key="item.text"
             :href="item.href ? item.href : null"
             :to="item.link === '#' ? null : item.link"
@@ -198,15 +197,10 @@ export default {
           ],
         },
 
-        {
-          title: "部门管理",
-          icon: "mdi-domain",
-          link: "/department",
-          show: this.$store.state.user.permission.d.a,
-          children: [
-            { title: "部门", icon: "mdi-circle-small", link: "/department" },
-          ],
-        },
+        //{ title: "系统信息", icon: "mdi-bell-outline", link: "/notifications" },
+
+        { divider: true },
+        { heading: "POFA2" },
 
         {
           title: "组别管理",
@@ -219,6 +213,16 @@ export default {
               icon: "mdi-circle-small",
               link: "/team",
             },
+          ],
+        },
+
+        {
+          title: "部门管理",
+          icon: "mdi-domain",
+          link: "/department",
+          show: this.$store.state.user.permission.d.a,
+          children: [
+            { title: "部门", icon: "mdi-circle-small", link: "/department" },
           ],
         },
 
@@ -240,11 +244,6 @@ export default {
             },
           ],
         },
-
-        //{ title: "系统信息", icon: "mdi-bell-outline", link: "/notifications" },
-
-        { divider: true },
-        { heading: "POFA2" },
       ],
       sidebarWidth: 150,
       sidebarMinWidth: 50,

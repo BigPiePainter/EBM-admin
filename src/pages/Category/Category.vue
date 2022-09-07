@@ -45,7 +45,6 @@
               small
               depressed
               class="ml-2"
-              v-model="ifAction"
               @click="
                 categoryAction = !categoryAction;
                 selectedCategoryItem = [];

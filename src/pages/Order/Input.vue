@@ -20,16 +20,17 @@
         <span class="text-body-2"
           >解析状态 共有{{ uploadStates.length }} 上传中
           {{ uploadStates.filter((i) => i.uploaded != i.size).length }} 解析中
-          {{
-            uploadStates.filter((i) => i.code == 1 || i.code == 0).length
-          }}
+          {{ uploadStates.filter((i) => i.code == 1 || i.code == 0).length }}
           成功 {{ uploadStates.filter((i) => i.code == 2).length }} 出错
-          {{ uploadStates.filter((i) => !i.code >= 0).length }}</span
+          {{ uploadStates.filter((i) => !(i.code >= 0)).length }}</span
         >
         <v-spacer />
-        <!-- <v-btn text small>
-          清除
-        </v-btn> -->
+        <v-btn text small @click="deleteSucceedFileProcessStates">
+          清除成功
+        </v-btn>
+        <v-btn text small @click="deleteFailedFileProcessStates">
+          清除错误
+        </v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -184,14 +185,44 @@ export default {
   methods: {
     deleteFileState(file, i) {
       console.log(file, i);
-      this.uploadStates.splice(i, 1)
-      deleteFileProcessState({fileName: file.name})
+      this.uploadStates.splice(i, 1);
+      deleteFileProcessState({ fileName: file.name })
         .then((res) => {
           console.log("完毕", res);
         })
-        .catch(() => {
-
-        });
+        .catch(() => {});
+    },
+    deleteFailedFileProcessStates() {
+      console.log(1, this.uploadStates);
+      if (this.uploadStates.filter((i) => i.code < 0).length == 0) return;
+      var args = {
+        fileName: this.uploadStates
+          .filter((i) => i.code < 0)
+          .map((i) => i.name)
+          .join("!@#!#@!@#"),
+      };
+      this.uploadStates = this.uploadStates.filter((i) => i.code >= 0);
+      deleteFileProcessState(args)
+        .then((res) => {
+          console.log("完毕", res);
+        })
+        .catch(() => {});
+    },
+    deleteSucceedFileProcessStates() {
+      console.log(2, this.uploadStates);
+      if (this.uploadStates.filter((i) => i.code == 2).length == 0) return;
+      var args = {
+        fileName: this.uploadStates
+          .filter((i) => i.code == 2)
+          .map((i) => i.name)
+          .join("!@#!#@!@#"),
+      };
+      this.uploadStates = this.uploadStates.filter((i) => i.code != 2);
+      deleteFileProcessState(args)
+        .then((res) => {
+          console.log("完毕", res);
+        })
+        .catch(() => {});
     },
     refreshFileStates() {
       console.log("refreshFileStates");
@@ -255,7 +286,7 @@ export default {
         if (this.uploadStates.find((i) => i.name == file.name)) {
           console.log("拦截");
           this.global.infoAlert(
-            "10分钟内上传过相同的文件，自动忽略，文件名：" + file.name
+            "解析状态中存在相同的文件，取消上传，文件名：" + file.name
           );
           continue;
         }

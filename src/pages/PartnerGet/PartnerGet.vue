@@ -304,12 +304,21 @@
 
             <v-col cols="3">
               <span class="text-body-2 text--secondary">持品人*</span>
+
               <v-autocomplete
                 outlined
                 dense
                 color="blue-grey lighten-1"
                 v-model="editedItem.owner"
-                :items="subUsers"
+                :items="
+                  allUsers.filter(
+                    (i) =>
+                      JSON.parse(i.permission).a &&
+                      JSON.parse(i.permission).a.g.find(
+                        (id) => id == editedItem.team
+                      )
+                  )
+                "
                 no-data-text="无"
                 menu-props="auto"
                 hide-details
@@ -438,7 +447,7 @@
             <v-col>
               <span class="text-body-2 text--secondary"> 选择变化日期* </span>
               <v-menu
-                ref="menu"
+                ref="menuA"
                 v-model="datePicker"
                 :close-on-content-click="false"
                 :return-value.sync="editedItem.startTime"
@@ -473,7 +482,7 @@
                   <v-btn
                     text
                     color="primary"
-                    @click="$refs.menu.save(editedItem.startTime)"
+                    @click="$refs.menuA.save(editedItem.startTime)"
                   >
                     确定
                   </v-btn>
@@ -533,7 +542,7 @@
               <v-col cols="4">
                 <span class="text-body-2 text--secondary"> 选择下架日期* </span>
                 <v-menu
-                  ref="menu"
+                  ref="menuB"
                   v-model="datePicker"
                   :close-on-content-click="false"
                   :return-value.sync="editedItem.underTime"
@@ -568,7 +577,7 @@
                     <v-btn
                       text
                       color="primary"
-                      @click="$refs.menu.save(editedItem.underTime)"
+                      @click="$refs.menuB.save(editedItem.underTime)"
                     >
                       确定
                     </v-btn>
@@ -617,9 +626,8 @@ import { addProducts } from "@/settings/product";
 import { editProduct } from "@/settings/product";
 import { deleteProduct } from "@/settings/product";
 import { loadProducts } from "@/settings/product";
-import { getClass } from "@/settings/product";
+//import { getClass } from "@/settings/product";
 
-import { getSubUsers } from "@/settings/user";
 
 import { javaUTCDateToString } from "@/libs/utils";
 
@@ -694,7 +702,6 @@ export default {
     oldItem: {},
     editedItem: {},
 
-    subUsers: [],
     idToNick: {},
 
     ascriptionChangeDialog: false,
@@ -799,14 +806,13 @@ export default {
       return Number(date.split("-")[2]);
     },
     init() {
-      getClass({})
-        .then((res) => {
-          this.menu = res.data;
-          console.log(this.menu);
-          console.log(res.data);
-        })
-        .catch(() => {});
-      getSubUsers({}).then((res) => (this.subUsers = res.data.userInfos));
+      // getClass({})
+      //   .then((res) => {
+      //     this.menu = res.data;
+      //     console.log(this.menu);
+      //     console.log(res.data);
+      //   })
+      //   .catch(() => {});
 
       //有watch search.search, init时不需要loadData
     },

@@ -52,6 +52,18 @@
         </span>
       </template>
 
+      <template v-slot:[`item.department`]="{ item }">
+        {{ departmentIdToName[item.department] }}
+      </template>
+
+      <template v-slot:[`item.gender`]="{ item }">
+        {{ item.gender == 1 ? "男" : item.gender == 2 ? "女" : "" }}
+      </template>
+
+      <template v-slot:[`item.onboardingTime`]="{ item }">
+        {{ parseDate(item.onboardingTime) }}
+      </template>
+
       <template v-slot:[`item.password`]="{ item }">
         {{ user.permission.c.b ? item.password : "隐藏" }}
       </template>
@@ -126,7 +138,7 @@
                     hide-details
                     :items="[
                       { k: '男', v: 1 },
-                      { k: '女', v: 0 },
+                      { k: '女', v: 2 },
                     ]"
                     item-text="k"
                     item-value="v"
@@ -171,21 +183,70 @@
                   </v-text-field>
                 </v-col>
               </v-row>
-              <v-divider class="my-8" />
               <v-row>
                 <v-col>
-                  <span class="text-body-2 text--secondary">上级*</span>
+                  <span class="text-body-2 text--secondary">所属部门*</span>
+                  {{global.log(user.permission.c.d)}}
                   <v-autocomplete
                     color="blue-grey lighten-1"
                     outlined
                     dense
                     hide-details
                     no-data-text="空！！"
-                    :items="userInfos"
-                    item-text="nick"
+                    :items="
+                      user.permission.c.d.map((i) => departmentIdToInfo[i])
+                    "
+                    item-text="name"
                     item-value="uid"
-                    v-model="userInfoEdit.creatorId"
+                    v-model="userInfoEdit.department"
                   ></v-autocomplete>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="4">
+                  <span class="text-body-2 text--secondary">入职日期*</span>
+                  <v-menu
+                    ref="menu"
+                    v-model="datePicker"
+                    :close-on-content-click="false"
+                    :return-value.sync="userInfoEdit.onboardingTime"
+                    offset-y
+                    min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="userInfoEdit.onboardingTime"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        outlined
+                        dense
+                        hide-details
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="userInfoEdit.onboardingTime"
+                      no-title
+                      scrollable
+                      locale="zh-cn"
+                      first-day-of-week="1"
+                      :day-format="dayFormat"
+                      min="2021-01-01"
+                      :max="parseDate(new Date())"
+                    >
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="datePicker = false">
+                        取消
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.menu.save(userInfoEdit.onboardingTime)"
+                      >
+                        确定
+                      </v-btn>
+                    </v-date-picker>
+                  </v-menu>
                 </v-col>
                 <v-col>
                   <span class="text-body-2 text--secondary">备注</span>
@@ -217,11 +278,10 @@
                 <v-expand-transition>
                   <v-container v-if="selectedPermission.a.a">
                     <v-row class="mt-5">
-                      <v-col>
+                      <v-col cols="10">
                         <span class="text-body-2 text--secondary">
                           部门录入权限
                         </span>
-                        {{global.log("a", user.permission)}}
                         <v-autocomplete
                           v-model="selectedPermission.a.d"
                           :items="
@@ -240,7 +300,9 @@
                         >
                         </v-autocomplete>
                       </v-col>
-                      <v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="10">
                         <span class="text-body-2 text--secondary"
                           >组别录入权限</span
                         >
@@ -310,7 +372,7 @@
                 </v-row>
                 <v-divider class="my-8" v-if="user.permission.c.a" />
                 <v-row v-if="user.permission.c.a">
-                  <span class="text-subtitle-1">下级员工管理模块</span>
+                  <span class="text-subtitle-1">员工管理模块</span>
                   <v-checkbox
                     v-model="selectedPermission.c.a"
                     label="授权"
@@ -320,21 +382,48 @@
                 </v-row>
 
                 <v-expand-transition>
-                  <v-row v-if="selectedPermission.c.a" class="mt-5">
-                    <v-col>
-                      <v-checkbox
-                        v-model="selectedPermission.c.b"
-                        hide-details
-                        dense
-                        :disabled="!user.permission.c.b"
-                      >
-                        <template v-slot:label>
-                          <span class="text-subtitle-2">查看员工密码</span>
-                        </template>
-                      </v-checkbox>
-                    </v-col>
-                    <v-col> </v-col>
-                  </v-row>
+                  <v-container v-if="selectedPermission.c.a">
+                    <v-row class="mt-5">
+                      <v-col cols="10">
+                        <span class="text-body-2 text--secondary">
+                          部门管理权限
+                        </span>
+                        <Help text="可以创建并管理哪个部门的员工" />
+                        <v-autocomplete
+                          v-model="selectedPermission.c.d"
+                          :items="
+                            allDepartments.filter((d) =>
+                              user.permission.c.d.find((i) => i == d.uid)
+                            )
+                          "
+                          no-data-text="无"
+                          outlined
+                          dense
+                          hide-details
+                          color="blue-grey lighten-1"
+                          item-text="name"
+                          item-value="uid"
+                          multiple
+                        >
+                        </v-autocomplete>
+                      </v-col>
+                    </v-row>
+                    <v-row class="mt-5">
+                      <v-col>
+                        <v-checkbox
+                          v-model="selectedPermission.c.b"
+                          hide-details
+                          dense
+                          :disabled="!user.permission.c.b"
+                        >
+                          <template v-slot:label>
+                            <span class="text-subtitle-2">查看员工密码</span>
+                          </template>
+                        </v-checkbox>
+                      </v-col>
+                      <v-col> </v-col>
+                    </v-row>
+                  </v-container>
                 </v-expand-transition>
 
                 <v-divider class="my-8" v-if="user.permission.d.a" />
@@ -386,21 +475,27 @@
 
 <script>
 import { mapState } from "vuex";
-
+import { javaUTCDateToString } from "@/libs/utils";
 import { getSubUsers } from "@/settings/user";
 import { registUser } from "@/settings/user";
 import { modifyUser } from "@/settings/user";
 
+import Help from "@/components/Help";
+
 export default {
-  components: {},
+  components: {
+    Help,
+  },
   data: () => ({
     headers: [
       { text: "员工ID", value: "uid" },
       { text: "姓名", value: "nick" },
-      { text: "性别", value: "calculatedGender" },
+
+      { text: "性别", value: "gender" },
+      { text: "所属部门", value: "department" },
       { text: "联系方式", value: "contact" },
+      { text: "入职日期", value: "onboardingTime" },
       { text: "权限", value: "calculatedPermission" },
-      { text: "上级", value: "calculatedCreator" },
 
       { text: "登录账号", value: "username" },
       { text: "登录密码", value: "password" },
@@ -413,6 +508,8 @@ export default {
     mode: 0,
 
     userInfoEdit: {},
+
+    datePicker: null,
 
     loading: true,
 
@@ -432,7 +529,6 @@ export default {
       d: {},
       e: {},
     },
-
   }),
 
   computed: {
@@ -447,11 +543,12 @@ export default {
       "userIdToNick",
       "teamIdToName",
       "departmentIdToName",
+      "departmentIdToInfo",
       "categoryIdToName",
       "categoryIdToInfo",
     ]),
     isEmpty: function () {
-      var check = ["nick", "username", "password", "creatorId"];
+      var check = ["nick", "username", "password", "department"];
       var pass = true;
       check.forEach((item) => {
         if (!this.userInfoEdit[item]) pass = false;
@@ -471,6 +568,14 @@ export default {
   },
 
   methods: {
+    parseDate(date) {
+      return javaUTCDateToString(date);
+    },
+
+    dayFormat(date) {
+      return Number(date.split("-")[2]);
+    },
+
     newEmployeeButton() {
       this.userInfoEdit = {};
       this.selectedPermission = {
@@ -491,7 +596,11 @@ export default {
       this.selectedPermission = JSON.parse(
         this.userInfos.find((i) => i.uid == item.uid).permission
       );
-      console.log(this.userInfos);
+      console.log(this.userInfoEdit);
+
+      this.userInfoEdit.onboardingTime = this.parseDate(
+        this.userInfoEdit.onboardingTime
+      );
       this.mode = 1;
       this.userInfoDialog = true;
     },
@@ -505,6 +614,8 @@ export default {
       args.permission = JSON.stringify(this.selectedPermission);
       args.note == null && delete args.note;
       args.contact == null && delete args.contact;
+      args.gender == null && (args.gender = 3);
+      args.onboardingTime = args.onboardingTime.replaceAll("-", "/");
 
       console.log(args);
       modifyUser(args)
@@ -527,6 +638,7 @@ export default {
         ...this.userInfoEdit,
       };
 
+      args.onboardingTime = args.onboardingTime.replaceAll("-", "/");
       console.log(args);
       registUser(args)
         .then((res) => {
@@ -568,17 +680,7 @@ export default {
       this.userInfos.forEach((user) => {
         console.log(user);
         this.idToNick[user.uid] = user.nick;
-        user.calculatedGender = "";
-        if (null != user.gender) {
-          user.calculatedGender = user.gender == 1 ? "男" : "女";
-        }
         user.calculatedPermission = JSON.parse(user.permission);
-      });
-      this.userInfos.forEach((user) => {
-        console.log(user);
-        if (user.uid == 1) return; //admin
-        user.calculatedCreator = `${this.idToNick[user.creatorId]}`;
-        //user.boss = `${this.idToNick[user.creatorId]} ID：${user.creatorId}`
       });
     },
   },
