@@ -15,11 +15,11 @@
     }
 
     .card-dark-grey {
-      color: $title-grey !important;
+      color: $title-grey  !important;
     }
 
     .card-light-grey {
-      color: $text-color !important;
+      color: $text-color  !important;
     }
   }
 
@@ -96,7 +96,7 @@
 
 
   .card-shadow {
-    box-shadow: $card-shadow !important;
+    box-shadow: $card-shadow  !important;
   }
 }
 
@@ -111,23 +111,23 @@
     box-shadow: none;
 
     &.default {
-      background: $primary !important;
+      background: $primary  !important;
     }
 
     &.error {
-      background: $error !important;
+      background: $error  !important;
     }
 
     &.success {
-      background: $success !important;
+      background: $success  !important;
     }
 
     &.info {
-      background-color: $primary !important;
+      background-color: $primary  !important;
     }
 
     &.warning {
-      background: $warning !important;
+      background: $warning  !important;
     }
 
     .action {
@@ -149,3 +149,7 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+
+
+

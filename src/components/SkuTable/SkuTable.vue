@@ -423,7 +423,7 @@
     </v-dialog>
 
     <!-- 厂家信息Dialog -->
-    <v-dialog v-model="manufacturerInfoDialog" max-width="600px">
+    <v-dialog v-model="manufacturerInfoDialog" max-width="600px" persistent>
       <v-card>
         <v-form>
           <v-col class="px-10 py-10 manufacturer-dialog">

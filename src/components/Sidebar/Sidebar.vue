@@ -1,100 +1,118 @@
 <template>
+  <!-- <div v-if="!drawerState" style="position: absolute; bottom: 7px; left: 16px; z-index:9999">
+      <v-btn fab small @click="drawerState = true">
+        <v-icon small> mdi-menu </v-icon>
+      </v-btn>
+    </div> -->
   <v-navigation-drawer
     app
     clipped
     v-model="drawerState"
-    :mini-variant="!drawerState"
     :width="sidebarWidth"
-    :permanent="$vuetify.breakpoint.mdAndUp"
     :temporary="$vuetify.breakpoint.smAndDown"
     :mini-variant-width="sidebarMinWidth"
-    :class="{ 'drawer-mini': !drawerState }"
   >
-    <v-list>
-      <template v-for="(item, i) in items">
-        <div :key="item.heading">
-          <v-row v-if="item.heading" align="center">
-            <v-col cols="6" class="py-5">
-              <span
-                style="padding-left: 32px"
-                class="text-body-1 subheader"
-                :class="item.heading && drawerState ? 'show ' : 'hide'"
+    <div class="navigation-content d-flex flex-column">
+      <v-btn tile depressed color="white" class="sider-block">
+        <span class="text-body-1">泼发 EBC</span>
+      </v-btn>
+      <v-divider></v-divider>
+      <v-list class="flex-grow-1 overflow-y-auto overflow-x-hidden" dense>
+        <template v-for="(item, i) in items">
+          <div :key="item.heading">
+            <v-row v-if="item.heading" align="center">
+              <v-col cols="6" class="py-5">
+                <span
+                  class="pl-8 text-body-1 subheader"
+                  :class="item.heading ? 'show ' : 'hide'"
+                >
+                  {{ item.heading }}
+                </span>
+              </v-col>
+              <v-col cols="6" class="text-center"> </v-col>
+            </v-row>
+
+            <v-divider
+              v-else-if="item.divider"
+              :key="i"
+              dark
+              class="my-4"
+            ></v-divider>
+
+            <v-list-group
+              v-else-if="item.children"
+              color="primary"
+              :key="item.title"
+              v-model="item.model"
+              append-icon=""
+            >
+              <template v-slot:activator>
+                <v-list-item-action>
+                  <v-icon dense>{{ item.icon }}</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title link>
+                    {{ item.title }}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </template>
+
+              <v-list-item
+                v-for="(child, i) in item.children"
+                :key="i"
+                :disabled="!item.show"
+                :to="child.link"
+                link
               >
-                {{ item.heading }}
-              </span>
-            </v-col>
-            <v-col cols="6" class="text-center"> </v-col>
-          </v-row>
-
-          <v-divider
-            v-else-if="item.divider"
-            :key="i"
-            dark
-            class="my-4"
-          ></v-divider>
-
-          <v-list-group
-            v-else-if="item.children && drawerState"
-            color="primary"
-            :key="item.title"
-            v-model="item.model"
-            append-icon=""
-          >
-            <template v-slot:activator>
-              <v-list-item-action>
-                <v-icon dense :color="item.color ? item.color : ''">{{
-                  item.icon
-                }}</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title class="grey--text" link>
-                  {{ item.title }}
-                </v-list-item-title>
-              </v-list-item-content>
-            </template>
+                <v-list-item-action>
+                  <v-icon dense>{{ child.icon }}</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title link>
+                    {{ child.title }}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-group>
 
             <v-list-item
-              v-for="(child, i) in item.children"
-              :key="i"
+              color="primary"
+              v-else
               :disabled="!item.show"
-              :to="child.link"
+              :key="item.text"
+              :href="item.href ? item.href : null"
+              :to="item.link === '#' ? null : item.link"
               link
             >
               <v-list-item-action>
-                <v-icon dense :color="child.color ? child.color : ''">{{
-                  child.icon
-                }}</v-icon>
+                <v-icon dense>{{ item.icon }}</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title class="grey--text" link>
-                  {{ child.title }}
+                <v-list-item-title link>
+                  {{ item.title }}
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-          </v-list-group>
-          <v-list-item
-            color="primary"
-            v-else
-            :disabled="!item.show"
-            :key="item.text"
-            :href="item.href ? item.href : null"
-            :to="item.link === '#' ? null : item.link"
-            link
-          >
-            <v-list-item-action>
-              <v-icon dense :color="item.color ? item.color : ''">{{
-                item.icon
-              }}</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title class="grey--text" link>
-                {{ item.title }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </div>
-      </template>
-    </v-list>
+          </div>
+        </template>
+      </v-list>
+      <v-divider></v-divider>
+      <v-btn
+        depressed
+        tile
+        class="sider-block d-flex align-center"
+        color="white"
+      >
+        <span class="text-body-2 grey--text"> 更新日志 </span>
+      </v-btn>
+      <v-divider></v-divider>
+
+      <div class="sider-block d-flex align-center pl-4">
+        <v-btn icon @click="drawerState = !drawerState">
+          <v-icon small> mdi-arrow-collapse-left </v-icon>
+        </v-btn>
+      </div>
+    </div>
   </v-navigation-drawer>
 </template>
 
@@ -108,7 +126,6 @@ export default {
   data() {
     return {
       items: [
-        { heading: "POFA1" },
         {
           title: "主页",
           icon: "mdi-home",
@@ -245,7 +262,7 @@ export default {
           ],
         },
       ],
-      sidebarWidth: 150,
+      sidebarWidth: 170,
       sidebarMinWidth: 50,
     };
   },

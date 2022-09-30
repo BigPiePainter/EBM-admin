@@ -1,9 +1,10 @@
 <template>
-  <div>
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="导入"> </PageHeader>
     <v-card
       id="dropbox"
       tile
-      class="d-flex align-center justify-center transition-swing mb-5"
+      class="d-flex align-center justify-center transition-swing"
       :elevation="elevation"
       :min-height="180"
       :color="hover ? '#fafafa' : '#fff'"
@@ -15,7 +16,9 @@
     >
       <span class="text-subtitle-1">{{ state }}</span>
     </v-card>
-    <v-row v-if="uploadStates.length > 0">
+    <v-divider></v-divider>
+
+    <div v-if="uploadStates.length > 0">
       <v-col class="d-flex">
         <span class="text-body-2"
           >解析状态 共有{{ uploadStates.length }} 上传中
@@ -32,84 +35,88 @@
           清除错误
         </v-btn>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col
-        v-for="(file, i) in uploadStates.slice(
-          10 * (page - 1),
-          10 * (page - 1) + 10
-        )"
-        :key="i"
-        cols="12"
-        class="pt-0"
-      >
-        <v-card tile class="pt-2">
-          <v-toolbar-items>
-            <v-icon
-              v-if="file.code < 0"
-              class="ml-3 mr-2 mb-1 mt-1"
-              color="red lighten-2"
-              small
-            >
-              mdi-alert-circle-outline
-            </v-icon>
+    </div>
+    <div class="flex-grow-1 overflow-y-auto">
+      <v-col>
+        <v-col
+          v-for="(file, i) in uploadStates.slice(
+            10 * (page - 1),
+            10 * (page - 1) + 10
+          )"
+          :key="i"
+          cols="12"
+          class="pt-0"
+        >
+          <v-card tile class="pt-2">
+            <v-toolbar-items>
+              <v-icon
+                v-if="file.code < 0"
+                class="ml-3 mr-2 mb-1 mt-1"
+                color="red lighten-2"
+                small
+              >
+                mdi-alert-circle-outline
+              </v-icon>
 
-            <v-icon v-else class="ml-3 mr-2 mb-1 mt-1" color="primary" small>
-              mdi-file-excel
-            </v-icon>
+              <v-icon v-else class="ml-3 mr-2 mb-1 mt-1" color="primary" small>
+                mdi-file-excel
+              </v-icon>
 
-            <span class="text-body-2 pt-1">{{ file.name }}</span>
+              <span class="text-body-2 pt-1">{{ file.name }}</span>
 
-            <span class="ml-5 pt-1 text--secondary text-body-2">
-              {{ file.state }}
-            </span>
+              <span class="ml-5 pt-1 text--secondary text-body-2">
+                {{ file.state }}
+              </span>
 
-            <v-spacer></v-spacer>
-            <span class="text--secondary text-body-2 pt-1"
-              >{{ Math.floor(file.uploaded / 1024) }} k</span
-            >
-            <span class="mx-1 text-body-2 pt-1"> / </span>
-            <span class="text--secondary text-body-2 pt-1"
-              >{{ Math.floor(file.size / 1024) }} k</span
-            >
-            <span class="text--secondary ml-3 mr-3 text-body-2 pt-1"
-              >{{ Math.floor((file.uploaded * 100) / file.size) }} %</span
-            >
-            <v-icon v-if="file.code == 2" class="mr-4 mb-1" color="green">
-              mdi-check-circle-outline
-            </v-icon>
+              <v-spacer></v-spacer>
+              <span class="text--secondary text-body-2 pt-1"
+                >{{ Math.floor(file.uploaded / 1024) }} k</span
+              >
+              <span class="mx-1 text-body-2 pt-1"> / </span>
+              <span class="text--secondary text-body-2 pt-1"
+                >{{ Math.floor(file.size / 1024) }} k</span
+              >
+              <span class="text--secondary ml-3 mr-3 text-body-2 pt-1"
+                >{{ Math.floor((file.uploaded * 100) / file.size) }} %</span
+              >
+              <v-icon v-if="file.code == 2" class="mr-4 mb-1" color="green">
+                mdi-check-circle-outline
+              </v-icon>
 
-            <v-btn
-              v-if="file.code == 2 || file.code < 0"
-              icon
-              @click="deleteFileState(file, i)"
+              <v-btn
+                v-if="file.code == 2 || file.code < 0"
+                icon
+                @click="deleteFileState(file, i)"
+              >
+                <v-icon color="grey" small> mdi-close </v-icon>
+              </v-btn>
+            </v-toolbar-items>
+            <v-progress-linear
+              :height="file.code < 0 ? 2 : 3"
+              :indeterminate="file.code == 1"
+              :value="(file.uploaded * 100) / file.size"
+              class="mt-2"
+              :color="
+                file.code < 0 ? 'red' : file.code == 2 ? 'green' : 'primary'
+              "
             >
-              <v-icon color="grey" small> mdi-close </v-icon>
-            </v-btn>
-          </v-toolbar-items>
-          <v-progress-linear
-            :height="file.code < 0 ? 2 : 3"
-            :indeterminate="file.code == 1"
-            :value="(file.uploaded * 100) / file.size"
-            class="mt-2"
-            :color="
-              file.code < 0 ? 'red' : file.code == 2 ? 'green' : 'primary'
-            "
-          >
-          </v-progress-linear>
-        </v-card>
+            </v-progress-linear>
+          </v-card>
+        </v-col>
       </v-col>
-    </v-row>
-    <v-row v-if="uploadStates.length > 0">
+    </div>
+
+    <div v-if="uploadStates.length > 0">
+      <v-divider></v-divider>
       <v-col>
         <v-pagination
           v-model="page"
           :length="Math.ceil(uploadStates.length / 10)"
         ></v-pagination>
       </v-col>
-    </v-row>
+    </div>
 
-    <v-data-table
+    <!-- <v-data-table
       loading-text="加载中... 请稍后"
       no-data-text="空"
       item-key=""
@@ -129,17 +136,19 @@
           <v-spacer></v-spacer>
         </v-toolbar>
       </template>
-    </v-data-table>
+    </v-data-table> -->
   </div>
 </template>
 <script>
 import { fileUpload } from "@/settings/order";
 import { getFileProcessStates } from "@/settings/order";
 import { deleteFileProcessState } from "@/settings/order";
+import PageHeader from "@/components/PageHeader";
 
 export default {
-  name: "SkuUpload",
-  components: {},
+  components: {
+    PageHeader,
+  },
 
   props: {
     product: Object,
@@ -159,7 +168,7 @@ export default {
       historyItems: [],
 
       hover: false,
-      elevation: 1,
+      elevation: 0,
 
       loading: false,
 
@@ -171,7 +180,7 @@ export default {
     };
   },
   mounted() {
-    this.state = "拖拽上传订单信息";
+    this.state = "拖拽到此处上传订单信息";
     this.refreshFileStates();
   },
   watch: {
@@ -267,12 +276,12 @@ export default {
     },
 
     dragleave() {
-      this.elevation = 3;
+      this.elevation = 0;
       this.hover = false;
     },
 
     drop(event) {
-      this.elevation = 3;
+      this.elevation = 0;
       this.hover = false;
       console.log(event.dataTransfer.files);
 

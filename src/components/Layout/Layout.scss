@@ -1,7 +1,8 @@
 @import '../../styles/app.scss';
 
 .v-main__wrap {
-  padding: 70px $content-padding $content-padding;
+  top: 45px !important;
+  height: calc(100vh - 45px) !important;
 }
 .content {
   background-color: $body-bg;

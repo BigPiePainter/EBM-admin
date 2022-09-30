@@ -110,10 +110,10 @@
         </div>
       </v-list>
     </v-menu> -->
-    <v-menu min-width="180" offset-y bottom left nudge-bottom="10">
+    <v-menu min-width="180" offset-y bottom left vnudge-bottom="10">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn class="mr-0" icon v-bind="attrs" v-on="on">
-          <v-icon :color="config.light.iconColor">mdi-account</v-icon>
+        <v-btn class="mr-2" fab depressed v-bind="attrs" v-on="on" color="#78909C" x-small>
+          <span style="font-size:1rem">{{$store.state.user.nick.substr(0, 1)}}</span>
         </v-btn>
       </template>
       <v-list>

@@ -1,12 +1,18 @@
 <template>
-  <div>
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="认领大厅">
+      <v-btn class="ml-2" text color="primary" disabled>
+        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
+        导出
+      </v-btn>
+    </PageHeader>
     <v-data-table
       fixed-header
       loading-text="加载中... 请稍后"
       no-data-text="空"
       item-key="id"
-      height="calc(100vh - 200px)"
-      class="card-shadow"
+      height="calc(100vh - 197px)"
+      class=""
       sort-by="totalAmount"
       sort-desc
       :loading="loading"
@@ -25,7 +31,7 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title @click="showMissMoney">商品待认领清单</v-toolbar-title>
+          <v-toolbar-title @click="showMissMoney">待认领商品</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
         </v-toolbar>
       </template>
@@ -128,11 +134,13 @@ import { amountBeautify } from "@/libs/utils";
 import { getMismatchProducts } from "@/settings/product";
 
 import TableKV from "@/components/TableKV/TableKV";
+import PageHeader from "@/components/PageHeader";
 
 export default {
   name: "MismatchProducts",
   components: {
     TableKV,
+    PageHeader,
   },
   data() {
     return {
@@ -160,7 +168,7 @@ export default {
       for (let i = 0; i < this.allMismatchProducts.length; i++) {
         money = money + this.allMismatchProducts[i].totalAmount;
       }
-      console.log(money+0.0000000001);
+      console.log(money + 0.0000000001);
     },
 
     loadData() {

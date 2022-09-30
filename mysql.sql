@@ -36,10 +36,10 @@ insert into
     username,
     password,
     onboarding_time,
-    nick
+    nick  
   )
 values
-  (1, '{}', 'admin', '88888888', 20111111,"admin");
+  (0, '{}', 'admin', '88888888', 20111111, "admin");
 
 -- 商品信息
 drop table if exists products;

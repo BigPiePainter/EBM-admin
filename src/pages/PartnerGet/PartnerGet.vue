@@ -1,19 +1,29 @@
 <template>
-  <div>
-    <v-card class="products-list mb-1">
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="商品清单">
+      <v-btn class="ml-2" text color="primary" @click="addButton">
+        <v-icon size="20" style="padding-top: 2px">mdi-bookmark-plus</v-icon>
+        新增商品信息
+      </v-btn>
+      <v-btn class="ml-2" text color="primary" disabled>
+        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
+        导出
+      </v-btn>
+    </PageHeader>
+    <div class="flex-grow-1">
       <v-data-table
-        :show-select="ifAction"
         single-select
-        v-model="selectedProductItem"
-        single-expand
         show-expand
         fixed-header
+        disable-sort
         loading-text="加载中... 请稍后"
         no-data-text="空"
         item-key="id"
-        disable-sort
-        height="calc(100vh - 200px)"
-        class="card-shadow"
+        class=""
+        height="calc(100vh - 197px)"
+        mobile-breakpoint="0"
+        v-model="selectedProductItem"
+        :show-select="ifAction"
         :loading="loading"
         :headers="headers"
         :items="products"
@@ -37,7 +47,7 @@
               <div class="d-flex align-center">
                 <span> {{ props.header.text }} </span>
                 <v-text-field
-                  color="blue-grey lighten-1"
+                  color="primary"
                   v-model="search.search[props.header.value]"
                   single-line
                   counter
@@ -70,17 +80,8 @@
 
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>商品清单</v-toolbar-title>
+            <v-toolbar-title>我的商品</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
-            <v-btn
-              small
-              class="ml-2"
-              depressed
-              color="primary"
-              @click="addButton"
-            >
-              新增商品信息
-            </v-btn>
             <v-btn
               small
               depressed
@@ -164,10 +165,10 @@
           </div>
         </template> -->
       </v-data-table>
-    </v-card>
+    </div>
 
     <!-- 商品信息Dialog -->
-    <v-dialog v-model="productInfoDialog" max-width="550px">
+    <v-dialog v-model="productInfoDialog" max-width="550px" persistent>
       <v-card>
         <v-container class="px-10 py-10 product-dialog">
           <v-row>
@@ -177,7 +178,7 @@
             <v-col cols="5">
               <span class="text-body-2 text--secondary">商品ID*</span>
               <v-text-field
-                color="blue-grey lighten-1"
+                color="primary"
                 :readonly="mode == 2"
                 outlined
                 dense
@@ -188,9 +189,10 @@
             </v-col>
 
             <v-col cols="7">
-              <span class="text-body-2 text--secondary">商品名*</span>
+              <span class="text-body-2 text--secondary">商品名(简称)*</span>
+              <Help text="请填写简称，只做内部记录使用，简单易懂即可" />
               <v-text-field
-                color="blue-grey lighten-1"
+                color="primary"
                 outlined
                 dense
                 hide-details
@@ -202,7 +204,7 @@
             <v-col cols="7">
               <span class="text-body-2 text--secondary">一级类目*</span>
               <v-autocomplete
-                color="blue-grey lighten-1"
+                color="primary"
                 outlined
                 dense
                 hide-details
@@ -246,7 +248,7 @@
             <v-col cols="5">
               <span class="text-body-2 text--secondary">店铺名*</span>
               <v-autocomplete
-                color="blue-grey lighten-1"
+                color="primary"
                 outlined
                 dense
                 hide-details
@@ -263,7 +265,7 @@
             <v-col cols="5">
               <span class="text-body-2 text--secondary">部门*</span>
               <v-autocomplete
-                color="blue-grey lighten-1"
+                color="primary"
                 outlined
                 dense
                 :items="
@@ -284,7 +286,7 @@
             <v-col cols="4">
               <span class="text-body-2 text--secondary">组别*</span>
               <v-autocomplete
-                color="blue-grey lighten-1"
+                color="primary"
                 outlined
                 dense
                 v-model="editedItem.team"
@@ -304,16 +306,16 @@
 
             <v-col cols="3">
               <span class="text-body-2 text--secondary">持品人*</span>
-
               <v-autocomplete
                 outlined
                 dense
-                color="blue-grey lighten-1"
+                color="primary"
                 v-model="editedItem.owner"
                 :items="
                   allUsers.filter(
                     (i) =>
                       JSON.parse(i.permission).a &&
+                      JSON.parse(i.permission).a.g &&
                       JSON.parse(i.permission).a.g.find(
                         (id) => id == editedItem.team
                       )
@@ -333,7 +335,7 @@
             <v-col cols="4">
               <span class="text-body-2 text--secondary">发货方式</span>
               <v-combobox
-                color="blue-grey lighten-1"
+                color="primary"
                 outlined
                 dense
                 hide-details
@@ -348,7 +350,7 @@
                 聚水潭仓库*
               </span>
               <v-text-field
-                color="blue-grey lighten-1"
+                color="primary"
                 outlined
                 dense
                 hide-details
@@ -364,7 +366,7 @@
             <v-col cols="8" v-if="editedItem.transportWay != '聚水潭'">
               <span class="text-body-2 text--secondary">备注</span>
               <v-text-field
-                color="blue-grey lighten-1"
+                color="primary"
                 outlined
                 dense
                 hide-details
@@ -379,7 +381,7 @@
                 <v-col cols="12">
                   <span class="text-body-2 text--secondary">备注</span>
                   <v-text-field
-                    color="blue-grey lighten-1"
+                    color="primary"
                     outlined
                     dense
                     hide-details
@@ -587,7 +589,7 @@
               <v-col cols="8">
                 <span class="text-body-2 text--secondary">下架原因*</span>
                 <v-text-field
-                  color="blue-grey lighten-1"
+                  color="primary"
                   outlined
                   dense
                   hide-details
@@ -628,15 +630,18 @@ import { deleteProduct } from "@/settings/product";
 import { loadProducts } from "@/settings/product";
 //import { getClass } from "@/settings/product";
 
-
 import { javaUTCDateToString } from "@/libs/utils";
 
 import SkuTable from "@/components/SkuTable/SkuTable";
+import PageHeader from "@/components/PageHeader";
+import Help from "@/components/Help";
 //import SelectDialog from "@/components/SelectDialog";
 
 export default {
   components: {
     SkuTable,
+    PageHeader,
+    Help,
     //SelectDialog,
   },
   data: () => ({
@@ -813,7 +818,6 @@ export default {
       //     console.log(res.data);
       //   })
       //   .catch(() => {});
-
       //有watch search.search, init时不需要loadData
     },
 

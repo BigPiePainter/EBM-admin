@@ -3,43 +3,24 @@
 
 .v-navigation-drawer {
   top: 45px !important;
-  height: calc(100vh - 45px) !important;
+  
 
+  .sider-block{
+    min-height: $block-height;
+  }
 
-
-  .v-navigation-drawer__content {
-    &::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: $text-grey;
-      border-radius: 36px;
-      border: none;
-    }
+  .navigation-content {
+    height: calc(100vh - 45px) !important;
   }
 
   .v-list-item:not(.v-list-item--active),
   .v-list-group {
     padding-right: 0px !important;
-    .v-icon {
-      color: $text-grey;
-    }
-    .v-list-group__items{
-      .v-list-item{
-        padding-left: 30px;
-      }
-    }
-  }
 
-  .v-list-item--active {
-    .v-list-item__content {
-      .v-list-item__title {
-        color: $title-grey  !important;
+    
+    .v-list-group__items {
+      .v-list-item {
+        padding-left: 30px;
       }
     }
   }
@@ -51,7 +32,7 @@
 
     .v-list-item__action {
       margin-right: 0px;
-      
+
     }
 
     .v-list-item__title {

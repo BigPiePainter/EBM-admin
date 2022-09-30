@@ -1,11 +1,13 @@
 <template>
-  <v-container fluid id="mainContainer">
-    <div class="dashboard-page">
-      <v-row no-gutters class="d-flex justify-space-between mt-2">
-        <h1 class="page-title">利润报表（等待数据）</h1>
-      </v-row>
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="统计图"> </PageHeader>
+    <v-container fluid id="mainContainer">
+      <div class="dashboard-page">
+        <div class="ma-5">
+          <span>开发中</span>
+        </div>
 
-      <!-- <v-row>
+        <!-- <v-row>
         <v-col lg="4" md="6" sm="12">
           <v-card class="mx-1 mb-1">
             <v-card-title>
@@ -96,11 +98,14 @@
           ><v-card></v-card
         ></v-dialog>
       </template> -->
-    </div>
-  </v-container>
+      </div>
+    </v-container>
+  </div>
 </template>
 
 <script>
+import PageHeader from "@/components/PageHeader";
+
 //import VChart from "vue-echarts";
 
 import {
@@ -132,7 +137,7 @@ use([
 export default {
   name: "HelloWorld",
   components: {
-    //VChart,
+    PageHeader,
   },
   data() {
     return {

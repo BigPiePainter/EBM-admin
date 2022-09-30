@@ -1,15 +1,22 @@
 <template>
-  <div>
-    <v-card>
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="一级类目">
+      <v-btn class="ml-2" text color="primary" @click="addButton">
+        <v-icon size="20" style="padding-top: 2px">mdi-bookmark-plus</v-icon>
+        新增一级类目
+      </v-btn>
+      <v-btn class="ml-2" text color="primary" disabled>
+        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
+        导出
+      </v-btn>
+    </PageHeader>
+    <div class="flex-grow-1 d-flex">
       <v-data-table
-        :show-select="categoryAction"
         single-select
         v-model="selectedCategoryItem"
-        class="card-shadow"
         fixed-header
         no-data-text="空"
         item-key="uid"
-        show-expand
         :loading="loading"
         :expanded.sync="expanded"
         height="calc(100vh - 151px)"
@@ -18,7 +25,6 @@
         :items="allCategorys"
         disable-sort
         :items-per-page="1000"
-        @click:row="clickRow"
       >
         <template v-slot:[`item.deduction`]="{ item }">
           {{
@@ -177,7 +183,11 @@
           </td>
         </template>
       </v-data-table>
-    </v-card>
+      <v-divider vertical style="margin-left:0.1px"></v-divider>
+      <div style="width:500px">
+        123
+      </div>
+    </div>
 
     <!-- 类目名称 Dialog -->
     <v-dialog v-model="categoryNameDialog" max-width="400px">
@@ -188,7 +198,7 @@
           <v-row>
             <v-col cols="12">
               <v-text-field
-                color="blue-grey lighten-1"
+                color="primary"
                 outlined
                 dense
                 hide-details
@@ -291,7 +301,7 @@
             <v-col cols="12">
               <span class="text-body-2 text--secondary">名称*</span>
               <v-text-field
-                color="blue-grey lighten-1"
+                color="primary"
                 outlined
                 dense
                 hide-details
@@ -304,7 +314,7 @@
             <v-col cols="6">
               <span class="text-body-2 text--secondary">品类扣点*</span>
               <v-text-field
-                color="blue-grey lighten-1"
+                color="primary"
                 suffix="%"
                 outlined
                 dense
@@ -317,7 +327,7 @@
             <v-col cols="6">
               <span class="text-body-2 text--secondary">品类运费险*</span>
               <v-text-field
-                color="blue-grey lighten-1"
+                color="primary"
                 suffix="￥"
                 type="number"
                 outlined
@@ -482,6 +492,7 @@
 import { mapState, mapActions } from "vuex";
 
 import TableKV from "@/components/TableKV/TableKV";
+import PageHeader from "@/components/PageHeader";
 
 import { addCategory } from "@/settings/category";
 import { editCategory } from "@/settings/category";
@@ -494,6 +505,7 @@ import { javaUTCDateToString } from "@/libs/utils";
 export default {
   components: {
     TableKV,
+    PageHeader,
   },
 
   data() {
@@ -520,7 +532,7 @@ export default {
       deleteCategoryItem: [],
 
       categoryHeaders: [
-        { text: "一级类目", value: "name" },
+        { text: "类目名称", value: "name" },
         { text: "品类扣点", align: "right", value: "deduction" },
         { text: "品类运费险", align: "right", value: "insurance" },
         //{ text: "备注", value: "note" },
@@ -574,14 +586,6 @@ export default {
     ...mapActions(["refreshAllCategorys"]),
     parseDate(date) {
       return javaUTCDateToString(date);
-    },
-    clickRow(item, event) {
-      if (event.isExpanded) {
-        const index = this.expanded.findIndex((i) => i === item);
-        this.expanded.splice(index, 1);
-      } else {
-        this.expanded.push(item);
-      }
     },
     dayFormat(date) {
       return Number(date.split("-")[2]);

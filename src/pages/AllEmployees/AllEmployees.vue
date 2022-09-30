@@ -1,5 +1,15 @@
 <template>
-  <v-card>
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="员工管理">
+      <v-btn class="ml-2" text color="primary" @click="newEmployeeButton">
+        <v-icon size="20" style="padding-top: 2px">mdi-bookmark-plus</v-icon>
+        新增员工
+      </v-btn>
+      <v-btn class="ml-2" text color="primary" disabled>
+        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
+        导出
+      </v-btn>
+    </PageHeader>
     <v-data-table
       fixed-header
       show-select
@@ -7,14 +17,14 @@
       loading-text="加载中... 请稍后"
       no-data-text="空"
       item-key="uid"
-      class="elevation-1"
-      height="calc(100vh - 195px)"
+      class=""
+      height="calc(100vh - 197px)"
       :loading="loading"
       :headers="headers"
       :items="userInfosWithoutSelf"
       :items-per-page="50"
       :footer-props="{
-        'items-per-page-options': [10, 20, 50, 100],
+        'items-per-page-options': [20, 50, 100, 500, 1000],
         'items-per-page-text': '每页显示条数',
       }"
     >
@@ -23,16 +33,6 @@
           <v-toolbar-title>员工信息</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer />
-          <v-btn small depressed class="mr-2 text--secondary">导出</v-btn>
-          <v-btn
-            color="primary"
-            dark
-            small
-            depressed
-            @click="newEmployeeButton"
-          >
-            新建员工
-          </v-btn>
         </v-toolbar>
       </template>
 
@@ -121,7 +121,7 @@
                 <v-col cols="3">
                   <span class="text-body-2 text--secondary">姓名*</span>
                   <v-text-field
-                    color="blue-grey lighten-1"
+                    color="primary"
                     outlined
                     dense
                     hide-details
@@ -132,7 +132,7 @@
                 <v-col cols="3" class="pr-8">
                   <span class="text-body-2 text--secondary">性别</span>
                   <v-select
-                    color="blue-grey lighten-1"
+                    color="primary"
                     outlined
                     dense
                     hide-details
@@ -150,7 +150,7 @@
                   <span class="text-body-2 text--secondary">联系方式</span>
                   <v-text-field
                     outlined
-                    color="blue-grey lighten-1"
+                    color="primary"
                     dense
                     hide-details
                     v-model="userInfoEdit.contact"
@@ -163,7 +163,7 @@
                 <v-col>
                   <span class="text-body-2 text--secondary">登录账号*</span>
                   <v-text-field
-                    color="blue-grey lighten-1"
+                    color="primary"
                     outlined
                     dense
                     hide-details
@@ -174,7 +174,7 @@
                 <v-col>
                   <span class="text-body-2 text--secondary">登录密码*</span>
                   <v-text-field
-                    color="blue-grey lighten-1"
+                    color="primary"
                     outlined
                     dense
                     hide-details
@@ -186,9 +186,9 @@
               <v-row>
                 <v-col>
                   <span class="text-body-2 text--secondary">所属部门*</span>
-                  {{global.log(user.permission.c.d)}}
+                  {{ global.log(user.permission.c.d) }}
                   <v-autocomplete
-                    color="blue-grey lighten-1"
+                    color="primary"
                     outlined
                     dense
                     hide-details
@@ -251,7 +251,7 @@
                 <v-col>
                   <span class="text-body-2 text--secondary">备注</span>
                   <v-text-field
-                    color="blue-grey lighten-1"
+                    color="primary"
                     outlined
                     dense
                     hide-details
@@ -293,7 +293,7 @@
                           outlined
                           dense
                           hide-details
-                          color="blue-grey lighten-1"
+                          color="primary"
                           item-text="name"
                           item-value="uid"
                           multiple
@@ -317,7 +317,7 @@
                           outlined
                           dense
                           hide-details
-                          color="blue-grey lighten-1"
+                          color="primary"
                           item-text="name"
                           item-value="uid"
                           multiple
@@ -400,7 +400,7 @@
                           outlined
                           dense
                           hide-details
-                          color="blue-grey lighten-1"
+                          color="primary"
                           item-text="name"
                           item-value="uid"
                           multiple
@@ -464,7 +464,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-card>
+  </div>
 </template>
 
 
@@ -481,10 +481,12 @@ import { registUser } from "@/settings/user";
 import { modifyUser } from "@/settings/user";
 
 import Help from "@/components/Help";
+import PageHeader from "@/components/PageHeader";
 
 export default {
   components: {
     Help,
+    PageHeader,
   },
   data: () => ({
     headers: [

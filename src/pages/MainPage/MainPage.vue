@@ -1,11 +1,13 @@
 <template>
-  <v-container fluid id="mainContainer">
-    <div class="dashboard-page">
-      <v-row no-gutters class="d-flex justify-space-between mt-2">
-        <h1 class="page-title">今日统计 （等待数据）</h1>
-      </v-row>
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="主页"> </PageHeader>
+    <v-container fluid id="mainContainer">
+      <div class="dashboard-page">
+        <div class="ma-5">
+          <span>开发中</span>
+        </div>
 
-      <!-- <v-row>
+        <!-- <v-row>
         <v-col cols="4">
           <v-card class="mx-1 mb-1">
             <v-card-title>
@@ -86,9 +88,9 @@
           </v-card>
         </v-col>
       </v-row>
-      -->
-    </div>
-  </v-container>
+      --></div>
+    </v-container>
+  </div>
 </template>
 
 <script>
@@ -104,6 +106,8 @@ import {
 import { BarChart, LineChart, PieChart } from "echarts/charts";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
+
+import PageHeader from "@/components/PageHeader";
 
 use([
   PieChart,
@@ -121,7 +125,7 @@ use([
 export default {
   name: "HelloWorld",
   components: {
-    //VChart,
+    PageHeader,
   },
   data() {
     return {

@@ -1,46 +1,51 @@
 <template>
-  <div>
-    <v-card>
-      <v-card class="products-list mb-1">
-        <v-data-table
-          fixed-header
-          loading-text="加载中... 请稍后"
-          no-data-text="空"
-          item-key="number"
-          disable-sort
-          class="elevation-1"
-          height="80vh"
-          :loading="loading"
-          :headers="brushHeader"
-          :items="brushItems"
-          :options.sync="options"
-          :items-per-page="50"
-          :footer-props="{
-            'items-per-page-options': [10, 20, 50, 100],
-            'items-per-page-text': '每页显示条数',
-          }"
-        >
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="未匹配补单">
+      <v-btn class="ml-2" text color="primary" disabled>
+        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
+        导出
+      </v-btn>
+    </PageHeader>
+    <div class="flex-grow-1">
+      <v-data-table
+        fixed-header
+        loading-text="加载中... 请稍后"
+        no-data-text="空"
+        item-key="id"
+        disable-sort
+        class=""
+        height="calc(100vh - 197px)"
+        mobile-breakpoint="0"
+        :loading="loading"
+        :headers="brushHeader"
+        :items="brushItems"
+        :options.sync="options"
+        :items-per-page="50"
+        :footer-props="{
+          'items-per-page-options': [10, 20, 50, 100],
+          'items-per-page-text': '每页显示条数',
+        }"
+      >
         <template v-slot:[`item.requestTime`]="{ item }">
-            <span>
-              {{ parseDate(item.requestTime) }}
-            </span>
+          <span>
+            {{ parseDate(item.requestTime) }}
+          </span>
         </template>
         <template v-slot:[`item.orderPaymentTime`]="{ item }">
-            <span>
-              {{ parseDate(item.orderPaymentTime) }}
-            </span>
+          <span>
+            {{ parseDate(item.orderPaymentTime) }}
+          </span>
         </template>
-          <template v-slot:top>
-            <v-toolbar flat>
-              <v-toolbar-title @click="show">刷单订单</v-toolbar-title>
-              <v-divider class="mx-4" inset vertical></v-divider>
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title @click="show">补单订单</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
 
-              <v-spacer></v-spacer>
-            </v-toolbar>
-          </template>
-        </v-data-table>
-      </v-card>
-    </v-card>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+        </template>
+      </v-data-table>
+    </div>
   </div>
 </template>
 
@@ -48,9 +53,12 @@
 <script>
 import { getMismatchFakeOrders } from "@/settings/order";
 import { javaUTCDateToString } from "@/libs/utils";
+import PageHeader from "@/components/PageHeader";
 
 export default {
-  components: {},
+  components: {
+    PageHeader,
+  },
   data() {
     return {
       totalBrushItems: 0,
@@ -68,8 +76,7 @@ export default {
     };
   },
 
-  created() {
-  },
+  created() {},
 
   watch: {
     options: {
@@ -84,14 +91,13 @@ export default {
     parseDate(time) {
       return javaUTCDateToString(time);
     },
-    show(){
+    show() {
       const { page, itemsPerPage } = this.options;
       getMismatchFakeOrders({ page, itemsPerPage })
-       .then((res) => {
+        .then((res) => {
           console.log(res.data);
         })
-        .catch(() => {
-        });
+        .catch(() => {});
     },
 
     loadData() {

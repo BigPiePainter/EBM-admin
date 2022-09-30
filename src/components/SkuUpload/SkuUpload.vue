@@ -39,7 +39,7 @@
             accept=".xlsx"
             prepend-icon="mdi-file-excel"
             class="mx-8"
-            color="blue-grey lighten-1"
+            color="primary"
             v-model="fileSelect"
           ></v-file-input>
         </v-expand-transition>

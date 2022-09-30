@@ -1,63 +1,68 @@
 <template>
-  <div>
-    <v-card>
-      <v-card class="products-list mb-1">
-        <v-data-table
-          fixed-header
-          loading-text="加载中... 请稍后"
-          no-data-text="空"
-          item-key="id"
-          disable-sort
-          class="elevation-1"
-          height="80vh"
-          :loading="loading"
-          :headers="refundHeader"
-          :items="refundItems"
-          :options.sync="options"
-          :server-items-length="totalRefundItems"
-          :items-per-page="50"
-          :footer-props="{
-            'items-per-page-options': [10, 20, 50, 100],
-            'items-per-page-text': '每页显示条数',
-          }"
-        >
-          <template v-slot:[`item.orderPaymentTime`]="{ item }">
-            <span>
-              {{ parseDate(item.orderPaymentTime) }}
-            </span>
-          </template>
-          <template v-slot:[`item.orderSetupTime`]="{ item }">
-            <span>
-              {{ parseDate(item.orderSetupTime) }}
-            </span>
-          </template>
-          <template v-slot:[`item.refundSetupTime`]="{ item }">
-            <span>
-              {{ parseDate(item.refundSetupTime) }}
-            </span>
-          </template>
-          <template v-slot:[`item.expressInfo`]="{ item }">
-            <span>
-              {{ item.expressInfo ? item.expressInfo : "暂无" }}
-            </span>
-          </template>
-          <!-- <template v-slot:[`item.needReturn`]="{ item }">
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="未匹配退单">
+      <v-btn class="ml-2" text color="primary" disabled>
+        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
+        导出
+      </v-btn>
+    </PageHeader>
+    <div class="flex-grow-1">
+      <v-data-table
+        fixed-header
+        loading-text="加载中... 请稍后"
+        no-data-text="空"
+        item-key="id"
+        disable-sort
+        class=""
+        height="calc(100vh - 197px)"
+        mobile-breakpoint="0"
+        :loading="loading"
+        :headers="refundHeader"
+        :items="refundItems"
+        :options.sync="options"
+        :server-items-length="totalRefundItems"
+        :items-per-page="50"
+        :footer-props="{
+          'items-per-page-options': [10, 20, 50, 100],
+          'items-per-page-text': '每页显示条数',
+        }"
+      >
+        <template v-slot:[`item.orderPaymentTime`]="{ item }">
+          <span>
+            {{ parseDate(item.orderPaymentTime) }}
+          </span>
+        </template>
+        <template v-slot:[`item.orderSetupTime`]="{ item }">
+          <span>
+            {{ parseDate(item.orderSetupTime) }}
+          </span>
+        </template>
+        <template v-slot:[`item.refundSetupTime`]="{ item }">
+          <span>
+            {{ parseDate(item.refundSetupTime) }}
+          </span>
+        </template>
+        <template v-slot:[`item.expressInfo`]="{ item }">
+          <span>
+            {{ item.expressInfo ? item.expressInfo : "暂无" }}
+          </span>
+        </template>
+        <!-- <template v-slot:[`item.needReturn`]="{ item }">
             <span>
               {{ item.needReturn ? "需要退货":"不退货"}}
             </span>
           </template> -->
 
-          <template v-slot:top>
-            <v-toolbar flat>
-              <v-toolbar-title @click="show">订单管理</v-toolbar-title>
-              <v-divider class="mx-4" inset vertical></v-divider>
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title @click="show">退单订单</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
 
-              <v-spacer></v-spacer>
-            </v-toolbar>
-          </template>
-        </v-data-table>
-      </v-card>
-    </v-card>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+        </template>
+      </v-data-table>
+    </div>
   </div>
 </template>
 
@@ -65,9 +70,12 @@
 <script>
 import { getMismatchRefundOrders } from "@/settings/order";
 import { javaUTCDateToString } from "@/libs/utils";
+import PageHeader from "@/components/PageHeader";
 
 export default {
-  components: {},
+  components: {
+    PageHeader,
+  },
   data() {
     return {
       loading: false,

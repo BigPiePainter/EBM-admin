@@ -1,428 +1,415 @@
 <template>
-  <div>
-    <v-card class="mb-1">
-      <v-data-table
-        class="profit-table"
-        height="calc(100vh - 200px)"
-        fixed-header
-        loading-text="加载中... 请稍后"
-        no-data-text="空"
-        :items-per-page="100"
-        :footer-props="{
-          'items-per-page-options': [50, 100, 500, 1000, 2000],
-          'items-per-page-text': '每页显示条数',
-        }"
-        :items="profitItems"
-        :headers="
-          !profitItems.length
-            ? []
-            : check
-            ? profitHeadersAll
-            : profitHeadersHide
-        "
-        :loading="loading"
-      >
-        <template v-slot:[`item.insurance`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.insurance" class="mr-1">{{ "￥  " }} </span>
-            <span>
-              {{ item.insurance ? item.insurance.toFixed(2) : "————" }}
-            </span>
-          </div>
-        </template>
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="利润报表">
+      <v-btn class="ml-2" text color="primary" disabled>
+        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
+        导出
+      </v-btn>
+    </PageHeader>
+    <v-data-table
+      class=""
+      height="calc(100vh - 197px)"
+      fixed-header
+      loading-text="加载中... 请稍后"
+      no-data-text="空"
+      :items-per-page="100"
+      :footer-props="{
+        'items-per-page-options': [50, 100, 500, 1000, 2000],
+        'items-per-page-text': '每页显示条数',
+      }"
+      :items="profitItems"
+      :headers="
+        !profitItems.length ? [] : check ? profitHeadersAll : profitHeadersHide
+      "
+      :loading="loading"
+    >
+      <template v-slot:[`item.insurance`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.insurance" class="mr-1">{{ "￥  " }} </span>
+          <span>
+            {{ item.insurance ? item.insurance.toFixed(2) : "————" }}
+          </span>
+        </div>
+      </template>
 
-        <template v-slot:[`item.deduction`]="{ item }">
-          <div class="d-flex">
+      <template v-slot:[`item.deduction`]="{ item }">
+        <div class="d-flex">
+          <span>
+            {{
+              item.deduction
+                ? (item.deduction * 100).toFixed(1) + " %"
+                : "   " + "————"
+            }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.extraRatio`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.extraRatio" class="mr-1">{{ "￥  " }} </span>
+          <span>
+            {{ item.extraRatio ? item.extraRatio.toFixed(2) + "%" : "————" }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.totalAmount`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.totalAmount" class="mr-1">{{ "￥  " }} </span>
+          <span>
+            {{ amountFormat(item.totalAmount, 2, "————") }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.totalFakeAmount`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.totalFakeAmount" class="mr-1">{{ "￥  " }} </span>
+          <span>
+            {{ item.totalFakeAmount && item.totalFakeAmount.toFixed(2) }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.freight`]="{ item }">
+        {{
+          item.freightToPayment
+            ? (item.freightToPayment * 100).toFixed(2) + "%"
+            : "￥" + item.freight
+        }}
+      </template>
+
+      <template v-slot:[`item.totalCost`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.totalCost" class="mr-1">{{ "￥  " }} </span>
+          <span>
+            {{ amountFormat(item.totalCost, 2, "————") }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.totalRefundAmount`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.totalRefundAmount" class="mr-1">{{ "￥  " }} </span>
+          <span>
+            {{
+              item.totalRefundAmount
+                ? item.totalRefundAmount.toFixed(2)
+                : "————"
+            }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.totalRefundWithNoShipAmount`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.totalRefundWithNoShipAmount" class="mr-1"
+            >{{ "￥  " }}
+          </span>
+          <span>
+            {{
+              item.totalRefundWithNoShipAmount
+                ? item.totalRefundWithNoShipAmount.toFixed(2)
+                : "————"
+            }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.totalBrokerage`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.totalBrokerage" class="mr-1">{{ "￥  " }} </span>
+          <span>
+            {{ item.totalBrokerage ? item.totalBrokerage.toFixed(2) : "————" }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.totalPrice`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.totalPrice" class="mr-1">{{ "￥  " }} </span>
+          <span>
+            {{ item.totalPrice ? item.totalPrice.toFixed(2) : "————" }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.calculatedActualAmount`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.calculatedActualAmount" class="mr-1">￥</span>
+          <span>
+            {{ amountFormat(item.calculatedActualAmount, 2, "————") }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.calculatedActualOrderCount`]="{ item }">
+        {{ item.calculatedActualOrderCount }}
+      </template>
+
+      <template v-slot:[`item.calculatedActualAverageAmount`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.calculatedActualAverageAmount" class="mr-1"
+            >{{ "￥  " }}
+          </span>
+          <span>
+            {{ item.calculatedActualAverageAmount.toFixed(2) }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.calculatedCostRatio`]="{ item }">
+        {{ (item.calculatedCostRatio * 100).toFixed(2) + "%" }}
+      </template>
+
+      <template v-slot:[`item.calculatedProfitRatio`]="{ item }">
+        {{ (item.calculatedProfitRatio * 100).toFixed(2) + "%" }}
+      </template>
+
+      <template v-slot:[`item.calculatedActualIncome`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.calculatedActualIncome" class="mr-1"
+            >{{ "￥  " }}
+          </span>
+          <span>
+            {{ amountFormat(item.calculatedActualIncome, 2, "————") }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.calculatedRefundWithNoShipAmount`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.calculatedRefundWithNoShipAmount" class="mr-1"
+            >{{ "￥  " }}
+          </span>
+          <span>
+            {{ item.calculatedRefundWithNoShipAmount.toFixed(2) }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.calculatedActualCost`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.calculatedActualCost" class="mr-1"
+            >{{ "￥  " }}
+          </span>
+          <span>
+            {{ item.calculatedActualCost.toFixed(2) }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.calculatedTmallTokeRatio`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.calculatedTmallTokeRatio" class="mr-1"
+            >{{ "￥  " }}
+          </span>
+          <span>
+            {{ amountFormat(item.calculatedTmallTokeRatio, 2, "————") }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.department`]="{ item }">
+        {{ global.log(departmentIdToName) }}
+        {{ departmentIdToName[item.department] }}
+      </template>
+      <template v-slot:[`item.team`]="{ item }">
+        {{ teamIdToName[item.team] }}
+      </template>
+      <template v-slot:[`item.owner`]="{ item }">
+        {{ userIdToNick[item.owner] }}
+      </template>
+      <template v-slot:[`item.firstCategory`]="{ item }">
+        {{ categoryIdToName[item.firstCategory] }}
+      </template>
+
+      <template v-slot:[`item.calculatedTotalFreight`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.calculatedTotalFreight" class="mr-1"
+            >{{ "￥  " }}
+          </span>
+          <span>
+            {{ item.calculatedTotalFreight.toFixed(2) }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.calculatedTotalInsurance`]="{ item }">
+        <div class="d-flex">
+          <span v-if="item.calculatedTotalInsurance" class="mr-1"
+            >{{ "￥  " }}
+          </span>
+          <span>
+            {{ item.calculatedTotalInsurance.toFixed(2) }}
+          </span>
+        </div>
+      </template>
+
+      <template v-slot:[`item.wrongCount`]="{ item }">
+        <span :style="item.wrongCount == 0 ? `` : `color:red`">
+          {{ item.wrongCount }}
+        </span>
+      </template>
+
+      <template v-slot:[`item.calculatedActualProfit`]="{ item }">
+        <div class="d-flex" :style="item.wrongCount == 0 ? `` : `color:red`">
+          <span v-if="item.calculatedActualProfit">{{ "￥ " }} </span>
+          <span>
             <span>
               {{
-                item.deduction
-                  ? (item.deduction * 100).toFixed(1) + " %"
-                  : "   " + "————"
+                item.wrongCount != 0
+                  ? "0.00"
+                  : amountFormat(item.calculatedActualProfit, 2, "————")
               }}
             </span>
-          </div>
-        </template>
+          </span>
+        </div>
+      </template>
 
-        <template v-slot:[`item.extraRatio`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.extraRatio" class="mr-1">{{ "￥  " }} </span>
-            <span>
-              {{ item.extraRatio ? item.extraRatio.toFixed(2) + "%" : "————" }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.totalAmount`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.totalAmount" class="mr-1">{{ "￥  " }} </span>
-            <span>
-              {{ amountFormat(item.totalAmount, 2, "————") }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.totalFakeAmount`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.totalFakeAmount" class="mr-1">{{ "￥  " }} </span>
-            <span>
-              {{ item.totalFakeAmount && item.totalFakeAmount.toFixed(2) }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.freight`]="{ item }">
+      <template v-slot:[`item.calculatedActualProfitRatio`]="{ item }">
+        <span :style="item.wrongCount == 0 ? `` : `color:red`">
           {{
-            item.freightToPayment
-              ? (item.freightToPayment * 100).toFixed(2) + "%"
-              : "￥" + item.freight
+            item.wrongCount == 0
+              ? item.calculatedActualProfitRatio >= 0
+                ? (item.calculatedActualProfitRatio * 100).toFixed(2) + " %"
+                : "————"
+              : "0.00 %"
           }}
-        </template>
+        </span>
+      </template>
 
-        <template v-slot:[`item.totalCost`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.totalCost" class="mr-1">{{ "￥  " }} </span>
-            <span>
-              {{ amountFormat(item.totalCost, 2, "————") }}
-            </span>
-          </div>
-        </template>
+      <template v-slot:[`item.calculatedDiscount`]="{ item }">
+        <span :style="item.wrongCount == 0 ? `` : `color:red`">
+          {{
+            item.calculatedDiscount == Infinity
+              ? Infinity
+              : (item.calculatedDiscount * 100).toFixed(2) + " %"
+          }}
+        </span>
+      </template>
 
-        <template v-slot:[`item.totalRefundAmount`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.totalRefundAmount" class="mr-1"
-              >{{ "￥  " }}
-            </span>
-            <span>
-              {{
-                item.totalRefundAmount
-                  ? item.totalRefundAmount.toFixed(2)
-                  : "————"
-              }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.totalRefundWithNoShipAmount`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.totalRefundWithNoShipAmount" class="mr-1"
-              >{{ "￥  " }}
-            </span>
-            <span>
-              {{
-                item.totalRefundWithNoShipAmount
-                  ? item.totalRefundWithNoShipAmount.toFixed(2)
-                  : "————"
-              }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.totalBrokerage`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.totalBrokerage" class="mr-1">{{ "￥  " }} </span>
-            <span>
-              {{
-                item.totalBrokerage ? item.totalBrokerage.toFixed(2) : "————"
-              }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.totalPrice`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.totalPrice" class="mr-1">{{ "￥  " }} </span>
-            <span>
-              {{ item.totalPrice ? item.totalPrice.toFixed(2) : "————" }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.calculatedActualAmount`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.calculatedActualAmount" class="mr-1">￥</span>
-            <span>
-              {{ amountFormat(item.calculatedActualAmount, 2, "————") }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.calculatedActualOrderCount`]="{ item }">
-          {{ item.calculatedActualOrderCount }}
-        </template>
-
-        <template v-slot:[`item.calculatedActualAverageAmount`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.calculatedActualAverageAmount" class="mr-1"
-              >{{ "￥  " }}
-            </span>
-            <span>
-              {{ item.calculatedActualAverageAmount.toFixed(2) }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.calculatedCostRatio`]="{ item }">
-          {{ (item.calculatedCostRatio * 100).toFixed(2) + "%" }}
-        </template>
-
-        <template v-slot:[`item.calculatedProfitRatio`]="{ item }">
-          {{ (item.calculatedProfitRatio * 100).toFixed(2) + "%" }}
-        </template>
-
-        <template v-slot:[`item.calculatedActualIncome`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.calculatedActualIncome" class="mr-1"
-              >{{ "￥  " }}
-            </span>
-            <span>
-              {{ amountFormat(item.calculatedActualIncome, 2, "————") }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.calculatedRefundWithNoShipAmount`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.calculatedRefundWithNoShipAmount" class="mr-1"
-              >{{ "￥  " }}
-            </span>
-            <span>
-              {{ item.calculatedRefundWithNoShipAmount.toFixed(2) }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.calculatedActualCost`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.calculatedActualCost" class="mr-1"
-              >{{ "￥  " }}
-            </span>
-            <span>
-              {{ item.calculatedActualCost.toFixed(2) }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.calculatedTmallTokeRatio`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.calculatedTmallTokeRatio" class="mr-1"
-              >{{ "￥  " }}
-            </span>
-            <span>
-              {{ amountFormat(item.calculatedTmallTokeRatio, 2, "————") }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.department`]="{ item }">
-          {{ global.log(departmentIdToName) }}
-          {{ departmentIdToName[item.department] }}
-        </template>
-        <template v-slot:[`item.team`]="{ item }">
-          {{ teamIdToName[item.team] }}
-        </template>
-        <template v-slot:[`item.owner`]="{ item }">
-          {{ userIdToNick[item.owner] }}
-        </template>
-        <template v-slot:[`item.firstCategory`]="{ item }">
-          {{ categoryIdToName[item.firstCategory] }}
-        </template>
-
-        <template v-slot:[`item.calculatedTotalFreight`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.calculatedTotalFreight" class="mr-1"
-              >{{ "￥  " }}
-            </span>
-            <span>
-              {{ item.calculatedTotalFreight.toFixed(2) }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.calculatedTotalInsurance`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.calculatedTotalInsurance" class="mr-1"
-              >{{ "￥  " }}
-            </span>
-            <span>
-              {{ item.calculatedTotalInsurance.toFixed(2) }}
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.wrongCount`]="{ item }">
-          <span :style="item.wrongCount == 0 ? `` : `color:red`">
-            {{ item.wrongCount }}
+      <template v-slot:top>
+        <v-toolbar flat>
+          <span
+            class="text-subtitle-2 ml-3 mr-1 text--secondary"
+            style="margin-top: 2px"
+          >
+            日期选择
           </span>
-        </template>
-
-        <template v-slot:[`item.calculatedActualProfit`]="{ item }">
-          <div class="d-flex" :style="item.wrongCount == 0 ? `` : `color:red`">
-            <span v-if="item.calculatedActualProfit">{{ "￥ " }} </span>
-            <span>
-              <span>
-                {{
-                  item.wrongCount != 0
-                    ? "0.00"
-                    : amountFormat(item.calculatedActualProfit, 2, "————")
-                }}
-              </span>
-            </span>
-          </div>
-        </template>
-
-        <template v-slot:[`item.calculatedActualProfitRatio`]="{ item }">
-          <span :style="item.wrongCount == 0 ? `` : `color:red`">
-            {{
-              item.wrongCount == 0
-                ? item.calculatedActualProfitRatio >= 0
-                  ? (item.calculatedActualProfitRatio * 100).toFixed(2) + " %"
-                  : "————"
-                : "0.00 %"
-            }}
-          </span>
-        </template>
-
-        <template v-slot:[`item.calculatedDiscount`]="{ item }">
-          <span :style="item.wrongCount == 0 ? `` : `color:red`">
-            {{
-              item.calculatedDiscount == Infinity
-                ? Infinity
-                : (item.calculatedDiscount * 100).toFixed(2) + " %"
-            }}
-          </span>
-        </template>
-
-        <template v-slot:top>
-          <v-toolbar flat>
-            <v-toolbar-title>利润报表</v-toolbar-title>
-            <v-divider class="mx-1" inset vertical></v-divider>
-
-            <span
-              class="text-subtitle-2 ml-3 mr-1 text--secondary"
-              style="margin-top: 2px"
-            >
-              日期选择
-            </span>
-            <v-menu
-              ref="menu"
-              v-model="datePicker"
-              :close-on-content-click="false"
-              :return-value.sync="startTime"
-              offset-y
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  class="shrink ml-1 date-picker-textfield"
-                  v-model="startTime"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                  outlined
-                  dense
-                  hide-details
-                  color="blue-grey lighten-1"
-                ></v-text-field>
-              </template>
-              <v-date-picker
+          <v-menu
+            ref="menu"
+            v-model="datePicker"
+            :close-on-content-click="false"
+            :return-value.sync="startTime"
+            offset-y
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                class="shrink ml-1 date-picker-textfield"
                 v-model="startTime"
-                no-title
-                scrollable
-                locale="zh-cn"
-                first-day-of-week="1"
-                :day-format="dayFormat"
-                min="2021-01-01"
-                :max="parseDate(new Date())"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+                outlined
+                dense
+                hide-details
+                color="primary"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="startTime"
+              no-title
+              scrollable
+              locale="zh-cn"
+              first-day-of-week="1"
+              :day-format="dayFormat"
+              min="2021-01-01"
+              :max="parseDate(new Date())"
+            >
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="datePicker = false">
+                取消
+              </v-btn>
+              <v-btn
+                text
+                color="primary"
+                @click="
+                  $refs.menu.save(startTime);
+                  loadData();
+                "
               >
-                <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="datePicker = false">
-                  取消
-                </v-btn>
-                <v-btn
-                  text
-                  color="primary"
-                  @click="
-                    $refs.menu.save(startTime);
-                    loadData();
-                  "
-                >
-                  确定
-                </v-btn>
-              </v-date-picker>
-            </v-menu>
-            <span
-              class="text-subtitle-2 ml-3 mr-2 text--secondary"
-              style="margin-top: 2px"
-            >
-              ~
-            </span>
-            <v-menu
-              ref="menu2"
-              v-model="datePicker2"
-              :close-on-content-click="false"
-              :return-value.sync="endTime"
-              offset-y
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  class="shrink ml-1 date-picker-textfield"
-                  v-model="endTime"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                  outlined
-                  dense
-                  hide-details
-                  color="blue-grey lighten-1"
-                  disabled
-                ></v-text-field>
-              </template>
-              <v-date-picker
+                确定
+              </v-btn>
+            </v-date-picker>
+          </v-menu>
+          <span
+            class="text-subtitle-2 ml-3 mr-2 text--secondary"
+            style="margin-top: 2px"
+          >
+            ~
+          </span>
+          <v-menu
+            ref="menu2"
+            v-model="datePicker2"
+            :close-on-content-click="false"
+            :return-value.sync="endTime"
+            offset-y
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                class="shrink ml-1 date-picker-textfield"
                 v-model="endTime"
-                no-title
-                scrollable
-                locale="zh-cn"
-                first-day-of-week="1"
-                :day-format="dayFormat"
-                min="2021-01-01"
-                :max="parseDate(new Date())"
-              >
-                <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="datePicker2 = false">
-                  取消
-                </v-btn>
-                <v-btn
-                  text
-                  color="primary"
-                  @click="
-                    $refs.menu.save(endTime);
-                    loadData();
-                  "
-                >
-                  确定
-                </v-btn>
-              </v-date-picker>
-            </v-menu>
-
-            <v-btn
-              text
-              small
-              depressed
-              class="mx-2 ml-5"
-              @click="check = !check"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+                outlined
+                dense
+                hide-details
+                color="primary"
+                disabled
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="endTime"
+              no-title
+              scrollable
+              locale="zh-cn"
+              first-day-of-week="1"
+              :day-format="dayFormat"
+              min="2021-01-01"
+              :max="parseDate(new Date())"
             >
-              <v-icon small class="mr-1">
-                {{
-                  check
-                    ? "mdi-checkbox-marked-outline"
-                    : "mdi-checkbox-blank-outline"
-                }}
-              </v-icon>
-              <span> 展开全部列 </span>
-            </v-btn>
-          </v-toolbar>
-        </template>
-      </v-data-table>
-    </v-card>
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="datePicker2 = false">
+                取消
+              </v-btn>
+              <v-btn
+                text
+                color="primary"
+                @click="
+                  $refs.menu.save(endTime);
+                  loadData();
+                "
+              >
+                确定
+              </v-btn>
+            </v-date-picker>
+          </v-menu>
+
+          <v-btn text small depressed class="mx-2 ml-5" @click="check = !check">
+            <v-icon small class="mr-1">
+              {{
+                check
+                  ? "mdi-checkbox-marked-outline"
+                  : "mdi-checkbox-blank-outline"
+              }}
+            </v-icon>
+            <span> 展开全部列 </span>
+          </v-btn>
+        </v-toolbar>
+      </template>
+    </v-data-table>
   </div>
 </template>
 
@@ -433,7 +420,12 @@ import { javaUTCDateToString } from "@/libs/utils";
 import { getDailyReport } from "@/settings/order";
 import { mapState } from "vuex";
 
+import PageHeader from "@/components/PageHeader";
+
 export default {
+  components: {
+    PageHeader,
+  },
   data() {
     return {
       startTime: "",
@@ -520,7 +512,7 @@ export default {
 
   created() {
     var date = new Date();
-    date.setDate(date.getDate() - 1);
+    date.setDate(date.getDate() - 2);
     this.startTime = javaUTCDateToString(date);
     this.loadData();
   },

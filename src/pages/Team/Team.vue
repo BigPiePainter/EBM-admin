@@ -1,14 +1,24 @@
 <template>
-  <div>
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="组别管理">
+      <v-btn class="ml-2" text color="primary" @click="addTeamButton">
+        <v-icon size="20" style="padding-top: 2px">mdi-bookmark-plus</v-icon>
+        新增组别
+      </v-btn>
+      <v-btn class="ml-2" text color="primary" disabled>
+        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
+        导出
+      </v-btn>
+    </PageHeader>
     <v-data-table
-      class="elevation-2"
+      class=""
+      height="calc(100vh - 197px)"
       fixed-header
       loading-text="加载中... 请稍后"
       no-data-text="空"
       item-key="uid"
       show-expand
       disable-sort
-      height="calc(100vh - 200px)"
       :expanded.sync="expanded"
       :headers="headers"
       :items="allTeams"
@@ -22,18 +32,9 @@
     >
       <template v-slot:top>
         <v-toolbar flat color="white" dense>
-          <v-toolbar-title>组别</v-toolbar-title>
+          <v-toolbar-title>全部组别</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-btn
-            small
-            depressed
-            color="primary"
-            dark
-            @click="addTeamButton"
-          >
-            新组别
-          </v-btn>
         </v-toolbar>
       </template>
 
@@ -60,7 +61,7 @@
             .join("，")
         }}
       </template>
-      
+
       <template v-slot:[`item.createTime`]="{ item }">
         {{ parseDateTime(item.createTime) }}
       </template>
@@ -111,7 +112,7 @@
                 outlined
                 dense
                 hide-details
-                color="blue-grey lighten-1"
+                color="primary"
                 v-model="teamEdit.name"
               >
               </v-text-field>
@@ -130,7 +131,7 @@
                 outlined
                 dense
                 hide-details
-                color="blue-grey lighten-1"
+                color="primary"
                 item-text="nick"
                 item-value="uid"
                 multiple
@@ -165,7 +166,7 @@
                 dense
                 hide-details
                 v-model="teamEdit.note"
-                color="blue-grey lighten-1"
+                color="primary"
               >
               </v-text-field>
             </v-col>
@@ -174,10 +175,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="teamInfoDialog = false"
+          <v-btn color="blue darken-1" text @click="teamInfoDialog = false"
             >取消</v-btn
           >
           <v-btn color="blue darken-1" text @click="save">保存</v-btn>
@@ -198,7 +196,13 @@ import TeamMemberTable from "../../components/TeamMemberTable/TeamMemberTable.vu
 
 import { javaDateTimeToString } from "@/libs/utils";
 
+import PageHeader from "@/components/PageHeader";
+
 export default {
+  components: {
+    PageHeader,
+    TeamMemberTable,
+  },
   data: () => ({
     autocompleteFocus: false,
     dialogPersistent: false,
@@ -337,7 +341,6 @@ export default {
         });
     },
   },
-  components: { TeamMemberTable },
 };
 </script>
 

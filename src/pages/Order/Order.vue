@@ -1,44 +1,54 @@
 <template>
-  <div>
-    <v-card>
-      <v-card class="products-list mb-1">
-        <v-data-table
-          loading-text="加载中... 请稍后"
-          no-data-text="空"
-          item-key="subOrderNumber"
-          disable-sort
-          class="elevation-1"
-          height="80vh"
-          :headers="Headers"
-          :items="allItems"
-          :items-per-page="50"
-          :footer-props="{
-            'items-per-page-options': [10, 20, 50, 100],
-            'items-per-page-text': '每页显示条数',
-          }"
-        >
-          <template v-slot:top>
-            <v-toolbar flat>
-              <v-toolbar-title>订单管理</v-toolbar-title>
-              <v-divider class="mx-4" inset vertical></v-divider>
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="订单">
+      <v-btn class="ml-2" text color="primary" disabled>
+        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
+        导出
+      </v-btn>
+    </PageHeader>
+    <div class="flex-grow-1">
+      <v-data-table
+        fixed-header
+        loading-text="加载中... 请稍后"
+        no-data-text="空"
+        item-key="subOrderNumber"
+        disable-sort
+        class=""
+        height="calc(100vh - 197px)"
+        mobile-breakpoint="0"
+        :headers="Headers"
+        :items="allItems"
+        :items-per-page="50"
+        :footer-props="{
+          'items-per-page-options': [10, 20, 50, 100],
+          'items-per-page-text': '每页显示条数',
+        }"
+      >
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>订单信息</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
 
-              <v-spacer></v-spacer>
-              <!-- <v-switch class="mt-5" label="展开更多信息" v-model="moreInfo">
+            <v-spacer></v-spacer>
+            <!-- <v-switch class="mt-5" label="展开更多信息" v-model="moreInfo">
               </v-switch> -->
-            </v-toolbar>
-          </template>
-        </v-data-table>
-      </v-card>
-    </v-card>
+          </v-toolbar>
+        </template>
+      </v-data-table>
+    </div>
+    
   </div>
 </template>
 
 
 <script>
 import { getDailyReport } from "@/settings/order";
+import PageHeader from "@/components/PageHeader";
 
 export default {
-  components: {},
+  components: {
+    PageHeader,
+  },
   data() {
     return {
       allItems: [],
@@ -95,7 +105,7 @@ export default {
 
   methods: {
     loadData() {
-      getDailyReport({date: "2022/8/21" })
+      getDailyReport({ date: "2022/8/21" })
         .then((res) => {
           console.log(res.data);
         })
