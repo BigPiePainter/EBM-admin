@@ -7,7 +7,7 @@
       </v-btn>
     </PageHeader>
     <v-data-table
-      class=""
+      class="profit-table"
       height="calc(100vh - 197px)"
       fixed-header
       loading-text="加载中... 请稍后"

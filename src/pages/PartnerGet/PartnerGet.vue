@@ -32,7 +32,7 @@
         :options.sync="options"
         :items-per-page="50"
         :footer-props="{
-          'items-per-page-options': [10, 20, 50, 100],
+          'items-per-page-options': [10, 20, 50, 100, 500, 1000, 5000],
           'items-per-page-text': '每页显示条数',
         }"
         @click:row="clickRow"
@@ -80,7 +80,7 @@
 
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>我的商品</v-toolbar-title>
+            <v-toolbar-title>商品信息</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-btn
               small

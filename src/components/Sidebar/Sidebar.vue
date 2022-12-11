@@ -149,6 +149,11 @@ export default {
               link: "/mismatchProducts",
             },
             {
+              title: "已下架商品",
+              icon: "mdi-circle-small",
+              link: "/deletedProducts",
+            },
+            {
               title: "一级类目",
               icon: "mdi-circle-small",
               link: "/category",
