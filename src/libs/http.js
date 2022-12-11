@@ -6,7 +6,7 @@ import {
 class Http {
   constructor() {
     this.baseUrl = 'http://192.168.10.10:8087/pofa' //后端网址
-    this.baseUrl = 'http://127.0.0.1:8087/pofa' //后端网址
+    //this.baseUrl = 'http://127.0.0.1:8087/pofa' //后端网址
   }
 
   request(options) {
@@ -39,7 +39,7 @@ class Http {
       if (options.file) return data
 
       if (options.headers && options.headers['Content-Type']) {
-        console.log("预处1")
+        console.log("预处理1")
         return data
       }
       if (options.json === true && typeof data !== 'string') {
