@@ -11,6 +11,8 @@ import ProfitChart from '@/pages/Dashboard/ProfitChart';
 import ProfitTable from '@/pages/Dashboard/ProfitTable';
 import PartnerGet from '@/pages/PartnerGet/PartnerGet'
 import MismatchProducts from '@/pages/MismatchProducts/MismatchProducts'
+import DeletedProducts from '@/pages/DeletedProducts/DeletedProducts'
+
 import Category from '@/pages/Category/Category'
 import ProductsGet from '@/pages/ProductsGet/ProductsGet'
 import ProductsPut from '@/pages/ProductsPut/ProductsPut'
@@ -80,6 +82,11 @@ var routerConfig = {
           path: 'mismatchProducts',
           name: 'MismatchProducts',
           component: MismatchProducts,
+        },
+        {
+          path: 'deletedProducts',
+          name: 'DeletedProducts',
+          component: DeletedProducts,
         },
         {
           path: 'category',

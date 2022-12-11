@@ -20,6 +20,7 @@
         :headers="brushHeader"
         :items="brushItems"
         :options.sync="options"
+        :server-items-length="totalBrushItems"
         :items-per-page="50"
         :footer-props="{
           'items-per-page-options': [10, 20, 50, 100],

@@ -12,6 +12,10 @@
     </PageHeader>
     <div class="flex-grow-1 d-flex">
       <v-data-table
+      class="flex-grow-1"
+        :show-select="categoryAction"
+        show-expand
+        @click:row="clickRow"
         single-select
         v-model="selectedCategoryItem"
         fixed-header
@@ -44,9 +48,6 @@
           <v-toolbar flat>
             <v-toolbar-title>一级类目</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
-            <v-btn small depressed color="primary" @click="addButton">
-              新增类目
-            </v-btn>
             <v-btn
               small
               depressed
@@ -183,10 +184,8 @@
           </td>
         </template>
       </v-data-table>
-      <v-divider vertical style="margin-left:0.1px"></v-divider>
-      <div style="width:500px">
-        123
-      </div>
+      <v-divider vertical style="margin-left: 0.1px"></v-divider>
+      <div style="width: 500px"></div>
     </div>
 
     <!-- 类目名称 Dialog -->
@@ -586,6 +585,14 @@ export default {
     ...mapActions(["refreshAllCategorys"]),
     parseDate(date) {
       return javaUTCDateToString(date);
+    },
+    clickRow(item, event) {
+      if (event.isExpanded) {
+        const index = this.expanded.findIndex((i) => i === item);
+        this.expanded.splice(index, 1);
+      } else {
+        this.expanded.push(item);
+      }
     },
     dayFormat(date) {
       return Number(date.split("-")[2]);

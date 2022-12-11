@@ -9,6 +9,18 @@ export const loadProducts = data => {
     return http.request(args)
 }
 
+export const loadDeletedProducts = data => {
+    const args = {
+        url: '/product/getDeprecatedByPermission',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
+
+
+
 export const addProducts = data => {
     const args = {
         url: '/product/add',
