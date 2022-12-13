@@ -42,7 +42,7 @@
 
 
 <script>
-import { getDailyReport } from "@/settings/order";
+import { getProfitReport } from "@/settings/profitReport";
 import PageHeader from "@/components/PageHeader";
 
 export default {
@@ -105,7 +105,7 @@ export default {
 
   methods: {
     loadData() {
-      getDailyReport({ date: "2022/8/21" })
+      getProfitReport({ date: "2022/8/21" })
         .then((res) => {
           console.log(res.data);
         })

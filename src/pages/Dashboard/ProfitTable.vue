@@ -417,7 +417,7 @@
 <script>
 import { amountBeautify } from "@/libs/utils";
 import { javaUTCDateToString } from "@/libs/utils";
-import { getDailyReport } from "@/settings/order";
+import { getProfitReport } from "@/settings/profitReport";
 import { mapState } from "vuex";
 
 import PageHeader from "@/components/PageHeader";
@@ -554,7 +554,7 @@ export default {
       this.loading = true;
 
       console.log("接口调用", args);
-      getDailyReport(args)
+      getProfitReport(args)
         .then((res) => {
           this.loading = false;
           console.log(res.data);
