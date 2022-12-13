@@ -191,7 +191,7 @@
             class="pb-7"
             color="blue darken-1"
             text
-            @click.stop="announcementDialog = false"
+            @click.stop="announcementDialog = false, announcementText = ''"
           >
             取消
           </v-btn>
@@ -217,7 +217,6 @@ import { setAnnouncement } from "@/settings/announcement";
 import config from "../../config";
 
 export default {
-  
   name: "Header",
   components: {},
   data: () => ({
@@ -296,21 +295,17 @@ export default {
       this.announcementDialog = true;
     },
 
-    // cancelAnnouncement() {
-    //   this.announcementDialog = false;
-    // },
-
     setAnnouncement() {
       console.log(this.user);
       console.log(this.announcementText);
       this.announcementDialog = false;
-      setAnnouncement({content: this.announcementText})
+      setAnnouncement({ content: this.announcementText })
         .then((res) => {
           console.log(res.data);
           this.global.infoAlert("泼发EBC：" + res.data);
         })
-        .catch(() => {
-        });
+        .catch(() => {});
+      this.announcementText = "";
     },
 
     logOut: function () {
