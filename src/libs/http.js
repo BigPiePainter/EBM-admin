@@ -5,9 +5,8 @@ import {
 } from '@/libs/utils'
 class Http {
   constructor() {
-    //this.baseUrl = 'http://192.168.10.10:8087/pofa' //后端网址
-    //this.baseUrl = 'http://127.0.0.1:8087/pofa' //后端网址
-    this.baseUrl = 'http://192.168.10.10:8888/pofa' //后端网址
+    console.log("后端网址", process.env.VUE_APP_API_URL)
+    this.baseUrl = "http://" + process.env.VUE_APP_API_URL
   }
 
   request(options) {
