@@ -37,11 +37,10 @@
         }"
         @click:row="clickRow"
       >
-        <template
-          v-for="header in headersContent"
-          v-slot:[`header.${header.value}`]="props"
-        >
-          <v-edit-dialog :key="header.value" @close="loadData">
+        <!-- 商品清单表头搜索功能 -->
+        <!-- 查找商品id -->
+        <template v-slot:[`header.id`]="props">
+          <v-edit-dialog @close="loadData">
             {{ props.header.text }}
             <template v-slot:input>
               <div class="d-flex align-center">
@@ -54,6 +53,230 @@
                   class="ml-3"
                 >
                 </v-text-field>
+              </div>
+            </template>
+          </v-edit-dialog>
+        </template>
+
+        <!-- 查找商品名称 -->
+        <template v-slot:[`header.productName`]="props">
+          <v-edit-dialog @close="loadData">
+            {{ props.header.text }}
+            <template v-slot:input>
+              <div class="d-flex align-center">
+                <span> {{ props.header.text }} </span>
+                <v-text-field
+                  color="primary"
+                  v-model="search.search[props.header.value]"
+                  single-line
+                  counter
+                  class="ml-3"
+                >
+                </v-text-field>
+              </div>
+            </template>
+          </v-edit-dialog>
+        </template>
+
+        <!-- 查找备注 -->
+        <template v-slot:[`header.note`]="props">
+          <v-edit-dialog @close="loadData">
+            {{ props.header.text }}
+            <template v-slot:input>
+              <div class="d-flex align-center">
+                <span> {{ props.header.text }} </span>
+                <v-text-field
+                  color="primary"
+                  v-model="search.search[props.header.value]"
+                  single-line
+                  counter
+                  class="ml-3"
+                >
+                </v-text-field>
+              </div>
+            </template>
+          </v-edit-dialog>
+        </template>
+
+        <!-- 查找聚水潭仓库 -->
+        <template v-slot:[`header.storehouse`]="props">
+          <v-edit-dialog @close="loadData">
+            {{ props.header.text }}
+            <template v-slot:input>
+              <div class="d-flex align-center">
+                <span> {{ props.header.text }} </span>
+                <v-text-field
+                  color="primary"
+                  v-model="search.search[props.header.value]"
+                  single-line
+                  counter
+                  class="ml-3"
+                >
+                </v-text-field>
+              </div>
+            </template>
+          </v-edit-dialog>
+        </template>
+
+        <!-- 查找发货方式 -->
+        <template v-slot:[`header.transportWay`]="props">
+          <v-edit-dialog @close="loadData">
+            {{ props.header.text }}
+            <template v-slot:input>
+              <div class="d-flex align-center">
+                <span> {{ props.header.text }} </span>
+                <v-text-field
+                  color="primary"
+                  v-model="search.search[props.header.value]"
+                  single-line
+                  counter
+                  class="ml-3"
+                >
+                </v-text-field>
+              </div>
+            </template>
+          </v-edit-dialog>
+        </template>
+
+        <!-- 查找店铺 -->
+        <template v-slot:[`header.shopName`]="props">
+          <v-edit-dialog @close="loadData">
+            {{ props.header.text }}
+            <template v-slot:input>
+              <div class="d-flex align-center">
+                <span> {{ props.header.text }} </span>
+                <v-text-field
+                  color="primary"
+                  v-model="search.search[props.header.value]"
+                  single-line
+                  counter
+                  class="ml-3"
+                >
+                </v-text-field>
+              </div>
+            </template>
+          </v-edit-dialog>
+        </template>
+
+        <!-- 查找部门 -->
+        <template v-slot:[`header.department`]="props">
+          <v-edit-dialog @close="loadData">
+            {{ props.header.text }}
+            <template v-slot:input>
+              <div class="d-flex align-center">
+                <span> {{ props.header.text }} </span>
+                <v-autocomplete
+                  color="primary"
+                  :items="allDepartments"
+                  item-text="name"
+                  item-value="uid"
+                  v-model="search.search[props.header.value]"
+                  single-line
+                  counter
+                  class="ml-3"
+                  filled
+                  multiple
+                  label="选择"
+                >
+                <template v-slot:selection="option">
+                    <v-chip close @click:close="remove(props, option)">
+                      {{ option.item.name }}
+                    </v-chip>
+                  </template>
+                </v-autocomplete>
+              </div>
+            </template>
+          </v-edit-dialog>
+        </template>
+
+        <!-- 查找组别 -->
+        <template v-slot:[`header.team`]="props">
+          <v-edit-dialog @close="loadData">
+            {{ props.header.text }}
+            <template v-slot:input>
+              <div class="d-flex align-center">
+                <span> {{ props.header.text }} </span>
+                <v-autocomplete
+                  color="primary"
+                  :items="allTeams"
+                  item-text="name"
+                  item-value="uid"
+                  v-model="search.search[props.header.value]"
+                  single-line
+                  counter
+                  class="ml-3"
+                  filled
+                  multiple
+                  label="选择"
+                >
+                <template v-slot:selection="option">
+                    <v-chip close @click:close="remove(props, option)">
+                      {{ option.item.name }}
+                    </v-chip>
+                  </template>
+                </v-autocomplete>
+              </div>
+            </template>
+          </v-edit-dialog>
+        </template>
+
+        <!-- 查找持品人 -->
+        <template v-slot:[`header.owner`]="props">
+          <v-edit-dialog @close="loadData">
+            {{ props.header.text }}
+            <template v-slot:input>
+              <div class="d-flex align-center">
+                <span> {{ props.header.text }} </span>
+                <v-autocomplete
+                  color="primary"
+                  :items="allUsers"
+                  item-text="nick"
+                  item-value="uid"
+                  v-model="search.search[props.header.value]"
+                  single-line
+                  counter
+                  class="ml-3"
+                  filled
+                  multiple
+                  label="选择"
+                >
+                  <template v-slot:selection="option">
+                    <v-chip close @click:close="remove(props, option)">
+                      {{ option.item.nick }}
+                    </v-chip>
+                  </template>
+                </v-autocomplete>
+              </div>
+            </template>
+          </v-edit-dialog>
+        </template>
+
+        <!-- 查找一级类目 -->
+        <template v-slot:[`header.firstCategory`]="props">
+          <v-edit-dialog @close="loadData">
+            {{ props.header.text }}
+            <template v-slot:input>
+              <div class="d-flex align-center">
+                <span> {{ props.header.text }} </span>
+                <v-autocomplete
+                  color="primary"
+                  :items="allCategorys"
+                  item-text="name"
+                  item-value="uid"
+                  v-model="search.search[props.header.value]"
+                  single-line
+                  counter
+                  class="ml-3"
+                  filled
+                  multiple
+                  label="选择"
+                >
+                <template v-slot:selection="option">
+                    <v-chip close @click:close="remove(props, option)">
+                      {{ option.item.name }}
+                    </v-chip>
+                  </template>
+                </v-autocomplete>
               </div>
             </template>
           </v-edit-dialog>
@@ -768,15 +991,12 @@ export default {
     "search.search": {
       handler() {
         this.searchPreview = "";
-        console.log(this.search.search.department);
-        console.log(this.allCategorys.length);
-        var xxx = { ...this.search };
-        if (xxx.search.department == "1") {
-          this.search.search.department = "2";
-        }
+
         for (let name in this.search.search) {
           if (!this.search.search[name]) continue;
-          this.search.search[name] = this.search.search[name].trim();
+          if (typeof this.search.search[name] == "string") {
+            this.search.search[name] = this.search.search[name].trim();
+          }
           if (this.search.search[name]) {
             this.searchPreview += `${
               this.headersContent.find((i) => i.value == name).text
@@ -804,6 +1024,11 @@ export default {
   },
 
   methods: {
+    remove(props, option) {
+      console.log(option);
+      console.log(this.search.search);
+      this.search.search[props.header.value].splice(option.index, 1);
+    },
     parseDate(time) {
       return javaUTCDateToString(time);
     },
