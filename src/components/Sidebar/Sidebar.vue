@@ -102,6 +102,7 @@
         tile
         class="sider-block d-flex align-center"
         color="white"
+        @click.stop=!sideBarRight
       >
         <span class="text-body-2 grey--text"> 更新日志 </span>
       </v-btn>
@@ -125,6 +126,7 @@ export default {
   },
   data() {
     return {
+      sideBarRight: false,
       items: [
         {
           title: "主页",
