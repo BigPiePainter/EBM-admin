@@ -49,7 +49,6 @@
                   color="primary"
                   v-model="search.search[props.header.value]"
                   single-line
-                  counter
                   class="ml-3"
                 >
                 </v-text-field>
@@ -69,7 +68,6 @@
                   color="primary"
                   v-model="search.search[props.header.value]"
                   single-line
-                  counter
                   class="ml-3"
                 >
                 </v-text-field>
@@ -89,7 +87,6 @@
                   color="primary"
                   v-model="search.search[props.header.value]"
                   single-line
-                  counter
                   class="ml-3"
                 >
                 </v-text-field>
@@ -109,7 +106,6 @@
                   color="primary"
                   v-model="search.search[props.header.value]"
                   single-line
-                  counter
                   class="ml-3"
                 >
                 </v-text-field>
@@ -129,7 +125,6 @@
                   color="primary"
                   v-model="search.search[props.header.value]"
                   single-line
-                  counter
                   class="ml-3"
                 >
                 </v-text-field>
@@ -149,7 +144,6 @@
                   color="primary"
                   v-model="search.search[props.header.value]"
                   single-line
-                  counter
                   class="ml-3"
                 >
                 </v-text-field>
@@ -172,11 +166,9 @@
                   item-value="uid"
                   v-model="search.search[props.header.value]"
                   single-line
-                  counter
-                  class="ml-3"
-                  filled
                   multiple
                   label="选择"
+                  class="ml-3"
                 >
                 <template v-slot:selection="option">
                     <v-chip close @click:close="remove(props, option)">
@@ -203,9 +195,7 @@
                   item-value="uid"
                   v-model="search.search[props.header.value]"
                   single-line
-                  counter
                   class="ml-3"
-                  filled
                   multiple
                   label="选择"
                 >
@@ -234,9 +224,7 @@
                   item-value="uid"
                   v-model="search.search[props.header.value]"
                   single-line
-                  counter
                   class="ml-3"
-                  filled
                   multiple
                   label="选择"
                 >
@@ -265,9 +253,7 @@
                   item-value="uid"
                   v-model="search.search[props.header.value]"
                   single-line
-                  counter
                   class="ml-3"
-                  filled
                   multiple
                   label="选择"
                 >

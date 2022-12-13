@@ -10,6 +10,14 @@
     </v-btn>
     <v-toolbar-title>浙江泼发进出口贸易有限公司EBC</v-toolbar-title>
     <v-spacer></v-spacer>
+    <v-btn
+      v-if="user.uid == 1"
+      class="mr-3"
+      small
+      color="blue accent-3"
+      @click="announcement()"
+      >发布公告</v-btn
+    >
 
     <!-- <v-menu offset-y bottom nudge-bottom="10" left>
       <template v-slot:activator="{ on, attrs }">
@@ -110,10 +118,21 @@
         </div>
       </v-list>
     </v-menu> -->
+
     <v-menu min-width="180" offset-y bottom left vnudge-bottom="10">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn class="mr-2" fab depressed v-bind="attrs" v-on="on" color="#78909C" x-small>
-          <span style="font-size:1rem">{{$store.state.user.nick.substr(0, 1)}}</span>
+        <v-btn
+          class="mr-2"
+          fab
+          depressed
+          v-bind="attrs"
+          v-on="on"
+          color="#78909C"
+          x-small
+        >
+          <span style="font-size: 1rem">{{
+            $store.state.user.nick.substr(0, 1)
+          }}</span>
         </v-btn>
       </template>
       <v-list>
@@ -158,12 +177,42 @@
         <v-icon :color="config.light.iconColor"> mdi-email-outline</v-icon>
       </v-badge>
     </v-btn> -->
+    <v-dialog v-model="announcementDialog" width="500px">
+      <v-card>
+        <v-card-title class="pt-5 mb-3">
+          请输入公告内容：
+        </v-card-title>
+        <v-card-text class="pb-0">
+          <v-textarea outlined v-model="announcementText"> </v-textarea>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer
+          ><v-btn
+            class="pb-7"
+            color="blue darken-1"
+            text
+            @click.stop="announcementDialog = false, announcementText = ''"
+          >
+            取消
+          </v-btn>
+          <v-btn
+            class="pb-7"
+            color="blue darken-1"
+            text
+            @click.stop="setAnnouncement"
+          >
+            发布公告
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app-bar>
 </template>
 
 <script>
 import { mapMutations, mapState } from "vuex";
 import { userLogout } from "@/settings/user";
+import { setAnnouncement } from "@/settings/announcement";
 
 import config from "../../config";
 
@@ -171,6 +220,8 @@ export default {
   name: "Header",
   components: {},
   data: () => ({
+    announcementText: "",
+    announcementDialog: true,
     loading: false,
     config,
     searchCollapse: true,
@@ -235,10 +286,27 @@ export default {
     messageBadge: true,
   }),
   computed: {
-    ...mapState(["drawer"]),
+    ...mapState(["user", "drawer"]),
   },
   methods: {
     ...mapMutations(["setDrawer"]),
+
+    announcement() {
+      this.announcementDialog = true;
+    },
+
+    setAnnouncement() {
+      console.log(this.user);
+      console.log(this.announcementText);
+      this.announcementDialog = false;
+      setAnnouncement({ content: this.announcementText })
+        .then((res) => {
+          console.log(res.data);
+          this.global.infoAlert("泼发EBC：" + res.data);
+        })
+        .catch(() => {});
+      this.announcementText = "";
+    },
 
     logOut: function () {
       //this.$router.push("/login");
