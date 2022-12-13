@@ -49,7 +49,7 @@ export default {
 
   data: () => ({
     show: false,
-    date: new Date("2022-12-13 10:15:21"),
+    date: new Date("2020"),
     websocket: null,
     content: `
 EBC在12月13日下午5点进行了更新
