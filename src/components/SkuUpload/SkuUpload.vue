@@ -557,7 +557,7 @@ export default {
 }
 
 #dropbox {
-  border-radius: 10px;
+  border-radius: 5px;
   color: #777;
   h5 {
     pointer-events: none;
