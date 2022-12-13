@@ -12,7 +12,7 @@
     <v-spacer></v-spacer>
     <v-btn
       v-if="user.uid == 1"
-      class="mr-3"
+      class="mr-7"
       small
       color="blue accent-3"
       @click="announcement()"
@@ -179,28 +179,22 @@
     </v-btn> -->
     <v-dialog v-model="announcementDialog" width="500px">
       <v-card>
-        <v-card-title class="pt-5 mb-3">
+        <v-card-title class="text-subtitle-1 pt-5 mb-3">
           请输入公告内容：
         </v-card-title>
-        <v-card-text class="pb-0">
-          <v-textarea outlined v-model="announcementText"> </v-textarea>
+        <v-card-text class="pb-0 mb-3">
+          <v-textarea outlined v-model="announcementText" hide-details=""> </v-textarea>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer
           ><v-btn
-            class="pb-7"
             color="blue darken-1"
             text
-            @click.stop="announcementDialog = false, announcementText = ''"
+            @click.stop="(announcementDialog = false), (announcementText = '')"
           >
             取消
           </v-btn>
-          <v-btn
-            class="pb-7"
-            color="blue darken-1"
-            text
-            @click.stop="setAnnouncement"
-          >
+          <v-btn color="blue darken-1" text @click.stop="setAnnouncement">
             发布公告
           </v-btn>
         </v-card-actions>
@@ -221,7 +215,7 @@ export default {
   components: {},
   data: () => ({
     announcementText: "",
-    announcementDialog: true,
+    announcementDialog: false,
     loading: false,
     config,
     searchCollapse: true,
