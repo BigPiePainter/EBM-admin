@@ -177,13 +177,13 @@
         <v-icon :color="config.light.iconColor"> mdi-email-outline</v-icon>
       </v-badge>
     </v-btn> -->
-    <v-dialog v-model="announcementDialog" width="500px">
+    <v-dialog v-model="announcementDialog" scrollable width="500px">
       <v-card>
         <v-card-title class="text-subtitle-1 pt-5 mb-3">
           请输入公告内容：
         </v-card-title>
         <v-card-text class="pb-0 mb-3">
-          <v-textarea style="font-size: 15px" height="550px" outlined v-model="announcementText" hide-details=""> </v-textarea>
+          <v-textarea style="font-size: 15px" height="350px" outlined v-model="announcementText" hide-details=""> </v-textarea>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer
