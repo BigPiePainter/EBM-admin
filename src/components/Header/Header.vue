@@ -183,7 +183,7 @@
           请输入公告内容：
         </v-card-title>
         <v-card-text class="pb-0 mb-3">
-          <v-textarea outlined v-model="announcementText" hide-details=""> </v-textarea>
+          <v-textarea style="font-size: 15px" height="550px" outlined v-model="announcementText" hide-details=""> </v-textarea>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer
