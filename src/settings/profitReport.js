@@ -9,6 +9,15 @@ export const getProfitReport = data => {
     return http.request(args)
 }
 
+export const getMismatchedSkus = data => {
+    const args = {
+        url: '/profitReport/getMismatchedSkus',
+        method: 'POST',
+        data,
+    }
+    return http.request(args)
+}
+
 
 
 

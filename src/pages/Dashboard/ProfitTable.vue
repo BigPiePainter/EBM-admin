@@ -250,6 +250,16 @@
         <span :style="item.wrongCount == 0 ? `` : `color:red`">
           {{ item.wrongCount }}
         </span>
+        <v-btn
+          v-if="item.wrongCount != 0"
+          x-small
+          depressed
+          text
+          class="pa-0"
+          @click="showMismatchedSkus(item)"
+        >
+          啊？
+        </v-btn>
       </template>
 
       <template v-slot:[`item.calculatedActualProfit`]="{ item }">
@@ -410,6 +420,58 @@
         </v-toolbar>
       </template>
     </v-data-table>
+    <v-dialog v-model="mismatchedSkuDialog" max-width="800px">
+      <v-card>
+        <v-col style="width: fit-content">
+          <v-row class="mx-3 pt-4">
+            {{ `${selectedProduct.productName}` }}
+            <span class="pl-5">{{ selectedProduct.productId }}</span>
+            <span class="pl-2">未匹配SKU</span>
+            <span class="text--secondary pl-8">{{ this.startTime }}</span>
+          </v-row>
+        </v-col>
+
+
+        <v-card-text class="mx-5 pt-4" style="overflow-y: visible; width: fit-content">
+          {{
+            `事业部：${
+              departmentIdToName[selectedProduct.department]
+            }ㅤㅤㅤ组别：${teamIdToName[selectedProduct.team]}ㅤㅤㅤ持品人：${
+              userIdToNick[selectedProduct.owner]
+            }`
+          }}
+        </v-card-text>
+        
+        <div class="mx-5">
+          <v-data-table
+            loading-text="加载中... 请稍后"
+            no-data-text="空"
+            height="422px"
+            fixed-header
+            :headers="mismatchedSkuheaders"
+            :items="mismatchedSkus"
+            :loading="mismatchedSkuLoading"
+            item-key="skuName"  
+            :items-per-page="10"
+            :footer-props="{
+              'items-per-page-options': [10, 20, 50, 100],
+              'items-per-page-text': '每页显示条数',
+            }"
+          />
+        </div>
+
+        <!-- <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click.stop="mismatchedSkuDialog = false"
+          >
+            关闭
+          </v-btn>
+        </v-card-actions> -->
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -418,6 +480,8 @@
 import { amountBeautify } from "@/libs/utils";
 import { javaUTCDateToString } from "@/libs/utils";
 import { getProfitReport } from "@/settings/profitReport";
+import { getMismatchedSkus } from "@/settings/profitReport";
+
 import { mapState } from "vuex";
 
 import PageHeader from "@/components/PageHeader";
@@ -507,6 +571,16 @@ export default {
         { text: "错数", value: "operatorGivenWrongPriceCount" },
         //----------------------------------------------------------------------
       ],
+
+      mismatchedSkuheaders: [
+        { text: "SKU名称", value: "skuName" },
+        { text: "销售数量", value: "productCount" },
+        { text: "销售金额", value: "totalAmount" },
+      ],
+      mismatchedSkus: [],
+      selectedProduct: {},
+      mismatchedSkuLoading: false,
+      mismatchedSkuDialog: false,
     };
   },
 
@@ -535,6 +609,26 @@ export default {
   },
 
   methods: {
+    showMismatchedSkus(item) {
+      console.log("啊啊啊啊啊啊", item);
+      this.selectedProduct = item;
+      this.mismatchedSkuDialog = true;
+      this.mismatchedSkuLoading = true;
+      var args = {
+        date: this.startTime,
+        productId: this.selectedProduct.productId,
+      };
+      args.date = args.date.replaceAll("-", "/");
+      getMismatchedSkus(args)
+        .then((res) => {
+          console.log("getmismatchedSkus返回的结果", res);
+          this.mismatchedSkus = res.data.mismatchedSkus;
+          this.mismatchedSkuLoading = false;
+        })
+        .catch(() => {
+          this.mismatchedSkuLoading = false;
+        });
+    },
     amountFormat() {
       return amountBeautify(...arguments);
     },

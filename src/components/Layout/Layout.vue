@@ -6,27 +6,24 @@
       <router-view />
     </v-main>
 
-    <v-dialog
-      :value="show"
-      max-width="500px"
-      min-width="500px"
-      persistent
-      scrollable
-    >
+    <v-dialog :value="show" max-width="500px" min-width="500px" persistent>
       <v-card light>
-        <v-card-title>
+        <v-card-title class="mb-2">
           公告： <v-spacer />
           <p style="font-size: 15px">{{ dateDiff }}</p>
         </v-card-title>
-        <v-card-text
-          style="max-height: 500px"
-          class="py-0 px-8"
-          v-for="(value, key) in content.split('\n')"
-          :key="key"
-        >
-          <!-- 取巧 -->
-          {{ value.trim() == "" ? "ㅤ" : value }}
-        </v-card-text>
+
+        <div style="max-height: calc(100vh - 400px); overflow-y:auto;">
+          <v-card-text
+            style="max-height: 500px"
+            class="py-0 px-8 text--secondary"
+            v-for="(value, key) in content.split('\n')"
+            :key="key"
+          >
+            <!-- 取巧 -->
+            {{ value.trim() == "" ? "ㅤ" : value }}
+          </v-card-text>
+        </div>
 
         <v-card-actions>
           <v-spacer />
@@ -51,16 +48,7 @@ export default {
     show: false,
     date: new Date("2020"),
     websocket: null,
-    content: `
-EBC在12月13日下午5点进行了更新
-ㅤ
-本次更新内容包括：
-1. 修复利润报表的真实拿货成本计算错误的问题，现在已经完全正确（终于修了）
-2. 商品清单的部门，组别，持品人支持多选筛选
-3. 新增在EBC中误下架商品的重新上架功能
-4. 新增全局公告，就像现在这样，可以用来提醒什么什么
-5. 细微修改了大量界面样式
-      `,
+    content: "",
 
     interval: 0,
   }),

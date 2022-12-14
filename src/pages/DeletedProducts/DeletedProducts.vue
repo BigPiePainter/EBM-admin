@@ -52,7 +52,7 @@
           <v-spacer></v-spacer>
           <v-btn
             v-if="ifAction"
-            :disabled="selectedProductItem.length < 1"
+            :disabled="selectedProductItem.length < 999999"
             outlined
             color="green"
             small
@@ -64,7 +64,7 @@
           </v-btn>
           <v-btn
             v-if="ifAction"
-            :disabled="selectedProductItem.length < 1"
+            :disabled="selectedProductItem.length < 999999"
             small
             depressed
             outlined
