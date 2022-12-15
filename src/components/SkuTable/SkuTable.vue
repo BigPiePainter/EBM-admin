@@ -379,7 +379,9 @@
     <v-dialog v-model="mutipleDeleteDialog" max-width="450px">
       <v-card>
         <v-card-title class="text-subtitle-1">是否删除选中sku信息</v-card-title>
-
+        <v-card-text>
+          删除后无法恢复，并且不会参与数据运算
+        </v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn color="blue darken-1" text @click="mutipleDeleteDialog = false"

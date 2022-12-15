@@ -1,7 +1,7 @@
 <template>
   <div class="page-content d-flex flex-column">
     <PageHeader title="商品清单">
-      <v-btn class="ml-2" text color="primary" @click="addButton">
+      <v-btn class="ml-2" text color="primary" @click="addProductInfoButton">
         <v-icon size="20" style="padding-top: 2px">mdi-bookmark-plus</v-icon>
         新增商品信息
       </v-btn>
@@ -170,7 +170,7 @@
                   label="选择"
                   class="ml-3"
                 >
-                <template v-slot:selection="option">
+                  <template v-slot:selection="option">
                     <v-chip close @click:close="remove(props, option)">
                       {{ option.item.name }}
                     </v-chip>
@@ -199,7 +199,7 @@
                   multiple
                   label="选择"
                 >
-                <template v-slot:selection="option">
+                  <template v-slot:selection="option">
                     <v-chip close @click:close="remove(props, option)">
                       {{ option.item.name }}
                     </v-chip>
@@ -257,7 +257,7 @@
                   multiple
                   label="选择"
                 >
-                <template v-slot:selection="option">
+                  <template v-slot:selection="option">
                     <v-chip close @click:close="remove(props, option)">
                       {{ option.item.name }}
                     </v-chip>
@@ -375,6 +375,41 @@
         </template> -->
       </v-data-table>
     </div>
+
+    <!-- 商品类型Dialog -->
+    <v-dialog v-model="productTypeDialog" max-width="600px">
+      <v-card class="pb-5">
+        <div class="mx-5 pt-4">
+          <span> 新增商品 </span>
+        </div>
+        <div class="d-flex justify-space-around py-5 px-3">
+          <v-hover v-slot:default="{ hover }">
+            <v-card
+              outlined
+              :elevation="hover ? 5 : 2"
+              height="150px"
+              width="250px"
+              class="d-flex justify-center align-center flex-column rounded-lg"
+              @click="Type1Button()"
+              >新商品</v-card
+            >
+          </v-hover>
+          <v-hover v-slot:default="{ hover }">
+            <v-card
+              outlined
+              :elevation="hover ? 5 : 2"
+              height="150px"
+              width="250px"
+              class="d-flex justify-center align-center flex-column rounded-lg"
+              ><span>为现有商品关联额外的商品ID</span
+              ><span class="mt-2 subtitle-2 text--secondary"
+                >如淘特链接等等</span
+              ></v-card
+            >
+          </v-hover>
+        </div>
+      </v-card>
+    </v-dialog>
 
     <!-- 商品信息Dialog -->
     <v-dialog v-model="productInfoDialog" max-width="550px" persistent>
@@ -920,6 +955,8 @@ export default {
 
     ascriptionChangeDialog: false,
     datePicker: false,
+
+    productTypeDialog: false,
   }),
 
   computed: {
@@ -1072,6 +1109,19 @@ export default {
         .catch(() => {
           this.loading = false;
         });
+    },
+
+    addProductInfoButton() {
+      this.productTypeDialog = true;
+    },
+
+    Type1Button() {
+      this.productTypeDialog = false;
+      this.addButton();
+    },
+
+    Type2Button() {
+      this.productTypeDialog = true;
     },
 
     addButton() {

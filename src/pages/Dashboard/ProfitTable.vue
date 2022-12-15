@@ -10,7 +10,7 @@
       class="profit-table"
       height="calc(100vh - 197px)"
       fixed-header
-      loading-text="加载中... 请稍后"
+      loading-text="计算中... 请稍后"
       no-data-text="空"
       :items-per-page="100"
       :footer-props="{
@@ -431,8 +431,10 @@
           </v-row>
         </v-col>
 
-
-        <v-card-text class="mx-5 pt-4" style="overflow-y: visible; width: fit-content">
+        <v-card-text
+          class="mx-5 pt-4"
+          style="overflow-y: visible; width: fit-content"
+        >
           {{
             `事业部：${
               departmentIdToName[selectedProduct.department]
@@ -441,7 +443,7 @@
             }`
           }}
         </v-card-text>
-        
+
         <div class="mx-5">
           <v-data-table
             loading-text="加载中... 请稍后"
@@ -451,7 +453,7 @@
             :headers="mismatchedSkuheaders"
             :items="mismatchedSkus"
             :loading="mismatchedSkuLoading"
-            item-key="skuName"  
+            item-key="skuName"
             :items-per-page="10"
             :footer-props="{
               'items-per-page-options': [10, 20, 50, 100],
@@ -727,6 +729,15 @@ export default {
     td {
       height: 23px !important;
     }
+  }
+
+  table > tbody > tr > td:nth-child(1),
+  table > thead > tr > th:nth-child(1) {
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    left: 0;
+    z-index: 9998;
+    background: white;
   }
 }
 
