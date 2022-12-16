@@ -124,6 +124,104 @@
           </v-icon>
           <span> 详细数据 </span>
         </v-btn>
+
+        <!-- 筛选部门 -->
+        <span class="text-body-2 text-no-wrap"> 部门 </span>
+        <v-autocomplete
+          color="primary"
+          :items="allDepartments"
+          dense
+          outlined
+          item-text="name"
+          item-value="uid"
+          v-model="search.department"
+          multiple
+          hide-details
+          class="ml-3 pt-1 filter-autocomplete"
+        >
+          <template v-slot:selection="option">
+            <v-chip x-small close @click:close="remove('department', option)">
+              {{ option.item.name }}
+            </v-chip>
+          </template>
+        </v-autocomplete>
+
+        <!-- 筛选组别 -->
+        <span class="pl-1 text-body-2 text-no-wrap"> 组别 </span>
+        <v-autocomplete
+          color="primary"
+          :items="allTeams"
+          dense
+          outlined
+          item-text="name"
+          item-value="uid"
+          v-model="search.team"
+          multiple
+          hide-details
+          class="ml-3 pt-1 filter-autocomplete"
+        >
+          <template v-slot:selection="option">
+            <v-chip x-small close @click:close="remove('team', option)">
+              {{ option.item.name }}
+            </v-chip>
+          </template>
+        </v-autocomplete>
+
+        <!-- 筛选持品人 -->
+        <span class="pl-1 text-body-2 text-no-wrap"> 持品人 </span>
+        <v-autocomplete
+          color="primary"
+          :items="allUsers"
+          dense
+          outlined
+          item-text="nick"
+          item-value="id"
+          v-model="search.owner"
+          multiple
+          hide-details
+          class="ml-3 pt-1 filter-autocomplete"
+        >
+          <template v-slot:selection="option">
+            <v-chip x-small close @click:close="remove('owner', option)">
+              {{ option.item.nick }}
+            </v-chip>
+          </template>
+        </v-autocomplete>
+
+        <!-- 筛选商品ID -->
+        <span class="pl-1 text-body-2 text-no-wrap"> 商品ID </span>
+        <v-edit-dialog>
+          <v-text-field
+            color="primary"
+            v-model="search.productId"
+            outlined
+            dense
+            hide-details
+            class="shrink ml-1 date-picker-textfield"
+          >
+          </v-text-field>
+        </v-edit-dialog>
+
+        <!-- 筛选一级类目 -->
+        <span class="pl-1 text-body-2 text-no-wrap"> 一级类目 </span>
+        <v-autocomplete
+          color="primary"
+          :items="allCategorys"
+          dense
+          outlined
+          item-text="name"
+          item-value="uid"
+          v-model="search.categorys"
+          multiple
+          hide-details
+          class="ml-3 pt-1 filter-autocomplete"
+        >
+          <template v-slot:selection="option">
+            <v-chip x-small close @click:close="remove('categorys', option)">
+              {{ option.item.name }}
+            </v-chip>
+          </template>
+        </v-autocomplete>
       </v-toolbar>
     </div>
     <div class="d-flex">
@@ -144,7 +242,7 @@
             'items-per-page-text': '每页显示条数',
           }"
           :options.sync="options"
-          :items="loading ? [] : profitItems"
+          :items="loading ? [] : midVarOfProfitItems"
           :headers="profitHeadersPartA"
           :loading="loading"
         >
@@ -194,7 +292,7 @@
           'items-per-page-text': '每页显示条数',
         }"
         :options.sync="options"
-        :items="loading ? [] : profitItems"
+        :items="loading ? [] : midVarOfProfitItems"
         :headers="
           !profitItems.length || loading
             ? []
@@ -765,6 +863,9 @@ export default {
       }, 0);
     },
     filter() {
+      // function filterId(id) {
+      //   return id.indexOf(this.search.productId >= 0);
+      // }
       this.midVarOfProfitItems = this.profitItems;
       if (this.search.team?.length > 0) {
         var team = {};
@@ -789,12 +890,40 @@ export default {
           (profitItem) => owner[profitItem.owner]
         );
       }
+
+      if (this.search.categorys?.length > 0) {
+        var category = {};
+        this.search.categorys.forEach((i) => (category[i] = true));
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
+          (profitItem) => category[profitItem.firstCategory]
+        );
+      }
+
+      if (this.search.productId?.length > 0) {
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
+          (profitItem) =>
+            profitItem.productId.toString().indexOf(this.search.productId) > 0
+        );
+
+        // var a = [];
+        // for (let i = 0; i < this.midVarOfProfitItems.length; i++) {
+        //   if (
+        //     this.midVarOfProfitItems[i].productId
+        //       .toString()
+        //       .indexOf(this.search.productId) >= 0
+        //   ) {
+        //     a.push(this.midVarOfProfitItems[i]);
+        //   }
+        // }
+        // this.midVarOfProfitItems = a;
+      }
     },
-    remove(props, option) {
-      console.log(option);
+
+    remove(key, option) {
+      console.log(this.midVarOfProfitItems);
       console.log(this.search);
       console.log(this.profitItems);
-      this.search[props.header.value].splice(option.index, 1);
+      this.search[key].splice(option.index, 1);
     },
     showMismatchedSkus(item) {
       this.selectedProduct = item;
@@ -839,6 +968,7 @@ export default {
           for (let name in res.data) {
             this.profitItems = res.data[name];
             this.dataAnalyze(name);
+            this.midVarOfProfitItems = this.profitItems;
             break;
           }
           setTimeout(() => {
@@ -903,7 +1033,6 @@ export default {
 
         item.calculatedDiscount = item.totalAmount / item.totalPrice;
       });
-      this.midVarOfProfitItems = [...this.profitItems];
     },
   },
 };
@@ -945,6 +1074,19 @@ export default {
 
 .date-picker-textfield {
   max-width: 125px;
+  .v-input__slot {
+    min-height: 0px !important;
+
+    .v-text-field__slot > input {
+      padding-top: 4px !important;
+      padding-bottom: 4px !important;
+      font-size: 15px;
+    }
+  }
+}
+
+.filter-autocomplete {
+  max-width: 300px;
   .v-input__slot {
     min-height: 0px !important;
 
