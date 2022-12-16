@@ -978,6 +978,7 @@ export default {
             this.profitItems = res.data[name];
             this.dataAnalyze(name);
             this.midVarOfProfitItems = this.profitItems;
+            this.filter();
             break;
           }
           setTimeout(() => {
@@ -1041,6 +1042,7 @@ export default {
           item.calculatedActualProfit / item.calculatedActualIncome;
 
         item.calculatedDiscount = item.totalAmount / item.totalPrice;
+
       });
     },
   },
