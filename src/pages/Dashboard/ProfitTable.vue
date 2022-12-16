@@ -175,7 +175,7 @@
           dense
           outlined
           item-text="nick"
-          item-value="id"
+          item-value="uid"
           v-model="search.owner"
           multiple
           hide-details
@@ -886,11 +886,18 @@ export default {
       }
 
       if (this.search.owner?.length > 0) {
-        var owner = {};
-        this.search.owner.forEach((i) => (owner[i] = true));
-        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
-          (profitItem) => owner[profitItem.owner]
-        );
+        var a = [];
+        for (let i = 0; i < this.midVarOfProfitItems.length; i++) {
+          if (this.midVarOfProfitItems[i].owner == this.search.owner) {
+            a.push(this.midVarOfProfitItems[i]);
+          }
+        }
+        this.midVarOfProfitItems = a;
+        // var owner = {};
+        // this.search.owner.forEach((i) => (owner[i] = true));
+        // this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
+        //   (profitItem) => owner[profitItem.owner]
+        // );
       }
 
       if (this.search.categorys?.length > 0) {
