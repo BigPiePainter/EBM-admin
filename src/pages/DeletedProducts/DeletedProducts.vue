@@ -57,7 +57,7 @@
             color="green"
             small
             depressed
-            class="ml-2"
+            class="ml-2 mr-2"
             @click.stop="recoverProduct"
           >
             <span> 重新上架 </span>
