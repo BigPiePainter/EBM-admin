@@ -1,5 +1,4 @@
 <template>
-  
   <div class="page-content d-flex flex-column">
     <PageHeader title="已下架商品">
       <v-btn class="ml-2" text color="primary" disabled>
@@ -15,6 +14,7 @@
       item-key="id"
       height="calc(100vh - 197px)"
       class=""
+      single-select
       :show-select="ifAction"
       :loading="loading"
       :headers="headers"
@@ -52,7 +52,7 @@
           <v-spacer></v-spacer>
           <v-btn
             v-if="ifAction"
-            :disabled="selectedProductItem.length < 999999"
+            :disabled="selectedProductItem.length != 1"
             outlined
             color="green"
             small
@@ -64,7 +64,7 @@
           </v-btn>
           <v-btn
             v-if="ifAction"
-            :disabled="selectedProductItem.length < 999999"
+            :disabled="selectedProductItem.length != 1"
             small
             depressed
             outlined
@@ -94,17 +94,33 @@
     <!-- 弹窗（彻底删除）-->
     <v-dialog v-model="absoluteDeleteDialog" max-width="450px">
       <v-card class="delete-dialog">
-        <v-card-title class="text-h6"
-          >是否确认删除
+        <v-card-title class="text-subtitle-1"
+          >是否确认删除：{{
+            this.selectedProductItem[0]
+              ? this.selectedProductItem[0].productName
+              : "no item"
+          }}
         </v-card-title>
-
-        <v-divider />
-
-        <div class="delete-table-container text-body-1 ml-8 mt-2 mb-1">
-          彻底删除的商品将不会计入报表统计
+        <div class="delete-table-container mt-2 mb-1">
+          <v-data-table
+            :headers="[
+              { align: 'start', value: 'key' },
+              { align: 'start', value: 'value' },
+            ]"
+            :items="selectedProductItemParse"
+            hide-default-footer
+            hide-default-header
+            disable-sort
+          >
+            <template v-slot:[`item.key`]="{ item }">
+              <div class="ml-3">
+                {{ item.key }}
+              </div>
+            </template>
+          </v-data-table>
         </div>
-
         <v-card-actions>
+          <v-footer class="text-caption pl-2">彻底删除的商品将不会计入报表统计</v-footer>
           <v-spacer></v-spacer>
           <v-btn
             color="blue darken-1"
@@ -122,12 +138,32 @@
     <!-- 弹窗（重新上架）-->
     <v-dialog v-model="recoverProductDialog" max-width="450px">
       <v-card class="delete-dialog">
-        <!-- <v-card-title class="text-subtitle-1"
-          >{{ deleteItem.productName }}
-        </v-card-title> -->
-
-        <div class="delete-table-container mt-2 mb-1"></div>
-
+        <v-card-title class="text-subtitle-1"
+          >是否重新上架：
+          {{
+            this.selectedProductItem[0]
+              ? this.selectedProductItem[0].productName
+              : "no item"
+          }}</v-card-title
+        >
+        <div class="delete-table-container mt-2 mb-1">
+          <v-data-table
+            :headers="[
+              { align: 'start', value: 'key' },
+              { align: 'start', value: 'value' },
+            ]"
+            :items="selectedProductItemParse"
+            hide-default-footer
+            hide-default-header
+            disable-sort
+          >
+            <template v-slot:[`item.key`]="{ item }">
+              <div class="ml-3">
+                {{ item.key }}
+              </div>
+            </template>
+          </v-data-table>
+        </div>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -137,7 +173,7 @@
             >取消</v-btn
           >
           <v-btn color="red darken-1" text @click="sureRecoverProduct">
-            <v-icon small class="mr-1"> mdi-delete </v-icon>确认
+            确认
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -178,6 +214,7 @@ export default {
       selectedProductItem: [],
       absoluteDeleteDialog: false,
       recoverProductDialog: false,
+      selectedProductItemParse: [],
 
       headersContent: [
         { text: "商品ID", value: "id" },
@@ -243,15 +280,39 @@ export default {
     //弹窗（彻底删除下架商品）
     absoluteDelete() {
       this.absoluteDeleteDialog = true;
+      this.selectedProductItemParse = [
+        {
+          key: "商品ID",
+          value: this.selectedProductItem[0].id,
+        },
+        {
+          key: "商品名",
+          value: this.selectedProductItem[0].productName,
+        },
+      ];
     },
     //确认彻底删除
-    sureAbsoluteDelete() {},
+    sureAbsoluteDelete() {
+      
+    },
     //弹窗（恢复上架）
     recoverProduct() {
       this.recoverProductDialog = true;
+      this.selectedProductItemParse = [
+        {
+          key: "商品ID",
+          value: this.selectedProductItem[0].id,
+        },
+        {
+          key: "商品名",
+          value: this.selectedProductItem[0].productName,
+        },
+      ];
     },
     //确认重新上架
-    sureRecoverProduct() {},
+    sureRecoverProduct() {
+
+    },
 
     parseDate(time) {
       return javaUTCDateToString(time);

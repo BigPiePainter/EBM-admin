@@ -763,7 +763,7 @@
     <v-dialog v-model="deleteDialog" max-width="450px">
       <v-card class="delete-dialog">
         <v-card-title class="text-subtitle-1"
-          >{{ deleteItem.productName }}
+          >{{ "是否确认下架："+deleteItem.productName }}
         </v-card-title>
 
         <div class="delete-table-container mt-2 mb-1">

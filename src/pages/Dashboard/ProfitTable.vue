@@ -587,6 +587,8 @@ export default {
     return {
       scrollFlag: 0,
       options: {},
+      search: {},
+
       startTime: "",
       endTime: "",
 
@@ -601,6 +603,7 @@ export default {
       check: false,
       loading: false,
 
+      midVarOfProfitItems: [],
       profitHeadersPartA: [
         //{ text: "日期", value: "date" },
         { text: "部门", value: "department" },
@@ -747,12 +750,61 @@ export default {
     ]),
   },
 
+  watch: {
+    options: {
+      handler() {
+        this.loadData();
+      },
+      deep: true,
+    },
+
+    search: {
+      handler() {
+        this.filter();
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
+
   methods: {
     showDetail() {
       this.check = !this.check;
       setTimeout(() => {
         this.tablePartAWrapper.scrollTop = this.tablePartBWrapper.scrollTop;
       }, 0);
+    },
+    filter() {
+      this.midVarOfProfitItems = this.profitItems;
+      if (this.search.team?.length > 0) {
+        var team = {};
+        this.search.team.forEach((i) => (team[i] = true));
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
+          (profitItem) => team[profitItem.team]
+        );
+      }
+
+      if (this.search.department?.length > 0) {
+        var department = {};
+        this.search.department.forEach((i) => (department[i] = true));
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
+          (profitItem) => department[profitItem.department]
+        );
+      }
+
+      if (this.search.owner?.length > 0) {
+        var owner = {};
+        this.search.owner.forEach((i) => (owner[i] = true));
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
+          (profitItem) => owner[profitItem.owner]
+        );
+      }
+    },
+    remove(props, option) {
+      console.log(option);
+      console.log(this.search);
+      console.log(this.profitItems);
+      this.search[props.header.value].splice(option.index, 1);
     },
     showMismatchedSkus(item) {
       this.selectedProduct = item;
@@ -788,9 +840,7 @@ export default {
     loadData() {
       var args = { date: this.startTime };
       args.date = args.date.replaceAll("-", "/");
-
       this.loading = true;
-
       console.log("接口调用", args);
       getProfitReport(args)
         .then((res) => {
@@ -860,6 +910,7 @@ export default {
 
         item.calculatedDiscount = item.totalAmount / item.totalPrice;
       });
+      this.midVarOfProfitItems = [...this.profitItems];
     },
   },
 };
