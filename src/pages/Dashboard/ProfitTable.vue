@@ -149,7 +149,6 @@
           :loading="loading"
         >
           <template v-slot:[`item.department`]="{ item }">
-            {{ global.log(departmentIdToName) }}
             {{ departmentIdToName[item.department] }}
           </template>
           <template v-slot:[`item.team`]="{ item }">
@@ -703,7 +702,6 @@ export default {
 
     var left = true;
     this.tablePartBWrapper.addEventListener("scroll", (event) => {
-      console.log(event.timeStamp - this.scrollFlag);
       if (this.scrollFlag < event.timeStamp - 50) {
         this.tablePartAWrapper.scrollTop = this.tablePartBWrapper.scrollTop;
         left = true;
@@ -718,7 +716,6 @@ export default {
     });
 
     this.tablePartAWrapper.addEventListener("scroll", (event) => {
-      console.log(event.timeStamp - this.scrollFlag);
       if (this.scrollFlag < event.timeStamp - 50) {
         this.tablePartBWrapper.scrollTop = this.tablePartAWrapper.scrollTop;
         left = false;
@@ -751,13 +748,6 @@ export default {
   },
 
   watch: {
-    options: {
-      handler() {
-        this.loadData();
-      },
-      deep: true,
-    },
-
     search: {
       handler() {
         this.filter();
