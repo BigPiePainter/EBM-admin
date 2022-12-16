@@ -89,6 +89,10 @@
       <template v-slot:[`item.firstCategory`]="{ item }">
         {{ categoryIdToName[item.firstCategory] }}
       </template>
+
+      <template v-slot:[`item.modifyTime`]="{ item }">
+        {{ parseDateTime(item.modifyTime) }}
+      </template>
     </v-data-table>
 
     <!-- 弹窗（彻底删除）-->
@@ -120,7 +124,9 @@
           </v-data-table>
         </div>
         <v-card-actions>
-          <v-footer class="text-caption pl-2">彻底删除的商品将不会计入报表统计</v-footer>
+          <v-footer class="text-caption pl-2"
+            >彻底删除的商品将不会计入报表统计</v-footer
+          >
           <v-spacer></v-spacer>
           <v-btn
             color="blue darken-1"
@@ -189,6 +195,7 @@ import { loadDeletedProducts } from "@/settings/product";
 //import { getClass } from "@/settings/product";
 
 import { javaUTCDateToString } from "@/libs/utils";
+import { javaDateTimeToString } from "@/libs/utils";
 
 import PageHeader from "@/components/PageHeader";
 
@@ -227,6 +234,7 @@ export default {
         { text: "发货方式", value: "transportWay" },
         { text: "聚水潭仓库", value: "storehouse" },
         { text: "备注", value: "note" },
+        { text: "操作时间", value: "modifyTime" },
       ],
 
       //筛选
@@ -277,6 +285,10 @@ export default {
   },
 
   methods: {
+    parseDateTime(date) {
+      return javaDateTimeToString(date);
+    },
+
     //弹窗（彻底删除下架商品）
     absoluteDelete() {
       this.absoluteDeleteDialog = true;
@@ -292,9 +304,7 @@ export default {
       ];
     },
     //确认彻底删除
-    sureAbsoluteDelete() {
-      
-    },
+    sureAbsoluteDelete() {},
     //弹窗（恢复上架）
     recoverProduct() {
       this.recoverProductDialog = true;
@@ -310,9 +320,7 @@ export default {
       ];
     },
     //确认重新上架
-    sureRecoverProduct() {
-
-    },
+    sureRecoverProduct() {},
 
     parseDate(time) {
       return javaUTCDateToString(time);

@@ -130,7 +130,7 @@
       <div>
         <v-data-table
           id="tablePartA"
-          v-show="check"
+          v-show="!loading && check"
           style="width: fit-content"
           class="profit-table profit-table-a"
           height="calc(100vh - 221px)"
@@ -144,7 +144,7 @@
             'items-per-page-text': '每页显示条数',
           }"
           :options.sync="options"
-          :items="profitItems"
+          :items="loading ? [] : profitItems"
           :headers="profitHeadersPartA"
           :loading="loading"
         >
@@ -173,7 +173,7 @@
         <v-divider style="margin-top: 10px"></v-divider>
       </div>
       <v-divider
-        v-show="check"
+        v-show="!loading && check"
         vertical
         style="
           margin: 0px;
@@ -194,9 +194,9 @@
           'items-per-page-text': '每页显示条数',
         }"
         :options.sync="options"
-        :items="profitItems"
+        :items="loading ? [] : profitItems"
         :headers="
-          !profitItems.length
+          !profitItems.length || loading
             ? []
             : check
             ? profitHeadersAll
@@ -841,6 +841,9 @@ export default {
             this.dataAnalyze(name);
             break;
           }
+          setTimeout(() => {
+            this.tablePartAWrapper.scrollTop = this.tablePartBWrapper.scrollTop;
+          }, 0);
         })
         .catch(() => {
           this.loading = false;
@@ -936,13 +939,6 @@ export default {
     td {
       padding-right: 4px !important;
       padding-left: 4px !important;
-    }
-  }
-}
-
-.profit-table-b {
-  tr {
-    td {
     }
   }
 }
