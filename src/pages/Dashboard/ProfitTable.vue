@@ -17,12 +17,99 @@
         'items-per-page-options': [50, 100, 500, 1000, 2000],
         'items-per-page-text': '每页显示条数',
       }"
-      :items="profitItems"
+      :items="midVarOfProfitItems"
       :headers="
         !profitItems.length ? [] : check ? profitHeadersAll : profitHeadersHide
       "
       :loading="loading"
     >
+      <!-- 查找部门 -->
+      <template v-slot:[`header.department`]="props">
+        <v-edit-dialog>
+          {{ props.header.text }}
+          <template v-slot:input>
+            <div class="d-flex align-center">
+              <span> {{ props.header.text }} </span>
+              <v-autocomplete
+                color="primary"
+                :items="allDepartments"
+                item-text="name"
+                item-value="uid"
+                v-model="search[props.header.value]"
+                single-line
+                multiple
+                label="选择"
+                class="ml-3"
+              >
+                <template v-slot:selection="option">
+                  <v-chip close @click:close="remove(props, option)">
+                    {{ option.item.name }}
+                  </v-chip>
+                </template>
+              </v-autocomplete>
+            </div>
+          </template>
+        </v-edit-dialog>
+      </template>
+
+      <!-- 查找组别 -->
+      <template v-slot:[`header.team`]="props">
+        <v-edit-dialog>
+          {{ props.header.text }}
+          <template v-slot:input>
+            <div class="d-flex align-center">
+              <span> {{ props.header.text }} </span>
+              <v-autocomplete
+                color="primary"
+                :items="allTeams"
+                item-text="name"
+                item-value="uid"
+                v-model="search[props.header.value]"
+                single-line
+                multiple
+                label="选择"
+                class="ml-3"
+              >
+                <template v-slot:selection="option">
+                  <v-chip close @click:close="remove(props, option)">
+                    {{ option.item.name }}
+                  </v-chip>
+                </template>
+              </v-autocomplete>
+            </div>
+          </template>
+        </v-edit-dialog>
+      </template>
+
+      <!-- 查找持品人 -->
+      <template v-slot:[`header.owner`]="props">
+        <v-edit-dialog>
+          {{ props.header.text }}
+          <template v-slot:input>
+            <div class="d-flex align-center">
+              <span> {{ props.header.text }} </span>
+              <v-autocomplete
+                color="primary"
+                :items="allUsers"
+                item-text="nick"
+                item-value="id"
+                v-model="search[props.header.value]"
+                single-line
+                multiple
+                label="选择"
+                class="ml-3"
+              >
+                <template v-slot:selection="option">
+                  <v-chip close @click:close="remove(props, option)">
+                    {{ option.item.nick }}
+                  </v-chip>
+                </template>
+              </v-autocomplete>
+            </div>
+          </template>
+        </v-edit-dialog>
+      </template>
+
       <template v-slot:[`item.insurance`]="{ item }">
         <div class="d-flex">
           <span v-if="item.insurance" class="mr-1">{{ "￥  " }} </span>
@@ -431,8 +518,10 @@
           </v-row>
         </v-col>
 
-
-        <v-card-text class="mx-5 pt-4" style="overflow-y: visible; width: fit-content">
+        <v-card-text
+          class="mx-5 pt-4"
+          style="overflow-y: visible; width: fit-content"
+        >
           {{
             `事业部：${
               departmentIdToName[selectedProduct.department]
@@ -441,7 +530,7 @@
             }`
           }}
         </v-card-text>
-        
+
         <div class="mx-5">
           <v-data-table
             loading-text="加载中... 请稍后"
@@ -451,7 +540,7 @@
             :headers="mismatchedSkuheaders"
             :items="mismatchedSkus"
             :loading="mismatchedSkuLoading"
-            item-key="skuName"  
+            item-key="skuName"
             :items-per-page="10"
             :footer-props="{
               'items-per-page-options': [10, 20, 50, 100],
@@ -492,6 +581,8 @@ export default {
   },
   data() {
     return {
+      search: {},
+
       startTime: "",
       endTime: "",
 
@@ -506,6 +597,7 @@ export default {
       check: false,
       loading: false,
       profitItems: [],
+      midVarOfProfitItems: [],
       profitHeadersAll: [
         { text: "日期", value: "date" },
         { text: "部门", value: "department" },
@@ -608,7 +700,56 @@ export default {
     ]),
   },
 
+  watch: {
+    options: {
+      handler() {
+        this.loadData();
+      },
+      deep: true,
+    },
+
+    search: {
+      handler() {
+        this.filter();
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
+
   methods: {
+    filter() {
+      this.midVarOfProfitItems = this.profitItems;
+      if (this.search.team?.length > 0) {
+        var team = {};
+        this.search.team.forEach((i) => (team[i] = true));
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
+          (profitItem) => team[profitItem.team]
+        );
+      }
+      
+      if (this.search.department?.length > 0) {
+        var department = {};
+        this.search.department.forEach((i) => (department[i] = true));
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
+          (profitItem) => department[profitItem.department]
+        );
+      }
+
+      if (this.search.owner?.length > 0) {
+        var owner = {};
+        this.search.owner.forEach((i) => (owner[i] = true));
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
+          (profitItem) => owner[profitItem.owner]
+        );
+      }
+    },
+    remove(props, option) {
+      console.log(option);
+      console.log(this.search);
+      console.log(this.profitItems);
+      this.search[props.header.value].splice(option.index, 1);
+    },
     showMismatchedSkus(item) {
       console.log("啊啊啊啊啊啊", item);
       this.selectedProduct = item;
@@ -644,9 +785,7 @@ export default {
     loadData() {
       var args = { date: this.startTime };
       args.date = args.date.replaceAll("-", "/");
-
       this.loading = true;
-
       console.log("接口调用", args);
       getProfitReport(args)
         .then((res) => {
@@ -716,6 +855,7 @@ export default {
 
         item.calculatedDiscount = item.totalAmount / item.totalPrice;
       });
+      this.midVarOfProfitItems = [...this.profitItems];
     },
   },
 };
