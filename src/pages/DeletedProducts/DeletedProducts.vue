@@ -123,10 +123,14 @@
             </template>
           </v-data-table>
         </div>
-        <v-card-actions>
-          <v-footer class="text-caption pl-2"
-            >彻底删除的商品将不会计入报表统计</v-footer
+        <div class="text-caption px-8 pt-5">
+          <span
+            >彻底删除该商品在EBC中的存在痕迹，只有录入错误或需要重新录入的商品再考虑彻底删除。会同时删除SKU信息，工厂信息，内部归属等等。不会再参与利润报表的计算</span
           >
+        </div>
+
+        <v-card-actions>
+          <span class="text-caption pl-2"></span>
           <v-spacer></v-spacer>
           <v-btn
             color="blue darken-1"
@@ -135,7 +139,7 @@
             >取消</v-btn
           >
           <v-btn color="red darken-1" text @click="sureAbsoluteDelete">
-            <v-icon small class="mr-1"> mdi-delete </v-icon>确认
+            <v-icon small class="mr-1"> mdi-delete </v-icon>彻底删除
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -192,6 +196,10 @@ import { mapState } from "vuex";
 import { amountBeautify } from "@/libs/utils";
 
 import { loadDeletedProducts } from "@/settings/product";
+import { absoluteDeleteProduct } from "@/settings/product";
+import { restoreProduct } from "@/settings/product";
+
+
 //import { getClass } from "@/settings/product";
 
 import { javaUTCDateToString } from "@/libs/utils";
@@ -304,7 +312,24 @@ export default {
       ];
     },
     //确认彻底删除
-    sureAbsoluteDelete() {},
+    sureAbsoluteDelete() {
+      absoluteDeleteProduct({
+        id: this.selectedProductItem[0].id,
+      })
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          this.absoluteDeleteDialog = false;
+          //刷新页面数据
+          this.loadData();
+        })
+        .catch(() => {
+          this.loading = false;
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC：error");
+          }, 100);
+        });
+        this.selectedProductItem = [];
+    },
     //弹窗（恢复上架）
     recoverProduct() {
       this.recoverProductDialog = true;
@@ -320,7 +345,24 @@ export default {
       ];
     },
     //确认重新上架
-    sureRecoverProduct() {},
+    sureRecoverProduct() {
+      restoreProduct({
+        id: this.selectedProductItem[0].id,
+      })
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          this.recoverProductDialog = false;
+          //刷新页面数据
+          this.loadData();
+        })
+        .catch(() => {
+          this.loading = false;
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC：error");
+          }, 100);
+        });
+        this.selectedProductItem = [];
+    },
 
     parseDate(time) {
       return javaUTCDateToString(time);

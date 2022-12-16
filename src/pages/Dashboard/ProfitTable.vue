@@ -129,6 +129,7 @@
     <div class="d-flex">
       <div>
         <v-data-table
+          mobile-breakpoint="0"
           id="tablePartA"
           v-show="!loading && check"
           style="width: fit-content"
@@ -182,6 +183,7 @@
         "
       ></v-divider>
       <v-data-table
+        mobile-breakpoint="0"
         id="tablePartB"
         class="profit-table profit-table-b flex-grow-1"
         height="calc(100vh - 211px)"

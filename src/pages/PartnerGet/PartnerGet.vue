@@ -286,6 +286,9 @@
         <template v-slot:[`item.firstCategory`]="{ item }">
           {{ categoryIdToName[item.firstCategory] }}
         </template>
+        <template v-slot:[`item.modifyTime`]="{ item }">
+          {{ parseDateTime(item.modifyTime) }}
+        </template>
 
         <template v-slot:top>
           <v-toolbar flat>
@@ -763,7 +766,7 @@
     <v-dialog v-model="deleteDialog" max-width="450px">
       <v-card class="delete-dialog">
         <v-card-title class="text-subtitle-1"
-          >{{ "是否确认下架："+deleteItem.productName }}
+          >{{ "是否确认下架：" + deleteItem.productName }}
         </v-card-title>
 
         <div class="delete-table-container mt-2 mb-1">
@@ -875,6 +878,7 @@ import { loadProducts } from "@/settings/product";
 //import { getClass } from "@/settings/product";
 
 import { javaUTCDateToString } from "@/libs/utils";
+import { javaDateTimeToString } from "@/libs/utils";
 
 import SkuTable from "@/components/SkuTable/SkuTable";
 import PageHeader from "@/components/PageHeader";
@@ -946,6 +950,7 @@ export default {
       { text: "发货方式", value: "transportWay" },
       { text: "聚水潭仓库", value: "storehouse" },
       { text: "备注", value: "note" },
+      { text: "修改时间", value: "modifyTime" },
     ],
 
     oldItem: {},
@@ -1047,6 +1052,9 @@ export default {
   },
 
   methods: {
+    parseDateTime(date) {
+      return javaDateTimeToString(date);
+    },
     remove(props, option) {
       console.log(option);
       console.log(this.search.search);
@@ -1112,7 +1120,8 @@ export default {
     },
 
     addProductInfoButton() {
-      this.productTypeDialog = true;
+      //this.productTypeDialog = true;
+      this.addButton();
     },
 
     Type1Button() {

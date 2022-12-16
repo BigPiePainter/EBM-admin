@@ -49,6 +49,26 @@ export const deleteProduct = data => {
     return http.request(args)
 }
 
+export const absoluteDeleteProduct = data => {
+    const args = {
+        url: '/product/absoluteDelete',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
+export const restoreProduct = data => {
+    const args = {
+        url: '/product/restore',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
+
+
 export const getClass = data => {
     const args = {
         url: '/product/getCategory',
