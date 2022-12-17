@@ -5,224 +5,304 @@
         <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
         导出
       </v-btn>
+      <v-btn class="ml-2" text color="primary" @click="showDetail">
+        <v-icon v-if="check" size="20" style="padding-top: 2px"
+          >mdi-arrow-collapse-horizontal</v-icon
+        >
+        <v-icon v-else size="20" style="padding-top: 2px"
+          >mdi-arrow-expand-horizontal</v-icon
+        >
+        <span> {{ check ? "收起详细数据" : "展开详细数据" }} </span>
+      </v-btn>
     </PageHeader>
     <div>
-      <v-toolbar flat>
-        <span
-          class="text-subtitle-2 ml-3 mr-1 text--secondary"
-          style="margin-top: 2px"
-        >
-          日期选择
-        </span>
-        <v-menu
-          ref="menu"
-          v-model="datePicker"
-          :close-on-content-click="false"
-          :return-value.sync="startTime"
-          offset-y
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              class="shrink ml-1 date-picker-textfield"
-              v-model="startTime"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-              outlined
-              dense
-              hide-details
-              color="primary"
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            v-model="startTime"
-            no-title
-            scrollable
-            locale="zh-cn"
-            first-day-of-week="1"
-            :day-format="dayFormat"
-            min="2021-01-01"
-            :max="parseDate(new Date())"
-          >
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="datePicker = false">
-              取消
-            </v-btn>
-            <v-btn
-              text
-              color="primary"
-              @click="
-                $refs.menu.save(startTime);
-                loadData();
-              "
-            >
-              确定
-            </v-btn>
-          </v-date-picker>
-        </v-menu>
-        <span
-          class="text-subtitle-2 ml-3 mr-2 text--secondary"
-          style="margin-top: 2px"
-        >
-          ~
-        </span>
-        <v-menu
-          ref="menu2"
-          v-model="datePicker2"
-          :close-on-content-click="false"
-          :return-value.sync="endTime"
-          offset-y
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              class="shrink ml-1 date-picker-textfield"
-              v-model="endTime"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-              outlined
-              dense
-              hide-details
-              color="primary"
-              disabled
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            v-model="endTime"
-            no-title
-            scrollable
-            locale="zh-cn"
-            first-day-of-week="1"
-            :day-format="dayFormat"
-            min="2021-01-01"
-            :max="parseDate(new Date())"
-          >
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="datePicker2 = false">
-              取消
-            </v-btn>
-            <v-btn
-              text
-              color="primary"
-              @click="
-                $refs.menu.save(endTime);
-                loadData();
-              "
-            >
-              确定
-            </v-btn>
-          </v-date-picker>
-        </v-menu>
-
-        <v-btn text small depressed class="mx-2 ml-5" @click="showDetail">
-          <v-icon small class="mr-1">
-            {{
-              check
-                ? "mdi-checkbox-marked-outline"
-                : "mdi-checkbox-blank-outline"
-            }}
-          </v-icon>
-          <span> 详细数据 </span>
-        </v-btn>
-
-        <!-- 筛选部门 -->
-        <span class="text-body-2 text-no-wrap"> 部门 </span>
-        <v-autocomplete
-          color="primary"
-          :items="allDepartments"
-          dense
-          outlined
-          item-text="name"
-          item-value="uid"
-          v-model="search.department"
-          multiple
-          hide-details
-          class="ml-3 pt-1 filter-autocomplete"
-        >
-          <template v-slot:selection="option">
-            <v-chip x-small close @click:close="remove('department', option)">
-              {{ option.item.name }}
-            </v-chip>
-          </template>
-        </v-autocomplete>
-
-        <!-- 筛选组别 -->
-        <span class="pl-1 text-body-2 text-no-wrap"> 组别 </span>
-        <v-autocomplete
-          color="primary"
-          :items="allTeams"
-          dense
-          outlined
-          item-text="name"
-          item-value="uid"
-          v-model="search.team"
-          multiple
-          hide-details
-          class="ml-3 pt-1 filter-autocomplete"
-        >
-          <template v-slot:selection="option">
-            <v-chip x-small close @click:close="remove('team', option)">
-              {{ option.item.name }}
-            </v-chip>
-          </template>
-        </v-autocomplete>
-
-        <!-- 筛选持品人 -->
-        <span class="pl-1 text-body-2 text-no-wrap"> 持品人 </span>
-        <v-autocomplete
-          color="primary"
-          :items="allUsers"
-          dense
-          outlined
-          item-text="nick"
-          item-value="uid"
-          v-model="search.owner"
-          multiple
-          hide-details
-          class="ml-3 pt-1 filter-autocomplete"
-        >
-          <template v-slot:selection="option">
-            <v-chip x-small close @click:close="remove('owner', option)">
-              {{ option.item.nick }}
-            </v-chip>
-          </template>
-        </v-autocomplete>
-
-        <!-- 筛选商品ID -->
-        <span class="pl-1 text-body-2 text-no-wrap"> 商品ID </span>
-        <v-edit-dialog>
-          <v-text-field
-            color="primary"
-            v-model="search.productId"
-            outlined
-            dense
-            hide-details
-            class="shrink ml-1 date-picker-textfield"
-          >
-          </v-text-field>
-        </v-edit-dialog>
-
-        <!-- 筛选一级类目 -->
-        <span class="pl-1 text-body-2 text-no-wrap"> 一级类目 </span>
-        <v-autocomplete
-          color="primary"
-          :items="allCategorys"
-          dense
-          outlined
-          item-text="name"
-          item-value="uid"
-          v-model="search.categorys"
-          multiple
-          hide-details
-          class="ml-3 pt-1 filter-autocomplete"
-        >
-          <template v-slot:selection="option">
-            <v-chip x-small close @click:close="remove('categorys', option)">
-              {{ option.item.name }}
-            </v-chip>
-          </template>
-        </v-autocomplete>
-      </v-toolbar>
+      <v-col class="px-8 pt-4 pb-6">
+        <v-row>
+          <v-col md="auto" class="mx-2">
+            <v-row>
+              <span class="group-title"> 日期选择 </span>
+            </v-row>
+            <v-row>
+              <v-menu
+                ref="menu"
+                v-model="datePicker"
+                :close-on-content-click="false"
+                :return-value.sync="startTime"
+                offset-y
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    class="date-picker-textfield search-input"
+                    style="max-width: 120px"
+                    v-model="startTime"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    dense
+                    hide-details
+                    color="primary"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="startTime"
+                  no-title
+                  scrollable
+                  locale="zh-cn"
+                  first-day-of-week="1"
+                  :day-format="dayFormat"
+                  min="2021-01-01"
+                  :max="parseDate(new Date())"
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="datePicker = false">
+                    取消
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="
+                      $refs.menu.save(startTime);
+                      loadData();
+                    "
+                  >
+                    确定
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+              <span
+                class="text-subtitle-2 ml-3 mr-2 text--secondary"
+                style="margin-top: 4px"
+              >
+                ~
+              </span>
+              <v-menu
+                ref="menu2"
+                v-model="datePicker2"
+                :close-on-content-click="false"
+                :return-value.sync="endTime"
+                offset-y
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    class="date-picker-textfield search-input"
+                    v-model="endTime"
+                    style="max-width: 120px"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    dense
+                    hide-details
+                    color="primary"
+                    disabled
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="endTime"
+                  no-title
+                  scrollable
+                  locale="zh-cn"
+                  first-day-of-week="1"
+                  :day-format="dayFormat"
+                  min="2021-01-01"
+                  :max="parseDate(new Date())"
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="datePicker2 = false">
+                    取消
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="
+                      $refs.menu.save(endTime);
+                      loadData();
+                    "
+                  >
+                    确定
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-row>
+          </v-col>
+          <v-col class="mx-2">
+            <v-row>
+              <!-- 筛选部门 -->
+              <span class="group-title"> 事业部 </span>
+            </v-row>
+            <v-row>
+              <v-autocomplete
+                color="primary"
+                :items="allDepartments"
+                dense
+                outlined
+                no-data-text="空"
+                item-text="name"
+                item-value="uid"
+                v-model="search.department"
+                multiple
+                hide-details
+                class="search-input search-input"
+              >
+                <template v-slot:selection="option">
+                  <v-chip
+                    small
+                    close
+                    close-icon="mdi-close"
+                    color="primary"
+                    outlined
+                    @click:close="remove('department', option)"
+                  >
+                    {{ option.item.name }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <span style="font-size: 13px">
+                    {{ data.item.name }}
+                  </span>
+                </template>
+              </v-autocomplete>
+            </v-row>
+          </v-col>
+          <v-col class="mx-2">
+            <v-row>
+              <!-- 筛选组别 -->
+              <span class="group-title"> 组别 </span>
+            </v-row>
+            <v-row>
+              <v-autocomplete
+                no-data-text="空"
+                color="primary"
+                :items="allTeams"
+                dense
+                outlined
+                item-text="name"
+                item-value="uid"
+                v-model="search.team"
+                multiple
+                hide-details
+                class="search-input"
+              >
+                <template v-slot:selection="option">
+                  <v-chip
+                    small
+                    close
+                    close-icon="mdi-close"
+                    color="primary"
+                    outlined
+                    @click:close="remove('team', option)"
+                  >
+                    {{ option.item.name }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <span style="font-size: 13px">
+                    {{ data.item.name }}
+                  </span>
+                </template>
+              </v-autocomplete>
+            </v-row>
+          </v-col>
+          <v-col class="mx-2">
+            <v-row>
+              <!-- 筛选持品人 -->
+              <span class="group-title"> 持品人 </span>
+            </v-row>
+            <v-row>
+              <v-autocomplete
+                no-data-text="空"
+                color="primary"
+                :items="allUsers"
+                dense
+                outlined
+                item-text="nick"
+                item-value="uid"
+                v-model="search.owner"
+                multiple
+                hide-details
+                class="search-input"
+              >
+                <template v-slot:selection="option">
+                  <v-chip
+                    small
+                    close
+                    close-icon="mdi-close"
+                    color="primary"
+                    outlined
+                    @click:close="remove('owner', option)"
+                  >
+                    {{ option.item.nick }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <span style="font-size: 13px">
+                    {{ data.item.nick }}
+                  </span>
+                </template>
+              </v-autocomplete>
+            </v-row>
+          </v-col>
+          <v-col class="mx-2">
+            <v-row>
+              <!-- 筛选一级类目 -->
+              <span class="group-title"> 一级类目 </span>
+            </v-row>
+            <v-row>
+              <v-autocomplete
+                no-data-text="空"
+                color="primary"
+                :items="allCategorys"
+                dense
+                outlined
+                item-text="name"
+                item-value="uid"
+                v-model="search.categorys"
+                multiple
+                hide-details
+                class="search-input"
+              >
+                <template v-slot:selection="option">
+                  <v-chip
+                    small
+                    close
+                    close-icon="mdi-close"
+                    color="primary"
+                    outlined
+                    @click:close="remove('categorys', option)"
+                  >
+                    {{ option.item.name }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <span style="font-size: 13px">
+                    {{ data.item.name }}
+                  </span>
+                </template>
+              </v-autocomplete>
+            </v-row>
+          </v-col>
+          <v-col class="mx-2" md="auto">
+            <v-row>
+              <!-- 筛选商品ID -->
+              <span class="group-title"> 商品ID </span>
+            </v-row>
+            <v-row>
+              <v-text-field
+                color="primary"
+                style="max-width: 160px"
+                v-model="search.productId"
+                outlined
+                dense
+                clearable
+                hide-details
+                class="search-input"
+              >
+              </v-text-field>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-col>
     </div>
     <div class="d-flex">
       <div>
@@ -232,7 +312,7 @@
           v-show="!loading && check"
           style="width: fit-content"
           class="profit-table profit-table-a"
-          height="calc(100vh - 221px)"
+          height="calc(100vh - 221px - 13px)"
           fixed-header
           hide-default-footer
           loading-text="计算中... 请稍后"
@@ -276,15 +356,15 @@
         vertical
         style="
           margin: 0px;
-          height: calc(100vh - 210px);
-          min-height: calc(100vh - 210px);
+          height: calc(100vh - 210px - 13px);
+          min-height: calc(100vh - 210px - 13px);
         "
       ></v-divider>
       <v-data-table
         mobile-breakpoint="0"
         id="tablePartB"
         class="profit-table profit-table-b flex-grow-1"
-        height="calc(100vh - 211px)"
+        height="calc(100vh - 211px - 13px)"
         fixed-header
         loading-text="计算中... 请稍后"
         no-data-text="空"
@@ -886,18 +966,11 @@ export default {
       }
 
       if (this.search.owner?.length > 0) {
-        var a = [];
-        for (let i = 0; i < this.midVarOfProfitItems.length; i++) {
-          if (this.midVarOfProfitItems[i].owner == this.search.owner) {
-            a.push(this.midVarOfProfitItems[i]);
-          }
-        }
-        this.midVarOfProfitItems = a;
-        // var owner = {};
-        // this.search.owner.forEach((i) => (owner[i] = true));
-        // this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
-        //   (profitItem) => owner[profitItem.owner]
-        // );
+        var owner = {};
+        this.search.owner.forEach((i) => (owner[i] = true));
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
+          (profitItem) => owner[profitItem.owner]
+        );
       }
 
       if (this.search.categorys?.length > 0) {
@@ -1042,7 +1115,6 @@ export default {
           item.calculatedActualProfit / item.calculatedActualIncome;
 
         item.calculatedDiscount = item.totalAmount / item.totalPrice;
-
       });
     },
   },
@@ -1083,29 +1155,72 @@ export default {
   }
 }
 
-.date-picker-textfield {
-  max-width: 125px;
-  .v-input__slot {
-    min-height: 0px !important;
-
-    .v-text-field__slot > input {
-      padding-top: 4px !important;
-      padding-bottom: 4px !important;
-      font-size: 15px;
-    }
+.v-input.search-input:not(v-input--is-focused) {
+  input {
+    min-width: 0px;
   }
 }
 
-.filter-autocomplete {
-  max-width: 300px;
+.v-input.search-input {
   .v-input__slot {
-    min-height: 0px !important;
+    min-height: 0% !important;
+    // padding-left: 6px !important;
+    padding-right: 6px !important;
+    .v-text-field__slot {
+      input {
+        height: 30px;
+        font-size: 14px;
+      }
+    }
+    .v-input__append-inner {
+      margin: auto !important;
+      .v-input__icon--clear {
+        button {
+          font-size: 17px;
+        }
+      }
+    }
+    > .v-select__slot {
+      > .v-select__selections {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+        min-height: 0% !important;
+        flex-wrap: nowrap;
+        input {
+          height: 30px;
+          font-size: 14px;
+        }
 
-    .v-text-field__slot > input {
-      padding-top: 4px !important;
-      padding-bottom: 4px !important;
-      font-size: 15px;
+        > span {
+          height: 20px;
+          margin-top: 2px;
+          margin-bottom: 2px;
+        }
+      }
+      .v-input__append-inner {
+        margin-top: 3px !important;
+        margin-bottom: auto !important;
+      }
     }
   }
+}
+// .date-picker-textfield {
+//   max-width: 125px;
+//   .v-input__slot {
+//     min-height: 0px !important;
+
+//     .v-text-field__slot > input {
+//       padding-top: 4px !important;
+//       padding-bottom: 4px !important;
+//       font-size: 15px;
+//     }
+//   }
+// }
+
+.group-title {
+  font-size: 14px;
+  color: rgb(102, 102, 102);
+  white-space: nowrap;
+  padding-top: 10px;
 }
 </style>
