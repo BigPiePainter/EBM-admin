@@ -984,7 +984,7 @@ export default {
       if (this.search.productId?.length > 0) {
         this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
           (profitItem) =>
-            profitItem.productId.toString().indexOf(this.search.productId) > 0
+            profitItem.productId.toString().indexOf(this.search.productId) >= 0
         );
 
         // var a = [];
@@ -999,6 +999,8 @@ export default {
         // }
         // this.midVarOfProfitItems = a;
       }
+
+      console.log(this.midVarOfProfitItems)
     },
 
     remove(key, option) {
