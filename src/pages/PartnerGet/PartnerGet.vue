@@ -16,7 +16,7 @@
           <v-col class="mx-2" md="auto">
             <v-row>
               <!-- 筛选商品ID -->
-              <span class="group-title text-caption"> 商品ID </span>
+              <span class="group-title"> 商品ID </span>
             </v-row>
             <v-row>
               <v-text-field
@@ -35,7 +35,7 @@
           <v-col class="mx-2" md="auto">
             <v-row>
               <!-- 查找商品名称 -->
-              <span class="group-title text-caption"> 商品名称 </span>
+              <span class="group-title"> 商品名称 </span>
             </v-row>
             <v-row>
               <v-text-field
@@ -54,10 +54,10 @@
           <v-col class="mx-2">
             <v-row>
               <!-- 筛选部门 -->
-              <span class="group-title text-caption"> 事业部 </span>
+              <span class="group-title"> 事业部 </span>
             </v-row>
             <v-row>
-              <v-autocomplete
+              <v-text-field
                 color="primary"
                 :items="allDepartments"
                 dense
@@ -87,16 +87,16 @@
                     {{ data.item.name }}
                   </span>
                 </template>
-              </v-autocomplete>
+              </v-text-field>
             </v-row>
           </v-col>
           <v-col class="mx-2">
             <v-row>
               <!-- 筛选组别 -->
-              <span class="group-title text-caption"> 组别 </span>
+              <span class="group-title"> 组别 </span>
             </v-row>
             <v-row>
-              <v-autocomplete
+              <v-text-field
                 no-data-text="空"
                 color="primary"
                 :items="allTeams"
@@ -126,16 +126,16 @@
                     {{ data.item.name }}
                   </span>
                 </template>
-              </v-autocomplete>
+              </v-text-field>
             </v-row>
           </v-col>
           <v-col class="mx-2">
             <v-row>
               <!-- 筛选持品人 -->
-              <span class="group-title text-caption"> 持品人 </span>
+              <span class="group-title"> 持品人 </span>
             </v-row>
             <v-row>
-              <v-autocomplete
+              <v-text-field
                 no-data-text="空"
                 color="primary"
                 :items="allUsers"
@@ -165,13 +165,13 @@
                     {{ data.item.nick }}
                   </span>
                 </template>
-              </v-autocomplete>
+              </v-text-field>
             </v-row>
           </v-col>
           <v-col class="mx-2" md="auto">
             <v-row>
               <!-- 查找店铺 -->
-              <span class="group-title text-caption"> 店铺 </span>
+              <span class="group-title"> 店铺 </span>
             </v-row>
             <v-row>
               <v-text-field
@@ -190,7 +190,7 @@
           <v-col class="mx-2">
             <v-row>
               <!-- 筛选一级类目 -->
-              <span class="group-title text-caption"> 一级类目 </span>
+              <span class="group-title"> 一级类目 </span>
             </v-row>
             <v-row>
               <v-autocomplete
@@ -229,7 +229,7 @@
           <v-col class="mx-2" md="auto">
             <v-row>
               <!-- 查找备注 -->
-              <span class="group-title text-caption"> 备注 </span>
+              <span class="group-title"> 备注 </span>
             </v-row>
             <v-row>
               <v-text-field

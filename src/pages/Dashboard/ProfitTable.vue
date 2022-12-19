@@ -312,7 +312,7 @@
           v-show="!loading && isShowDetail"
           style="width: fit-content"
           class="profit-table profit-table-a"
-          height="calc(100vh - 221px - 13px)"
+          height="calc(100vh - 221px - 12px)"
           fixed-header
           hide-default-footer
           loading-text="计算中... 请稍后"
@@ -365,15 +365,15 @@
         vertical
         style="
           margin: 0px;
-          height: calc(100vh - 210px - 13px);
-          min-height: calc(100vh - 210px - 13px);
+          height: calc(100vh - 210px - 12px);
+          min-height: calc(100vh - 210px - 12px);
         "
       ></v-divider>
       <v-data-table
         mobile-breakpoint="0"
         id="tablePartB"
         class="profit-table profit-table-b flex-grow-1"
-        height="calc(100vh - 211px - 13px)"
+        height="calc(100vh - 211px - 12px)"
         fixed-header
         loading-text="计算中... 请稍后"
         no-data-text="空"
@@ -801,7 +801,7 @@ export default {
         { text: "店铺", value: "shopName" }, //1
         { text: "持品人", value: "owner" }, //1
         { text: "产品名称", value: "productName" }, //1
-        { text: "商品ID", value: "productId" },
+        // { text: "商品ID", value: "productId" },
       ],
 
       profitItems: [],
@@ -1325,7 +1325,7 @@ export default {
 // }
 
 .group-title {
-  font-size: 14px;
+  font-size: 13px;
   color: rgb(102, 102, 102);
   white-space: nowrap;
   padding-top: 10px;
