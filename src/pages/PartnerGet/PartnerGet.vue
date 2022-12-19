@@ -10,6 +10,244 @@
         导出
       </v-btn>
     </PageHeader>
+    <div>
+      <v-col class="px-8 pt-4 pb-6">
+        <v-row>
+          <v-col class="mx-2" md="auto">
+            <v-row>
+              <!-- 筛选商品ID -->
+              <span class="group-title text-caption"> 商品ID </span>
+            </v-row>
+            <v-row>
+              <v-text-field
+                color="primary"
+                style="max-width: 160px"
+                v-model="search.search.id"
+                outlined
+                dense
+                clearable
+                hide-details
+                class="search-input"
+              >
+              </v-text-field>
+            </v-row>
+          </v-col>
+          <v-col class="mx-2" md="auto">
+            <v-row>
+              <!-- 查找商品名称 -->
+              <span class="group-title text-caption"> 商品名称 </span>
+            </v-row>
+            <v-row>
+              <v-text-field
+                color="primary"
+                style="max-width: 160px"
+                v-model="search.search.productName"
+                outlined
+                dense
+                clearable
+                hide-details
+                class="search-input"
+              >
+              </v-text-field>
+            </v-row>
+          </v-col>
+          <v-col class="mx-2">
+            <v-row>
+              <!-- 筛选部门 -->
+              <span class="group-title text-caption"> 事业部 </span>
+            </v-row>
+            <v-row>
+              <v-autocomplete
+                color="primary"
+                :items="allDepartments"
+                dense
+                outlined
+                no-data-text="空"
+                item-text="name"
+                item-value="uid"
+                v-model="search.search.department"
+                multiple
+                hide-details
+                class="search-input search-input"
+              >
+                <template v-slot:selection="option">
+                  <v-chip
+                    small
+                    close
+                    close-icon="mdi-close"
+                    color="primary"
+                    outlined
+                    @click:close="remove('department', option)"
+                  >
+                    {{ option.item.name }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <span style="font-size: 13px">
+                    {{ data.item.name }}
+                  </span>
+                </template>
+              </v-autocomplete>
+            </v-row>
+          </v-col>
+          <v-col class="mx-2">
+            <v-row>
+              <!-- 筛选组别 -->
+              <span class="group-title text-caption"> 组别 </span>
+            </v-row>
+            <v-row>
+              <v-autocomplete
+                no-data-text="空"
+                color="primary"
+                :items="allTeams"
+                dense
+                outlined
+                item-text="name"
+                item-value="uid"
+                v-model="search.search.team"
+                multiple
+                hide-details
+                class="search-input"
+              >
+                <template v-slot:selection="option">
+                  <v-chip
+                    small
+                    close
+                    close-icon="mdi-close"
+                    color="primary"
+                    outlined
+                    @click:close="remove('team', option)"
+                  >
+                    {{ option.item.name }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <span style="font-size: 13px">
+                    {{ data.item.name }}
+                  </span>
+                </template>
+              </v-autocomplete>
+            </v-row>
+          </v-col>
+          <v-col class="mx-2">
+            <v-row>
+              <!-- 筛选持品人 -->
+              <span class="group-title text-caption"> 持品人 </span>
+            </v-row>
+            <v-row>
+              <v-autocomplete
+                no-data-text="空"
+                color="primary"
+                :items="allUsers"
+                dense
+                outlined
+                item-text="nick"
+                item-value="uid"
+                v-model="search.search.owner"
+                multiple
+                hide-details
+                class="search-input"
+              >
+                <template v-slot:selection="option">
+                  <v-chip
+                    small
+                    close
+                    close-icon="mdi-close"
+                    color="primary"
+                    outlined
+                    @click:close="remove('owner', option)"
+                  >
+                    {{ option.item.nick }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <span style="font-size: 13px">
+                    {{ data.item.nick }}
+                  </span>
+                </template>
+              </v-autocomplete>
+            </v-row>
+          </v-col>
+          <v-col class="mx-2" md="auto">
+            <v-row>
+              <!-- 查找店铺 -->
+              <span class="group-title text-caption"> 店铺 </span>
+            </v-row>
+            <v-row>
+              <v-text-field
+                color="primary"
+                style="max-width: 100px"
+                v-model="search.search.shopName"
+                outlined
+                dense
+                clearable
+                hide-details
+                class="search-input"
+              >
+              </v-text-field>
+            </v-row>
+          </v-col>
+          <v-col class="mx-2">
+            <v-row>
+              <!-- 筛选一级类目 -->
+              <span class="group-title text-caption"> 一级类目 </span>
+            </v-row>
+            <v-row>
+              <v-autocomplete
+                no-data-text="空"
+                color="primary"
+                :items="allCategorys"
+                dense
+                outlined
+                item-text="name"
+                item-value="uid"
+                v-model="search.search.firstCategory"
+                multiple
+                hide-details
+                class="search-input"
+              >
+                <template v-slot:selection="option">
+                  <v-chip
+                    small
+                    close
+                    close-icon="mdi-close"
+                    color="primary"
+                    outlined
+                    @click:close="remove('firstCategory', option)"
+                  >
+                    {{ option.item.name }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <span style="font-size: 13px">
+                    {{ data.item.name }}
+                  </span>
+                </template>
+              </v-autocomplete>
+            </v-row>
+          </v-col>
+          <v-col class="mx-2" md="auto">
+            <v-row>
+              <!-- 查找备注 -->
+              <span class="group-title text-caption"> 备注 </span>
+            </v-row>
+            <v-row>
+              <v-text-field
+                color="primary"
+                style="max-width: 100px"
+                v-model="search.search.note"
+                outlined
+                dense
+                clearable
+                hide-details
+                class="search-input"
+              >
+              </v-text-field>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-col>
+    </div>
     <div class="flex-grow-1">
       <v-data-table
         single-select
@@ -20,7 +258,7 @@
         no-data-text="空"
         item-key="id"
         class=""
-        height="calc(100vh - 197px)"
+        height="calc(100vh - 273px)"
         mobile-breakpoint="0"
         v-model="selectedProductItem"
         :show-select="ifAction"
@@ -39,7 +277,7 @@
       >
         <!-- 商品清单表头搜索功能 -->
         <!-- 查找商品id -->
-        <template v-slot:[`header.id`]="props">
+        <!-- <template v-slot:[`header.id`]="props">
           <v-edit-dialog @close="loadData">
             {{ props.header.text }}
             <template v-slot:input>
@@ -55,10 +293,10 @@
               </div>
             </template>
           </v-edit-dialog>
-        </template>
+        </template> -->
 
         <!-- 查找商品名称 -->
-        <template v-slot:[`header.productName`]="props">
+        <!-- <template v-slot:[`header.productName`]="props">
           <v-edit-dialog @close="loadData">
             {{ props.header.text }}
             <template v-slot:input>
@@ -74,10 +312,10 @@
               </div>
             </template>
           </v-edit-dialog>
-        </template>
+        </template> -->
 
         <!-- 查找备注 -->
-        <template v-slot:[`header.note`]="props">
+        <!-- <template v-slot:[`header.note`]="props">
           <v-edit-dialog @close="loadData">
             {{ props.header.text }}
             <template v-slot:input>
@@ -93,10 +331,10 @@
               </div>
             </template>
           </v-edit-dialog>
-        </template>
+        </template> -->
 
         <!-- 查找聚水潭仓库 -->
-        <template v-slot:[`header.storehouse`]="props">
+        <!-- <template v-slot:[`header.storehouse`]="props">
           <v-edit-dialog @close="loadData">
             {{ props.header.text }}
             <template v-slot:input>
@@ -112,10 +350,10 @@
               </div>
             </template>
           </v-edit-dialog>
-        </template>
+        </template> -->
 
         <!-- 查找发货方式 -->
-        <template v-slot:[`header.transportWay`]="props">
+        <!-- <template v-slot:[`header.transportWay`]="props">
           <v-edit-dialog @close="loadData">
             {{ props.header.text }}
             <template v-slot:input>
@@ -131,10 +369,10 @@
               </div>
             </template>
           </v-edit-dialog>
-        </template>
+        </template> -->
 
         <!-- 查找店铺 -->
-        <template v-slot:[`header.shopName`]="props">
+        <!-- <template v-slot:[`header.shopName`]="props">
           <v-edit-dialog @close="loadData">
             {{ props.header.text }}
             <template v-slot:input>
@@ -150,10 +388,10 @@
               </div>
             </template>
           </v-edit-dialog>
-        </template>
+        </template> -->
 
         <!-- 查找部门 -->
-        <template v-slot:[`header.department`]="props">
+        <!-- <template v-slot:[`header.department`]="props">
           <v-edit-dialog @close="loadData">
             {{ props.header.text }}
             <template v-slot:input>
@@ -179,10 +417,10 @@
               </div>
             </template>
           </v-edit-dialog>
-        </template>
+        </template> -->
 
         <!-- 查找组别 -->
-        <template v-slot:[`header.team`]="props">
+        <!-- <template v-slot:[`header.team`]="props">
           <v-edit-dialog @close="loadData">
             {{ props.header.text }}
             <template v-slot:input>
@@ -208,10 +446,10 @@
               </div>
             </template>
           </v-edit-dialog>
-        </template>
+        </template> -->
 
         <!-- 查找持品人 -->
-        <template v-slot:[`header.owner`]="props">
+        <!-- <template v-slot:[`header.owner`]="props">
           <v-edit-dialog @close="loadData">
             {{ props.header.text }}
             <template v-slot:input>
@@ -237,10 +475,10 @@
               </div>
             </template>
           </v-edit-dialog>
-        </template>
+        </template> -->
 
         <!-- 查找一级类目 -->
-        <template v-slot:[`header.firstCategory`]="props">
+        <!-- <template v-slot:[`header.firstCategory`]="props">
           <v-edit-dialog @close="loadData">
             {{ props.header.text }}
             <template v-slot:input>
@@ -266,7 +504,7 @@
               </div>
             </template>
           </v-edit-dialog>
-        </template>
+        </template> -->
 
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length" class="pa-0">
@@ -312,11 +550,11 @@
               </v-icon>
               <span> 操作 </span>
             </v-btn>
-            <v-spacer></v-spacer>
+            <!-- <v-spacer></v-spacer>
             <span class="grey--text body-2 overflow-y-auto mr-3">{{
               searchPreview
-            }}</span>
-
+            }}</span> -->
+            <v-spacer></v-spacer>
             <v-btn
               v-if="ifAction"
               :disabled="selectedProductItem.length != 1"
@@ -917,7 +1155,7 @@ export default {
       },
     },
 
-    searchPreview: "",
+    // searchPreview: "",
 
     //分页懒加载
     totalProducts: 50,
@@ -1011,6 +1249,7 @@ export default {
   watch: {
     options: {
       handler() {
+        console.log("watch 触发loaddata");
         this.loadData();
       },
       deep: true,
@@ -1018,25 +1257,25 @@ export default {
 
     "search.search": {
       handler() {
-        this.searchPreview = "";
+        this.loadData();
+        // this.searchPreview = "";
 
-        for (let name in this.search.search) {
-          if (!this.search.search[name]) continue;
-          if (typeof this.search.search[name] == "string") {
-            this.search.search[name] = this.search.search[name].trim();
-          }
-          if (this.search.search[name]) {
-            this.searchPreview += `${
-              this.headersContent.find((i) => i.value == name).text
-            }：${this.search.search[name]} ，`;
-          }
-        }
-        this.searchPreview = this.searchPreview
-          ? this.searchPreview.slice(0, -1)
-          : "点击列名可以进行模糊搜索";
+        // for (let name in this.search.search) {
+        //   if (!this.search.search[name]) continue;
+        //   if (typeof this.search.search[name] == "string") {
+        //     this.search.search[name] = this.search.search[name].trim();
+        //   }
+        // if (this.search.search[name]) {
+        //   this.searchPreview += `${
+        //     this.headersContent.find((i) => i.value == name).text
+        //   }：${this.search.search[name]} ，`;
+        // }
+        // }
+        // this.searchPreview = this.searchPreview
+        //   ? this.searchPreview.slice(0, -1)
+        //   : "点击列名可以进行模糊搜索";
       },
       deep: true,
-      immediate: true,
     },
   },
 
@@ -1055,10 +1294,11 @@ export default {
     parseDateTime(date) {
       return javaDateTimeToString(date);
     },
-    remove(props, option) {
+    remove(key, option) {
       console.log(option);
+      console.log(this.options);
       console.log(this.search.search);
-      this.search.search[props.header.value].splice(option.index, 1);
+      this.search.search[key].splice(option.index, 1);
     },
     parseDate(time) {
       return javaUTCDateToString(time);
@@ -1102,6 +1342,8 @@ export default {
     },
 
     loadData() {
+      console.log("loaddata");
+      console.log("k", this.options);
       this.loading = true;
       const { page, itemsPerPage } = this.options;
       // console.log({ page, itemsPerPage, match: JSON.stringify(this.search) });
