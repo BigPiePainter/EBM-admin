@@ -5,14 +5,14 @@
         <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
         导出
       </v-btn>
-      <v-btn class="ml-2" text color="primary" @click="showDetail">
-        <v-icon v-if="check" size="20" style="padding-top: 2px"
+      <v-btn class="ml-2" text color="primary" @click="showDetailButton">
+        <v-icon v-if="isShowDetail" size="20" style="padding-top: 2px"
           >mdi-arrow-collapse-horizontal</v-icon
         >
         <v-icon v-else size="20" style="padding-top: 2px"
           >mdi-arrow-expand-horizontal</v-icon
         >
-        <span> {{ check ? "收起详细数据" : "展开详细数据" }} </span>
+        <span> {{ isShowDetail ? "收起详细数据" : "展开详细数据" }} </span>
       </v-btn>
     </PageHeader>
     <div>
@@ -134,7 +134,7 @@
             <v-row>
               <v-autocomplete
                 color="primary"
-                :items="allDepartments"
+                :items="validDepartments"
                 dense
                 outlined
                 no-data-text="空"
@@ -174,7 +174,7 @@
               <v-autocomplete
                 no-data-text="空"
                 color="primary"
-                :items="allTeams"
+                :items="validTeam"
                 dense
                 outlined
                 item-text="name"
@@ -213,7 +213,7 @@
               <v-autocomplete
                 no-data-text="空"
                 color="primary"
-                :items="allUsers"
+                :items="validOwner"
                 dense
                 outlined
                 item-text="nick"
@@ -309,7 +309,7 @@
         <v-data-table
           mobile-breakpoint="0"
           id="tablePartA"
-          v-show="!loading && check"
+          v-show="!loading && isShowDetail"
           style="width: fit-content"
           class="profit-table profit-table-a"
           height="calc(100vh - 221px - 13px)"
@@ -324,9 +324,18 @@
           }"
           :options.sync="options"
           :items="loading ? [] : midVarOfProfitItems"
-          :headers="profitHeadersPartA"
+          :headers="profitHeadersShownPartA"
           :loading="loading"
         >
+          <template v-slot:[`body.append`]>
+            <tr v-if="canShowSumup" class="sumup">
+              <td colspan="10">
+                <v-divider></v-divider>
+                <span style="margin-left: 4px">简单统计：</span>
+              </td>
+            </tr>
+          </template>
+
           <template v-slot:[`item.department`]="{ item }">
             {{ departmentIdToName[item.department] }}
           </template>
@@ -352,7 +361,7 @@
         <v-divider style="margin-top: 10px"></v-divider>
       </div>
       <v-divider
-        v-show="!loading && check"
+        v-show="!loading && isShowDetail"
         vertical
         style="
           margin: 0px;
@@ -375,20 +384,45 @@
         }"
         :options.sync="options"
         :items="loading ? [] : midVarOfProfitItems"
-        :headers="
-          !profitItems.length || loading
-            ? []
-            : check
-            ? profitHeadersAll
-            : profitHeadersHide
-        "
+        :headers="profitHeadersShownPartB"
         :loading="loading"
       >
+        <template v-slot:[`body.append`]>
+          <tr v-if="canShowSumup" class="sumup">
+            <td v-for="i in profitHeadersShownPartB" :key="i.value">
+              <v-divider></v-divider>
+              <div
+                v-if="profitHeadersForSumup.indexOf(i.value) >= 0"
+                style="margin-left: 12.8px"
+              >
+                <div
+                  v-if="
+                    i.value == `orderCount` ||
+                    i.value == `productCount` ||
+                    i.value == `calculatedActualOrderCount` ||
+                    i.value == `fakeOrderCount`
+                  "
+                >
+                  {{
+                    amountFormat(sumup(midVarOfProfitItems, i.value), null, 0)
+                  }}
+                </div>
+                <div v-else>
+                  <span>
+                    {{
+                      amountFormat(sumup(midVarOfProfitItems, i.value), "￥")
+                    }}
+                  </span>
+                </div>
+              </div>
+              <span v-else class="ml-1"></span>
+            </td>
+          </tr>
+        </template>
         <template v-slot:[`item.insurance`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.insurance" class="mr-1">{{ "￥  " }} </span>
             <span>
-              {{ item.insurance ? item.insurance.toFixed(2) : "————" }}
+              {{ amountFormat(item.insurance, "￥") }}
             </span>
           </div>
         </template>
@@ -398,7 +432,7 @@
             <span>
               {{
                 item.deduction
-                  ? (item.deduction * 100).toFixed(1) + " %"
+                  ? (item.deduction * 100).toFixed(2) + " %"
                   : "   " + "————"
               }}
             </span>
@@ -407,25 +441,23 @@
 
         <template v-slot:[`item.extraRatio`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.extraRatio" class="mr-1">{{ "￥  " }} </span>
             <span>
-              {{ item.extraRatio ? item.extraRatio.toFixed(2) + "%" : "————" }}
+              {{ amountFormat(item.extraRatio, "￥") }}
             </span>
           </div>
         </template>
 
         <template v-slot:[`item.totalAmount`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.totalAmount" class="mr-1">{{ "￥  " }} </span>
             <span>
-              {{ amountFormat(item.totalAmount, 2, "————") }}
+              {{ amountFormat(item.totalAmount, "￥") }}
             </span>
           </div>
         </template>
 
         <template v-slot:[`item.totalFakeAmount`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.totalFakeAmount" class="mr-1">{{ "￥  " }} </span>
+            <span v-if="item.totalFakeAmount">{{ "￥  " }} </span>
             <span>
               {{
                 item.totalFakeAmount > 0 ? item.totalFakeAmount.toFixed(2) : ""
@@ -438,39 +470,31 @@
           {{
             item.freightToPayment
               ? (item.freightToPayment * 100).toFixed(2) + "%"
-              : "￥" + item.freight
+              : item.freight
+              ? "￥" + item.freight
+              : ""
           }}
         </template>
 
         <template v-slot:[`item.totalCost`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.totalCost" class="mr-1">{{ "￥  " }} </span>
             <span>
-              {{ amountFormat(item.totalCost, 2, "————") }}
+              {{ amountFormat(item.totalCost, "￥", 2, "————") }}
             </span>
           </div>
         </template>
 
         <template v-slot:[`item.totalRefundAmount`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.totalRefundAmount" class="mr-1"
-              >{{ "￥  " }}
-            </span>
             <span>
-              {{
-                item.totalRefundAmount
-                  ? item.totalRefundAmount.toFixed(2)
-                  : "————"
-              }}
+              {{ amountFormat(item.totalRefundAmount, "￥") }}
             </span>
           </div>
         </template>
 
         <template v-slot:[`item.totalRefundWithNoShipAmount`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.totalRefundWithNoShipAmount" class="mr-1"
-              >{{ "￥  " }}
-            </span>
+            <span v-if="item.totalRefundWithNoShipAmount">{{ "￥  " }} </span>
             <span>
               {{
                 item.totalRefundWithNoShipAmount
@@ -483,7 +507,7 @@
 
         <template v-slot:[`item.totalBrokerage`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.totalBrokerage" class="mr-1">{{ "￥  " }} </span>
+            <span v-if="item.totalBrokerage">{{ "￥  " }} </span>
             <span>
               {{
                 item.totalBrokerage ? item.totalBrokerage.toFixed(2) : "————"
@@ -494,41 +518,44 @@
 
         <template v-slot:[`item.totalPrice`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.totalPrice" class="mr-1">{{ "￥  " }} </span>
             <span>
-              {{ item.totalPrice ? item.totalPrice.toFixed(2) : "————" }}
+              {{ amountFormat(item.totalPrice, "￥", 2, "————") }}
             </span>
           </div>
         </template>
 
         <template v-slot:[`item.calculatedActualAmount`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedActualAmount" class="mr-1">￥</span>
             <span>
-              {{ amountFormat(item.calculatedActualAmount, 2, "————") }}
+              {{ amountFormat(item.calculatedActualAmount, "￥", 2, "————") }}
+            </span>
+          </div>
+        </template>
+
+        <template v-slot:[`item.orderCount`]="{ item }">
+          <div class="d-flex">
+            <span>
+              {{ amountFormat(item.orderCount, null, 0) }}
+            </span>
+          </div>
+        </template>
+
+        <template v-slot:[`item.productCount`]="{ item }">
+          <div class="d-flex">
+            <span>
+              {{ amountFormat(item.productCount, "", 0) }}
             </span>
           </div>
         </template>
 
         <template v-slot:[`item.calculatedActualOrderCount`]="{ item }">
-          {{
-            item.calculatedActualOrderCount > 0
-              ? item.calculatedActualOrderCount
-              : ""
-          }}
+          {{ amountFormat(item.calculatedActualOrderCount, null, 0) }}
         </template>
 
         <template v-slot:[`item.calculatedActualAverageAmount`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedActualAverageAmount" class="mr-1"
-              >{{ "￥  " }}
-            </span>
             <span>
-              {{
-                item.calculatedActualAverageAmount > 0
-                  ? item.calculatedActualAverageAmount.toFixed(2)
-                  : ""
-              }}
+              {{ amountFormat(item.calculatedActualAverageAmount, "￥") }}
             </span>
           </div>
         </template>
@@ -551,11 +578,8 @@
 
         <template v-slot:[`item.calculatedActualIncome`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedActualIncome" class="mr-1"
-              >{{ "￥  " }}
-            </span>
             <span>
-              {{ amountFormat(item.calculatedActualIncome, 2, "————") }}
+              {{ amountFormat(item.calculatedActualIncome, "￥", 2, "————") }}
             </span>
           </div>
         </template>
@@ -574,9 +598,7 @@
 
         <template v-slot:[`item.calculatedActualCost`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedActualCost" class="mr-1"
-              >{{ "￥  " }}
-            </span>
+            <span v-if="item.calculatedActualCost">{{ "￥  " }} </span>
             <span>
               {{
                 item.calculatedActualCost > 0
@@ -589,17 +611,13 @@
 
         <template v-slot:[`item.calculatedTmallTokeRatio`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedTmallTokeRatio" class="mr-1"
-              >{{ "￥  " }}
-            </span>
             <span>
-              {{ amountFormat(item.calculatedTmallTokeRatio, 2, "————") }}
+              {{ amountFormat(item.calculatedTmallTokeRatio, "￥", 2, "————") }}
             </span>
           </div>
         </template>
 
         <template v-slot:[`item.department`]="{ item }">
-          {{ global.log(departmentIdToName) }}
           {{ departmentIdToName[item.department] }}
         </template>
         <template v-slot:[`item.team`]="{ item }">
@@ -609,14 +627,14 @@
           {{ userIdToNick[item.owner] }}
         </template>
         <template v-slot:[`item.firstCategory`]="{ item }">
-          {{ categoryIdToName[item.firstCategory] }}
+          <div style="width: 135px">
+            {{ categoryIdToName[item.firstCategory] }}
+          </div>
         </template>
 
         <template v-slot:[`item.calculatedTotalFreight`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedTotalFreight" class="mr-1"
-              >{{ "￥  " }}
-            </span>
+            <span v-if="item.calculatedTotalFreight">{{ "￥  " }} </span>
             <span>
               {{ item.calculatedTotalFreight.toFixed(2) }}
             </span>
@@ -625,9 +643,7 @@
 
         <template v-slot:[`item.calculatedTotalInsurance`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedTotalInsurance" class="mr-1"
-              >{{ "￥  " }}
-            </span>
+            <span v-if="item.calculatedTotalInsurance">{{ "￥  " }} </span>
             <span>
               {{ item.calculatedTotalInsurance.toFixed(2) }}
             </span>
@@ -652,14 +668,9 @@
 
         <template v-slot:[`item.calculatedActualProfit`]="{ item }">
           <div class="d-flex" :style="item.wrongCount > 0 ? `color:red` : ``">
-            <span v-if="item.calculatedActualProfit">{{ "￥ " }} </span>
             <span>
               <span>
-                {{
-                  item.wrongCount > 0
-                    ? "0.00"
-                    : amountFormat(item.calculatedActualProfit, 2, "————")
-                }}
+                {{ amountFormat(item.calculatedActualProfit, "￥", 2, "————") }}
               </span>
             </span>
           </div>
@@ -779,7 +790,7 @@ export default {
       datePicker: false,
       datePicker2: false,
 
-      check: false,
+      isShowDetail: false,
       loading: false,
 
       midVarOfProfitItems: [],
@@ -849,6 +860,29 @@ export default {
         { text: "SKU未匹配", value: "wrongCount" },
         { text: "折扣", value: "calculatedDiscount" },
         { text: "错数", value: "operatorGivenWrongPriceCount" },
+        //----------------------------------------------------------------------
+      ],
+      profitHeadersForSumup: [
+        //进行简单求和的列
+        "totalAmount", //1
+        "orderCount", //1
+        "productCount", //1
+        "totalFakeAmount", //1
+        "fakeOrderCount", //1
+        "calculatedActualAmount", //成交额-补单额1
+        "calculatedActualOrderCount", //订单数-补单数1
+        "totalCost", //1
+        "totalRefundAmount", //1
+        "calculatedActualIncome", //真实金额-退款金额1
+        "totalRefundWithNoShipAmount", //1
+        "calculatedRefundWithNoShipAmount", //未发仅退*成本率1
+        "calculatedActualCost", //拿货成本-未发退本1
+        "calculatedTmallTokeRatio", //扣点*（成交额-退款金额）1
+        "calculatedTotalFreight", //每单运费：运费*（真实单数-未发数）；运费/货品成本：运费*拿货成本（售后）1
+        "calculatedTotalInsurance", //运费险1*（订单数-未发数）1
+        "totalBrokerage", //1
+        "calculatedActualProfit", //净收入额-拿货成本（售后）-平台扣点-运费险-快递费-刷单佣金1
+        "totalPrice", //1
         //----------------------------------------------------------------------
       ],
 
@@ -925,6 +959,42 @@ export default {
       "categoryIdToName",
       "categoryIdToInfo",
     ]),
+    validDepartments() {
+      var validTemp = {};
+      this.profitItems.forEach((i) => {
+        validTemp[i.department] = true;
+      });
+      return this.allDepartments.filter((d) => validTemp[d.uid]);
+    },
+    validTeam() {
+      var validTemp = {};
+      this.profitItems.forEach((i) => {
+        validTemp[i.team] = true;
+      });
+      return this.allTeams.filter((d) => validTemp[d.uid]);
+    },
+    validOwner() {
+      var validTemp = {};
+      this.profitItems.forEach((i) => {
+        validTemp[i.owner] = true;
+      });
+      return this.allUsers.filter((d) => validTemp[d.uid]);
+    },
+    profitHeadersShownPartA() {
+      return this.profitHeadersPartA;
+    },
+    profitHeadersShownPartB() {
+      return !this.profitItems.length || this.loading
+        ? []
+        : this.isShowDetail
+        ? this.profitHeadersAll
+        : this.profitHeadersHide;
+    },
+    canShowSumup() {
+      if (this.loading) return false;
+      if (!this.isShowDetail) return false;
+      return true;
+    },
   },
 
   watch: {
@@ -938,8 +1008,13 @@ export default {
   },
 
   methods: {
-    showDetail() {
-      this.check = !this.check;
+    sumup(object, key) {
+      var result = 0;
+      object.forEach((i) => (result += i[key]));
+      return result;
+    },
+    showDetailButton() {
+      this.isShowDetail = !this.isShowDetail;
       setTimeout(() => {
         this.tablePartAWrapper.scrollTop = this.tablePartBWrapper.scrollTop;
       }, 0);
@@ -1067,13 +1142,29 @@ export default {
     dataAnalyze(date) {
       this.profitItems.forEach((item) => {
         item.date = date;
+
+        if (item.orderCount == null) {
+          item.orderCount = 0;
+        }
+        if (item.productCount == null) {
+          item.productCount = 0;
+        }
+        if (item.totalAmount == null) {
+          item.totalAmount = 0;
+        }
+
         item.deduction /= 100;
         item.freightToPayment /= 100;
 
         item.calculatedActualAmount = item.totalAmount - item.totalFakeAmount;
         item.calculatedActualOrderCount = item.orderCount - item.fakeOrderCount;
-        item.calculatedActualAverageAmount =
-          item.calculatedActualAmount / item.calculatedActualOrderCount;
+
+        if (item.calculatedActualOrderCount == 0) {
+          item.calculatedActualAverageAmount = 0;
+        } else {
+          item.calculatedActualAverageAmount =
+            item.calculatedActualAmount / item.calculatedActualOrderCount;
+        }
 
         item.calculatedCostRatio = item.totalCost / item.calculatedActualAmount;
 
@@ -1095,8 +1186,8 @@ export default {
           item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
 
         //后加的
-        if (isNaN(item.calculatedRefundWithNoShipAmount)){
-          item.calculatedRefundWithNoShipAmount = 0
+        if (isNaN(item.calculatedRefundWithNoShipAmount)) {
+          item.calculatedRefundWithNoShipAmount = 0;
         }
         //
 
@@ -1142,6 +1233,13 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
       }
+    }
+  }
+
+  tr.sumup {
+    td {
+      padding-right: 0px !important;
+      padding-left: 0px !important;
     }
   }
   width: 0%;

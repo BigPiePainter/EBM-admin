@@ -71,6 +71,13 @@ export const zeroPadding = (num) => {
 
 
 const reg = /\d{1,3}(?=(\d{3})+(\.|$))/gy
-export const amountBeautify = (num, fixed, error) => {
-  return num ? Number(num).toFixed(fixed || 2).replace(reg, '$&,') : error
+export const amountBeautify = (num, currency, fixed, error) => {
+  if (isNaN(num)) {
+    return error
+  }
+  if (!num && num != 0) {
+    return error
+  }
+
+  return (currency ? currency + " " : "") + Number(num).toFixed(fixed == 0 ? fixed : fixed || 2).replace(reg, '$&,')
 };
