@@ -656,7 +656,7 @@
             <span>
               <span>
                 {{
-                  item.wrongCount != 0
+                  item.wrongCount > 0
                     ? "0.00"
                     : amountFormat(item.calculatedActualProfit, 2, "————")
                 }}
@@ -1000,7 +1000,7 @@ export default {
         // this.midVarOfProfitItems = a;
       }
 
-      console.log(this.midVarOfProfitItems)
+      console.log(this.midVarOfProfitItems);
     },
 
     remove(key, option) {
@@ -1093,6 +1093,13 @@ export default {
           item.calculatedActualAmount - item.totalRefundAmount;
         item.calculatedRefundWithNoShipAmount =
           item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
+
+        //后加的
+        if (isNaN(item.calculatedRefundWithNoShipAmount)){
+          item.calculatedRefundWithNoShipAmount = 0
+        }
+        //
+
         item.calculatedActualCost =
           item.totalCost - item.calculatedRefundWithNoShipAmount;
 
