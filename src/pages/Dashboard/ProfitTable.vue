@@ -14,6 +14,21 @@
         >
         <span> {{ isShowDetail ? "收起详细数据" : "展开详细数据" }} </span>
       </v-btn>
+      <v-btn
+        class="ml-2"
+        text
+        color="primary"
+        :disabled="loading"
+        @click="changeDateRangeButton"
+      >
+        <v-icon v-if="isDateRange" size="20" style="padding-top: 2px"
+          >mdi-calendar-blank</v-icon
+        >
+        <v-icon v-else size="20" style="padding-top: 2px"
+          >mdi-calendar-blank-multiple</v-icon
+        >
+        <span> {{ isDateRange ? "关闭时间段模式" : "开启时间段模式" }} </span>
+      </v-btn>
     </PageHeader>
     <div>
       <v-col class="px-8 pt-4 pb-6">
@@ -27,28 +42,31 @@
                 ref="menu"
                 v-model="datePicker"
                 :close-on-content-click="false"
-                :return-value.sync="startTime"
+                :return-value.sync="dates"
                 offset-y
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     class="date-picker-textfield search-input"
-                    style="max-width: 120px"
-                    v-model="startTime"
+                    style="width: 200px"
+                    v-model="dateRangeText"
                     readonly
                     v-bind="attrs"
                     v-on="on"
                     outlined
                     dense
                     hide-details
+                    :disabled="loading"
                     color="primary"
                   ></v-text-field>
                 </template>
                 <v-date-picker
-                  v-model="startTime"
+                  v-model="dates"
                   no-title
                   scrollable
                   locale="zh-cn"
+                  color="primary"
+                  :range="isDateRange"
                   first-day-of-week="1"
                   :day-format="dayFormat"
                   min="2021-01-01"
@@ -62,61 +80,7 @@
                     text
                     color="primary"
                     @click="
-                      $refs.menu.save(startTime);
-                      loadData();
-                    "
-                  >
-                    确定
-                  </v-btn>
-                </v-date-picker>
-              </v-menu>
-              <span
-                class="text-subtitle-2 ml-3 mr-2 text--secondary"
-                style="margin-top: 4px"
-              >
-                ~
-              </span>
-              <v-menu
-                ref="menu2"
-                v-model="datePicker2"
-                :close-on-content-click="false"
-                :return-value.sync="endTime"
-                offset-y
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    class="date-picker-textfield search-input"
-                    v-model="endTime"
-                    style="max-width: 120px"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    outlined
-                    dense
-                    hide-details
-                    color="primary"
-                    disabled
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="endTime"
-                  no-title
-                  scrollable
-                  locale="zh-cn"
-                  first-day-of-week="1"
-                  :day-format="dayFormat"
-                  min="2021-01-01"
-                  :max="parseDate(new Date())"
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="datePicker2 = false">
-                    取消
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="
-                      $refs.menu.save(endTime);
+                      $refs.menu.save(dates);
                       loadData();
                     "
                   >
@@ -400,7 +364,7 @@
                     i.value == `orderCount` ||
                     i.value == `productCount` ||
                     i.value == `calculatedActualOrderCount` ||
-                    i.value == `fakeOrderCount`
+                    i.value == `totalFakeCount`
                   "
                 >
                   {{
@@ -419,6 +383,13 @@
             </td>
           </tr>
         </template>
+
+        <template v-slot:[`item.date`]="{ item }">
+          <span>
+            {{ item.date }}
+          </span>
+        </template>
+
         <template v-slot:[`item.insurance`]="{ item }">
           <div class="d-flex">
             <span>
@@ -481,6 +452,11 @@
             <span>
               {{ amountFormat(item.totalCost, "￥", 2, "————") }}
             </span>
+            <Help
+              class="ml-1"
+              v-if="item.wrongCount > 0"
+              text="存在未匹配SKU，抓取该SKU的售卖价作为成本"
+            />
           </div>
         </template>
 
@@ -598,14 +574,14 @@
 
         <template v-slot:[`item.calculatedActualCost`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedActualCost">{{ "￥  " }} </span>
             <span>
-              {{
-                item.calculatedActualCost > 0
-                  ? item.calculatedActualCost.toFixed(2)
-                  : ""
-              }}
+              {{ amountFormat(item.calculatedActualCost, "￥", 2, "————") }}
             </span>
+            <Help
+              class="ml-1"
+              v-if="item.wrongCount > 0"
+              text="存在未匹配SKU，抓取该SKU的售卖价作为成本"
+            />
           </div>
         </template>
 
@@ -651,41 +627,54 @@
         </template>
 
         <template v-slot:[`item.wrongCount`]="{ item }">
-          <span :style="item.wrongCount > 0 ? `color:red` : ``">
-            {{ item.wrongCount }}
-          </span>
-          <v-btn
-            v-if="item.wrongCount > 0"
-            x-small
-            depressed
-            text
-            class="pa-0"
-            @click="showMismatchedSkus(item)"
-          >
-            啊？
-          </v-btn>
+          <div class="d-flex">
+            <span :style="item.wrongCount > 0 ? `color:red` : ``">
+              {{ item.wrongCount }}
+            </span>
+            <v-btn
+              v-if="item.wrongCount > 0"
+              x-small
+              depressed
+              text
+              class="pa-0"
+              @click="showMismatchedSkus(item)"
+            >
+              啊？
+            </v-btn>
+          </div>
         </template>
 
         <template v-slot:[`item.calculatedActualProfit`]="{ item }">
-          <div class="d-flex" :style="item.wrongCount > 0 ? `color:red` : ``">
+          <div class="d-flex">
             <span>
-              <span>
-                {{ amountFormat(item.calculatedActualProfit, "￥", 2, "————") }}
-              </span>
+              {{ amountFormat(item.calculatedActualProfit, "￥", 2, "————") }}
             </span>
+            <Help
+              class="ml-1"
+              v-if="item.wrongCount > 0"
+              text="存在未匹配SKU，抓取该SKU的售卖价作为成本"
+            />
           </div>
         </template>
 
         <template v-slot:[`item.calculatedActualProfitRatio`]="{ item }">
-          <span :style="item.wrongCount > 0 ? `color:red` : ``">
-            {{
-              item.wrongCount == 0
-                ? item.calculatedActualProfitRatio >= 0
+          <div class="d-flex">
+            <span>
+              {{
+                item.calculatedActualProfit > 0
                   ? (item.calculatedActualProfitRatio * 100).toFixed(2) + " %"
-                  : "————"
-                : "0.00 %"
-            }}
-          </span>
+                  : ""
+              }}
+              <!-- {{
+                
+                item.wrongCount == 0
+                  ? item.calculatedActualProfitRatio >= 0
+                    ? (item.calculatedActualProfitRatio * 100).toFixed(2) + " %"
+                    : "————"
+                  : "0.00 %"
+              }} -->
+            </span>
+          </div>
         </template>
 
         <template v-slot:[`item.calculatedDiscount`]="{ item }">
@@ -708,7 +697,7 @@
             {{ `${selectedProduct.productName}` }}
             <span class="pl-5">{{ selectedProduct.productId }}</span>
             <span class="pl-2">未匹配SKU</span>
-            <span class="text--secondary pl-8">{{ this.startTime }}</span>
+            <span class="text--secondary pl-8">{{ this.dates }}</span>
           </v-row>
         </v-col>
 
@@ -761,6 +750,7 @@
 
 <script>
 import { amountBeautify } from "@/libs/utils";
+import Help from "@/components/Help";
 import { javaUTCDateToString } from "@/libs/utils";
 import { getProfitReport } from "@/settings/profitReport";
 import { getMismatchedSkus } from "@/settings/profitReport";
@@ -772,6 +762,7 @@ import PageHeader from "@/components/PageHeader";
 export default {
   components: {
     PageHeader,
+    Help,
   },
   data() {
     return {
@@ -779,10 +770,7 @@ export default {
       options: {},
       search: {},
 
-      startTime: "",
-      endTime: "",
-
-      dateEnd: "",
+      dates: [],
 
       menu: null,
       menu2: null,
@@ -792,16 +780,17 @@ export default {
 
       isShowDetail: false,
       loading: false,
+      isDateRange: false,
 
       midVarOfProfitItems: [],
       profitHeadersPartA: [
-        //{ text: "日期", value: "date" },
+        // { text: "日期", value: "date" },
         { text: "部门", value: "department" },
         { text: "组别", value: "team" }, //1
         { text: "店铺", value: "shopName" }, //1
         { text: "持品人", value: "owner" }, //1
         { text: "产品名称", value: "productName" }, //1
-        // { text: "商品ID", value: "productId" },
+        { text: "商品ID", value: "productId" },
       ],
 
       profitItems: [],
@@ -815,7 +804,7 @@ export default {
         { text: "订单数", value: "orderCount" }, //1
         { text: "销售数", value: "productCount" }, //1
         { text: "补单额", value: "totalFakeAmount" }, //1
-        { text: "补单数", value: "fakeOrderCount" }, //1
+        { text: "补单数", value: "totalFakeCount" }, //1
         { text: "真实金额", value: "calculatedActualAmount" }, //成交额-补单额1
         { text: "真实单数", value: "calculatedActualOrderCount" }, //订单数-补单数1
         { text: "单均价", value: "calculatedActualAverageAmount" }, //真实金额/真实单数1
@@ -868,7 +857,7 @@ export default {
         "orderCount", //1
         "productCount", //1
         "totalFakeAmount", //1
-        "fakeOrderCount", //1
+        "totalFakeCount", //1
         "calculatedActualAmount", //成交额-补单额1
         "calculatedActualOrderCount", //订单数-补单数1
         "totalCost", //1
@@ -901,7 +890,7 @@ export default {
   created() {
     var date = new Date();
     date.setDate(date.getDate() - 2);
-    this.startTime = javaUTCDateToString(date);
+    this.dates = javaUTCDateToString(date);
     this.loadData();
   },
 
@@ -981,7 +970,12 @@ export default {
       return this.allUsers.filter((d) => validTemp[d.uid]);
     },
     profitHeadersShownPartA() {
-      return this.profitHeadersPartA;
+      console.log(this.user)
+      if (this.user.permission.f?.s) {
+        return this.profitHeadersPartA;
+      } else {
+        return this.profitHeadersPartA.filter(i => i.value != "shopName" && i.value != "productId");
+      }
     },
     profitHeadersShownPartB() {
       return !this.profitItems.length || this.loading
@@ -993,7 +987,19 @@ export default {
     canShowSumup() {
       if (this.loading) return false;
       if (!this.isShowDetail) return false;
+      if (this.midVarOfProfitItems.length == 0) return false;
       return true;
+    },
+    dateRangeText() {
+      if (this.isDateRange) {
+        return new Date(this.dates[1]).getTime() -
+          new Date(this.dates[0]).getTime() <
+          0
+          ? this.dates[1] + "  ~  " + this.dates[0]
+          : this.dates.join("  ~  ");
+      } else {
+        return this.dates;
+      }
     },
   },
 
@@ -1018,6 +1024,24 @@ export default {
       setTimeout(() => {
         this.tablePartAWrapper.scrollTop = this.tablePartBWrapper.scrollTop;
       }, 0);
+    },
+    changeDateRangeButton() {
+      if (this.isDateRange) {
+        var d2 = this.dates[1] || this.dates[0];
+        this.isDateRange = false;
+
+        this.dates = d2;
+      } else {
+        var d = this.dates;
+        console.log(d);
+        this.isDateRange = true;
+        this.dates = [d, d];
+        console.log(this.dates);
+
+        setTimeout(() => {
+          console.log(this.dates);
+        }, 1000);
+      }
     },
     filter() {
       // function filterId(id) {
@@ -1085,11 +1109,15 @@ export default {
       this.search[key].splice(option.index, 1);
     },
     showMismatchedSkus(item) {
+      if (this.isDateRange) {
+        this.global.infoAlert("泼发EBC：时间段模式暂时不支持查看未匹配SKU");
+        return;
+      }
       this.selectedProduct = item;
       this.mismatchedSkuDialog = true;
       this.mismatchedSkuLoading = true;
       var args = {
-        date: this.startTime,
+        date: this.dates,
         productId: this.selectedProduct.productId,
       };
       args.date = args.date.replaceAll("-", "/");
@@ -1116,21 +1144,34 @@ export default {
     },
 
     loadData() {
-      var args = { date: this.startTime };
-      args.date = args.date.replaceAll("-", "/");
+      var args;
+      if (this.isDateRange) {
+        args = { startDate: this.dates[0], endDate: this.dates[1] };
+      } else {
+        args = { startDate: this.dates, endDate: this.dates };
+      }
+
+      args.startDate = args.startDate.replaceAll("-", "/");
+      args.endDate = args.endDate.replaceAll("-", "/");
       this.loading = true;
       console.log("接口调用", args);
       getProfitReport(args)
         .then((res) => {
           this.loading = false;
           console.log(res.data);
-          for (let name in res.data) {
-            this.profitItems = res.data[name];
-            this.dataAnalyze(name);
+
+          if (!res.data.profitReport) {
+            this.global.infoAlert("泼发EBC：" + res.data);
+            this.profitItems = [];
             this.midVarOfProfitItems = this.profitItems;
-            this.filter();
-            break;
+            return;
           }
+
+          this.profitItems = res.data.profitReport;
+          this.dataAnalyze();
+          this.midVarOfProfitItems = this.profitItems;
+          this.filter();
+
           setTimeout(() => {
             this.tablePartAWrapper.scrollTop = this.tablePartBWrapper.scrollTop;
           }, 0);
@@ -1139,9 +1180,21 @@ export default {
           this.loading = false;
         });
     },
-    dataAnalyze(date) {
+    dataAnalyze() {
+      var dateString;
+      if (this.isDateRange) {
+        var diff =
+          new Date(this.dates[1]).getTime() - new Date(this.dates[0]).getTime();
+        console.log("差距", diff);
+        dateString = `${this.dates[diff < 0 ? 1 : 0]}  + ${
+          Math.abs(diff) / 86400000
+        }`;
+      } else {
+        dateString = this.dates;
+      }
+
       this.profitItems.forEach((item) => {
-        item.date = date;
+        item.date = dateString;
 
         if (item.orderCount == null) {
           item.orderCount = 0;
@@ -1157,7 +1210,7 @@ export default {
         item.freightToPayment /= 100;
 
         item.calculatedActualAmount = item.totalAmount - item.totalFakeAmount;
-        item.calculatedActualOrderCount = item.orderCount - item.fakeOrderCount;
+        item.calculatedActualOrderCount = item.orderCount - item.totalFakeCount;
 
         if (item.calculatedActualOrderCount == 0) {
           item.calculatedActualAverageAmount = 0;
@@ -1213,6 +1266,13 @@ export default {
 
         item.calculatedActualProfitRatio =
           item.calculatedActualProfit / item.calculatedActualIncome;
+
+        if (
+          item.calculatedActualProfit < 0 &&
+          item.calculatedActualProfitRatio > 0
+        ) {
+          item.calculatedActualProfitRatio *= -1;
+        }
 
         item.calculatedDiscount = item.totalAmount / item.totalPrice;
       });

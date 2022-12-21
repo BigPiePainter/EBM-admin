@@ -70,7 +70,7 @@ export const zeroPadding = (num) => {
 };
 
 
-const reg = /\d{1,3}(?=(\d{3})+(\.|$))/gy
+const reg = /-?\d{1,3}(?=(\d{3})+(\.|$))/gy
 export const amountBeautify = (num, currency, fixed, error) => {
   if (isNaN(num)) {
     return error

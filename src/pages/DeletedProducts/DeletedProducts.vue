@@ -64,7 +64,7 @@
           </v-btn>
           <v-btn
             v-if="ifAction"
-            :disabled="selectedProductItem.length != 1"
+            :disabled="!user.permission.a.dp || selectedProductItem.length != 1"
             small
             depressed
             outlined
@@ -199,7 +199,6 @@ import { loadDeletedProducts } from "@/settings/product";
 import { absoluteDeleteProduct } from "@/settings/product";
 import { restoreProduct } from "@/settings/product";
 
-
 //import { getClass } from "@/settings/product";
 
 import { javaUTCDateToString } from "@/libs/utils";
@@ -328,7 +327,7 @@ export default {
             this.global.infoAlert("泼发EBC：error");
           }, 100);
         });
-        this.selectedProductItem = [];
+      this.selectedProductItem = [];
     },
     //弹窗（恢复上架）
     recoverProduct() {
@@ -361,7 +360,7 @@ export default {
             this.global.infoAlert("泼发EBC：error");
           }, 100);
         });
-        this.selectedProductItem = [];
+      this.selectedProductItem = [];
     },
 
     parseDate(time) {

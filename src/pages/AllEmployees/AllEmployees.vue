@@ -353,6 +353,43 @@
                         </v-checkbox>
                       </v-col>
                     </v-row>
+                    <v-row>
+                      <v-col>
+                        <v-checkbox
+                          v-model="selectedPermission.a.dp"
+                          hide-details
+                          dense
+                          :disabled="!user.permission.a.dp"
+                        >
+                          <template v-slot:label>
+                            <span class="text-subtitle-2">彻底删除商品</span>
+                          </template>
+                        </v-checkbox>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-expand-transition>
+
+                <v-divider class="my-8" />
+                <v-row>
+                  <span class="text-subtitle-1">利润报表模块</span>
+                </v-row>
+                <v-expand-transition>
+                  <v-container>
+                    <v-row class="mt-5">
+                      <v-col>
+                        <v-checkbox
+                          v-model="selectedPermission.f.s"
+                          hide-details
+                          dense
+                          :disabled="!user.permission.f.s"
+                        >
+                          <template v-slot:label>
+                            <span class="text-subtitle-2">显示商品ID与店铺</span>
+                          </template>
+                        </v-checkbox>
+                      </v-col>
+                    </v-row>
                   </v-container>
                 </v-expand-transition>
 
@@ -530,6 +567,7 @@ export default {
       c: {},
       d: {},
       e: {},
+      f: {},
     },
   }),
 
@@ -586,6 +624,7 @@ export default {
         c: {},
         d: {},
         e: {},
+        f: {},
       };
       this.mode = 0; // 0-添加模式   1-修改模式
       this.userInfoDialog = true;
@@ -598,6 +637,10 @@ export default {
       this.selectedPermission = JSON.parse(
         this.userInfos.find((i) => i.uid == item.uid).permission
       );
+
+      if (!this.selectedPermission.f) {
+        this.selectedPermission.f = {};
+      }
       console.log(this.userInfoEdit);
 
       this.userInfoEdit.onboardingTime = this.parseDate(
