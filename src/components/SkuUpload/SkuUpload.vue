@@ -9,13 +9,11 @@
 
       <v-card>
         <v-card-title>
-          <p>
-            {{
-              `${product.productName}（${
-                categoryIdToName[product.firstCategory]
-              }）上传SKU`
-            }}
-          </p>
+          {{
+            `${product.productName}（${
+              categoryIdToName[product.firstCategory]
+            }）上传SKU`
+          }}
         </v-card-title>
 
         <v-card
@@ -30,7 +28,7 @@
           @dragover.prevent=""
           @dragend.prevent=""
         >
-          <h5>{{ status }}</h5>
+          <h4>{{ status }}</h4>
         </v-card>
 
         <v-expand-transition>
@@ -45,7 +43,7 @@
         </v-expand-transition>
 
         <v-card-actions>
-          <v-btn color="blue lighten-2" text @click="downloadModel">
+          <v-btn color="primary" text @click="downloadModel">
             下载SKU导入模板
           </v-btn>
           <v-spacer></v-spacer>
@@ -60,16 +58,16 @@
     <v-dialog v-model="checkInfoDialog" fullscreen class="checkInfo" persistent>
       <div class="topBar">
         <v-toolbar dark color="primary" dense>
-          <v-btn icon dark @click="cancel" :disabled="this.uploading">
-            <v-icon>mdi-close</v-icon>
+          <v-btn class="ml-0" icon dark  @click="cancel" :disabled="this.uploading">
+            <v-icon small>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>
-            {{
-              `${product.id}   ${product.productName}（${
-                categoryIdToName[product.firstCategory]
-              }）SKU上传检索`
-            }}
-          </v-toolbar-title>
+
+          <span class="pl-5">{{
+            `${product.id}   ${product.productName}（${
+              categoryIdToName[product.firstCategory]
+            }）SKU上传检索`
+          }}</span>
+
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn dark text> {{ wrong + " 格式错误" }}</v-btn>
@@ -90,6 +88,8 @@
   </div>
 </template>
 <script>
+import { saveAs } from "file-saver";
+
 import { mapState } from "vuex";
 
 import { addSkus } from "@/settings/sku";
@@ -163,8 +163,118 @@ export default {
     },
   },
   methods: {
-    downloadModel() {
-      window.open("/SKU导入模板.xlsx");
+    async downloadModel() {
+      const ExcelJS = require("exceljs");
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = "泼发EBC";
+      workbook.lastModifiedBy = "泼发EBC";
+      workbook.company = "浙江泼发进出口贸易有限公司";
+      workbook.manager = this.user.nick + " " + this.user.username;
+      workbook.created = new Date();
+      workbook.modified = new Date();
+
+      const sheet = workbook.addWorksheet("SKU信息", {
+        views: [{ state: "frozen", ySplit: 1 }],
+      });
+
+      var font = {
+        name: "微软雅黑",
+        size: 10,
+      };
+      var centerAlignment = {
+        vertical: "center",
+        horizontal: "center",
+      };
+      var background = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFFFFF00" },
+      };
+
+      console.log(sheet);
+      sheet.columns = [
+        {
+          header: "商品ID",
+          key: "id",
+          width: 16,
+          style: { font },
+        },
+        {
+          header: "SKUID",
+          key: "name",
+          width: 16,
+          style: { font },
+        },
+        {
+          header: "SKU名称",
+          key: "DOB",
+          width: 70,
+          style: { font },
+        },
+        {
+          header: "售卖价",
+          key: "DOB",
+          width: 16,
+          style: { font },
+        },
+        {
+          header: "成本",
+          key: "DOB",
+          width: 16,
+          style: { font },
+        },
+        {
+          header: "价格开始时间",
+          key: "DOB",
+          width: 16,
+          style: { font },
+        },
+      ];
+
+      sheet.getCell("A1").alignment = centerAlignment;
+      sheet.getCell("B1").alignment = centerAlignment;
+      sheet.getCell("C1").alignment = centerAlignment;
+      sheet.getCell("D1").alignment = centerAlignment;
+      sheet.getCell("E1").alignment = centerAlignment;
+      sheet.getCell("F1").alignment = centerAlignment;
+
+      sheet.getCell("A1").fill = background;
+      sheet.getCell("B1").fill = background;
+      sheet.getCell("C1").fill = background;
+      sheet.getCell("D1").fill = background;
+      sheet.getCell("E1").fill = background;
+      sheet.getCell("F1").fill = background;
+
+      sheet.getColumn(4).numFmt =
+        '_ ¥* #,##0.00_ ;_ ¥* -#,##0.00_ ;_ ¥* "-"??_ ;_ @_ ';
+      sheet.getColumn(5).numFmt =
+        '_ ¥* #,##0.00_ ;_ ¥* -#,##0.00_ ;_ ¥* "-"??_ ;_ @_ ';
+      sheet.getColumn(6).numFmt = "[$-x-sysdate]dddd, mmmm dd, yyyy";
+
+      const data = [
+        [
+          "1234567890123",
+          "1234567890123",
+          "XXXXX-XXXXX-XXXXXX-XXXXXXXXX-XXXXXXXXXXXX-XXXXXXXXXX",
+          10,
+          5,
+          new Date("2022-11-11"),
+        ],
+        [
+          "123456789012",
+          "1234567890123",
+          "XXXXX-XXXXX-XXXXXX-XXXXXXXXX-XXXXXXXXXXXX-XXXXXXXXXX",
+          10,
+          5,
+          new Date("2022-11-11"),
+        ],
+      ];
+      sheet.addRows(data);
+      const buffer = await workbook.xlsx.writeBuffer();
+      const fileType =
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+      const blob = new Blob([buffer], { type: fileType });
+      saveAs(blob, "SKU导入模板.xlsx");
     },
     upload() {
       this.uploading = true;
@@ -365,7 +475,7 @@ export default {
             this.dataInit(data);
           } catch (error) {
             this.loading = false;
-            this.global.infoAlert("泼发EBC：文件有点问题啊。。。")
+            this.global.infoAlert("泼发EBC：文件有点问题啊。。。");
           }
         };
 
