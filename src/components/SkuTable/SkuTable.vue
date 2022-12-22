@@ -41,12 +41,7 @@
             <span> 批量操作 </span>
           </v-btn>
 
-          <v-btn
-            small
-            depressed
-            class="ml-2"
-            @click="check = !check"
-          >
+          <v-btn small depressed class="ml-2" @click="check = !check">
             <v-icon small class="mr-1">
               {{
                 check
@@ -184,7 +179,10 @@
             <v-btn
               small
               v-if="ascriptionAction"
-              :disabled="ascriptionSelected.length != 1 || ascriptionSelected[0].startTime <= 0"
+              :disabled="
+                ascriptionSelected.length != 1 ||
+                ascriptionSelected[0].startTime <= 0
+              "
               depressed
               outlined
               color="red lighten-2"
@@ -229,10 +227,10 @@
                 </span>
               </template>
               <template v-slot:[`item.skuPrice`]="{ item }">
-                ￥{{ item.skuPrice }} 
+                ￥{{ item.skuPrice }}
               </template>
               <template v-slot:[`item.skuCost`]="{ item }">
-                ￥{{ item.skuCost }} 
+                ￥{{ item.skuCost }}
               </template>
 
               <template v-slot:[`item.startTime`]="{ item }">
@@ -334,7 +332,6 @@
               <template v-slot:[`item.startTime`]="{ item }">
                 {{ parseDate(item.startTime) }}
               </template>
-
             </v-data-table>
           </v-tab-item>
         </v-tabs-items>
@@ -379,9 +376,7 @@
     <v-dialog v-model="mutipleDeleteDialog" max-width="450px">
       <v-card>
         <v-card-title class="text-subtitle-1">是否删除选中sku信息</v-card-title>
-        <v-card-text>
-          删除后无法恢复，并且不会参与数据运算
-        </v-card-text>
+        <v-card-text> 删除后无法恢复，并且不会参与数据运算 </v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn color="blue darken-1" text @click="mutipleDeleteDialog = false"
@@ -710,6 +705,8 @@
 
 
 <script>
+import { saveAs } from "file-saver";
+
 import { mapState } from "vuex";
 
 import SkuUpload from "@/components/SkuUpload/SkuUpload";
@@ -987,63 +984,197 @@ export default {
           skuId[sku.skuId] = { count: 1, sku: sku };
         }
       });
-      console.log(skuId);
+      console.log(this.skuInfos);
 
       this.validSkuInfos = [];
       for (let id in skuId) this.validSkuInfos.push(skuId[id].sku);
     },
 
-    download() {
-      var skuInfoCopy = [];
+    async download() {
+      const ExcelJS = require("exceljs");
 
-      for (let sku of this.check ? this.validSkuInfos : this.skuInfos) {
-        console.log(sku);
-        skuInfoCopy.push({
-          productId: sku.productId + "",
-          skuId: sku.skuId + "",
-          skuName: sku.skuName,
-          skuPrice: sku.skuPrice,
-          skuCost: sku.skuCost,
-          startTime: javaUTCDateToString(sku.startTime),
-        });
-      }
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = "泼发EBC";
+      workbook.lastModifiedBy = "泼发EBC";
+      console.log(this.user);
+      workbook.company = "浙江泼发进出口贸易有限公司";
+      workbook.manager = this.user.nick + " " + this.user.username;
+      workbook.created = new Date();
+      workbook.modified = new Date();
 
-      const XLSX = require("xlsx");
-      console.log(skuInfoCopy);
-      const raw_data = skuInfoCopy;
-      //this.check ? this.validSkuInfos : this.skuInfos;
-      /*
-      const prez = raw_data.filter((row) =>
-        row.terms.some((term) => term.type === "prez")
-      );*/
-      const rows = raw_data.map((row) => row);
-      /* generate worksheet and workbook */
-      const worksheet = XLSX.utils.json_to_sheet(rows);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "SKU数据");
-      /* fix headers */
-      XLSX.utils.sheet_add_aoa(
-        worksheet,
-        [["商品ID", "SKUID", "SKU名称", "售卖价", "成本", "价格开始时间"]],
+      const sheet = workbook.addWorksheet("SKU信息", {
+        views: [{ state: "frozen", ySplit: 1 }],
+      });
+
+      var font = {
+        name: "微软雅黑",
+        size: 10,
+      };
+      var centerAlignment = {
+        vertical: "center",
+        horizontal: "center",
+      };
+      var background = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFFFFF00" },
+      };
+
+      console.log(sheet);
+      sheet.columns = [
         {
-          origin: "A1",
-        }
-      );
-
-      worksheet["!cols"] = [
-        { wch: 14 },
-        { wch: 14 },
-        { wch: 70 },
-        { wch: 8 },
-        { wch: 8 },
-        { wch: 13 },
+          header: "商品ID",
+          key: "productId",
+          width: 15,
+          style: { font },
+        },
+        {
+          header: "SKUID",
+          key: "skuId",
+          width: 16,
+          style: { font },
+        },
+        {
+          header: "SKU名称",
+          key: "skuName",
+          width: 70,
+          style: { font },
+        },
+        {
+          header: "售卖价",
+          key: "skuPrice",
+          width: 13,
+          style: { font },
+        },
+        {
+          header: "成本",
+          key: "skuCost",
+          width: 13,
+          style: { font },
+        },
+        {
+          header: "价格开始时间",
+          key: "startTime",
+          width: 16,
+          style: { font },
+        },
       ];
 
-      /* create an XLSX file and try to save to Presidents.xlsx */
-      XLSX.writeFile(
-        workbook,
+      sheet.getCell("A1").alignment = centerAlignment;
+      sheet.getCell("B1").alignment = centerAlignment;
+      sheet.getCell("C1").alignment = centerAlignment;
+      sheet.getCell("D1").alignment = centerAlignment;
+      sheet.getCell("E1").alignment = centerAlignment;
+      sheet.getCell("F1").alignment = centerAlignment;
+
+      sheet.getCell("A1").fill = background;
+      sheet.getCell("B1").fill = background;
+      sheet.getCell("C1").fill = background;
+      sheet.getCell("D1").fill = background;
+      sheet.getCell("E1").fill = background;
+      sheet.getCell("F1").fill = background;
+
+      sheet.getColumn(4).numFmt =
+        '_ ¥* #,##0.00_ ;_ ¥* -#,##0.00_ ;_ ¥* "-"??_ ;_ @_ ';
+      sheet.getColumn(5).numFmt =
+        '_ ¥* #,##0.00_ ;_ ¥* -#,##0.00_ ;_ ¥* "-"??_ ;_ @_ ';
+      sheet.getColumn(6).numFmt = "[$-x-sysdate]dddd, mmmm dd, yyyy";
+
+      // const data = [
+      //   [
+      //     "1234567890123",
+      //     "1234567890123",
+      //     "XXXXX-XXXXX-XXXXXX-XXXXXXXXX-XXXXXXXXXXXX-XXXXXXXXXX",
+      //     10,
+      //     5,
+      //     new Date("2022-11-11"),
+      //   ],
+      //   [
+      //     "1234567890123",
+      //     "1234567890123",
+      //     "XXXXX-XXXXX-XXXXXX-XXXXXXXXX-XXXXXXXXXXXX-XXXXXXXXXX",
+      //     10,
+      //     5,
+      //     new Date("2022-11-11"),
+      //   ],
+      // ];
+      // sheet.addRows(data);
+
+      var skuDatas = this.skuInfos.map((i) => {
+        return {
+          productId: i.productId.toString(),
+          skuId: i.skuId.toString(),
+          skuName: i.skuName,
+          skuPrice: i.skuPrice,
+          skuCost: i.skuCost,
+          startTime: new Date(i.startTime),
+        };
+      });
+      sheet.addRows(skuDatas);
+      console.log("生成完毕");
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const fileType =
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+      const blob = new Blob([buffer], { type: fileType });
+
+      saveAs(
+        blob,
         `${this.productInfo.owner}-${this.productInfo.productName}-${this.productInfo.id}.xlsx`
       );
+
+      // var skuInfoCopy = [];
+
+      // for (let sku of this.check ? this.validSkuInfos : this.skuInfos) {
+      //   console.log(sku);
+      //   skuInfoCopy.push({
+      //     productId: sku.productId + "",
+      //     skuId: sku.skuId + "",
+      //     skuName: sku.skuName,
+      //     skuPrice: sku.skuPrice,
+      //     skuCost: sku.skuCost,
+      //     startTime: javaUTCDateToString(sku.startTime),
+      //   });
+      // }
+
+      // const XLSX = require("xlsx");
+
+      // console.log(skuInfoCopy);
+      // const raw_data = skuInfoCopy;
+      // //this.check ? this.validSkuInfos : this.skuInfos;
+      // /*
+      // const prez = raw_data.filter((row) =>
+      //   row.terms.some((term) => term.type === "prez")
+      // );*/
+      // const rows = raw_data.map((row) => row);
+      // /* generate worksheet and workbook */
+      // const worksheet = XLSX.utils.json_to_sheet(rows);
+      // const workbook = XLSX.utils.book_new();
+      // XLSX.utils.book_append_sheet(workbook, worksheet, "SKU数据");
+      // /* fix headers */
+      // XLSX.utils.sheet_add_aoa(
+      //   worksheet,
+      //   [["商品ID", "SKUID", "SKU名称", "售卖价", "成本", "价格开始时间"]],
+      //   {
+      //     origin: "A1",
+      //   }
+      // );
+
+      // worksheet["!cols"] = [
+      //   { wch: 14 },
+      //   { wch: 14 },
+      //   { wch: 70 },
+      //   { wch: 8 },
+      //   { wch: 8 },
+      //   { wch: 13 },
+      // ];
+
+      // /* create an XLSX file and try to save to Presidents.xlsx */
+      // XLSX.writeFile(
+      //   workbook,
+      //   `${this.productInfo.owner}-${this.productInfo.productName}-${this.productInfo.id}.xlsx`
+      // );
     },
 
     deleteSku() {
