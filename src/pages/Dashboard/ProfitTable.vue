@@ -18,7 +18,7 @@
         class="ml-2"
         text
         color="primary"
-        :disabled="loading"
+        :disabled="loading || datePicker"
         @click="changeDateRangeButton"
       >
         <v-icon v-if="isDateRange" size="20" style="padding-top: 2px"
