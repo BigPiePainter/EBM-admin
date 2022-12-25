@@ -224,7 +224,7 @@ export default {
         //{ title: "系统信息", icon: "mdi-bell-outline", link: "/notifications" },
 
         { divider: true },
-        { heading: "POFA2" },
+        // { heading: "POFA2" },
 
         {
           title: "组别管理",
@@ -265,6 +265,21 @@ export default {
               title: "员工结构",
               icon: "mdi-circle-small",
               link: "/employee",
+            },
+          ],
+        },
+
+        { divider: true },
+        
+        {
+          title: "实用工具",
+          icon: "mdi-tools",
+          show: true,
+          children: [
+            {
+              title: "sku盗取",
+              icon: "mdi-circle-small",
+              link: "/skuhaker",
             },
           ],
         },
