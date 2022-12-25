@@ -57,42 +57,114 @@
     </v-col>
     <v-container fluid id="mainContainer">
       <div class="dashboard-page">
-        <v-row>
-          <v-col lg="4" md="6" sm="12">
-            <v-card class="mx-1 mb-1">
-              <v-card-title>
-                <p class="caption">部门报表</p>
-                <v-spacer />
+        <v-col cols="6">
+          <v-row>
+            <v-col cols="6">
+              <v-card class="mx-1 mb-1">
+                <v-card-title>
+                  <p class="caption">部门真实金额</p>
+                  <!-- <v-spacer />
                 <v-btn small color="primary" @click="departmentChartButton"
                   ><span>完整图表</span></v-btn
-                >
-              </v-card-title>
-              <v-chart
-                style="height: 500px"
-                :option="departmentsOption"
-                ref="echartA"
-              ></v-chart>
-            </v-card>
-          </v-col>
-          <v-col lg="4" md="6" sm="12">
-            <v-card class="mx-1 mb-1">
-              <v-card-title>
-                <p class="caption">小组报表</p>
-                <v-spacer />
+                > -->
+                </v-card-title>
+                <v-chart
+                  style="height: 300px"
+                  :option="departmentsOption"
+                  ref="echartA"
+                ></v-chart>
+              </v-card>
+            </v-col>
+            <v-col cols="6">
+              <v-card class="mx-1 mb-1">
+                <v-card-title>
+                  <p class="caption">部门补单</p>
+                  <!-- <v-spacer />
                 <v-btn small color="primary" @click.stop="teamChartButton"
                   ><span>完整图表</span></v-btn
-                >
-              </v-card-title>
-              <v-chart
-                style="height: 500px"
-                :option="teamsOption"
-                ref="echartB"
-              ></v-chart>
-            </v-card>
-          </v-col>
-        </v-row>
+                > -->
+                </v-card-title>
+                <v-chart
+                  style="height: 300px"
+                  :option="departmentsOption2"
+                  ref="echartB"
+                ></v-chart>
+              </v-card>
+            </v-col>
+            <v-col cols="6">
+              <v-card class="mx-1 mb-1">
+                <v-card-title>
+                  <p class="caption">部门利润额</p>
+                </v-card-title>
+                <v-chart
+                  style="height: 300px"
+                  :option="departmentsOption3"
+                  ref="echartC"
+                ></v-chart>
+              </v-card>
+            </v-col>
+            <v-col cols="6">
+              <v-card class="mx-1 mb-1">
+                <v-card-title>
+                  <p class="caption">部门利润额</p>
+                </v-card-title>
+                <v-chart
+                  style="height: 300px"
+                  :option="departmentsOption3"
+                  ref="echartG"
+                ></v-chart>
+              </v-card>
+            </v-col>
+          </v-row>
 
-        <v-dialog v-model="showDepartmentChartDialog"
+          <v-row>
+            <v-col cols="4">
+              <v-card class="mx-1 mb-1">
+                <v-card-title>
+                  <p class="caption">小组真实金额</p>
+                  <!-- <v-spacer />
+                <v-btn small color="primary" @click="departmentChartButton"
+                  ><span>完整图表</span></v-btn
+                > -->
+                </v-card-title>
+                <v-chart
+                  style="height: 700px"
+                  :option="teamsOption"
+                  ref="echartD"
+                ></v-chart>
+              </v-card>
+            </v-col>
+            <v-col cols="4">
+              <v-card class="mx-1 mb-1">
+                <v-card-title>
+                  <p class="caption">小组补单</p>
+                  <!-- <v-spacer />
+                <v-btn small color="primary" @click.stop="teamChartButton"
+                  ><span>完整图表</span></v-btn
+                > -->
+                </v-card-title>
+                <v-chart
+                  style="height: 700px"
+                  :option="teamsOption2"
+                  ref="echartE"
+                ></v-chart>
+              </v-card>
+            </v-col>
+            <v-col cols="4">
+              <v-card class="mx-1 mb-1">
+                <v-card-title>
+                  <p class="caption">小组利润额</p>
+                </v-card-title>
+                <v-chart
+                  style="height: 700px"
+                  :option="teamsOption3"
+                  ref="echartF"
+                ></v-chart>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <!-- <v-dialog v-model="showDepartmentChartDialog"
           ><v-card>
             <v-card-title><p class="caption">部门报表</p></v-card-title
             ><v-chart
@@ -110,7 +182,8 @@
               :option="teamsOption"
               ref="echartD"
             ></v-chart></v-card
-        ></v-dialog>
+        ></v-dialog> -->
+        </v-col>
       </div>
     </v-container>
   </div>
@@ -170,8 +243,10 @@ export default {
 
       departmentData: [],
       teamData: [],
-      departmentSeries: [{}],
+      departmentSeries: [],
+      departmentSeries2: [],
       teamSeries: [],
+      teamSeries2: [],
 
       showDepartmentChartDialog: false,
       showTeamChartDialog: false,
@@ -179,6 +254,62 @@ export default {
   },
   computed: {
     departmentsOption: function () {
+      return {
+        tooltip: {
+          trigger: "axis",
+        },
+        legend: {},
+        grid: {
+          left: "10%",
+          right: "10%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        xAxis: {
+          type: "category",
+          data: this.departmentData,
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: this.departmentSeries,
+      };
+    },
+
+    departmentsOption2: function () {
+      return {
+        tooltip: {
+          trigger: "axis",
+        },
+        legend: {},
+        grid: {
+          left: "10%",
+          right: "10%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        xAxis: {
+          type: "category",
+          data: this.departmentData,
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: this.departmentSeries,
+      };
+    },
+
+    departmentsOption3: function () {
       return {
         tooltip: {
           trigger: "axis",
@@ -228,16 +359,103 @@ export default {
         },
         xAxis: [
           {
-            type: "category",
-            data: this.teamData,
+            type: "value",
+            axisLabel: {
+              show: false,
+              // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，（简单试一下就明白了，这样说是不是有点抽象）
+              // rotate: -30, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
+            },
           },
         ],
         yAxis: [
           {
-            type: "value",
+            inverse: true,
+            type: "category",
+            data: this.teamData,
           },
         ],
-        series: this.teamSeries,
+
+        series: [{ ...this.teamSeries[0] }, { ...this.teamSeries[1] }],
+      };
+    },
+
+    teamsOption2: function () {
+      return {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "shadow",
+          },
+        },
+        legend: {},
+        grid: {
+          left: "10%",
+          right: "10%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        xAxis: [
+          {
+            type: "value",
+            axisLabel: {
+              show: false,
+            },
+          },
+        ],
+        yAxis: [
+          {
+            inverse: true,
+            type: "category",
+            data: this.teamData,
+          },
+        ],
+
+        series: [{ ...this.teamSeries[2] }],
+      };
+    },
+
+    teamsOption3: function () {
+      return {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "shadow",
+          },
+        },
+        legend: {},
+        grid: {
+          left: "10%",
+          right: "10%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        xAxis: [
+          {
+            type: "value",
+            axisLabel: {
+              show: false,
+            },
+          },
+        ],
+        yAxis: [
+          {
+            inverse: true,
+            type: "category",
+            data: this.teamData,
+          },
+        ],
+
+        series: [{ ...this.teamSeries[1] }, { ...this.teamSeries[0] }],
       };
     },
 
@@ -274,47 +492,14 @@ export default {
       this.$refs.echartB.resize();
       this.$refs.echartC.resize();
       this.$refs.echartD.resize();
+      this.$refs.echartE.resize();
+      this.$refs.echartF.resize();
+      this.$refs.echartG.resize();
     });
     observer.observe(document.querySelector("#mainContainer"));
   },
 
   created() {
-    this.departmentSeries = [
-      {
-        name: "成交额",
-        type: "bar",
-        data: [],
-      },
-      {
-        name: "真实金额",
-        type: "bar",
-        data: [],
-      },
-    ];
-    // {
-    //     name: "售后毛利润",
-    //     type: "bar",
-    //     data: [],
-    //   },
-    this.teamSeries = [
-      {
-        name: "成交额",
-        type: "bar",
-        data: [],
-      },
-      {
-        name: "真实金额",
-        type: "bar",
-        data: [],
-      },
-    ];
-
-    // this.a = [
-    //   "chartTotalAmount",
-    //   "chartCalculatedActualAmount",
-    //   "chartCalculatedActualProfit",
-    // ];
-
     var date = new Date();
     date.setDate(date.getDate() - 2);
     this.startTime = javaUTCDateToString(date);
@@ -440,7 +625,6 @@ export default {
         item.calculatedDiscount = item.totalAmount / item.totalPrice;
       });
 
-      console.log("1111");
       this.chartDepartmentItems = {};
       this.chartTeamItems = {};
 
@@ -483,8 +667,8 @@ export default {
         this.chartTeamItems[i.team].chartCalculatedActualProfit +=
           i.calculatedActualProfit;
       });
-      console.log(this.chartDepartmentItems);
-      console.log(this.chartTeamItems);
+      // console.log(this.chartDepartmentItems);
+      // console.log(this.chartTeamItems);
 
       // for (let i = 0; i < this.profitItems.length; i++) {
       //   // console.log(this.chartDepartmentItems.some((id) => id == this.profitItems[i].department) );
@@ -501,27 +685,63 @@ export default {
       // }
       // console.log(this.chartDepartmentItems);
       // console.log(this.chartTeamItems);
+      this.departmentSeries = [
+        {
+          name: "成交额",
+          type: "bar",
+          data: [],
+        },
+        {
+          name: "真实金额",
+          type: "bar",
+          data: [],
+        },
+        {
+          name: "售后毛利润",
+          type: "bar",
+          data: [],
+        },
+      ];
+
+      this.teamSeries = [
+        {
+          name: "成交额",
+          type: "bar",
+          data: [],
+        },
+        {
+          realtimeSort: true,
+          name: "真实金额",
+          type: "bar",
+          data: [],
+        },
+        { realtimeSort: true, name: "售后毛利润", type: "bar", data: [] },
+      ];
+
       this.departmentData = [];
-      var a = ["chartTotalAmount", "chartCalculatedActualAmount"];
+      var a = [
+        "chartTotalAmount",
+        "chartCalculatedActualAmount",
+        "chartCalculatedActualProfit",
+      ];
       // "chartCalculatedActualProfit",
       var b = Object.keys(this.chartDepartmentItems);
 
-      console.log(11111);
-      console.log(this.chartDepartmentItems);
+      // console.log(11111);
+      // console.log(this.chartDepartmentItems);
       for (let i = 0; i < b.length; i++) {
         this.departmentData[i] =
           this.departmentIdToName[Object.keys(this.chartDepartmentItems)[i]];
       }
 
       for (let i = 0; i < a.length; i++) {
-        console.log(a[i]);
+        // console.log(a[i]);
         for (let j = 0; j < b.length; j++) {
-          console.log(typeof a[i]);
-          console.log(this.chartDepartmentItems[b[j]]);
+          // console.log(typeof a[i]);
+          // console.log(this.chartDepartmentItems[b[j]]);
           this.departmentSeries[i].data.push(
             Math.round(this.chartDepartmentItems[b[j]][a[i]])
           );
-          console.log(22222);
         }
       }
 
@@ -533,8 +753,8 @@ export default {
           this.teamIdToName[Object.keys(this.chartTeamItems)[i]];
       }
       console.log(this.teamData);
+
       for (let i = 0; i < a.length; i++) {
-        console.log(3333);
         for (let j = 0; j < c.length; j++) {
           this.teamSeries[i].data.push(
             Math.round(this.chartTeamItems[c[j]][a[i]])
@@ -543,6 +763,8 @@ export default {
       }
 
       console.log(this.departmentSeries);
+      console.log(this.teamSeries);
+      console.log("生成teamSeries");
 
       // for (let i = 0; i < a.length; i++) {
       //   for (let j = 0; j < b.length; j++) {
