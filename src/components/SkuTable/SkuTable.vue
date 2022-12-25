@@ -1002,7 +1002,10 @@ export default {
       workbook.created = new Date();
       workbook.modified = new Date();
 
-      const sheet = workbook.addWorksheet("SKU信息", {
+      const sheetA = workbook.addWorksheet("有效SKU信息", {
+        views: [{ state: "frozen", ySplit: 1 }],
+      });
+      const sheetB = workbook.addWorksheet("全部SKU信息", {
         views: [{ state: "frozen", ySplit: 1 }],
       });
 
@@ -1010,18 +1013,37 @@ export default {
         name: "微软雅黑",
         size: 10,
       };
+      var font2 = {
+        name: "微软雅黑",
+        size: 10,
+        color: { argb: "FFAAAAAA" },
+      };
+
       var centerAlignment = {
         vertical: "center",
         horizontal: "center",
       };
-      var background = {
+      var ltAlignment = {
+        vertical: "top",
+        horizontal: "left",
+      };
+      var rtAlignment= {
+        vertical: "top",
+        horizontal: "right",
+      };
+      var backgroundYellow = {
         type: "pattern",
         pattern: "solid",
         fgColor: { argb: "FFFFFF00" },
       };
+      // var backgroundBlue = {
+      //   type: "pattern",
+      //   pattern: "solid",
+      //   fgColor: { argb: "FFDCE6F1" },
+      // };
 
-      console.log(sheet);
-      sheet.columns = [
+      console.log(sheetA);
+      sheetA.columns = [
         {
           header: "商品ID",
           key: "productId",
@@ -1055,62 +1077,175 @@ export default {
         {
           header: "价格开始时间",
           key: "startTime",
-          width: 16,
+          width: 15,
           style: { font },
+        },
+        {
+          header: "EBC导入时间",
+          key: "createTime",
+          width: 20,
+          style: { font: font2 },
         },
       ];
 
-      sheet.getCell("A1").alignment = centerAlignment;
-      sheet.getCell("B1").alignment = centerAlignment;
-      sheet.getCell("C1").alignment = centerAlignment;
-      sheet.getCell("D1").alignment = centerAlignment;
-      sheet.getCell("E1").alignment = centerAlignment;
-      sheet.getCell("F1").alignment = centerAlignment;
+      
+      sheetA.getColumn(6).alignment = rtAlignment;
+      sheetA.getColumn(7).alignment = rtAlignment;
+      sheetA.getRow(1).alignment = centerAlignment;
+      sheetA.getCell("A1").fill = backgroundYellow;
+      sheetA.getCell("B1").fill = backgroundYellow;
+      sheetA.getCell("C1").fill = backgroundYellow;
+      sheetA.getCell("D1").fill = backgroundYellow;
+      sheetA.getCell("E1").fill = backgroundYellow;
+      sheetA.getCell("F1").fill = backgroundYellow;
+      // sheetA.getCell("G1").fill = backgroundBlue;
 
-      sheet.getCell("A1").fill = background;
-      sheet.getCell("B1").fill = background;
-      sheet.getCell("C1").fill = background;
-      sheet.getCell("D1").fill = background;
-      sheet.getCell("E1").fill = background;
-      sheet.getCell("F1").fill = background;
-
-      sheet.getColumn(4).numFmt =
+      sheetA.getColumn(4).numFmt =
         '_ ¥* #,##0.00_ ;_ ¥* -#,##0.00_ ;_ ¥* "-"??_ ;_ @_ ';
-      sheet.getColumn(5).numFmt =
+      sheetA.getColumn(5).numFmt =
         '_ ¥* #,##0.00_ ;_ ¥* -#,##0.00_ ;_ ¥* "-"??_ ;_ @_ ';
-      sheet.getColumn(6).numFmt = "[$-x-sysdate]dddd, mmmm dd, yyyy";
+      // sheetA.getColumn(6).numFmt = "yyyy年m月d日";
+      // sheetA.getColumn(7).numFmt = "yyyy-m-d hh:mm:ss";
 
-      // const data = [
-      //   [
-      //     "1234567890123",
-      //     "1234567890123",
-      //     "XXXXX-XXXXX-XXXXXX-XXXXXXXXX-XXXXXXXXXXXX-XXXXXXXXXX",
-      //     10,
-      //     5,
-      //     new Date("2022-11-11"),
-      //   ],
-      //   [
-      //     "1234567890123",
-      //     "1234567890123",
-      //     "XXXXX-XXXXX-XXXXXX-XXXXXXXXX-XXXXXXXXXXXX-XXXXXXXXXX",
-      //     10,
-      //     5,
-      //     new Date("2022-11-11"),
-      //   ],
-      // ];
-      // sheet.addRows(data);
+      sheetB.columns = [
+        {
+          header: "商品ID",
+          key: "productId",
+          width: 15,
+          style: { font },
+        },
+        {
+          header: "SKUID",
+          key: "skuId",
+          width: 16,
+          style: { font },
+        },
+        {
+          header: "SKU名称",
+          key: "skuName",
+          width: 70,
+          style: { font },
+        },
+        {
+          header: "售卖价",
+          key: "skuPrice",
+          width: 13,
+          style: { font },
+        },
+        {
+          header: "成本",
+          key: "skuCost",
+          width: 13,
+          style: { font },
+        },
+        {
+          header: "价格开始时间",
+          key: "startTime",
+          width: 15,
+          style: { font },
+        },
+        {
+          header: "EBC导入时间",
+          key: "createTime",
+          width: 20,
+          style: { font: font2 },
+        },
+      ];
 
-      var skuDatas = this.skuInfos.map((i) => {
+      sheetB.getColumn(1).alignment = ltAlignment;
+      sheetB.getColumn(2).alignment = ltAlignment;
+      sheetB.getColumn(6).alignment = rtAlignment;
+      sheetB.getColumn(7).alignment = rtAlignment;
+      sheetB.getRow(1).alignment = centerAlignment;
+      sheetB.getCell("A1").fill = backgroundYellow;
+      sheetB.getCell("B1").fill = backgroundYellow;
+      sheetB.getCell("C1").fill = backgroundYellow;
+      sheetB.getCell("D1").fill = backgroundYellow;
+      sheetB.getCell("E1").fill = backgroundYellow;
+      sheetB.getCell("F1").fill = backgroundYellow;
+      // sheetB.getCell("G1").fill = backgroundBlue;
+
+      sheetB.getColumn(4).numFmt =
+        '_ ¥* #,##0.00_ ;_ ¥* -#,##0.00_ ;_ ¥* "-"??_ ;_ @_ ';
+      sheetB.getColumn(5).numFmt =
+        '_ ¥* #,##0.00_ ;_ ¥* -#,##0.00_ ;_ ¥* "-"??_ ;_ @_ ';
+      // sheetB.getColumn(6).numFmt = "yyyy年m月d日";
+      // sheetB.getColumn(7).numFmt = "yyyy-m-d hh:mm:ss";
+
+      var skus = {};
+      this.skuInfos.forEach((i) => {
+        if (skus[i.skuId]) {
+          skus[i.skuId].push(i);
+        } else {
+          skus[i.skuId] = [i];
+        }
+      });
+      for (let name in skus) {
+        skus[name].sort((b, a) => {
+          if (a.startTime == b.startTime) {
+            return a.createTime - b.createTime;
+          } else {
+            return a.startTime - b.startTime;
+          }
+        });
+        console.log(name);
+      }
+      console.log(skus);
+
+      var convert = (i, lite) => {
         return {
-          productId: i.productId.toString(),
-          skuId: i.skuId.toString(),
+          productId: lite ? "" : i.productId.toString(),
+          skuId: lite ? "" : i.skuId.toString(),
           skuName: i.skuName,
           skuPrice: i.skuPrice,
           skuCost: i.skuCost,
-          startTime: new Date(i.startTime),
+          startTime: this.parseDate(i.startTime),
+          createTime: this.parseDateTime(i.createTime),
         };
-      });
-      sheet.addRows(skuDatas);
+      };
+
+      var sheetAData = [];
+      for (let id in skus) {
+        sheetAData.push(skus[id][0]);
+      }
+      sheetA.addRows(sheetAData.map((i) => convert(i)));
+
+      for (let id in skus) {
+        var startRow = sheetB.addRow(convert(skus[id].shift()));
+        console.log(startRow);
+        for (let index = 1; index <= 6; index++) {
+          //startRow.getCell(index).fill = backgroundBlue;
+        }
+
+        for (let index = 1; index <= 7; index++) {
+          startRow.getCell(index).border = {
+            //top: { style: "thin", color: { argb: "FF000000" } },
+            //left: { style: "thin", color: { argb: "FF95B3D7" } },
+          };
+        }
+
+        var totalLength = skus[id].length;
+        for (let index = 0; index < totalLength - 1; index++) {
+          var row = sheetB.addRow(convert(skus[id].shift(), true));
+          row.getCell(2).border = {
+            //left: { style: "thin", color: { argb: "FFFFFFFF" } },
+          };
+        }
+
+        if (skus[id].length > 0) {
+          var endRow = sheetB.addRow(convert(skus[id].shift()));
+
+          sheetB.mergeCells(
+            startRow.getCell(1).address,
+            endRow.getCell(1).address
+          );
+          sheetB.mergeCells(
+            startRow.getCell(2).address,
+            endRow.getCell(2).address
+          );
+        }
+      }
+
       console.log("生成完毕");
 
       const buffer = await workbook.xlsx.writeBuffer();
@@ -1121,7 +1256,9 @@ export default {
 
       saveAs(
         blob,
-        `${this.productInfo.owner}-${this.productInfo.productName}-${this.productInfo.id}.xlsx`
+        `${this.userIdToNick[this.productInfo.owner]}-${
+          this.productInfo.productName
+        }-${this.productInfo.id}.xlsx`
       );
 
       // var skuInfoCopy = [];

@@ -1,7 +1,13 @@
 <template>
   <div class="page-content d-flex flex-column">
     <PageHeader title="利润报表">
-      <v-btn class="ml-2" text color="primary" disabled>
+      <v-btn
+        class="ml-2"
+        text
+        color="primary"
+        @click="download"
+        :disabled="loading"
+      >
         <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
         导出
       </v-btn>
@@ -749,6 +755,8 @@
 
 
 <script>
+import { saveAs } from "file-saver";
+
 import { amountBeautify } from "@/libs/utils";
 import Help from "@/components/Help";
 import { javaUTCDateToString } from "@/libs/utils";
@@ -790,11 +798,11 @@ export default {
         { text: "店铺", value: "shopName" }, //1
         { text: "持品人", value: "owner" }, //1
         { text: "产品名称", value: "productName" }, //1
-        { text: "商品ID", value: "productId" },
       ],
 
       profitItems: [],
       profitHeadersAll: [
+        { text: "商品ID", value: "productId" },
         { text: "一级类目", value: "firstCategory" }, //1
         { text: "扣点", value: "deduction" }, //1
         { text: "运费险", value: "insurance" }, //1
@@ -970,11 +978,13 @@ export default {
       return this.allUsers.filter((d) => validTemp[d.uid]);
     },
     profitHeadersShownPartA() {
-      console.log(this.user)
+      console.log(this.user);
       if (this.user.permission.f?.s) {
         return this.profitHeadersPartA;
       } else {
-        return this.profitHeadersPartA.filter(i => i.value != "shopName" && i.value != "productId");
+        return this.profitHeadersPartA.filter(
+          (i) => i.value != "shopName" && i.value != "productId"
+        );
       }
     },
     profitHeadersShownPartB() {
@@ -1014,6 +1024,350 @@ export default {
   },
 
   methods: {
+    async download() {
+      const ExcelJS = require("exceljs");
+
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = "泼发EBC";
+      workbook.lastModifiedBy = "泼发EBC";
+      console.log(this.user);
+      workbook.company = "浙江泼发进出口贸易有限公司";
+      workbook.manager = this.user.nick + " " + this.user.username;
+      workbook.created = new Date();
+      workbook.modified = new Date();
+
+      const sheetA = workbook.addWorksheet("有效SKU信息", {
+        views: [{ state: "frozen", ySplit: 1, xSplit: 6, zoomScale: 80 }],
+      });
+
+      var font = {
+        name: "微软雅黑",
+        size: 10,
+      };
+      var headerFont = {
+        name: "微软雅黑",
+        size: 10,
+        bold: true,
+      };
+
+      var centerAlignment = {
+        vertical: "center",
+        horizontal: "center",
+      };
+      var backgroundOrange = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFFFC000" },
+      };
+      var backgroundNone = {
+        type: "pattern",
+        pattern: "none",
+        fgColor: { argb: "FFFFFFFF" },
+      };
+      // var backgroundBlue = {
+      //   type: "pattern",
+      //   pattern: "solid",
+      //   fgColor: { argb: "FFDCE6F1" },
+      // };
+
+      console.log(sheetA);
+      sheetA.columns = [
+        {
+          header: "日期",
+          key: "date",
+          width: 15,
+          style: { font },
+        },
+        {
+          header: "部门",
+          key: "calculatedDepartment",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "组别",
+          key: "calculatedTeam",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "店铺",
+          key: "shopName",
+          width: 7,
+          style: { font },
+        },
+        {
+          header: "持品人",
+          key: "calculatedOwner",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "产品名称",
+          key: "productName",
+          width: 15,
+          style: { font },
+        },
+        {
+          header: "商品ID",
+          key: "productId",
+          width: 15,
+          style: { font },
+        },
+        {
+          header: "一级类目",
+          key: "calculatedFirstCategory",
+          width: 14,
+          style: { font },
+        },
+        {
+          header: "扣点",
+          key: "deduction",
+          width: 7,
+          style: { font },
+        },
+        {
+          header: "运费险",
+          key: "insurance",
+          width: 8,
+          style: { font },
+        },
+        {
+          header: "运费",
+          key: "freight",
+          width: 7,
+          style: { font },
+        },
+        {
+          header: "子/主",
+          key: "extraRatio",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "成交额",
+          key: "totalAmount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "订单数",
+          key: "orderCount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "销售数",
+          key: "productCount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "补单额",
+          key: "totalFakeAmount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "补单数",
+          key: "totalFakeCount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "真实金额",
+          key: "calculatedActualAmount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "真实单数",
+          key: "calculatedActualOrderCount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "单均价",
+          key: "calculatedActualAverageAmount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "拿货成本",
+          key: "totalCost",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "成本率",
+          key: "calculatedCostRatio",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "利润率",
+          key: "calculatedProfitRatio",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "退款金额",
+          key: "totalRefundAmount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "净入金额",
+          key: "calculatedActualIncome",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "未发仅退",
+          key: "totalRefundWithNoShipAmount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "未发退本",
+          key: "calculatedRefundWithNoShipAmount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "未发数",
+          key: "refundWithNoShipCount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "拿货成本（售后）",
+          key: "calculatedActualCost",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "平台扣点",
+          key: "calculatedTmallTokeRatio",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "快递费",
+          key: "calculatedTotalFreight",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "运费险",
+          key: "calculatedTotalInsurance",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "刷单佣金",
+          key: "totalBrokerage",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "售后毛利润",
+          key: "calculatedActualProfit",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "售后利润率",
+          key: "calculatedActualProfitRatio",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "SKU未匹配",
+          key: "wrongCount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "折扣",
+          key: "calculatedDiscount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "错数",
+          key: "operatorGivenWrongPriceCount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "原售价",
+          key: "totalPrice",
+          width: 10,
+          style: { font },
+        },
+      ];
+      //sheetA.autoFilter = 'B1:AM1';
+
+      sheetA.addRows(this.midVarOfProfitItems);
+
+
+      sheetA.getRow(1).alignment = centerAlignment;
+      sheetA.getRow(1).font = headerFont;
+      // sheetA.getCell("A1").fill = backgroundYellow;
+      // sheetA.getCell("B1").fill = backgroundYellow;
+      // sheetA.getCell("C1").fill = backgroundYellow;
+      // sheetA.getCell("D1").fill = backgroundYellow;
+      // sheetA.getCell("E1").fill = backgroundYellow;
+      // sheetA.getCell("F1").fill = backgroundYellow;
+
+      sheetA.getColumn(6).border = {
+        right: { style: "medium", color: { argb: "FF000000" } },
+      };
+
+      for (let index = 1; index <= 39; index++) {
+        sheetA.getColumn(index).alignment = centerAlignment;
+        sheetA.getRow(1).getCell(index).border = {
+          bottom: { style: "medium", color: { argb: "FF000000" } },
+        };
+
+        if ([13, 18, 21, 25, 29, 34].indexOf(index) > -1) {
+          sheetA.getColumn(index).fill = backgroundOrange;
+        } else {
+          sheetA.getColumn(index).fill = backgroundNone;
+        }
+      }
+
+      // sheetA.getCell("G1").fill = backgroundBlue;
+
+      // var amountFormat = '_ ¥* #,##0.00_ ;_ ¥* -#,##0.00_ ;_ ¥* "-"??_ ;_ @_ ';
+
+      //sheetA.getColumn(6).numFmt = "yyyy年m月d日";
+      //sheetA.getColumn(7).numFmt = "yyyy-m-d hh:mm:ss";
+
+      // var convert = (i, lite) => {
+      //   return {
+      //     productId: lite ? "" : i.productId.toString(),
+      //     skuId: lite ? "" : i.skuId.toString(),
+      //     skuName: i.skuName,
+      //     skuPrice: i.skuPrice,
+      //     skuCost: i.skuCost,
+      //     startTime: new Date(this.parseDate(i.startTime)),
+      //     createTime: new Date(this.parseDateTime(i.createTime)),
+      //   };
+      // };
+
+
+      console.log("生成完毕");
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const fileType =
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+      const blob = new Blob([buffer], { type: fileType });
+
+      saveAs(blob, `利润报表.xlsx`);
+    },
     sumup(object, key) {
       var result = 0;
       object.forEach((i) => (result += i[key]));
@@ -1195,6 +1549,12 @@ export default {
 
       this.profitItems.forEach((item) => {
         item.date = dateString;
+
+        item.calculatedDepartment = this.departmentIdToName[item.department];
+        item.calculatedTeam = this.teamIdToName[item.team];
+        item.calculatedOwner = this.userIdToNick[item.owner];
+        item.calculatedFirstCategory =
+          this.categoryIdToName[item.firstCategory];
 
         if (item.orderCount == null) {
           item.orderCount = 0;

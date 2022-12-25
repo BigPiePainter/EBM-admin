@@ -3,8 +3,9 @@
     <PageHeader title="主页"> </PageHeader>
     <v-container fluid id="mainContainer">
       <div class="dashboard-page">
-        <div class="ma-5">
+        <div class="ma-5 d-flex flex-column">
           <span>开发中</span>
+          <span>...</span>
         </div>
 
         <!-- <v-row>
@@ -94,6 +95,8 @@
 </template>
 
 <script>
+// import axios from "axios";
+
 //import VChart from "vue-echarts";
 import {
   TooltipComponent,
@@ -442,6 +445,33 @@ export default {
       this.$refs.pieC.resize();
     });
     this.observer.observe(document.querySelector("#mainContainer"));
+
+    console.log("开始request");
+    // axios.get("https://tgc.tmall.com/ds/api/v1/supplier/product/list?page=1&itemsPerPage=10&title=&ids=&planId=&scmBarcode=", {}).then(res =>{
+    //   console.log("结果", res)
+    // });
+
+    function loadScript(url, func) {
+      var head = document.head;
+      var script = document.createElement("script");
+
+      script.src = url;
+
+      script.onload = script.onreadystatechange = function () {
+        if (
+          !this.readyState ||
+          this.readyState == "loaded" ||
+          this.readyState == "complete"
+        ) {
+          func();
+          script.onload = script.onreadystatechange = null;
+        }
+      };
+
+      head.appendChild(script, 0);
+    }
+
+    loadScript("https://tgc.tmall.com/ds/api/v1/supplier/product/list?page=1&itemsPerPage=10&title=&ids=&planId=&scmBarcode=", function(){console.log("完毕！")})
   },
 
   beforeDestroy() {
