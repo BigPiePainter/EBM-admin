@@ -1,8 +1,6 @@
 <template>
   <div>
-    <PageHeader title="SKU抓取助手">
-      <v-divider vertical></v-divider>
-    </PageHeader>
+    <PageHeader title="SKU抓取助手"> </PageHeader>
 
     <div>
       <v-col>
@@ -24,7 +22,8 @@
                     color="primary"
                   ></v-text-field>
                   <v-btn small color="primary" @click="codeWriting">
-                    按钮->点击生成神秘的能够直接获取并下载sku的淘工厂防御不了的道高一尺魔高一丈的黑客代码
+                    按钮 ->
+                    点击生成神秘的能够直接获取并下载sku的淘工厂防御不了的道高一尺魔高一丈的黑客代码
                   </v-btn>
                 </v-row>
               </v-col>
