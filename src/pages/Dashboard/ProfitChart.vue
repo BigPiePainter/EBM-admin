@@ -121,7 +121,7 @@
             <v-col cols="4">
               <v-card class="mx-1 mb-1">
                 <v-card-title>
-                  <p class="caption">小组真实金额</p>
+                  <p class="caption">小组成交额</p>
                   <!-- <v-spacer />
                 <v-btn small color="primary" @click="departmentChartButton"
                   ><span>完整图表</span></v-btn
@@ -137,7 +137,7 @@
             <v-col cols="4">
               <v-card class="mx-1 mb-1">
                 <v-card-title>
-                  <p class="caption">小组补单</p>
+                  <p class="caption">小组真实金额</p>
                   <!-- <v-spacer />
                 <v-btn small color="primary" @click.stop="teamChartButton"
                   ><span>完整图表</span></v-btn
@@ -153,7 +153,7 @@
             <v-col cols="4">
               <v-card class="mx-1 mb-1">
                 <v-card-title>
-                  <p class="caption">小组利润额</p>
+                  <p class="caption">小组售后毛利润</p>
                 </v-card-title>
                 <v-chart
                   style="height: 700px"
@@ -164,17 +164,11 @@
             </v-col>
           </v-row>
 
-          <!-- <v-dialog v-model="showDepartmentChartDialog"
-          ><v-card>
-            <v-card-title><p class="caption">部门报表</p></v-card-title
-            ><v-chart
-              style="height: 500px"
-              :option="departmentsOption"
-              ref="echartC"
-            ></v-chart></v-card
-        ></v-dialog>
+          <v-dialog width="100px" v-model="loadingDialog"
+            ><v-card class="pl-4">正在加载</v-card></v-dialog
+          >
 
-        <v-dialog v-model="showTeamChartDialog"
+          <!--    <v-dialog v-model="showTeamChartDialog"
           ><v-card
             ><v-card-title><p class="caption">小组报表</p></v-card-title
             ><v-chart
@@ -250,6 +244,7 @@ export default {
 
       showDepartmentChartDialog: false,
       showTeamChartDialog: false,
+      loadingDialog: false,
     };
   },
   computed: {
@@ -353,16 +348,16 @@ export default {
           containLabel: true,
         },
         toolbox: {
-          feature: {
-            saveAsImage: {},
-          },
+          // feature: {
+          //   saveAsImage: {},
+          // },
         },
         xAxis: [
           {
             type: "value",
             axisLabel: {
               show: false,
-              // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，（简单试一下就明白了，这样说是不是有点抽象）
+              // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
               // rotate: -30, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
             },
           },
@@ -375,7 +370,7 @@ export default {
           },
         ],
 
-        series: [{ ...this.teamSeries[0] }, { ...this.teamSeries[1] }],
+        series: [{ ...this.teamSeries[0] }],
       };
     },
 
@@ -395,9 +390,9 @@ export default {
           containLabel: true,
         },
         toolbox: {
-          feature: {
-            saveAsImage: {},
-          },
+          // feature: {
+          //   saveAsImage: {},
+          // },
         },
         xAxis: [
           {
@@ -415,7 +410,7 @@ export default {
           },
         ],
 
-        series: [{ ...this.teamSeries[2] }],
+        series: [{ ...this.teamSeries[1] }],
       };
     },
 
@@ -435,9 +430,9 @@ export default {
           containLabel: true,
         },
         toolbox: {
-          feature: {
-            saveAsImage: {},
-          },
+          // feature: {
+          //   saveAsImage: {},
+          // },
         },
         xAxis: [
           {
@@ -455,7 +450,7 @@ export default {
           },
         ],
 
-        series: [{ ...this.teamSeries[1] }, { ...this.teamSeries[0] }],
+        series: [{ ...this.teamSeries[2] }],
       };
     },
 
@@ -534,11 +529,11 @@ export default {
       args.startDate = args.startDate.replaceAll("-", "/");
       args.endDate = args.endDate.replaceAll("-", "/");
 
-      this.loading = true;
+      this.loadingDialog = true;
       console.log("接口调用", args);
       getProfitReport(args)
         .then((res) => {
-          this.loading = false;
+          this.loadingDialog = false;
           console.log(res.data);
 
           if (!res.data.profitReport) {
@@ -705,17 +700,26 @@ export default {
 
       this.teamSeries = [
         {
-          name: "成交额",
+          realtimeSort: true,
+          //name: "成交额",
           type: "bar",
+          color: "#FF5511",
           data: [],
         },
         {
           realtimeSort: true,
-          name: "真实金额",
+          //name: "真实金额",
           type: "bar",
+          color: "#00AA00",
           data: [],
         },
-        { realtimeSort: true, name: "售后毛利润", type: "bar", data: [] },
+        {
+          realtimeSort: true,
+          //name: "售后毛利润",
+          type: "bar",
+          color: "#00BBFF",
+          data: [],
+        },
       ];
 
       this.departmentData = [];
