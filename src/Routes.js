@@ -35,6 +35,7 @@ import AllEmployees from "@/pages/AllEmployees/AllEmployees";
 import Employee from "@/pages/Employee/Employee";
 
 import SkuHaker from "@/pages/Tools/SkuHaker";
+import ProductCopy from "@/pages/Tools/ProductCopy";
 
 
 import { isLogin } from "@/settings/user"
@@ -55,6 +56,11 @@ var routerConfig = {
       name: 'Layout',
       component: Layout,
       children: [
+        {
+          path: 'productcopy',
+          name: 'ProductCopy',
+          component: ProductCopy,
+        },
         {
           path: 'skuhaker',
           name: 'SkuHaker',

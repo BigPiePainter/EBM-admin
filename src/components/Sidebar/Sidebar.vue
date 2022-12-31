@@ -281,6 +281,11 @@ export default {
               icon: "mdi-circle-small",
               link: "/skuhaker",
             },
+            {
+              title: "商品同步",
+              icon: "mdi-circle-small",
+              link: "/productcopy",
+            },
           ],
         },
       ],
