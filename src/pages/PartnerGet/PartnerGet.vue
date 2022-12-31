@@ -57,9 +57,9 @@
               <span class="group-title"> 事业部 </span>
             </v-row>
             <v-row>
-              <v-autocomplete
+              <v-text-field
                 color="primary"
-                :items="category.department.map(d => allDepartments.find(ad => ad.uid == d))"
+                :items="allDepartments"
                 dense
                 outlined
                 no-data-text="空"
@@ -87,7 +87,7 @@
                     {{ data.item.name }}
                   </span>
                 </template>
-              </v-autocomplete>
+              </v-text-field>
             </v-row>
           </v-col>
           <v-col class="mx-2">
@@ -96,10 +96,10 @@
               <span class="group-title"> 组别 </span>
             </v-row>
             <v-row>
-              <v-autocomplete
+              <v-text-field
                 no-data-text="空"
                 color="primary"
-                :items="category.team.map(d => allTeams.find(ad => ad.uid == d))"
+                :items="allTeams"
                 dense
                 outlined
                 item-text="name"
@@ -126,7 +126,7 @@
                     {{ data.item.name }}
                   </span>
                 </template>
-              </v-autocomplete>
+              </v-text-field>
             </v-row>
           </v-col>
           <v-col class="mx-2">
@@ -135,10 +135,10 @@
               <span class="group-title"> 持品人 </span>
             </v-row>
             <v-row>
-              <v-autocomplete
+              <v-text-field
                 no-data-text="空"
                 color="primary"
-                :items="category.owner.map(d => allUsers.find(ad => ad.uid == d))"
+                :items="allUsers"
                 dense
                 outlined
                 item-text="nick"
@@ -165,7 +165,7 @@
                     {{ data.item.nick }}
                   </span>
                 </template>
-              </v-autocomplete>
+              </v-text-field>
             </v-row>
           </v-col>
           <v-col class="mx-2" md="auto">
@@ -196,7 +196,7 @@
               <v-autocomplete
                 no-data-text="空"
                 color="primary"
-                :items="category.firstCategory.map(d => allCategorys.find(ad => ad.uid == d))"
+                :items="allCategorys"
                 dense
                 outlined
                 item-text="name"
@@ -1105,6 +1105,7 @@ export default {
     //SelectDialog,
   },
   data: () => ({
+    copyContent: "",
     categoryInfo: {},
     selectedProductItem: [],
     ifAction: false,
@@ -1128,9 +1129,6 @@ export default {
         //模糊查找
       },
     },
-
-    //筛选可选项
-    category: {},
 
     // searchPreview: "",
 
@@ -1170,6 +1168,8 @@ export default {
 
     oldItem: {},
     editedItem: {},
+
+    idToNick: {},
 
     ascriptionChangeDialog: false,
     datePicker: false,
@@ -1345,7 +1345,6 @@ export default {
           this.showHeaders();
           this.products = res.data.products;
           this.totalProducts = res.data.total;
-          this.category = res.data.category;
           //this.global.infoAlert("泼发EBC：" + res.data);
         })
         .catch(() => {
