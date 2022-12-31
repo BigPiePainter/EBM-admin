@@ -275,45 +275,19 @@
         }"
         @click:row="clickRow"
       >
+        <!-- 复制商品id -->
+        <template v-slot:[`item.id`]="props">
+          <v-span style="cursor: pointer;" @click.stop="copy(props.item.id)">{{ props.item.id }}</v-span>
+        </template>
+
+        <!--复制商品名称 -->
+        <template v-slot:[`item.productName`]="props">
+          <v-span style="cursor: pointer;" @click.stop="copy(props.item.productName)">{{
+            props.item.productName
+          }}</v-span>
+        </template>
+
         <!-- 商品清单表头搜索功能 -->
-        <!-- 查找商品id -->
-        <!-- <template v-slot:[`header.id`]="props">
-          <v-edit-dialog @close="loadData">
-            {{ props.header.text }}
-            <template v-slot:input>
-              <div class="d-flex align-center">
-                <span> {{ props.header.text }} </span>
-                <v-text-field
-                  color="primary"
-                  v-model="search.search[props.header.value]"
-                  single-line
-                  class="ml-3"
-                >
-                </v-text-field>
-              </div>
-            </template>
-          </v-edit-dialog>
-        </template> -->
-
-        <!-- 查找商品名称 -->
-        <!-- <template v-slot:[`header.productName`]="props">
-          <v-edit-dialog @close="loadData">
-            {{ props.header.text }}
-            <template v-slot:input>
-              <div class="d-flex align-center">
-                <span> {{ props.header.text }} </span>
-                <v-text-field
-                  color="primary"
-                  v-model="search.search[props.header.value]"
-                  single-line
-                  class="ml-3"
-                >
-                </v-text-field>
-              </div>
-            </template>
-          </v-edit-dialog>
-        </template> -->
-
         <!-- 查找备注 -->
         <!-- <template v-slot:[`header.note`]="props">
           <v-edit-dialog @close="loadData">
@@ -1131,6 +1105,7 @@ export default {
     //SelectDialog,
   },
   data: () => ({
+    copyContent: "",
     categoryInfo: {},
     selectedProductItem: [],
     ifAction: false,
@@ -1255,6 +1230,10 @@ export default {
       deep: true,
     },
 
+    // copyContent: {
+
+    // },
+
     "search.search": {
       handler() {
         this.loadData();
@@ -1291,6 +1270,18 @@ export default {
   },
 
   methods: {
+    copy(item) {
+      console.log(item);
+      var domNode = document.createElement("input");
+      document.body.appendChild(domNode);
+      domNode.value = item;
+      domNode.focus();
+      domNode.select();
+      document.execCommand("copy");
+      domNode.blur();
+      document.body.removeChild(domNode);
+      this.global.infoAlert("复制成功");
+    },
     parseDateTime(date) {
       return javaDateTimeToString(date);
     },

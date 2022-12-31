@@ -1,8 +1,6 @@
 <template>
     <div>
       <PageHeader title="商品同步"> </PageHeader>
-  
-
     </div>
   </template>
   
