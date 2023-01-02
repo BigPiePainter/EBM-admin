@@ -59,7 +59,7 @@
             <v-row>
               <v-autocomplete
                 color="primary"
-                :items="category.department.map(d => allDepartments.find(ad => ad.uid == d))"
+                :items="category.department?.map(d => allDepartments.find(ad => ad.uid == d))"
                 dense
                 outlined
                 no-data-text="空"
@@ -99,7 +99,7 @@
               <v-autocomplete
                 no-data-text="空"
                 color="primary"
-                :items="category.team.map(d => allTeams.find(ad => ad.uid == d))"
+                :items="category.team?.map(d => allTeams.find(ad => ad.uid == d))"
                 dense
                 outlined
                 item-text="name"
@@ -138,7 +138,7 @@
               <v-autocomplete
                 no-data-text="空"
                 color="primary"
-                :items="category.owner.map(d => allUsers.find(ad => ad.uid == d))"
+                :items="category.owner?.map(d => allUsers.find(ad => ad.uid == d))"
                 dense
                 outlined
                 item-text="nick"
@@ -196,7 +196,7 @@
               <v-autocomplete
                 no-data-text="空"
                 color="primary"
-                :items="category.firstCategory.map(d => allCategorys.find(ad => ad.uid == d))"
+                :items="category.firstCategory?.map(d => allCategorys.find(ad => ad.uid == d))"
                 dense
                 outlined
                 item-text="name"
