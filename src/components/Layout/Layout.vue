@@ -3,7 +3,9 @@
     <Header />
     <Sidebar />
     <v-main class="content">
-      <router-view />
+      <keep-alive include="ProductCopy,ProfitTable">
+        <router-view />
+      </keep-alive>
     </v-main>
 
     <v-dialog :value="show" max-width="500px" min-width="500px" persistent>
@@ -13,7 +15,7 @@
           <p style="font-size: 15px">{{ dateDiff }}</p>
         </v-card-title>
 
-        <div style="max-height: calc(100vh - 400px); overflow-y:auto;">
+        <div style="max-height: calc(100vh - 400px); overflow-y: auto">
           <v-card-text
             style="max-height: 500px"
             class="py-0 px-8 text--secondary"
