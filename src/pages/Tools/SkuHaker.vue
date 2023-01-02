@@ -43,11 +43,12 @@
 
           <v-col cols="4" class="d-flex flex-column">
             <span>使用说明</span>
-            <span class="pt-2">1. 在此界面输入商品ID,生成并复制神秘代码。</span>
-            <span>2. 随便打开一个登陆了淘工厂的页面,按F12切出开发者模式。</span>
-            <span>3. 点击进入“控制台”</span
+            <span class="pt-2">1. 在此界面输入商品ID,生成并复制神秘代码</span>
+            <span>2. 打开一个登陆了商品对应店铺的淘工厂</span>
+            <span>3. 按F12切出开发者模式</span>
+            <span>4. 进入“控制台”</span
             ><img src="11.png" aspect-ratio="1.4" />
-            <span>4. 在此处粘贴神秘代码,回车运行</span
+            <span>5. 粘贴神秘代码,回车运行</span
             ><img src="22.png" aspect-ratio="1.4" />
           </v-col>
         </v-row>
@@ -72,7 +73,7 @@ export default {
     fakeLoad() {
       this.code = "loading...";
       if (this.productId) {
-        setTimeout(this.codeWriting, 1000);
+        setTimeout(this.codeWriting, 500);
       } else {
         this.code = "      请输入商品ID";
       }
