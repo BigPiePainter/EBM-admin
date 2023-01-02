@@ -71,7 +71,7 @@ export default {
 
   methods: {
     fakeLoad() {
-      this.code = "loading...";
+      this.code = "自动生成中...";
       if (this.productId) {
         setTimeout(this.codeWriting, 500);
       } else {
