@@ -135,7 +135,7 @@ export default {
 
   methods: {
     synchronization(){
-
+      this.global.errorAlert("泼发EBC：这个功能还在制作中...就快做完了");
     },
     check() {
       this.showErrorMessage = false;
