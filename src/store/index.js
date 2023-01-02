@@ -75,6 +75,10 @@ const store = new Vuex.Store({
       "依冬",
       "半亩田",
       "昊办",
+      "苍芜",
+      "巨浪",
+      "龙置",
+      "依丘",
     ],
 
     userIdToNick: {},
