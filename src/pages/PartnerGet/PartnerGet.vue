@@ -289,14 +289,18 @@
       >
         <!-- 复制商品id -->
         <template v-slot:[`item.id`]="props">
-          <v-span title="复制商品ID" style="cursor: pointer" @click.stop="copy(props.item.id)">{{
-            props.item.id
-          }}</v-span>
+          <v-span
+            title="复制商品ID"
+            style="cursor: pointer"
+            @click.stop="copy(props.item.id)"
+            >{{ props.item.id }}</v-span
+          >
         </template>
 
         <!--复制商品名称 -->
-        <template  title="复制商品名称" v-slot:[`item.productName`]="props">
+        <template v-slot:[`item.productName`]="props">
           <v-span
+            title="复制商品名称"
             style="cursor: pointer"
             @click.stop="copy(props.item.productName)"
             >{{ props.item.productName }}</v-span
