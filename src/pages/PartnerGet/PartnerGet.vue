@@ -1106,7 +1106,7 @@ export default {
   },
   data: () => ({
     copyContent: "",
-    categoryInfo: {},
+    category: {},
     selectedProductItem: [],
     ifAction: false,
     mode: 0,
