@@ -697,48 +697,53 @@
       </v-data-table>
     </div>
     <v-dialog v-model="mismatchedSkuDialog" max-width="800px">
-      <v-card>
-        <v-col style="width: fit-content">
-          <v-row class="mx-3 pt-4">
-            {{ `${selectedProduct.productName}` }}
-            <span class="pl-5">{{ selectedProduct.productId }}</span>
-            <span class="pl-2">未匹配SKU</span>
-            <span class="text--secondary pl-8">{{ this.dates }}</span>
-          </v-row>
-        </v-col>
+        <v-card>
+          <v-card-title class="text-subtitle-1"><v-col style="width: fit-content">
+            <v-row class="mx-3 pt-4">
+              {{ `${selectedProduct.productName}` }}
+              <span class="pl-5">{{ selectedProduct.productId }}</span>
+              <span class="pl-2">未匹配SKU</span>
+              <span class="text--secondary pl-8">{{ this.dates }}</span>
+              <v-spacer></v-spacer>
+              <v-btn small color="primary" @click="downloadMismatchedSkus">
+                导出未匹配SKU
+              </v-btn>
+            </v-row>
+          </v-col></v-card-title>
+          
 
-        <v-card-text
-          class="mx-5 pt-4"
-          style="overflow-y: visible; width: fit-content"
-        >
-          {{
-            `事业部：${
-              departmentIdToName[selectedProduct.department]
-            }ㅤㅤㅤ组别：${teamIdToName[selectedProduct.team]}ㅤㅤㅤ持品人：${
-              userIdToNick[selectedProduct.owner]
-            }`
-          }}
-        </v-card-text>
+          <v-card-text
+            class="mx-5 pt-4"
+            style="overflow-y: visible; width: fit-content"
+          >
+            {{
+              `事业部：${
+                departmentIdToName[selectedProduct.department]
+              }ㅤㅤㅤ组别：${teamIdToName[selectedProduct.team]}ㅤㅤㅤ持品人：${
+                userIdToNick[selectedProduct.owner]
+              }`
+            }}
+          </v-card-text>
 
-        <div class="mx-5">
-          <v-data-table
-            loading-text="加载中... 请稍后"
-            no-data-text="好奇怪！没有未匹配的SKU！注意淘特链接和主链要分开获取SKUID，不然无法准确匹配订单来源，可能会导致此问题。"
-            height="422px"
-            fixed-header
-            :headers="mismatchedSkuheaders"
-            :items="mismatchedSkus"
-            :loading="mismatchedSkuLoading"
-            item-key="skuName"
-            :items-per-page="10"
-            :footer-props="{
-              'items-per-page-options': [10, 20, 50, 100],
-              'items-per-page-text': '每页显示条数',
-            }"
-          />
-        </div>
+          <div class="mx-5">
+            <v-data-table
+              loading-text="加载中... 请稍后"
+              no-data-text="好奇怪！没有未匹配的SKU！注意淘特链接和主链要分开获取SKUID，不然无法准确匹配订单来源，可能会导致此问题。"
+              height="422px"
+              fixed-header
+              :headers="mismatchedSkuheaders"
+              :items="mismatchedSkus"
+              :loading="mismatchedSkuLoading"
+              item-key="skuName"
+              :items-per-page="10"
+              :footer-props="{
+                'items-per-page-options': [10, 20, 50, 100],
+                'items-per-page-text': '每页显示条数',
+              }"
+            />
+          </div>
 
-        <!-- <v-card-actions>
+          <!-- <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             color="blue darken-1"
@@ -748,7 +753,7 @@
             关闭
           </v-btn>
         </v-card-actions> -->
-      </v-card>
+        </v-card>
     </v-dialog>
   </div>
 </template>
@@ -1311,7 +1316,6 @@ export default {
 
       sheetA.addRows(this.midVarOfProfitItems);
 
-
       sheetA.getRow(1).alignment = centerAlignment;
       sheetA.getRow(1).font = headerFont;
       // sheetA.getCell("A1").fill = backgroundYellow;
@@ -1356,7 +1360,6 @@ export default {
       //     createTime: new Date(this.parseDateTime(i.createTime)),
       //   };
       // };
-
 
       console.log("生成完毕");
 
@@ -1485,6 +1488,125 @@ export default {
           this.mismatchedSkuLoading = false;
         });
     },
+
+    async downloadMismatchedSkus() {
+      const ExcelJS = require("exceljs");
+
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = "泼发EBC";
+      workbook.lastModifiedBy = "泼发EBC";
+      console.log(this.user);
+      workbook.company = "浙江泼发进出口贸易有限公司";
+      workbook.manager = this.user.nick + " " + this.user.username;
+      workbook.created = new Date();
+      workbook.modified = new Date();
+
+      const sheetA = workbook.addWorksheet("未匹配SKU信息");
+
+      var font = {
+        name: "微软雅黑",
+        size: 10,
+      };
+      var font2 = {
+        name: "微软雅黑",
+        size: 10,
+        color: { argb: "FFAAAAAA" },
+      };
+
+      var centerAlignment = {
+        vertical: "center",
+        horizontal: "center",
+      };
+
+      var rtAlignment= {
+        vertical: "top",
+        horizontal: "right",
+      };
+
+      var backgroundYellow = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFFFFF00" },
+      };
+
+      console.log(sheetA);
+      sheetA.columns = [
+      {
+          header: "商品ID",
+          key: "productId",
+          width: 15,
+          style: { font },
+        },
+        {
+          header: "SKUID",
+          key: "skuId",
+          width: 16,
+          style: { font },
+        },
+        {
+          header: "SKU名称",
+          key: "skuName",
+          width: 40,
+          style: { font },
+        },
+        {
+          header: "售卖价",
+          key: "skuPrice",
+          width: 13,
+          style: { font },
+        },
+        {
+          header: "成本",
+          key: "skuCost",
+          width: 13,
+          style: { font },
+        },
+        {
+          header: "价格开始时间",
+          key: "startTime",
+          width: 15,
+          style: { font },
+        },
+        {
+          header: "销售数量",
+          key: "productCount",
+          width: 10,
+          style: { font: font2 },
+        },
+        {
+          header: "销售金额",
+          key: "totalAmount",
+          width: 10,
+          style: { font: font2 },
+        },
+      ];
+      //sheetA.autoFilter = 'B1:AM1';
+
+      sheetA.addRows(this.mismatchedSkus);
+
+
+      sheetA.getColumn(6).alignment = rtAlignment;
+      sheetA.getColumn(7).alignment = rtAlignment;
+      sheetA.getRow(1).alignment = centerAlignment;
+      sheetA.getCell("A1").fill = backgroundYellow;
+      sheetA.getCell("B1").fill = backgroundYellow;
+      sheetA.getCell("C1").fill = backgroundYellow;
+      sheetA.getCell("D1").fill = backgroundYellow;
+      sheetA.getCell("E1").fill = backgroundYellow;
+      sheetA.getCell("F1").fill = backgroundYellow;
+
+
+      console.log("生成完毕");
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const fileType =
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+      const blob = new Blob([buffer], { type: fileType });
+
+      saveAs(blob, this.selectedProduct.productName + this.dates + `未匹配SKU`+ this.selectedProduct.productId + `.xlsx`);
+    },
+
     amountFormat() {
       return amountBeautify(...arguments);
     },
