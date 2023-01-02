@@ -289,13 +289,13 @@
       >
         <!-- 复制商品id -->
         <template v-slot:[`item.id`]="props">
-          <v-span style="cursor: pointer" @click.stop="copy(props.item.id)">{{
+          <v-span title="复制商品ID" style="cursor: pointer" @click.stop="copy(props.item.id)">{{
             props.item.id
           }}</v-span>
         </template>
 
         <!--复制商品名称 -->
-        <template v-slot:[`item.productName`]="props">
+        <template  title="复制商品名称" v-slot:[`item.productName`]="props">
           <v-span
             style="cursor: pointer"
             @click.stop="copy(props.item.productName)"
@@ -1294,7 +1294,7 @@ export default {
       document.execCommand("copy");
       domNode.blur();
       document.body.removeChild(domNode);
-      this.global.infoAlert("复制成功");
+      this.global.infoAlert("泼发EBC：复制成功");
     },
     parseDateTime(date) {
       return javaDateTimeToString(date);
