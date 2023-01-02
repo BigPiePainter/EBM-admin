@@ -57,9 +57,13 @@
               <span class="group-title"> 事业部 </span>
             </v-row>
             <v-row>
-              <v-text-field
+              <v-autocomplete
                 color="primary"
-                :items="category.department?.map(d => allDepartments.find(ad => ad.uid == d))"
+                :items="
+                  category.department?.map((d) =>
+                    allDepartments.find((ad) => ad.uid == d)
+                  )
+                "
                 dense
                 outlined
                 no-data-text="空"
@@ -87,7 +91,7 @@
                     {{ data.item.name }}
                   </span>
                 </template>
-              </v-text-field>
+              </v-autocomplete>
             </v-row>
           </v-col>
           <v-col class="mx-2">
@@ -96,10 +100,12 @@
               <span class="group-title"> 组别 </span>
             </v-row>
             <v-row>
-              <v-text-field
+              <v-autocomplete
                 no-data-text="空"
                 color="primary"
-                :items="category.team?.map(d => allTeams.find(ad => ad.uid == d))"
+                :items="
+                  category.team?.map((d) => allTeams.find((ad) => ad.uid == d))
+                "
                 dense
                 outlined
                 item-text="name"
@@ -126,7 +132,7 @@
                     {{ data.item.name }}
                   </span>
                 </template>
-              </v-text-field>
+              </v-autocomplete>
             </v-row>
           </v-col>
           <v-col class="mx-2">
@@ -135,10 +141,12 @@
               <span class="group-title"> 持品人 </span>
             </v-row>
             <v-row>
-              <v-text-field
+              <v-autocomplete
                 no-data-text="空"
                 color="primary"
-                :items="category.owner?.map(d => allUsers.find(ad => ad.uid == d))"
+                :items="
+                  category.owner?.map((d) => allUsers.find((ad) => ad.uid == d))
+                "
                 dense
                 outlined
                 item-text="nick"
@@ -165,7 +173,7 @@
                     {{ data.item.nick }}
                   </span>
                 </template>
-              </v-text-field>
+              </v-autocomplete>
             </v-row>
           </v-col>
           <v-col class="mx-2" md="auto">
@@ -196,7 +204,11 @@
               <v-autocomplete
                 no-data-text="空"
                 color="primary"
-                :items="category.firstCategory?.map(d => allCategorys.find(ad => ad.uid == d))"
+                :items="
+                  category.firstCategory?.map((d) =>
+                    allCategorys.find((ad) => ad.uid == d)
+                  )
+                "
                 dense
                 outlined
                 item-text="name"
@@ -277,14 +289,18 @@
       >
         <!-- 复制商品id -->
         <template v-slot:[`item.id`]="props">
-          <v-span style="cursor: pointer;" @click.stop="copy(props.item.id)">{{ props.item.id }}</v-span>
+          <v-span style="cursor: pointer" @click.stop="copy(props.item.id)">{{
+            props.item.id
+          }}</v-span>
         </template>
 
         <!--复制商品名称 -->
         <template v-slot:[`item.productName`]="props">
-          <v-span style="cursor: pointer;" @click.stop="copy(props.item.productName)">{{
-            props.item.productName
-          }}</v-span>
+          <v-span
+            style="cursor: pointer"
+            @click.stop="copy(props.item.productName)"
+            >{{ props.item.productName }}</v-span
+          >
         </template>
 
         <!-- 商品清单表头搜索功能 -->
@@ -1169,8 +1185,6 @@ export default {
     oldItem: {},
     editedItem: {},
 
-    idToNick: {},
-
     ascriptionChangeDialog: false,
     datePicker: false,
 
@@ -1345,6 +1359,7 @@ export default {
           this.showHeaders();
           this.products = res.data.products;
           this.totalProducts = res.data.total;
+          this.category = res.data.category;
           //this.global.infoAlert("泼发EBC：" + res.data);
         })
         .catch(() => {
