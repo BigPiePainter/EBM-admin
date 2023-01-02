@@ -697,53 +697,53 @@
       </v-data-table>
     </div>
     <v-dialog v-model="mismatchedSkuDialog" max-width="800px">
-        <v-card>
+      <v-card>
           <v-card-title class="text-subtitle-1"><v-col style="width: fit-content">
-            <v-row class="mx-3 pt-4">
-              {{ `${selectedProduct.productName}` }}
-              <span class="pl-5">{{ selectedProduct.productId }}</span>
-              <span class="pl-2">未匹配SKU</span>
-              <span class="text--secondary pl-8">{{ this.dates }}</span>
+          <v-row class="mx-3 pt-4">
+            {{ `${selectedProduct.productName}` }}
+            <span class="pl-5">{{ selectedProduct.productId }}</span>
+            <span class="pl-2">未匹配SKU</span>
+            <span class="text--secondary pl-8">{{ this.dates }}</span>
               <v-spacer></v-spacer>
               <v-btn small color="primary" @click="downloadMismatchedSkus">
                 导出未匹配SKU
               </v-btn>
-            </v-row>
+          </v-row>
           </v-col></v-card-title>
           
 
-          <v-card-text
-            class="mx-5 pt-4"
-            style="overflow-y: visible; width: fit-content"
-          >
-            {{
-              `事业部：${
-                departmentIdToName[selectedProduct.department]
-              }ㅤㅤㅤ组别：${teamIdToName[selectedProduct.team]}ㅤㅤㅤ持品人：${
-                userIdToNick[selectedProduct.owner]
-              }`
-            }}
-          </v-card-text>
+        <v-card-text
+          class="mx-5 pt-4"
+          style="overflow-y: visible; width: fit-content"
+        >
+          {{
+            `事业部：${
+              departmentIdToName[selectedProduct.department]
+            }ㅤㅤㅤ组别：${teamIdToName[selectedProduct.team]}ㅤㅤㅤ持品人：${
+              userIdToNick[selectedProduct.owner]
+            }`
+          }}
+        </v-card-text>
 
-          <div class="mx-5">
-            <v-data-table
-              loading-text="加载中... 请稍后"
-              no-data-text="好奇怪！没有未匹配的SKU！注意淘特链接和主链要分开获取SKUID，不然无法准确匹配订单来源，可能会导致此问题。"
-              height="422px"
-              fixed-header
-              :headers="mismatchedSkuheaders"
-              :items="mismatchedSkus"
-              :loading="mismatchedSkuLoading"
-              item-key="skuName"
-              :items-per-page="10"
-              :footer-props="{
-                'items-per-page-options': [10, 20, 50, 100],
-                'items-per-page-text': '每页显示条数',
-              }"
-            />
-          </div>
+        <div class="mx-5">
+          <v-data-table
+            loading-text="加载中... 请稍后"
+            no-data-text="好奇怪！没有未匹配的SKU！注意淘特链接和主链要分开获取SKUID，不然无法准确匹配订单来源，可能会导致此问题。"
+            height="422px"
+            fixed-header
+            :headers="mismatchedSkuheaders"
+            :items="mismatchedSkus"
+            :loading="mismatchedSkuLoading"
+            item-key="skuName"
+            :items-per-page="10"
+            :footer-props="{
+              'items-per-page-options': [10, 20, 50, 100],
+              'items-per-page-text': '每页显示条数',
+            }"
+          />
+        </div>
 
-          <!-- <v-card-actions>
+        <!-- <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             color="blue darken-1"
@@ -753,7 +753,7 @@
             关闭
           </v-btn>
         </v-card-actions> -->
-        </v-card>
+      </v-card>
     </v-dialog>
   </div>
 </template>
@@ -773,6 +773,7 @@ import { mapState } from "vuex";
 import PageHeader from "@/components/PageHeader";
 
 export default {
+  name: "ProfitTable",
   components: {
     PageHeader,
     Help,
