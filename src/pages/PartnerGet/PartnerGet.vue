@@ -301,9 +301,10 @@
         <template v-slot:[`item.productName`]="props">
           <v-hover v-model="props.item.hover">
             <v-badge
-              color="red"
-              :value="!props.item.skus"
-              content="无SKU"
+              v-if="!props.item.skus + !props.item.manufacturers == 1"
+              :color="!props.item.skus ? 'red' : 'primary'"
+              :value="true"
+              :content="!props.item.skus ? '无SKU' : '无厂家'"
               title="可以利用左侧的实用工具快捷获取SKU"
               :dot="!props.item.hover"
               offset-y=""
@@ -314,6 +315,33 @@
                 @click.stop="copy(props.item.productName)"
                 >{{ props.item.productName }}</span
               >
+            </v-badge>
+
+            <v-badge
+              v-else
+              color="primary"
+              :value="!props.item.manufacturers"
+              content="无厂家"
+              title="可以利用左侧的实用工具快捷获取SKU"
+              :dot="!props.item.hover"
+              :offset-x="props.item.hover ? 0 : -6"
+              :offset-y="props.item.hover ? 22 : 0"
+            >
+              <v-badge
+                color="red"
+                :value="!props.item.skus"
+                content="无SKU"
+                title="可以利用左侧的实用工具快捷获取SKU"
+                :dot="!props.item.hover"
+                offset-y=""
+              >
+                <span
+                  title="复制商品名称"
+                  style="cursor: pointer"
+                  @click.stop="copy(props.item.productName)"
+                  >{{ props.item.productName }}</span
+                >
+              </v-badge>
             </v-badge>
           </v-hover>
         </template>
