@@ -155,6 +155,9 @@ export default {
   },
   data() {
     return {
+      websocket: null,
+      interval: 0,
+
       page: 1,
       state: "",
       dialog: false,
@@ -174,14 +177,37 @@ export default {
 
       uploadStates: [],
 
-      fileStates: [],
-
-      interval: 0,
+      timeout: 0,
     };
   },
   mounted() {
     this.state = "拖拽到此处上传订单信息";
     this.refreshFileStates();
+
+    var wsUri = "ws://" + process.env.VUE_APP_API_URL + "ws/upload";
+
+    this.interval = setInterval(() => {
+      if (this.websocket) {
+        console.log("/upload发送消息");
+        this.websocket.send("1");
+        return;
+      }
+      this.websocket = new WebSocket(wsUri);
+      this.websocket.onopen = () => {
+        console.log("socket链接", this.websocket);
+      };
+      this.websocket.onclose = () => {
+        console.log("DISCONNECTED");
+        this.websocket = null;
+      };
+      this.websocket.onmessage = (evt) => {
+        console.log("收到的消息", evt.data);
+        this.fileStatesAnalyze(JSON.parse(evt.data));
+      };
+      this.websocket.onerror = () => {
+        this.websocket = null;
+      };
+    }, 3000);
   },
   watch: {
     hover(value) {
@@ -190,6 +216,8 @@ export default {
   },
   beforeDestroy() {
     clearTimeout(this.timeout);
+    this.websocket.close();
+    clearInterval(this.interval);
   },
   methods: {
     deleteFileState(file, i) {
@@ -239,8 +267,7 @@ export default {
         .then((res) => {
           console.log("完毕");
           console.log(res.data.fileStates);
-          this.fileStates = res.data.fileStates;
-          this.fileStatesAnalyze();
+          this.fileStatesAnalyze(res.data.fileStates);
 
           this.timeout = setTimeout(() => {
             this.refreshFileStates();
@@ -252,20 +279,20 @@ export default {
           }, 2000);
         });
     },
-    fileStatesAnalyze() {
-      for (let name in this.fileStates) {
+    fileStatesAnalyze(fileStates) {
+      for (let name in fileStates) {
         var file = this.uploadStates.find((i) => i.name == name);
 
         if (file) {
-          file.code = this.fileStates[name].code;
-          file.state = this.fileStates[name].state;
+          file.code = fileStates[name].code;
+          file.state = fileStates[name].state;
         } else {
           this.uploadStates.push({
             name,
-            size: this.fileStates[name].size,
-            uploaded: this.fileStates[name].size,
-            state: this.fileStates[name].state,
-            code: this.fileStates[name].code,
+            size: fileStates[name].size,
+            uploaded: fileStates[name].size,
+            state: fileStates[name].state,
+            code: fileStates[name].code,
           });
         }
       }
