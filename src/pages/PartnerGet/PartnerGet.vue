@@ -289,22 +289,33 @@
       >
         <!-- 复制商品id -->
         <template v-slot:[`item.id`]="props">
-          <v-span
+          <span
             title="复制商品ID"
             style="cursor: pointer"
             @click.stop="copy(props.item.id)"
-            >{{ props.item.id }}</v-span
+            >{{ props.item.id }}</span
           >
         </template>
 
         <!--复制商品名称 -->
         <template v-slot:[`item.productName`]="props">
-          <v-span
-            title="复制商品名称"
-            style="cursor: pointer"
-            @click.stop="copy(props.item.productName)"
-            >{{ props.item.productName }}</v-span
-          >
+          <v-hover v-model="props.item.hover">
+            <v-badge
+              color="red"
+              :value="!props.item.skus"
+              content="无SKU"
+              title="可以利用左侧的实用工具快捷获取SKU"
+              :dot="!props.item.hover"
+              offset-y=""
+            >
+              <span
+                title="复制商品名称"
+                style="cursor: pointer"
+                @click.stop="copy(props.item.productName)"
+                >{{ props.item.productName }}</span
+              >
+            </v-badge>
+          </v-hover>
         </template>
 
         <!-- 商品清单表头搜索功能 -->
