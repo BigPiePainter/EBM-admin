@@ -818,7 +818,8 @@ export default {
         { text: "订单数", value: "orderCount" }, //1
         { text: "销售数", value: "productCount" }, //1
         { text: "补单额", value: "totalFakeAmount" }, //1
-        { text: "补单数", value: "totalFakeCount" }, //1
+        { text: "团队补单", value: "totalFakeCount" }, //1
+        { text: "个人补单", value: "totalPersonalFakeCount" }, //1
         { text: "真实金额", value: "calculatedActualAmount" }, //成交额-补单额1
         { text: "真实单数", value: "calculatedActualOrderCount" }, //订单数-补单数1
         { text: "单均价", value: "calculatedActualAverageAmount" }, //真实金额/真实单数1
