@@ -797,6 +797,7 @@ export default {
       isDateRange: false,
 
       midVarOfProfitItems: [],
+      analyzedData: [],
       profitHeadersPartA: [
         // { text: "日期", value: "date" },
         { text: "部门", value: "department" },
@@ -1519,12 +1520,10 @@ export default {
         vertical: "center",
         horizontal: "center",
       };
-
       var rtAlignment= {
         vertical: "top",
         horizontal: "right",
       };
-
       var backgroundYellow = {
         type: "pattern",
         pattern: "solid",
@@ -1548,7 +1547,7 @@ export default {
         {
           header: "SKU名称",
           key: "skuName",
-          width: 40,
+          width: 70,
           style: { font },
         },
         {
@@ -1583,9 +1582,12 @@ export default {
         },
       ];
       //sheetA.autoFilter = 'B1:AM1';
-
-      sheetA.addRows(this.mismatchedSkus);
-
+      var analyzedData = this.mismatchedSkus;
+      for (let i = 0; i < analyzedData.length; i ++){
+        analyzedData[i].productId = this.selectedProduct.productId.toString();
+      }
+      console.log(analyzedData);
+      sheetA.addRows(analyzedData);
 
       sheetA.getColumn(6).alignment = rtAlignment;
       sheetA.getColumn(7).alignment = rtAlignment;
