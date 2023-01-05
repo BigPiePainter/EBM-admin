@@ -190,6 +190,11 @@ export default {
               link: "/brush",
             },
             {
+              title: "未匹配个人补单",
+              icon: "mdi-circle-small",
+              link: "/individualbrush",
+            },
+            {
               title: "发退货",
               icon: "mdi-circle-small",
               link: "/brush",

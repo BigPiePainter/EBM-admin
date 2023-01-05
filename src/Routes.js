@@ -27,6 +27,7 @@ import Login from "@/pages/Login/Login";
 
 import Order from "@/pages/Order/Order";
 import Brush from "@/pages/Order/Brush";
+import IndividualBrush from "@/pages/Order/IndividualBrush";
 import Input from "@/pages/Order/Input";
 import Return from "@/pages/Order/Return";
 import Department from "@/pages/Department/Department";
@@ -125,6 +126,11 @@ var routerConfig = {
           path: 'brush',
           name: 'Brush',
           component: Brush,
+        },
+        {
+          path: 'individualbrush',
+          name: 'IndividualBrush',
+          component: IndividualBrush,
         },
         {
           path: 'all_employees',
