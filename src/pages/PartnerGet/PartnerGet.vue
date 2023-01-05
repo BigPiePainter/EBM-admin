@@ -305,7 +305,9 @@
               :color="!props.item.skus ? 'red' : 'primary'"
               :value="true"
               :content="!props.item.skus ? '无SKU' : '无厂家'"
-              title="可以利用左侧的实用工具快捷获取SKU"
+              :title="
+                !props.item.skus ? '可以利用左侧的实用工具快捷获取SKU' : ''
+              "
               :dot="!props.item.hover"
               offset-y=""
             >
@@ -319,21 +321,19 @@
 
             <v-badge
               v-else
-              color="primary"
-              :value="!props.item.manufacturers"
-              content="无厂家"
+              color="red"
+              :value="!props.item.skus"
+              content="无SKU"
               title="可以利用左侧的实用工具快捷获取SKU"
               :dot="!props.item.hover"
-              :offset-x="props.item.hover ? 0 : -6"
-              :offset-y="props.item.hover ? 22 : 0"
             >
               <v-badge
-                color="red"
-                :value="!props.item.skus"
-                content="无SKU"
-                title="可以利用左侧的实用工具快捷获取SKU"
+                color="primary"
+                :value="!props.item.manufacturers"
+                content="无厂家"
                 :dot="!props.item.hover"
-                offset-y=""
+                :offset-x="props.item.hover ? 0 : -6"
+                :offset-y="props.item.hover ? 23 : 0"
               >
                 <span
                   title="复制商品名称"
