@@ -19,7 +19,7 @@
 
           <v-btn small depressed class="ml-2" @click="download">
             <v-icon small class="mr-1"> mdi-export </v-icon>
-            <span class="" color=""> 导出 </span>
+            <span> 导出 </span>
           </v-btn>
 
           <v-btn
@@ -40,7 +40,6 @@
             </v-icon>
             <span> 批量操作 </span>
           </v-btn>
-
           <v-btn small depressed class="ml-2" @click="check = !check">
             <v-icon small class="mr-1">
               {{
@@ -57,7 +56,7 @@
             <v-btn
               small
               v-if="skuAction"
-              :disabled="skuSelected.length == 0"
+              :disabled="skuSelected.length < 1"
               depressed
               outlined
               color="red lighten-2"
@@ -65,7 +64,7 @@
               class="ml-1"
             >
               {{
-                skuSelected.length == 0 ? "删除" : `删除${skuSelected.length}条`
+                skuSelected.length > 0 ? `删除${skuSelected.length}条` : "删除"
               }}
             </v-btn>
           </template>
@@ -422,7 +421,7 @@
     <!-- 厂家信息Dialog -->
     <v-dialog v-model="manufacturerInfoDialog" max-width="600px" persistent>
       <v-card>
-        <v-form>
+        <v-form ref="form" v-model="valid">
           <v-col class="px-10 py-10 manufacturer-dialog">
             <v-row>
               <span class="text-subtitle-1">基本信息</span>
@@ -434,16 +433,17 @@
                   outlined
                   dense
                   hide-details
-                  required
+                  :rules="[(v) => !!v || '请填写此栏目']"
                   v-model="manufacturerEdit.manufacturerName"
                 ></v-text-field>
               </v-col>
               <v-col>
-                <span class="text-body-2 text--secondary">厂家群名 </span>
+                <span class="text-body-2 text--secondary">厂家群名* </span>
                 <v-text-field
                   outlined
                   dense
                   hide-details
+                  :rules="[(v) => !!v || '请填写此栏目']"
                   v-model="manufacturerEdit.manufacturerGroup"
                 ></v-text-field
               ></v-col>
@@ -456,21 +456,23 @@
             </v-row>
             <v-row>
               <v-col cols="5">
-                <span class="text-body-2 text--secondary"> 收款人 </span>
+                <span class="text-body-2 text--secondary"> 收款人* </span>
                 <v-text-field
                   outlined
                   dense
                   hide-details
+                  :rules="[(v) => !!v || '请填写此栏目']"
                   v-model="manufacturerEdit.manufacturerPaymentName"
                 ></v-text-field
               ></v-col>
               <v-col>
-                <span class="text-body-2 text--secondary"> 收款方式 </span>
+                <span class="text-body-2 text--secondary"> 收款方式* </span>
 
                 <v-combobox
                   outlined
                   dense
                   hide-details
+                  :rules="[(v) => !!v || '请填写此栏目']"
                   :items="[
                     '支付宝',
                     '中国银行',
@@ -483,11 +485,12 @@
             </v-row>
             <v-row
               ><v-col>
-                <span class="text-body-2 text--secondary"> 收款账户 </span>
+                <span class="text-body-2 text--secondary"> 收款账户* </span>
                 <v-text-field
                   outlined
                   dense
                   hide-details
+                  :rules="[(v) => !!v || '请填写此栏目']"
                   v-model="manufacturerEdit.manufacturerPaymentId"
                 ></v-text-field></v-col
             ></v-row>
@@ -499,31 +502,34 @@
             </v-row>
             <v-row>
               <v-col cols="5">
-                <span class="text-body-2 text--secondary"> 收件人 </span>
+                <span class="text-body-2 text--secondary"> 收件人* </span>
                 <v-text-field
                   outlined
                   dense
                   hide-details
+                  :rules="[(v) => !!v || '请填写此栏目']"
                   v-model="manufacturerEdit.manufacturerRecipient"
                 ></v-text-field>
               </v-col>
               <v-col>
-                <span class="text-body-2 text--secondary"> 收件手机号 </span>
+                <span class="text-body-2 text--secondary"> 收件手机号* </span>
                 <v-text-field
                   outlined
                   dense
                   hide-details
+                  :rules="[(v) => !!v || '请填写此栏目']"
                   v-model="manufacturerEdit.manufacturerPhone"
                 ></v-text-field
               ></v-col>
             </v-row>
             <v-row
               ><v-col>
-                <span class="text-body-2 text--secondary"> 收件地址 </span>
+                <span class="text-body-2 text--secondary"> 收件地址* </span>
                 <v-text-field
                   outlined
                   dense
                   hide-details
+                  :rules="[(v) => !!v || '请填写此栏目']"
                   v-model="manufacturerEdit.manufacturerAddress"
                 ></v-text-field></v-col
             ></v-row>
@@ -609,6 +615,7 @@
                       outlined
                       dense
                       hide-details
+                      :rules="[(v) => !!v || '请填写此栏目']"
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -654,7 +661,11 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="manufacturerInfoDialog = false"
+            @click="
+              (manufacturerEdit = {}),
+                $refs.form.resetValidation(),
+                (manufacturerInfoDialog = false)
+            "
             >取消</v-btn
           >
           <v-btn
@@ -662,8 +673,9 @@
             text
             @click="sureManufactureAddOrEditButton"
             type="submit"
-            :disabled="isEmpty"
+            :disabled="!valid"
           >
+            <!-- :disabled="isEmpty" -->
             {{ manufacturerMode == 1 ? "添加" : "修改" }}</v-btn
           >
         </v-card-actions>
@@ -750,6 +762,7 @@ export default {
 
   data() {
     return {
+      valid: false,
       ascriptionSelected: [],
       ascriptionAction: false,
       manufactureAction: false,
@@ -764,7 +777,7 @@ export default {
       deleteSkuDialog: false, //删除SKU弹框
       mutipleDeleteDialog: false,
       deleteSkuUid: [], //删除信息
-      deleteSkuItemParse: {}, //删
+      deleteSkuItemParse: [], //删
 
       deleteAscriptionDialog: false, //删除商品归属弹框
       deleteAscriptionItem: {},
@@ -894,17 +907,19 @@ export default {
       "categoryIdToName",
       "categoryIdToInfo",
     ]),
-    isEmpty: function () {
-      var check = ["manufacturerName", "startTime"];
-      var pass = true;
-      check.forEach((item) => {
-        if (!this.manufacturerEdit[item]) pass = false;
-      });
 
-      console.log(pass);
+    // isEmpty: function () {
+    //   var check = ["manufacturerName", "startTime"];
+    //   var pass = true;
+    //   check.forEach((item) => {
+    //     if (!this.manufacturerEdit[item]) pass = false;
+    //   });
 
-      return !pass;
-    },
+    //   console.log(pass);
+
+    //   return !pass;
+    // },
+
     calculatedManufacturerHeaders: function () {
       var headers = this.manufacturerHeaders;
       if (!this.showRecipientInfo) {
@@ -928,6 +943,11 @@ export default {
   },
 
   methods: {
+    // resetValidation() {
+    //   this.$refs.form.resetValidation();
+    //   this.manufacturerInfoDialog = false;
+    // },
+
     showselect() {
       console.log(this.skuSelected);
     },
@@ -1027,7 +1047,7 @@ export default {
         vertical: "top",
         horizontal: "left",
       };
-      var rtAlignment= {
+      var rtAlignment = {
         vertical: "top",
         horizontal: "right",
       };
@@ -1088,7 +1108,6 @@ export default {
         },
       ];
 
-      
       sheetA.getColumn(6).alignment = rtAlignment;
       sheetA.getColumn(7).alignment = rtAlignment;
       sheetA.getRow(1).alignment = centerAlignment;
