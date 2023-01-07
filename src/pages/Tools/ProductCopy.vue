@@ -64,10 +64,7 @@
               >
                 检查
               </v-btn>
-              <span
-                v-if="pass"
-                class="text-body-2 pl-3 pt-1"
-              >
+              <span v-if="pass" class="text-body-2 pl-3 pt-1">
                 仔细核对商品名，防止同步到不相关的商品上
               </span>
               <v-btn
@@ -103,6 +100,15 @@
           </v-col>
         </v-row>
       </v-col>
+      <div v-if="showResult" class="ma-8 text-body-2">
+        <span
+          >同步结果：删除了 {{ productIdB }} 的{{ result.skuDelete }}条SKU，{{
+            result.manufactureDelete
+          }}条厂家信息，并添加了{{ result.skuAdd }}条SKU，{{
+            result.manufactureAdd
+          }}条厂家信息</span
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -111,6 +117,7 @@
 import PageHeader from "@/components/PageHeader";
 
 import { loadProducts } from "@/settings/product";
+import { productSynchronization } from "@/settings/product";
 
 export default {
   name: "ProductCopy",
@@ -130,13 +137,29 @@ export default {
     productB: null,
 
     pass: false,
+
+    showResult: false,
+    result: {},
   }),
 
   created() {},
 
   methods: {
-    synchronization(){
-      this.global.errorAlert("泼发EBC：这个功能还在制作中...就快做完了");
+    synchronization() {
+      productSynchronization({
+        productIdA: this.productIdA,
+        productIdB: this.productIdB,
+      })
+        .then((res) => {
+          this.loading = false;
+          console.log(res.data);
+          this.result = res.data;
+          this.showResult = true;
+          this.global.infoAlert("泼发EBC：查看同步结果")
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     },
     check() {
       this.showErrorMessage = false;
@@ -203,12 +226,14 @@ export default {
           return;
         }
 
-        if (res[0].data.products.length > 1 || res[0].data.products.length > 1) {
+        if (
+          res[0].data.products.length > 1 ||
+          res[0].data.products.length > 1
+        ) {
           this.showErrorMessage = true;
           this.errorMessage = "存在多个商品";
           return;
         }
-
 
         this.pass = true;
       });

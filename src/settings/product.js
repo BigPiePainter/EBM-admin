@@ -87,3 +87,12 @@ export const getMismatchProducts = data => {
     }
     return http.request(args)
 }
+
+export const productSynchronization = data => {
+    const args = {
+        url: '/product/productSynchronization',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}

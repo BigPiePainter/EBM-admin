@@ -616,18 +616,16 @@
 
         <template v-slot:[`item.calculatedTotalFreight`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedTotalFreight">{{ "￥  " }} </span>
             <span>
-              {{ item.calculatedTotalFreight.toFixed(2) }}
+              {{ amountFormat(item.calculatedTotalFreight, "￥", 2, "————") }}
             </span>
           </div>
         </template>
 
         <template v-slot:[`item.calculatedTotalInsurance`]="{ item }">
           <div class="d-flex">
-            <span v-if="item.calculatedTotalInsurance">{{ "￥  " }} </span>
             <span>
-              {{ item.calculatedTotalInsurance.toFixed(2) }}
+              {{ amountFormat(item.calculatedTotalInsurance, "￥", 2, "————") }}
             </span>
           </div>
         </template>
@@ -684,33 +682,41 @@
         </template>
 
         <template v-slot:[`item.calculatedDiscount`]="{ item }">
-          <span :style="item.wrongCount > 0 ? `color:red` : ``">
-            {{
-              item.calculatedDiscount == Infinity
-                ? Infinity
-                : item.calculatedDiscount > 0
-                ? (item.calculatedDiscount * 100).toFixed(2) + " %"
-                : ""
-            }}
-          </span>
+          <div class="d-flex">
+            <span>
+              {{
+                item.calculatedDiscount == Infinity
+                  ? Infinity
+                  : item.calculatedDiscount > 0
+                  ? (item.calculatedDiscount * 100).toFixed(2) + " %"
+                  : ""
+              }}
+            </span>
+            <Help
+              class="ml-1"
+              v-if="item.wrongCount > 0"
+              text="存在未匹配SKU，抓取该SKU的售卖价作为成本"
+            />
+          </div>
         </template>
       </v-data-table>
     </div>
     <v-dialog v-model="mismatchedSkuDialog" max-width="800px">
       <v-card>
-          <v-card-title class="text-subtitle-1"><v-col style="width: fit-content">
-          <v-row class="mx-3 pt-4">
-            {{ `${selectedProduct.productName}` }}
-            <span class="pl-5">{{ selectedProduct.productId }}</span>
-            <span class="pl-2">未匹配SKU</span>
-            <span class="text--secondary pl-8">{{ this.dates }}</span>
+        <v-card-title class="text-subtitle-1"
+          ><v-col style="width: fit-content">
+            <v-row class="mx-3 pt-4">
+              {{ `${selectedProduct.productName}` }}
+              <span class="pl-5">{{ selectedProduct.productId }}</span>
+              <span class="pl-2">未匹配SKU</span>
+              <span class="text--secondary pl-8">{{ this.dates }}</span>
               <v-spacer></v-spacer>
               <v-btn small color="primary" @click="downloadMismatchedSkus">
                 导出未匹配SKU
               </v-btn>
-          </v-row>
-          </v-col></v-card-title>
-          
+            </v-row>
+          </v-col></v-card-title
+        >
 
         <v-card-text
           class="mx-5 pt-4"
@@ -1317,7 +1323,57 @@ export default {
       ];
       //sheetA.autoFilter = 'B1:AM1';
 
-      sheetA.addRows(this.midVarOfProfitItems);
+      var convert = (i) => {
+        var row = {
+          date: i.date,
+          calculatedDepartment: i.calculatedDepartment,
+          calculatedTeam: i.calculatedTeam,
+          shopName: i.shopName,
+          calculatedOwner: i.calculatedOwner,
+          productName: i.productName,
+          productId: i.productId.toString(),
+          calculatedFirstCategory: i.calculatedFirstCategory,
+          deduction: i.deduction,
+          insurance: i.insurance,
+          freight: i.freight,
+          extraRatio: i.extraRatio,
+          totalAmount: i.totalAmount,
+          orderCount: i.orderCount,
+          productCount: i.productCount,
+          totalFakeAmount: i.totalFakeAmount,
+          totalFakeCount: i.totalFakeCount,
+          calculatedActualAmount: i.calculatedActualAmount,
+          calculatedActualOrderCount: i.calculatedActualOrderCount,
+          calculatedActualAverageAmount: i.calculatedActualAverageAmount,
+          totalCost: i.totalCost,
+          calculatedCostRatio: i.calculatedCostRatio,
+          calculatedProfitRatio: i.calculatedProfitRatio,
+          totalRefundAmount: i.totalRefundAmount,
+          calculatedActualIncome: i.calculatedActualIncome,
+          totalRefundWithNoShipAmount: i.totalRefundWithNoShipAmount,
+          calculatedRefundWithNoShipAmount: i.calculatedRefundWithNoShipAmount,
+          refundWithNoShipCount: i.refundWithNoShipCount,
+          calculatedActualCost: i.calculatedActualCost,
+          calculatedTmallTokeRatio: i.calculatedTmallTokeRatio,
+          calculatedTotalFreight: i.calculatedTotalFreight,
+          calculatedTotalInsurance: i.calculatedTotalInsurance,
+          totalBrokerage: i.totalBrokerage,
+          calculatedActualProfit: i.calculatedActualProfit,
+          calculatedActualProfitRatio: i.calculatedActualProfitRatio,
+          wrongCount: i.wrongCount,
+          calculatedDiscount: i.calculatedDiscount,
+          operatorGivenWrongPriceCount: i.operatorGivenWrongPriceCount,
+          totalPrice: i.totalPrice,
+        };
+        for (const key in row) {
+          if (typeof row[key] == "number" && isNaN(row[key])) {
+            row[key] = "";
+          }
+        }
+        return row;
+      };
+      console.log(sheetA);
+      sheetA.addRows(this.midVarOfProfitItems.map((i) => convert(i)));
 
       sheetA.getRow(1).alignment = centerAlignment;
       sheetA.getRow(1).font = headerFont;
@@ -1328,20 +1384,25 @@ export default {
       // sheetA.getCell("E1").fill = backgroundYellow;
       // sheetA.getCell("F1").fill = backgroundYellow;
 
-      sheetA.getColumn(6).border = {
-        right: { style: "medium", color: { argb: "FF000000" } },
-      };
-
-      for (let index = 1; index <= 39; index++) {
-        sheetA.getColumn(index).alignment = centerAlignment;
-        sheetA.getRow(1).getCell(index).border = {
+      for (let columnNum = 1; columnNum <= 39; columnNum++) {
+        sheetA.getColumn(columnNum).alignment = centerAlignment;
+        sheetA.getRow(1).getCell(columnNum).border = {
           bottom: { style: "medium", color: { argb: "FF000000" } },
         };
+      }
 
-        if ([13, 18, 21, 25, 29, 34].indexOf(index) > -1) {
-          sheetA.getColumn(index).fill = backgroundOrange;
-        } else {
-          sheetA.getColumn(index).fill = backgroundNone;
+      for (let rowNum = 2; rowNum <= sheetA._lastRowNumber; rowNum++) {
+        var row = sheetA.getRow(rowNum);
+        row.getCell(6).border = {
+          right: { style: "medium", color: { argb: "FF000000" } },
+        };
+
+        for (let columnNum = 1; columnNum <= 39; columnNum++) {
+          if ([13, 18, 21, 25, 29, 34].indexOf(columnNum) > -1) {
+            row.getCell(columnNum).fill = backgroundOrange;
+          } else {
+            row.getCell(columnNum).fill = backgroundNone;
+          }
         }
       }
 
@@ -1520,7 +1581,7 @@ export default {
         vertical: "center",
         horizontal: "center",
       };
-      var rtAlignment= {
+      var rtAlignment = {
         vertical: "top",
         horizontal: "right",
       };
@@ -1532,7 +1593,7 @@ export default {
 
       console.log(sheetA);
       sheetA.columns = [
-      {
+        {
           header: "商品ID",
           key: "productId",
           width: 15,
@@ -1583,7 +1644,7 @@ export default {
       ];
       //sheetA.autoFilter = 'B1:AM1';
       var analyzedData = this.mismatchedSkus;
-      for (let i = 0; i < analyzedData.length; i ++){
+      for (let i = 0; i < analyzedData.length; i++) {
         analyzedData[i].productId = this.selectedProduct.productId.toString();
       }
       console.log(analyzedData);
@@ -1599,7 +1660,6 @@ export default {
       sheetA.getCell("E1").fill = backgroundYellow;
       sheetA.getCell("F1").fill = backgroundYellow;
 
-
       console.log("生成完毕");
 
       const buffer = await workbook.xlsx.writeBuffer();
@@ -1608,7 +1668,14 @@ export default {
 
       const blob = new Blob([buffer], { type: fileType });
 
-      saveAs(blob, this.selectedProduct.productName + this.dates + `未匹配SKU`+ this.selectedProduct.productId + `.xlsx`);
+      saveAs(
+        blob,
+        this.selectedProduct.productName +
+          this.dates +
+          `未匹配SKU` +
+          this.selectedProduct.productId +
+          `.xlsx`
+      );
     },
 
     amountFormat() {
