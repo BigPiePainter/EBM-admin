@@ -19,7 +19,7 @@
 
           <v-btn small depressed class="ml-2" @click="download">
             <v-icon small class="mr-1"> mdi-export </v-icon>
-            <span class="" color=""> 导出 </span>
+            <span> 导出 </span>
           </v-btn>
 
           <v-btn
@@ -40,7 +40,6 @@
             </v-icon>
             <span> 批量操作 </span>
           </v-btn>
-
           <v-btn small depressed class="ml-2" @click="check = !check">
             <v-icon small class="mr-1">
               {{
@@ -57,7 +56,7 @@
             <v-btn
               small
               v-if="skuAction"
-              :disabled="skuSelected.length == 0"
+              :disabled="skuSelected.length < 1"
               depressed
               outlined
               color="red lighten-2"
@@ -65,7 +64,7 @@
               class="ml-1"
             >
               {{
-                skuSelected.length == 0 ? "删除" : `删除${skuSelected.length}条`
+                skuSelected.length > 0 ? `删除${skuSelected.length}条` : "删除"
               }}
             </v-btn>
           </template>
@@ -663,7 +662,9 @@
             color="blue darken-1"
             text
             @click="
-              $refs.form.resetValidation(), (manufacturerInfoDialog = false)
+              (manufacturerEdit = {}),
+                $refs.form.resetValidation(),
+                (manufacturerInfoDialog = false)
             "
             >取消</v-btn
           >
@@ -776,7 +777,7 @@ export default {
       deleteSkuDialog: false, //删除SKU弹框
       mutipleDeleteDialog: false,
       deleteSkuUid: [], //删除信息
-      deleteSkuItemParse: {}, //删
+      deleteSkuItemParse: [], //删
 
       deleteAscriptionDialog: false, //删除商品归属弹框
       deleteAscriptionItem: {},

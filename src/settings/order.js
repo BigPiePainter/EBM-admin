@@ -105,6 +105,15 @@ export const deleteFileProcessState = data => {
     return http.request(args)
 }
 
+export const deleteFakeOrders = data => {
+    const args = {
+        url: '/order/delete',
+        method: 'POST',
+        data,
+    }
+    return http.request(args)
+}
+
 
 
 

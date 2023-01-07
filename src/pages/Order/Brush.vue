@@ -1,6 +1,6 @@
 <template>
   <div class="page-content d-flex flex-column">
-    <PageHeader title="未匹配补单">
+    <PageHeader title="未匹配团队补单">
       <v-btn class="ml-2" text color="primary" disabled>
         <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
         导出
@@ -8,12 +8,13 @@
     </PageHeader>
     <div class="flex-grow-1">
       <v-data-table
+        v-model="selectedBrushItems"
         fixed-header
         loading-text="加载中... 请稍后"
         no-data-text="空"
         item-key="id"
         disable-sort
-        class=""
+        :show-select="ifAction"
         height="calc(100vh - 197px)"
         mobile-breakpoint="0"
         :loading="loading"
@@ -41,18 +42,95 @@
           <v-toolbar flat>
             <v-toolbar-title @click="show">补单订单</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
-
+            <v-btn
+              small
+              depressed
+              class="ml-2"
+              @click="
+                ifAction = !ifAction;
+                selectedBrushItems = [];
+              "
+            >
+              <v-icon small class="mr-1">
+                {{
+                  ifAction
+                    ? "mdi-checkbox-marked-outline"
+                    : "mdi-checkbox-blank-outline"
+                }}
+              </v-icon>
+              <span> 批量操作 </span>
+            </v-btn>
             <v-spacer></v-spacer>
+            <v-btn
+              v-if="ifAction"
+              :disabled="selectedBrushItems.length < 1"
+              outlined
+              small
+              color="red lighten-2"
+              depressed
+              class="ml-1"
+              @click.stop="delectBrushItems"
+            >
+              {{
+                selectedBrushItems.length > 0
+                  ? `删除${selectedBrushItems.length}条`
+                  : "删除"
+              }}
+            </v-btn>
           </v-toolbar>
         </template>
       </v-data-table>
     </div>
+
+    <v-dialog v-model="deleteBrushItemsDialog" max-width="450px">
+      <v-card>
+        <div class="mx-7 pt-5">
+          <span>
+            {{
+              `是否确认删除 ` + selectedBrushItems.length + ` 条未匹配团队补单 ?`
+            }}
+          </span>
+        </div>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="deleteBrushItemsDialog = false"
+            >取消</v-btn
+          >
+          <v-btn color="red darken-1" text @click="sureDeleteBrushItemsButton">
+            <v-icon small class="mr-1"> mdi-delete </v-icon>删除</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="mutipleDeleteDialog" max-width="450px">
+      <v-card>
+        <v-card-title class="text-subtitle-1"
+          >是否删除选中补单信息</v-card-title
+        >
+        <v-card-text> 删除后无法恢复，并且不会参与数据运算 </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="blue darken-1" text @click="mutipleDeleteDialog = false"
+            >取消</v-btn
+          >
+          <v-btn color="red darken-1" text @click="sureDeleteBrushItemsButton">
+            <v-icon small class="mr-1"> mdi-delete </v-icon>删除</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 
 <script>
 import { getMismatchFakeOrders } from "@/settings/order";
+import { deleteFakeOrders } from "@/settings/order";
 import { javaUTCDateToString } from "@/libs/utils";
 import PageHeader from "@/components/PageHeader";
 
@@ -62,6 +140,13 @@ export default {
   },
   data() {
     return {
+      ifAction: false,
+      selectedBrushItems: [],
+      deleteBrushItemsId: [],
+      deleteBrushItemsPrase: [],
+      deleteBrushItemsDialog: false,
+      mutipleDeleteDialog: false,
+
       totalBrushItems: 0,
       options: {},
       loading: false,
@@ -115,6 +200,55 @@ export default {
         .catch(() => {
           this.loading = false;
         });
+    },
+
+    delectBrushItems() {
+      this.deleteBrushItemsPrase = [];
+      console.log(this.selectedBrushItems);
+      this.deleteBrushItemsId = this.selectedBrushItems.map((i) => i.id);
+      this.deleteBrushItemsDialog = true;
+      // if (this.deleteSkuUid.length == 1) {
+      //   this.deleteSkuItemParse = [
+      //     {
+      //       key: "SKUID",
+      //       value: this.skuSelected[0].skuId,
+      //     },
+      //     {
+      //       key: "售卖价",
+      //       value: this.skuSelected[0].skuPrice,
+      //     },
+      //     {
+      //       key: "单个成本",
+      //       value: this.skuSelected[0].skuCost,
+      //     },
+      //     {
+      //       key: "价格开始时间",
+      //       value: this.parseDate(this.skuSelected[0].startTime),
+      //     },
+      //     {
+      //       key: "创建时间",
+      //       value: this.parseDateTime(this.skuSelected[0].createTime),
+      //     },
+      //   ];
+      //   console.log(this.deleteSkuItemParse);
+      //   this.deleteSkuDialog = true;
+      // } else {
+      //   this.mutipleDeleteDialog = true;
+      // }
+    },
+
+    sureDeleteBrushItemsButton() {
+      this.deleteBrushItemsDialog = false;
+      deleteFakeOrders({ ids: this.deleteBrushItemsId.join() })
+        .then((res) => {
+          console.log(res);
+          this.global.infoAlert(res.data);
+          this.loadData();
+          this.init();
+        })
+        .catch(() => {});
+      this.selectedBrushItems = [];
+      this.ifAction = false;
     },
   },
 };
