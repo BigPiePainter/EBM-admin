@@ -265,6 +265,29 @@ CREATE TABLE fakeorders (
   index index_order_payment_time(order_payment_time)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '刷单数据库';
 
+
+-- 个人刷单退款数据库
+drop table if exists fakeorders_personal;
+
+CREATE TABLE fakeorders_personal (
+  id BIGINT UNSIGNED NOT NULL COMMENT '主订单编号',
+  order_payment_time DATE COMMENT '订单付款时间',
+  refund_end_time DATE COMMENT '退款完结时间',
+  primary key (id),
+  index index_order_payment_time(order_payment_time)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '个人刷单退款数据库';
+
+
+-- 店铺数据库
+drop table if exists shops;
+
+CREATE TABLE shops (
+  name VARCHAR(50) NOT NULL COMMENT '店铺名',
+  note VARCHAR(5000) COMMENT '备注',
+  primary key (name)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '店铺数据库';
+
+
 -- 认领大厅库
 drop table if exists mismatchproducts;
 
@@ -273,6 +296,410 @@ CREATE TABLE mismatchproducts (
   product_title VARCHAR(1000) NOT NULL COMMENT '宝贝标题',
   primary key (id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '认领大厅库';
+
+
+
+
+CREATE TABLE z_fakeorders_personal_purchased_202201 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202202 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202203 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202204 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202205 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202206 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202207 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202208 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202209 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202210 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202211 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202212 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202301 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202302 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202303 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202304 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202305 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202306 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202307 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202308 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202309 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202310 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202311 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202312 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202401 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202402 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202403 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202404 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202405 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202406 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202407 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202408 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202409 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202410 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202411 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202412 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202501 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202502 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202503 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202504 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202505 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202506 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202507 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202508 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202509 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202510 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202511 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202512 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202601 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202602 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202603 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202604 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202605 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202606 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202607 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202608 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202609 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202610 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202611 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202612 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202701 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202702 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202703 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202704 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202705 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202706 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202707 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202708 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202709 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202710 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202711 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202712 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202801 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202802 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202803 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202804 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202805 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202806 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202807 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202808 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202809 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202810 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202811 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202812 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202901 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202902 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202903 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202904 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202905 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202906 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202907 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202908 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202909 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202910 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202911 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_202912 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_203001 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_203002 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_203003 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_purchased_203004 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202201 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202202 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202203 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202204 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202205 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202206 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202207 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202208 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202209 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202210 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202211 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202212 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202301 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202302 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202303 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202304 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202305 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202306 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202307 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202308 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202309 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202310 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202311 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202312 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202401 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202402 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202403 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202404 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202405 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202406 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202407 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202408 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202409 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202410 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202411 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202412 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202501 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202502 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202503 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202504 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202505 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202506 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202507 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202508 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202509 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202510 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202511 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202512 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202601 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202602 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202603 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202604 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202605 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202606 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202607 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202608 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202609 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202610 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202611 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202612 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202701 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202702 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202703 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202704 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202705 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202706 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202707 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202708 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202709 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202710 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202711 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202712 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202801 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202802 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202803 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202804 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202805 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202806 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202807 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202808 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202809 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202810 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202811 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202812 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202901 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202902 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202903 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202904 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202905 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202906 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202907 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202908 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202909 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202910 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202911 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_202912 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_203001 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_203002 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_203003 LIKE fakeorders_personal;
+
+CREATE TABLE z_fakeorders_personal_finished_203004 LIKE fakeorders_personal;
+
 
 CREATE TABLE z_fakeorders_requested_202201 LIKE fakeorders;
 
@@ -5075,335 +5502,3 @@ CREATE TABLE z_orders_20270622 LIKE orders;
 CREATE TABLE z_orders_20270623 LIKE orders;
 
 drop table if exists orders;
-
--- -------------------------------------------------------------------
--- -------------------------------------------------------------------
--- ----------------------------------------------------------------------------------------------------------------------------------
-WITH product_ascription AS (
-  SELECT
-    a.product,
-    department,
-    team,
-    owner
-  FROM
-    pofa.ascriptions a
-    join (
-      SELECT
-        product,
-        max(start_time) as start_time
-      FROM
-        pofa.ascriptions
-      where
-        start_time <= 20220821
-      group by
-        product
-    ) as b on a.product = b.product
-    and a.start_time = b.start_time
-),
-manufacturers_temp AS (
-  SELECT
-    a.product_id,
-    freight,
-    freight_to_payment,
-    a.start_time,
-    create_time
-  FROM
-    pofa.manufacturers a
-    join (
-      SELECT
-        product_id,
-        max(start_time) as start_time
-      FROM
-        pofa.manufacturers
-      where
-        start_time <= 20220821
-      group by
-        product_id
-    ) as b on a.product_id = b.product_id
-    and a.start_time = b.start_time
-),
-product_manufacturers AS (
-  SELECT
-    a.product_id,
-    freight,
-    freight_to_payment,
-    a.start_time
-  FROM
-    manufacturers_temp a
-    join (
-      SELECT
-        product_id,
-        max(create_time) as create_time
-      FROM
-        manufacturers_temp
-      group by
-        product_id
-    ) as b on a.product_id = b.product_id
-    and a.create_time = b.create_time
-),
-first_category_temp AS (
-  SELECT
-    a.category_id,
-    deduction,
-    insurance,
-    a.start_time,
-    create_time
-  FROM
-    pofa.categoryhistorys a
-    join (
-      SELECT
-        category_id,
-        max(start_time) as start_time
-      FROM
-        pofa.categoryhistorys
-      where
-        start_time <= 20220821
-      group by
-        category_id
-    ) as b on a.category_id = b.category_id
-    and a.start_time = b.start_time
-),
-first_category AS (
-  SELECT
-    a.category_id,
-    deduction,
-    insurance,
-    a.start_time
-  FROM
-    first_category_temp a
-    join (
-      SELECT
-        category_id,
-        max(create_time) as create_time
-      FROM
-        first_category_temp
-      group by
-        category_id
-    ) as b on a.category_id = b.category_id
-    and a.create_time = b.create_time
-),
-product_orders AS (
-  select
-    z_orders_20220821.product_id,
-    product_count,
-    actual_amount,
-    sku_name
-  from
-    product_ascription
-    join z_orders_20220821 on z_orders_20220821.product_id = product_ascription.product
-),
-a AS (
-  SELECT
-    product_id,
-    count(*) as order_count,
-    sum(product_count) as product_count,
-    sum(actual_amount) as total_amount
-  FROM
-    product_orders
-  GROUP BY
-    product_id
-),
-skus_temp AS (
-  SELECT
-    a.sku_id,
-    sku_name,
-    sku_price,
-    sku_cost,
-    a.product_id,
-    a.start_time,
-    create_time
-  FROM
-    pofa.skus a
-    join (
-      SELECT
-        sku_id,
-        max(start_time) as start_time
-      FROM
-        pofa.skus
-      where
-        start_time <= 20220821
-      group by
-        sku_id
-    ) as b on a.sku_id = b.sku_id
-    and a.start_time = b.start_time
-),
-product_sku AS(
-  SELECT
-    a.sku_id,
-    a.product_id,
-    sku_price,
-    sku_cost,
-    sku_name,
-    a.start_time
-  FROM
-    skus_temp a
-    join (
-      SELECT
-        sku_id,
-        max(create_time) as create_time
-      FROM
-        skus_temp
-      group by
-        sku_id
-    ) as b on a.sku_id = b.sku_id
-    and a.create_time = b.create_time
-),
-sku_info AS (
-  select
-    product_id,
-    sum(total_price) as total_price,
-    sum(total_cost) as total_cost,
-    count(*) - count(sku_price) as wrong_count
-  from
-    (
-      select
-        a.product_id,
-        a.sku_name,
-        product_count,
-        sku_price,
-        sku_cost,
-        product_count * sku_price as total_price,
-        product_count * sku_cost as total_cost
-      from
-        (
-          select
-            product_id,
-            sku_name,
-            sum(product_count) as product_count
-          from
-            product_orders
-          group by
-            product_id,
-            sku_name
-        ) as a
-        left join product_sku on a.sku_name = product_sku.sku_name
-        and a.product_id = product_sku.product_id
-    ) as b
-  group by
-    product_id
-),
-refund_order AS (
-  SELECT
-    product_id,
-    refund_amount,
-    express_status
-  FROM
-    pofa.z_refundorders_finished_202208
-    join product_ascription on z_refundorders_finished_202208.product_id = product_ascription.product
-  where
-    refund_end_time = 20220821
-    AND refund_status = 1
-),
-b AS (
-  select
-    total_refund_amount.product_id as refund_product_id,
-    total_refund_amount,
-    total_refund_with_no_ship_amount
-  from
-    (
-      SELECT
-        product_id,
-        sum(refund_amount) as total_refund_amount
-      FROM
-        refund_order
-      group by
-        product_id
-    ) as total_refund_amount
-    left join (
-      SELECT
-        product_id,
-        sum(refund_amount) as total_refund_with_no_ship_amount
-      FROM
-        refund_order
-      where
-        express_status = false
-      group by
-        product_id
-    ) as refund_with_no_ship on total_refund_amount.product_id = refund_with_no_ship.product_id
-),
-c AS (
-  select
-    id,
-    brokerage
-  from
-    z_fakeorders_purchased_202208
-  where
-    order_payment_time = 20220821
-),
-d AS (
-  select
-    order_id,
-    actual_amount,
-    product_id
-  from
-    z_orders_20220821
-)
-SELECT
-  i.product_id,
-  shop_name,
-  first_category,
-  deduction,
-  insurance,
-  product_name,
-  freight,
-  freight_to_payment,
-  product_ascription.department,
-  product_ascription.team,
-  product_ascription.owner,
-  order_count,
-  product_count,
-  total_amount,
-  total_refund_amount,
-  total_refund_with_no_ship_amount,
-  fake_order_count,
-  total_fake_amount,
-  total_brokerage,
-  total_price,
-  total_cost,
-  wrong_count
-from
-  (
-    SELECT
-      ifnull(product_id, refund_product_id) as product_id,
-      order_count,
-      product_count,
-      total_amount,
-      total_refund_amount,
-      total_refund_with_no_ship_amount,
-      fake_order_count,
-      total_fake_amount,
-      total_brokerage
-    from
-      (
-        SELECT
-          *
-        FROM
-          a
-          LEFT JOIN b ON a.product_id = b.refund_product_id
-        UNION
-        SELECT
-          *
-        FROM
-          a
-          RIGHT JOIN b ON a.product_id = b.refund_product_id
-      ) as z
-      left join (
-        select
-          product_id as fake_order_product_id,
-          count(*) as fake_order_count,
-          sum(actual_amount) as total_fake_amount,
-          sum(brokerage) as total_brokerage
-        from
-          c
-          left join d on c.id = d.order_id
-        group by
-          fake_order_product_id
-      ) as h on z.product_id = h.fake_order_product_id
-  ) as i
-  join product_ascription on i.product_id = product_ascription.product
-  join pofa.products on i.product_id = pofa.products.id
-  left join product_manufacturers on i.product_id = product_manufacturers.product_id
-  left join first_category on pofa.products.first_category = first_category.category_id
-  left join sku_info on i.product_id = sku_info.product_id;
-
--- -------------------------------
