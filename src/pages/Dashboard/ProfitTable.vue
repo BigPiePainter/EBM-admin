@@ -1763,7 +1763,7 @@ export default {
         item.freightToPayment /= 100;
 
         item.calculatedActualAmount = item.totalAmount - item.totalFakeAmount;
-        item.calculatedActualOrderCount = item.orderCount - item.totalFakeCount;
+        item.calculatedActualOrderCount = item.orderCount - item.totalFakeCount - item.totalPersonalFakeCount;
 
         if (item.calculatedActualOrderCount == 0) {
           item.calculatedActualAverageAmount = 0;
