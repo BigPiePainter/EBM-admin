@@ -94,6 +94,14 @@ export const getMismatchFakeOrders = data => {
     return http.request(args)
 }
 
+export const getMismatchPersonalFakeOrders = data => {
+    const args = {
+        url: '/order/getMismatchPersonalFakeOrders',
+        method: 'POST',
+        data,
+    }
+    return http.request(args)
+}
 
 
 export const deleteFileProcessState = data => {

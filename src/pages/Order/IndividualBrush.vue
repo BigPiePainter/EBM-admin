@@ -133,7 +133,7 @@
   
   
 <script>
-import { getMismatchFakeOrders } from "@/settings/order";
+import { getMismatchPersonalFakeOrders } from "@/settings/order";
 import TableKV from "@/components/TableKV/TableKV";
 import { javaUTCDateToString } from "@/libs/utils";
 import PageHeader from "@/components/PageHeader";
@@ -184,7 +184,7 @@ export default {
     },
     show() {
       const { page, itemsPerPage } = this.options;
-      getMismatchFakeOrders({ page, itemsPerPage })
+      getMismatchPersonalFakeOrders({ page, itemsPerPage })
         .then((res) => {
           console.log(res.data);
         })
@@ -195,12 +195,12 @@ export default {
       this.loading = true;
       const { page, itemsPerPage } = this.options;
       console.log({ page, itemsPerPage });
-      getMismatchFakeOrders({ page, itemsPerPage })
+      getMismatchPersonalFakeOrders({ page, itemsPerPage })
         .then((res) => {
           this.loading = false;
           console.log(res.data);
-          this.brushItems = res.data.mismatchFakeOrders.fakeorders;
-          this.totalBrushItems = res.data.mismatchFakeOrders.total;
+          this.brushItems = res.data.mismatchPersonalFakeOrders.fakeorders;
+          this.totalBrushItems = res.data.mismatchPersonalFakeOrders.total;
         })
         .catch(() => {
           this.loading = false;
