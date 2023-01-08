@@ -770,7 +770,8 @@
                 outlined
                 dense
                 hide-details
-                :items="shopItems"
+                :items="allShops"
+                item-text="name"
                 v-model="editedItem.shopName"
               ></v-autocomplete>
             </v-col>
@@ -1317,7 +1318,7 @@ export default {
   },
 
   created() {
-    this.init();
+    console.log(this.allShops);
   },
 
   mounted() {
@@ -1356,9 +1357,6 @@ export default {
       return Number(date.split("-")[2]);
     },
     init() {
-      for (let i = 0; i < this.allShops.length; i ++){
-        this.shopItems[i] = this.allShops[i].name
-      }
       // getClass({})
       //   .then((res) => {
       //     this.menu = res.data;
