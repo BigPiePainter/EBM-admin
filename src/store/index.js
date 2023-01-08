@@ -6,7 +6,7 @@ import { getTeam } from "@/settings/team";
 import { getAllUsers } from "@/settings/user";
 import { getCategory } from "@/settings/category";
 import { getHistoryCategory } from "@/settings/category";
-
+import { getShop } from "@/settings/shop";
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -24,62 +24,7 @@ const store = new Vuex.Store({
     allUsers: [],
     allCategorys: [],
     allCategoryHistorys: [],
-    allShops: [
-      "方军",
-      "利成",
-      "鑫颂",
-      "煊童",
-      "天岑",
-      "莲达",
-      "聚瀚",
-      "达赛斯",
-      "一谦",
-      "啦梦",
-      "精英",
-      "途旅",
-      "万庄",
-      "倍强",
-      "心悦",
-      "艾依（赦夏）",
-      "俱佳",
-      "静发",
-      "阿伦歌",
-      "陌枫",
-      "嘉元",
-      "辰琦（昶卿）",
-      "至绚",
-      "商周",
-      "廷昊",
-      "恒秋",
-      "久秋",
-      "霍克",
-      "爱与家",
-      "扩音",
-      "六云",
-      "媛茜",
-      "辰行",
-      "问福",
-      "双卓",
-      "依夏",
-      "奇农",
-      "宁锦",
-      "简约",
-      "问世",
-      "虹柯",
-      "何意",
-      "瑞恋",
-      "致泓",
-      "欧垭",
-      "犷劲",
-      "垭励",
-      "依冬",
-      "半亩田",
-      "昊办",
-      "苍芜",
-      "巨浪",
-      "龙置",
-      "依丘",
-    ],
+    allShops: [],
 
     userIdToNick: {},
     teamIdToName: {},
@@ -159,7 +104,7 @@ const store = new Vuex.Store({
       state.token = data;
       localStorage.token = data;
     },
-    setAllDepartment(state, data) {
+    setAllDepartments(state, data) {
       state.allDepartments = data;
       state.departmentIdToName = {};
       state.departmentIdToInfo = {};
@@ -175,6 +120,9 @@ const store = new Vuex.Store({
           (i) => i.uid
         );
       }
+    },
+    setAllShops(state, data) {
+      state.allShops = data;
     },
     setAllTeams(state, data) {
       state.allTeams = data;
@@ -226,13 +174,24 @@ const store = new Vuex.Store({
         }
       });
     },
-
   },
+
+  
   actions: {
     refreshAllDepartments({ commit }) {
       return new Promise((resolve, reject) => {
         getDepartment({}).then((res) => {
-          commit('setAllDepartment', res.data.departments);
+          commit('setAllDepartments', res.data.departments);
+        }).then(resolve)
+          .catch(() => {
+            reject()
+          });
+      });
+    },
+    refreshAllShops({ commit }) {
+      return new Promise((resolve, reject) => {
+        getShop({}).then((res) => {
+          commit('setAllShops', res.data.shops);
         }).then(resolve)
           .catch(() => {
             reject()

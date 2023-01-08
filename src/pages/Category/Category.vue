@@ -1,18 +1,9 @@
 <template>
   <div class="page-content d-flex flex-column">
-    <PageHeader title="一级类目">
-      <v-btn class="ml-2" text color="primary" @click="addButton">
-        <v-icon size="20" style="padding-top: 2px">mdi-bookmark-plus</v-icon>
-        新增一级类目
-      </v-btn>
-      <v-btn class="ml-2" text color="primary" disabled>
-        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
-        导出
-      </v-btn>
-    </PageHeader>
+    <PageHeader title="一级类目/店铺管理"> </PageHeader>
     <div class="flex-grow-1 d-flex">
       <v-data-table
-      class="flex-grow-1"
+        class="flex-grow-1"
         :show-select="categoryAction"
         show-expand
         @click:row="clickRow"
@@ -65,6 +56,16 @@
                 }}
               </v-icon>
               <span> 操作 </span>
+            </v-btn>
+            <v-btn class="ml-2" text color="primary" @click="addButton">
+              <v-icon size="20" style="padding-top: 2px"
+                >mdi-bookmark-plus</v-icon
+              >
+              新增一级类目
+            </v-btn>
+            <v-btn class="ml-1" text color="primary" disabled>
+              <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
+              导出
             </v-btn>
 
             <v-spacer></v-spacer>
@@ -185,10 +186,76 @@
         </template>
       </v-data-table>
       <v-divider vertical style="margin-left: 0.1px"></v-divider>
-      <div style="width: 500px"></div>
+      <div style="width: 80px"></div>
+      <v-divider class="mx-1" vertical></v-divider>
+      <div class="flex-grow-1 d-flex">
+        <v-data-table
+          class="flex-grow-1"
+          :show-select="shopAction"
+          single-select
+          v-model="selectedShopItem"
+          fixed-header
+          no-data-text="空"
+          :loading="loading"
+          height="calc(100vh - 151px)"
+          hide-default-footer
+          :headers="shopHeaders"
+          :items="allShops"
+          item-key="name"
+          disable-sort
+          :items-per-page="1000"
+        >
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title>店铺</v-toolbar-title>
+              <v-divider class="mx-4" inset vertical></v-divider>
+              <v-btn
+                small
+                depressed
+                class="ml-2"
+                @click="
+                  shopAction = !shopAction;
+                  selectedshopItem = [];
+                "
+              >
+                <v-icon small class="mr-1">
+                  {{
+                    shopAction
+                      ? "mdi-checkbox-marked-outline"
+                      : "mdi-checkbox-blank-outline"
+                  }}
+                </v-icon>
+                <span> 操作 </span>
+              </v-btn>
+
+              <v-btn class="ml-2" text color="primary" @click="addShopButton">
+                <v-icon size="20" style="padding-top: 2px"
+                  >mdi-bookmark-plus</v-icon
+                >
+                新增店铺
+              </v-btn>
+
+              <v-spacer></v-spacer>
+
+              <v-btn
+                v-if="shopAction"
+                :disabled="selectedShopItem.length != 1"
+                outlined
+                color="red lighten-2"
+                small
+                depressed
+                class="ml-2"
+                @click.stop="deleteShopBtn"
+              >
+                <span> 删除 </span>
+              </v-btn>
+            </v-toolbar>
+          </template>
+        </v-data-table>
+      </div>
     </div>
 
-    <!-- 类目名称 Dialog -->
+    <!-- 新增类目名称 Dialog -->
     <v-dialog v-model="categoryNameDialog" max-width="400px">
       <v-card>
         <v-card-title class="text-subtitle-1"> 类目名称 </v-card-title>
@@ -484,6 +551,79 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- 新增店铺 Dialog -->
+    <v-dialog v-model="addShopDialog" max-width="400px">
+      <v-card>
+        <v-card-title></v-card-title>
+        <v-container class="px-4">
+          <v-row>
+            <v-col cols="6">
+              <span class="text-subtitle-1">店铺名称</span>
+              <v-text-field
+                color="primary"
+                outlined
+                dense
+                hide-details
+                v-model="addShopItem.name"
+              >
+              </v-text-field>
+            </v-col>
+            <v-col cols="6">
+              <span class="text-subtitle-1">备注</span>
+              <v-text-field
+                color="primary"
+                outlined
+                dense
+                hide-details
+                v-model="addShopItem.note"
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="(addShopDialog = false), (addShopItem = [])"
+          >
+            取消
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="sureAddShopBtn"
+            :disabled="!addShopItem.name || addShopItem.name == ''"
+          >
+            新增
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- 删除店铺 dialog -->
+    <v-dialog max-width="320px" v-model="deleteShopDialog">
+      <v-card>
+        <v-card-title>
+          <span class="text-body-1">
+            {{ `是否删除店铺 ` + selectedShopItem[0].name + ` ？` }}
+          </span>
+        </v-card-title>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="deleteShopDialog = false">
+            取消
+          </v-btn>
+          <v-btn color="red darken-1" text @click="sureDeleteShopBtn">
+            <v-icon small class="mr-1">mdi-delete</v-icon>
+            删除
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -500,6 +640,9 @@ import { editHistoryCategory } from "@/settings/category";
 import { deleteCategoryHistory } from "@/settings/category";
 import { deleteCategory } from "@/settings/category";
 import { javaUTCDateToString } from "@/libs/utils";
+// import { getShop } from "@/settings/shop";
+import { deleteShop } from "@/settings/shop";
+import { addShop } from "@/settings/shop";
 
 export default {
   components: {
@@ -516,6 +659,12 @@ export default {
       expanded: [],
       datePicker: false,
 
+      shopAction: false,
+      addShopItem: [{ name: "", note: "" }],
+      selectedShopItem: [{ name: "", note: "" }],
+      deleteShopDialog: false,
+      addShopDialog: false,
+
       oldItem: [],
       editedItem: [],
 
@@ -529,6 +678,11 @@ export default {
       categoryChangeDialog: false,
       categoryDeleteDialog: false,
       deleteCategoryItem: [],
+
+      shopHeaders: [
+        { text: "店铺名称", value: "name" },
+        { text: "备注", value: "note" },
+      ],
 
       categoryHeaders: [
         { text: "类目名称", value: "name" },
@@ -581,8 +735,12 @@ export default {
     },
   },
 
+  created() {
+    this.refreshAllShops();
+  },
+
   methods: {
-    ...mapActions(["refreshAllCategorys"]),
+    ...mapActions(["refreshAllCategorys", "refreshAllShops"]),
     parseDate(date) {
       return javaUTCDateToString(date);
     },
@@ -852,6 +1010,71 @@ export default {
       });
       return newest;
     },
+
+    addShopButton() {
+      this.addShopItem = [];
+      this.addShopDialog = true;
+      console.log(this.allShops);
+    },
+
+    deleteShopBtn() {
+      this.deleteShopDialog = true;
+      console.log(this.selectedShopItem[0].name);
+    },
+
+    sureAddShopBtn() {
+      if (!this.addShopItem.note){
+        this.addShopItem.note = " ";
+      }
+      addShop({ name: this.addShopItem.name, note: this.addShopItem.note })
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllShops().then(() => {
+            this.loading = false;
+          });
+        })
+        .catch(() => {
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC：新增失败");
+          }, 100);
+        });
+      this.addShopDialog = false;
+    },
+
+    sureDeleteShopBtn() {
+      console.log(this.selectedShopItem[0].name);
+      deleteShop({ name: this.selectedShopItem[0].name })
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          this.deleteShopDialog = false;
+        })
+        .then(() => {
+          this.loading = true;
+          this.refreshAllShops().then(() => {
+            this.loading = false;
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC： error");
+          }, 100);
+        });
+    },
+
+    // getShop() {
+    //   getShop()
+    //     .then((res) => {
+    //       this.global.infoAlert("泼发EBC：" + res.data);
+    //       console.log(res.data)
+    //     })
+    //     .catch(() => {
+    //       setTimeout(() => {}, 100);
+    //     });
+    // },
   },
 };
 </script>

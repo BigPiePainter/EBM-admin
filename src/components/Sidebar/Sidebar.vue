@@ -156,7 +156,7 @@ export default {
               link: "/deletedProducts",
             },
             {
-              title: "一级类目",
+              title: "类目/店铺",
               icon: "mdi-circle-small",
               link: "/category",
             },
@@ -189,11 +189,11 @@ export default {
               icon: "mdi-circle-small",
               link: "/brush",
             },
-            // {
-            //   title: "未匹配个人补单",
-            //   icon: "mdi-circle-small",
-            //   link: "/individualbrush",
-            // },
+            {
+              title: "未匹配个人补单",
+              icon: "mdi-circle-small",
+              link: "/individualbrush",
+            },
             // {
             //   title: "发退货",
             //   icon: "mdi-circle-small",

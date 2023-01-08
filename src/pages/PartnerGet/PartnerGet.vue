@@ -770,7 +770,7 @@
                 outlined
                 dense
                 hide-details
-                :items="allShops"
+                :items="shopItems"
                 v-model="editedItem.shopName"
               ></v-autocomplete>
             </v-col>
@@ -1169,6 +1169,7 @@ export default {
     selectedProductItem: [],
     ifAction: false,
     mode: 0,
+    shopItems: [],
 
     //筛选菜单
     menu: {}, //类别可选项
@@ -1355,6 +1356,9 @@ export default {
       return Number(date.split("-")[2]);
     },
     init() {
+      for (let i = 0; i < this.allShops.length; i ++){
+        this.shopItems[i] = this.allShops[i].name
+      }
       // getClass({})
       //   .then((res) => {
       //     this.menu = res.data;
