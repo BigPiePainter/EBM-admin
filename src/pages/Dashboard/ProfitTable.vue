@@ -1183,8 +1183,14 @@ export default {
           style: { font },
         },
         {
-          header: "补单数",
+          header: "团队补单",
           key: "totalFakeCount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "个人补单",
+          key: "totalPersonalFakeCount",
           width: 10,
           style: { font },
         },
@@ -1342,6 +1348,7 @@ export default {
           productCount: i.productCount,
           totalFakeAmount: i.totalFakeAmount,
           totalFakeCount: i.totalFakeCount,
+          totalPersonalFakeCount: i.totalPersonalFakeCount,
           calculatedActualAmount: i.calculatedActualAmount,
           calculatedActualOrderCount: i.calculatedActualOrderCount,
           calculatedActualAverageAmount: i.calculatedActualAverageAmount,
@@ -1384,7 +1391,7 @@ export default {
       // sheetA.getCell("E1").fill = backgroundYellow;
       // sheetA.getCell("F1").fill = backgroundYellow;
 
-      for (let columnNum = 1; columnNum <= 39; columnNum++) {
+      for (let columnNum = 1; columnNum <= 40; columnNum++) {
         sheetA.getColumn(columnNum).alignment = centerAlignment;
         sheetA.getRow(1).getCell(columnNum).border = {
           bottom: { style: "medium", color: { argb: "FF000000" } },
@@ -1397,8 +1404,8 @@ export default {
           right: { style: "medium", color: { argb: "FF000000" } },
         };
 
-        for (let columnNum = 1; columnNum <= 39; columnNum++) {
-          if ([13, 18, 21, 25, 29, 34].indexOf(columnNum) > -1) {
+        for (let columnNum = 1; columnNum <= 40; columnNum++) {
+          if ([13, 19, 22, 26, 30, 35].indexOf(columnNum) > -1) {
             row.getCell(columnNum).fill = backgroundOrange;
           } else {
             row.getCell(columnNum).fill = backgroundNone;
@@ -1410,8 +1417,10 @@ export default {
 
       // var amountFormat = '_ ¥* #,##0.00_ ;_ ¥* -#,##0.00_ ;_ ¥* "-"??_ ;_ @_ ';
 
-      //sheetA.getColumn(6).numFmt = "yyyy年m月d日";
-      //sheetA.getColumn(7).numFmt = "yyyy-m-d hh:mm:ss";
+      sheetA.getColumn(23).numFmt = "0.00%";
+      sheetA.getColumn(24).numFmt = "0.00%";
+      sheetA.getColumn(36).numFmt = "0.00%";
+      sheetA.getColumn(38).numFmt = "0.00%";
 
       // var convert = (i, lite) => {
       //   return {
