@@ -417,6 +417,7 @@ export default {
       "refreshAllTeams",
       "refreshAllUsers",
       "refreshAllCategorys",
+      "refreshAllShops",
     ]),
     login() {
       this.loading = true;
@@ -453,6 +454,7 @@ export default {
       this.refreshAllTeams();
       this.refreshAllUsers();
       this.refreshAllCategorys();
+      this.refreshAllShops();
       console.log("登录跳转");
       console.log("全局Global", this.global);
       this.$router.push("/mainpage");

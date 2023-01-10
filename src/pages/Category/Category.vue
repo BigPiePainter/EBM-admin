@@ -736,7 +736,6 @@ export default {
   },
 
   created() {
-    this.refreshAllShops();
   },
 
   methods: {
