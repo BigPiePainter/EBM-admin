@@ -213,7 +213,7 @@ use([
 ]);
 
 export const zeroPadding = (num) => {
-  return (num + "").padStart(2, 0)
+  return (num + "").padStart(2, 0);
 };
 
 export default {
@@ -236,8 +236,8 @@ export default {
       argsDays: [],
       daysProfitItems: [],
       daysProfitObj: {},
-      dayProfitItem:[],
-      dayAmountItem:[],
+      dayProfitItem: [],
+      dayAmountItem: [],
 
       departmentData: [],
       teamData: [],
@@ -447,8 +447,7 @@ export default {
           top: "0",
           //containLabel: true,
         },
-        toolbox: {
-        },
+        toolbox: {},
         yAxis: [
           {
             type: "value",
@@ -465,7 +464,7 @@ export default {
               // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
               rotate: 90, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
             },
-            data:  this.chartDateData,
+            data: this.chartDateData,
           },
         ],
 
@@ -589,14 +588,14 @@ export default {
           i++
         ) {
           var days = new Date(dayStartUTC + i * 86400000);
-          // var Y = days.getFullYear() + "/";
-          // var M =
-          //   days.getMonth() + 1 < 10
-          //     ? "0" + (days.getMonth() + 1) + "/"
-          //     : days.getMonth() + 1 + "/";
-          // var D =
-          //   days.getDate() + 1 < 10 ? "0" + days.getDate() : days.getDate();
-          var argsDay = { startDate: `${days.getFullYear()}/${zeroPadding(days.getMonth() + 1)}/${zeroPadding(days.getDate())}`, endDate: `${days.getFullYear()}/${zeroPadding(days.getMonth() + 1)}/${zeroPadding(days.getDate())}` };
+          var argsDay = {
+            startDate: `${days.getFullYear()}/${zeroPadding(
+              days.getMonth() + 1
+            )}/${zeroPadding(days.getDate())}`,
+            endDate: `${days.getFullYear()}/${zeroPadding(
+              days.getMonth() + 1
+            )}/${zeroPadding(days.getDate())}`,
+          };
           this.argsDays.push(argsDay);
         }
         console.log(this.argsDays);
@@ -624,7 +623,43 @@ export default {
             });
         }
       } else {
+        var dayStartUTCDef = Date.parse(this.dates);
         args = { startDate: this.dates, endDate: this.dates };
+        for (let i = 0; i <= 30; i++) {
+          var daysDef = new Date(dayStartUTCDef - i * 86400000);
+          var argsDayDef = {
+            startDate: `${daysDef.getFullYear()}/${zeroPadding(
+              daysDef.getMonth() + 1
+            )}/${zeroPadding(daysDef.getDate())}`,
+            endDate: `${daysDef.getFullYear()}/${zeroPadding(
+              daysDef.getMonth() + 1
+            )}/${zeroPadding(daysDef.getDate())}`,
+          };
+          this.argsDays.push(argsDayDef);
+        }
+        for (let i = 0; i < this.argsDays.length; i++) {
+          getProfitReport(this.argsDays[i])
+            .then((res) => {
+              this.loadingDialog = false;
+              console.log("返回每日数据：");
+              console.log(res.data);
+              if (!res.data.profitReport) {
+                this.global.infoAlert("泼发EBC：" + res.data);
+                this.daysProfitItems = [];
+                return;
+              }
+              //将所请求的日期传到daysProfitAnalyze方法中作为参数使用
+              for (let name in res.data) {
+                this.daysProfitItems = res.data[name];
+                this.daysProfitAnalyze(this.argsDays[i].startDate);
+                break;
+              }
+              setTimeout(() => {}, 0);
+            })
+            .catch(() => {
+              this.loading = false;
+            });
+        }
       }
       args.startDate = args.startDate.replaceAll("-", "/");
       args.endDate = args.endDate.replaceAll("-", "/");
@@ -722,14 +757,18 @@ export default {
       // console.log(Object.keys(this.daysProfitObj).sort());
       this.chartDateData = Object.keys(this.daysProfitObj).sort();
       console.log(this.chartDateData);
-      console.log(Object.values(this.daysProfitObj).sort(this.sortByDate("dayIndex")));
-      var chartArr = Object.values(this.daysProfitObj).sort(this.sortByDate("dayIndex"));
+      console.log(
+        Object.values(this.daysProfitObj).sort(this.sortByDate("dayIndex"))
+      );
+      var chartArr = Object.values(this.daysProfitObj).sort(
+        this.sortByDate("dayIndex")
+      );
       this.dayAmountItem = [];
       this.dayProfitItem = [];
       chartArr.forEach((item) => {
-        this.dayProfitItem.push(item.daysTotalProfit);
-        this.dayAmountItem.push(item.daysTotalAmount);
-      })
+        this.dayProfitItem.push(item.daysTotalProfit.toFixed());
+        this.dayAmountItem.push(item.daysTotalAmount.toFixed());
+      });
       console.log(this.dayAmountItem);
     },
 
