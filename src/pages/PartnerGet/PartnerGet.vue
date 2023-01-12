@@ -770,7 +770,7 @@
                 outlined
                 dense
                 hide-details
-                :items="allShops"
+                :items="user.permission.f.s ? allShops : `无支持的可显示数据`"
                 item-text="name"
                 v-model="editedItem.shopName"
               ></v-autocomplete>

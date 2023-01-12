@@ -158,6 +158,7 @@ export default {
             {
               title: "类目/店铺",
               icon: "mdi-circle-small",
+              show: this.$store.state.user.permission.f.s,
               link: "/category",
             },
           ],
