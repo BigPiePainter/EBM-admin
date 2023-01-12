@@ -279,6 +279,7 @@
         <v-data-table
           mobile-breakpoint="0"
           id="tablePartA"
+          @click:row="clickRow"
           v-show="!loading && isShowDetail"
           style="width: fit-content"
           class="profit-table profit-table-a"
@@ -341,6 +342,7 @@
       ></v-divider>
       <v-data-table
         mobile-breakpoint="0"
+        @click:row="clickRow"
         id="tablePartB"
         class="profit-table profit-table-b flex-grow-1"
         height="calc(100vh - 211px - 12px)"
@@ -370,7 +372,8 @@
                     i.value == `orderCount` ||
                     i.value == `productCount` ||
                     i.value == `calculatedActualOrderCount` ||
-                    i.value == `totalFakeCount`
+                    i.value == `totalFakeCount` ||
+                    i.value == `totalPersonalFakeCount`
                   "
                 >
                   {{
@@ -880,6 +883,7 @@ export default {
         "productCount", //1
         "totalFakeAmount", //1
         "totalFakeCount", //1
+        "totalPersonalFakeCount",
         "calculatedActualAmount", //成交额-补单额1
         "calculatedActualOrderCount", //订单数-补单数1
         "totalCost", //1
@@ -1035,9 +1039,57 @@ export default {
       deep: true,
       immediate: true,
     },
+    midVarOfProfitItems() {
+      console.log("修改");
+      var collections = document.getElementsByClassName("highlight");
+      console.log(collections.length);
+      for (let index = 0; index < collections.length; index++) {
+        console.log(collections[index]);
+        console.log(collections[index].classList);
+        collections[index].classList.remove("highlight");
+      }
+      for (let index = 0; index < collections.length; index++) {
+        console.log(collections[index]);
+        console.log(collections[index].classList);
+        collections[index].classList.remove("highlight");
+      }
+    },
   },
 
   methods: {
+    clickRow(item, event) {
+      console.log(item);
+      console.log(event);
+
+      var collections = document.getElementsByClassName("highlight");
+      for (let index = 0; index < collections.length; index++) {
+        console.log(collections[index]);
+        collections[index].classList.remove("highlight");
+      }
+
+      for (var e of document.getElementsByClassName("highlight")) {
+        console.log(e);
+        e.classList.remove("highlight");
+      }
+
+      var tableA = document.getElementsByClassName("profit-table-a");
+      var tableB = document.getElementsByClassName("profit-table-b");
+      console.log(tableB);
+
+      var rowA =
+        tableA[0].childNodes[0].childNodes[0].childNodes[2].childNodes[
+          event.index
+        ];
+      var rowB =
+        tableB[0].childNodes[0].childNodes[0].childNodes[2].childNodes[
+          event.index
+        ];
+      console.log(rowB);
+      window.test = rowB;
+
+      rowA.classList.add("highlight");
+      rowB.classList.add("highlight");
+    },
     async download() {
       const ExcelJS = require("exceljs");
 
@@ -1327,7 +1379,7 @@ export default {
           style: { font },
         },
       ];
-      //sheetA.autoFilter = 'B1:AM1';
+      sheetA.autoFilter = 'B1:AN1';
 
       var convert = (i) => {
         var row = {
@@ -1416,11 +1468,18 @@ export default {
       // sheetA.getCell("G1").fill = backgroundBlue;
 
       // var amountFormat = '_ ¥* #,##0.00_ ;_ ¥* -#,##0.00_ ;_ ¥* "-"??_ ;_ @_ ';
-
+      sheetA.getColumn(9).numFmt = "0.0%";
       sheetA.getColumn(23).numFmt = "0.00%";
       sheetA.getColumn(24).numFmt = "0.00%";
       sheetA.getColumn(36).numFmt = "0.00%";
       sheetA.getColumn(38).numFmt = "0.00%";
+
+
+      sheetA.getColumn(21).numFmt = "0.00";
+      sheetA.getColumn(28).numFmt = "0.00";
+      sheetA.getColumn(30).numFmt = "0.00";
+      sheetA.getColumn(31).numFmt = "0.00";
+      sheetA.getColumn(35).numFmt = "0.00";
 
       // var convert = (i, lite) => {
       //   return {
@@ -1772,7 +1831,8 @@ export default {
         item.freightToPayment /= 100;
 
         item.calculatedActualAmount = item.totalAmount - item.totalFakeAmount;
-        item.calculatedActualOrderCount = item.orderCount - item.totalFakeCount - item.totalPersonalFakeCount;
+        item.calculatedActualOrderCount =
+          item.orderCount - item.totalFakeCount - item.totalPersonalFakeCount;
 
         if (item.calculatedActualOrderCount == 0) {
           item.calculatedActualAverageAmount = 0;
@@ -1859,12 +1919,21 @@ export default {
   }
 
   tr.sumup {
+    bottom: 0px;
+    position: sticky;
+    background: white;
+
     td {
       padding-right: 0px !important;
       padding-left: 0px !important;
     }
   }
   width: 0%;
+
+  .highlight {
+    background-color: #eee !important;
+    //rgb(223, 228, 255)
+  }
 }
 
 .v-data-table.profit-table tr:not(.v-data-table__progress) > th {

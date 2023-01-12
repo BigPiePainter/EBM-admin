@@ -50,13 +50,18 @@
 
       <template v-slot:[`item.id`]="{ item }">
         <span class="ml-10">
+          {{global.log(user.uid)}}
           {{
-            item.id.toString().substring(0, 4) +
-            "****" +
-            item.id.toString().substr(-4)
+            user.uid == 1
+              ? item.id
+              : item.id.toString().substring(0, 4) +
+                "****" +
+                item.id.toString().substr(-4)
           }}
         </span>
       </template>
+      <!-- 
+        -->
 
       <template v-slot:[`item.totalAmount`]="{ item }">
         {{ amountFormat(item.totalAmount, "￥", 2, 0) }}
@@ -133,6 +138,8 @@
 import { amountBeautify } from "@/libs/utils";
 import { getMismatchProducts } from "@/settings/product";
 
+import { mapState } from "vuex";
+
 import TableKV from "@/components/TableKV/TableKV";
 import PageHeader from "@/components/PageHeader";
 
@@ -156,6 +163,23 @@ export default {
 
   created() {
     this.loadData();
+  },
+
+  computed: {
+    ...mapState([
+      "user",
+      "allDepartments",
+      "allTeams",
+      "allUsers",
+      "allCategorys",
+      "allCategoryHistorys",
+      "allShops",
+      "userIdToNick",
+      "teamIdToName",
+      "departmentIdToName",
+      "categoryIdToName",
+      "categoryIdToInfo",
+    ])
   },
 
   methods: {

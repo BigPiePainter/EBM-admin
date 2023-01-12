@@ -266,16 +266,7 @@ CREATE TABLE fakeorders (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '刷单数据库';
 
 
--- 个人刷单退款数据库
-drop table if exists fakeorders_personal;
 
-CREATE TABLE fakeorders_personal (
-  id BIGINT UNSIGNED NOT NULL COMMENT '主订单编号',
-  order_payment_time DATE COMMENT '订单付款时间',
-  refund_end_time DATE COMMENT '退款完结时间',
-  primary key (id),
-  index index_order_payment_time(order_payment_time)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '个人刷单退款数据库';
 
 
 -- 店铺数据库
@@ -297,6 +288,17 @@ CREATE TABLE mismatchproducts (
   primary key (id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '认领大厅库';
 
+
+-- 个人刷单退款数据库
+drop table if exists fakeorders_personal;
+
+CREATE TABLE fakeorders_personal (
+  id BIGINT UNSIGNED NOT NULL COMMENT '主订单编号',
+  order_payment_time DATE COMMENT '订单付款时间',
+  refund_end_time DATE COMMENT '退款完结时间',
+  primary key (id),
+  index index_order_payment_time(order_payment_time)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '个人刷单退款数据库';
 
 
 

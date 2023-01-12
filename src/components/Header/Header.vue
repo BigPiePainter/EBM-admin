@@ -136,13 +136,16 @@
         </v-btn>
       </template>
       <v-list>
-        <div class="text-h5 grey--text text--darken-3 px-4 pt-4">
+        <div class="text-h5 grey--text text--darken-3 px-4 pt-4" @click.stop="">
           {{ $store.state.user.nick }}
         </div>
-        <div class="subtitle-2 primary--text font-weight-regular px-4">
+        <div
+          class="subtitle-2 primary--text font-weight-regular px-4"
+          @click.stop=""
+        >
           {{ $store.state.user.username }}
         </div>
-        <div class="d-flex justify-center my-3">
+        <div class="d-flex justify-center my-3" @click.stop="">
           <v-btn
             width="80%"
             outlined
@@ -153,6 +156,77 @@
             >登出
           </v-btn>
         </div>
+        <div class="d-flex justify-end mx-2" @click.stop="">
+          <v-btn
+            v-if="showChangePassword"
+            text
+            color="primary"
+            @click.stop="showChangePassword = false"
+            class="caption"
+            small
+          >
+            取消
+          </v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click.stop="showChangePassword ? confirmChangePassword() : (showChangePassword = true)"
+            class="caption"
+            small
+          >
+            {{ showChangePassword ? "确认" : "修改密码" }}
+          </v-btn>
+        </div>
+
+        <v-expand-transition>
+          <div
+            class="d-flex flex-column align-center mx-2"
+            v-if="showChangePassword"
+            @click.stop=""
+          >
+            <div class="d-flex my-1">
+              <span class="caption pt-2 pr-2">旧密码</span>
+              <v-text-field
+                v-model="oldPassword"
+                dense
+                type="password"
+                hide-details
+                @click.stop=""
+                color="primary"
+                style="width: 100px"
+              >
+              </v-text-field>
+            </div>
+            <div class="d-flex my-1">
+              <span class="caption pt-2 pr-2">新密码</span>
+              <v-text-field
+                v-model="newPassword"
+                dense
+                type="password"
+                hide-details
+                @click.stop=""
+                color="primary"
+                style="width: 100px"
+              >
+              </v-text-field>
+            </div>
+            <div class="d-flex my-1 mb-3">
+              <span class="caption pt-2 pr-2" style="margin-left: 13px"
+                >重复</span
+              >
+              <v-text-field
+                v-model="repeatPassword"
+                dense
+                type="password"
+                hide-details
+                @click.stop=""
+                color="primary"
+                style="width: 100px"
+              >
+              </v-text-field>
+            </div>
+          </div>
+        </v-expand-transition>
       </v-list>
     </v-menu>
     <!-- <v-btn
@@ -183,7 +257,14 @@
           请输入公告内容：
         </v-card-title>
         <v-card-text class="pb-0 mb-3">
-          <v-textarea style="font-size: 15px" height="350px" outlined v-model="announcementText" hide-details=""> </v-textarea>
+          <v-textarea
+            style="font-size: 15px"
+            height="350px"
+            outlined
+            v-model="announcementText"
+            hide-details=""
+          >
+          </v-textarea>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer
@@ -207,6 +288,8 @@
 import { mapMutations, mapState } from "vuex";
 import { userLogout } from "@/settings/user";
 import { setAnnouncement } from "@/settings/announcement";
+import { changePassword } from "@/settings/user";
+// import Help from "@/components/Help";
 
 import config from "../../config";
 
@@ -214,6 +297,11 @@ export default {
   name: "Header",
   components: {},
   data: () => ({
+    showChangePassword: false,
+    oldPassword: "",
+    newPassword: "",
+    repeatPassword: "",
+
     announcementText: "",
     announcementDialog: false,
     loading: false,
@@ -284,6 +372,24 @@ export default {
   },
   methods: {
     ...mapMutations(["setDrawer"]),
+
+    confirmChangePassword() {
+      console.log("------");
+
+      changePassword({
+        oldPassword: this.oldPassword,
+        newPassword: this.newPassword,
+        repeatPassword: this.repeatPassword,
+      })
+        .then((res) => {
+          console.log(res);
+          this.global.infoAlert("泼发EBC：" + res.data);
+          if (res.code == 1){
+            this.logOut()
+          }
+        })
+        .catch(() => {});
+    },
 
     announcement() {
       this.announcementDialog = true;

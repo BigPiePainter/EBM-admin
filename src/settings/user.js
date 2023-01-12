@@ -45,6 +45,15 @@ export const registUser = data => {
     return http.request(args)
 }
 
+export const changePassword = data => {
+    const args = {
+        url: '/user/changePassword',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
 export const getAllUsers = data => {
     const args = {
         url: '/user/getAllUsers',
