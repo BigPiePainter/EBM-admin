@@ -200,7 +200,7 @@
           height="calc(100vh - 151px)"
           hide-default-footer
           :headers="shopHeaders"
-          :items="allShops"
+          :items="user.permission.f.s ? allShops : ``"
           item-key="name"
           disable-sort
           :items-per-page="1000"

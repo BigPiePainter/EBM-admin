@@ -885,7 +885,7 @@ export default {
         "totalFakeCount", //1
         "totalPersonalFakeCount",
         "calculatedActualAmount", //成交额-补单额1
-        "calculatedActualOrderCount", //订单数-补单数1
+        "calculatedActualOrderCount", //订单数-补单数-个人补单数1
         "totalCost", //1
         "totalRefundAmount", //1
         "calculatedActualIncome", //真实金额-退款金额1
@@ -1518,7 +1518,6 @@ export default {
       if (this.isDateRange) {
         var d2 = this.dates[1] || this.dates[0];
         this.isDateRange = false;
-
         this.dates = d2;
       } else {
         var d = this.dates;
@@ -1526,7 +1525,6 @@ export default {
         this.isDateRange = true;
         this.dates = [d, d];
         console.log(this.dates);
-
         setTimeout(() => {
           console.log(this.dates);
         }, 1000);
