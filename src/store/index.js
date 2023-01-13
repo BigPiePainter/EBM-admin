@@ -42,7 +42,7 @@ const store = new Vuex.Store({
         d: [], //可录入的部门     如果拥有部门管理权限，那么可录入的部门为全部
         g: [], //可录入的组别       同上
         da: true, //删除商品归属记录的权限 da-deleteAscription
-        fc: true, //管理一级类目的权限 fc-firstCategory
+        fc: true, //管理一级类目/店铺的权限 fc-firstCategory
         dp: true, //彻底删除商品的权限
       },
       b: {

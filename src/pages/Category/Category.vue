@@ -200,7 +200,7 @@
           height="calc(100vh - 151px)"
           hide-default-footer
           :headers="shopHeaders"
-          :items="user.permission.f.s ? allShops : ``"
+          :items="allShops"
           item-key="name"
           disable-sort
           :items-per-page="1000"
@@ -735,8 +735,7 @@ export default {
     },
   },
 
-  created() {
-  },
+  created() {},
 
   methods: {
     ...mapActions(["refreshAllCategorys", "refreshAllShops"]),
@@ -1011,18 +1010,30 @@ export default {
     },
 
     addShopButton() {
+      if (!this.user.permission.a.fc) {
+        this.global.infoAlert("泼发EBC：权限不足");
+        return;
+      }
       this.addShopItem = [];
       this.addShopDialog = true;
       console.log(this.allShops);
     },
 
     deleteShopBtn() {
+      if (!this.user.permission.a.fc) {
+        this.global.infoAlert("泼发EBC：权限不足");
+        return;
+      }
       this.deleteShopDialog = true;
       console.log(this.selectedShopItem[0].name);
     },
 
     sureAddShopBtn() {
-      if (!this.addShopItem.note){
+      if (!this.user.permission.a.fc) {
+        this.global.infoAlert("泼发EBC：权限不足");
+        return;
+      }
+      if (!this.addShopItem.note) {
         this.addShopItem.note = " ";
       }
       addShop({ name: this.addShopItem.name, note: this.addShopItem.note })
@@ -1044,6 +1055,10 @@ export default {
     },
 
     sureDeleteShopBtn() {
+      if (!this.user.permission.a.fc) {
+        this.global.infoAlert("泼发EBC：权限不足");
+        return;
+      }
       console.log(this.selectedShopItem[0].name);
       deleteShop({ name: this.selectedShopItem[0].name })
         .then((res) => {
