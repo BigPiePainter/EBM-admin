@@ -373,7 +373,8 @@
                     i.value == `productCount` ||
                     i.value == `calculatedActualOrderCount` ||
                     i.value == `totalFakeCount` ||
-                    i.value == `totalPersonalFakeCount`
+                    i.value == `totalPersonalFakeCount` ||
+                    i.value == `totalPersonalFakeEnablingCount`
                   "
                 >
                   {{
@@ -397,6 +398,20 @@
           <span>
             {{ item.date }}
           </span>
+        </template>
+
+        <template v-slot:[`header.ArrowCollapse`]="{}">
+          <v-btn
+            icon
+            small
+            @click="isShowFakeDetail = !isShowFakeDetail"
+            style="margin-bottom: 1px"
+          >
+            <v-icon v-if="isShowFakeDetail" small>
+              mdi-arrow-collapse-left
+            </v-icon>
+            <v-icon v-else small> mdi-arrow-collapse-right </v-icon>
+          </v-btn>
         </template>
 
         <template v-slot:[`item.insurance`]="{ item }">
@@ -435,14 +450,42 @@
           </div>
         </template>
 
+        <template v-slot:[`item.calculateTotalAllFakeAmount`]="{ item }">
+          <div class="d-flex" v-if="item.calculateTotalAllFakeAmount > 0">
+            {{ amountFormat(item.calculateTotalAllFakeAmount, "￥") }}
+          </div>
+        </template>
+
+        <template v-slot:[`item.totalFakeCount`]="{ item }">
+          <div class="d-flex" v-if="item.totalFakeCount > 0">
+            {{ amountFormat(item.totalFakeCount, null, 0) }}
+          </div>
+        </template>
         <template v-slot:[`item.totalFakeAmount`]="{ item }">
-          <div class="d-flex">
-            <span v-if="item.totalFakeAmount">{{ "￥  " }} </span>
-            <span>
-              {{
-                item.totalFakeAmount > 0 ? item.totalFakeAmount.toFixed(2) : ""
-              }}
-            </span>
+          <div class="d-flex" v-if="item.totalFakeAmount > 0">
+            {{ amountFormat(item.totalFakeAmount, "￥") }}
+          </div>
+        </template>
+
+        <template v-slot:[`item.totalPersonalFakeCount`]="{ item }">
+          <div class="d-flex" v-if="item.totalPersonalFakeCount > 0">
+            {{ amountFormat(item.totalPersonalFakeCount, null, 0) }}
+          </div>
+        </template>
+        <template v-slot:[`item.totalPersonalFakeAmount`]="{ item }">
+          <div class="d-flex" v-if="item.totalPersonalFakeAmount > 0">
+            {{ amountFormat(item.totalPersonalFakeAmount, "￥") }}
+          </div>
+        </template>
+
+        <template v-slot:[`item.totalPersonalFakeEnablingCount`]="{ item }">
+          <div class="d-flex" v-if="item.totalPersonalFakeEnablingCount > 0">
+            {{ amountFormat(item.totalPersonalFakeEnablingCount, null, 0) }}
+          </div>
+        </template>
+        <template v-slot:[`item.totalPersonalFakeEnablingAmount`]="{ item }">
+          <div class="d-flex" v-if="item.totalPersonalFakeEnablingAmount > 0">
+            {{ amountFormat(item.totalPersonalFakeEnablingAmount, "￥") }}
           </div>
         </template>
 
@@ -802,6 +845,7 @@ export default {
       datePicker2: false,
 
       isShowDetail: false,
+      isShowFakeDetail: false,
       loading: false,
       isDateRange: false,
 
@@ -827,9 +871,17 @@ export default {
         { text: "成交额", value: "totalAmount" }, //1
         { text: "订单数", value: "orderCount" }, //1
         { text: "销售数", value: "productCount" }, //1
-        { text: "补单额", value: "totalFakeAmount" }, //1
-        { text: "团队补单", value: "totalFakeCount" }, //1
-        { text: "个人补单", value: "totalPersonalFakeCount" }, //1
+        { text: "总补单额", value: "calculateTotalAllFakeAmount" }, //1
+
+        { text: "", value: "ArrowCollapse", sortable: false }, //收缩箭头列
+
+        { text: "团队补单数", value: "totalFakeCount" }, //1
+        { text: "团队补单额", value: "totalFakeAmount" }, //1
+        { text: "个人补单数", value: "totalPersonalFakeCount" }, //1
+        { text: "个人补单额", value: "totalPersonalFakeAmount" }, //1
+        { text: "个人破零数", value: "totalPersonalFakeEnablingCount" }, //1
+        { text: "个人破零额", value: "totalPersonalFakeEnablingAmount" }, //1
+
         { text: "真实金额", value: "calculatedActualAmount" }, //成交额-补单额1
         { text: "真实单数", value: "calculatedActualOrderCount" }, //订单数-补单数1
         { text: "单均价", value: "calculatedActualAverageAmount" }, //真实金额/真实单数1
@@ -840,7 +892,7 @@ export default {
         { text: "净收入额", value: "calculatedActualIncome" }, //真实金额-退款金额1
         { text: "未发仅退", value: "totalRefundWithNoShipAmount" }, //1
         { text: "未发退本", value: "calculatedRefundWithNoShipAmount" }, //未发仅退*成本率1
-        { text: "未发数", value: "refundWithNoShipCount" }, //1
+        { text: "未发数", value: "totalRefundWithNoShipCount" }, //1
         { text: "拿货成本（售后）", value: "calculatedActualCost" }, //拿货成本-未发退本1
         { text: "平台扣点", value: "calculatedTmallTokeRatio" }, //扣点*（成交额-退款金额）1
         { text: "快递费", value: "calculatedTotalFreight" }, //每单运费：运费*（真实单数-未发数）；运费/货品成本：运费*拿货成本（售后）1
@@ -876,14 +928,59 @@ export default {
         { text: "错数", value: "operatorGivenWrongPriceCount" },
         //----------------------------------------------------------------------
       ],
+      profitHeadersAllWithNoFakeDetail: [
+        { text: "商品ID", value: "productId" },
+        { text: "一级类目", value: "firstCategory" }, //1
+        { text: "扣点", value: "deduction" }, //1
+        { text: "运费险", value: "insurance" }, //1
+        { text: "运费", value: "freight" }, //1,2 freight or topayment1
+        { text: "子/主", value: "extraRatio" }, //1
+        { text: "成交额", value: "totalAmount" }, //1
+        { text: "订单数", value: "orderCount" }, //1
+        { text: "销售数", value: "productCount" }, //1
+        { text: "总补单额", value: "calculateTotalAllFakeAmount" }, //1
+
+        { text: "", value: "ArrowCollapse", sortable: false }, //收缩箭头列
+
+        { text: "真实金额", value: "calculatedActualAmount" }, //成交额-补单额1
+        { text: "真实单数", value: "calculatedActualOrderCount" }, //订单数-补单数1
+        { text: "单均价", value: "calculatedActualAverageAmount" }, //真实金额/真实单数1
+        { text: "拿货成本", value: "totalCost" }, //1
+        { text: "成本率", value: "calculatedCostRatio" }, //拿货成本/真实金额1
+        { text: "利润率", value: "calculatedProfitRatio" }, //每单运费：真实金额-拿货成本-扣点*真实金额-（运费险+运费）*真实单数；运费/货品成本：真实金额-拿货成本-扣点*真实金额-运费险*真实单数-运费*拿货成本
+        { text: "退款金额", value: "totalRefundAmount" }, //1
+        { text: "净收入额", value: "calculatedActualIncome" }, //真实金额-退款金额1
+        { text: "未发仅退", value: "totalRefundWithNoShipAmount" }, //1
+        { text: "未发退本", value: "calculatedRefundWithNoShipAmount" }, //未发仅退*成本率1
+        { text: "未发数", value: "totalRefundWithNoShipCount" }, //1
+        { text: "拿货成本（售后）", value: "calculatedActualCost" }, //拿货成本-未发退本1
+        { text: "平台扣点", value: "calculatedTmallTokeRatio" }, //扣点*（成交额-退款金额）1
+        { text: "快递费", value: "calculatedTotalFreight" }, //每单运费：运费*（真实单数-未发数）；运费/货品成本：运费*拿货成本（售后）1
+        { text: "运费险", value: "calculatedTotalInsurance" }, //运费险1*（订单数-未发数）1
+        { text: "刷单佣金", value: "totalBrokerage" }, //1
+        { text: "售后毛利润", value: "calculatedActualProfit" }, //净收入额-拿货成本（售后）-平台扣点-运费险-快递费-刷单佣金1
+        { text: "售后利润率", value: "calculatedActualProfitRatio" }, //售后毛利润/净收入额(为负时显示"-")
+        { text: "SKU未匹配", value: "wrongCount" }, //1
+        { text: "折扣", value: "calculatedDiscount" }, //成交额/原售价
+        { text: "错数", value: "operatorGivenWrongPriceCount" }, //(定价<实际成交价 的订单条数)
+        { text: "原售价", value: "totalPrice" }, //1
+        //{ text: "厂家返款", value: "" },
+        //----------------------------------------------------------------------
+      ],
       profitHeadersForSumup: [
         //进行简单求和的列
         "totalAmount", //1
         "orderCount", //1
         "productCount", //1
-        "totalFakeAmount", //1
+        "calculateTotalAllFakeAmount", //1
+
         "totalFakeCount", //1
+        "totalFakeAmount", //1
         "totalPersonalFakeCount",
+        "totalPersonalFakeAmount",
+        "totalPersonalFakeEnablingCount",
+        "totalPersonalFakeEnablingAmount",
+
         "calculatedActualAmount", //成交额-补单额1
         "calculatedActualOrderCount", //订单数-补单数-个人补单数1
         "totalCost", //1
@@ -1006,11 +1103,17 @@ export default {
       }
     },
     profitHeadersShownPartB() {
-      return !this.profitItems.length || this.loading
-        ? []
-        : this.isShowDetail
-        ? this.profitHeadersAll
-        : this.profitHeadersHide;
+      if (!this.profitItems.length || this.loading) {
+        return [];
+      } else {
+        if (this.isShowDetail) {
+          return this.isShowFakeDetail
+            ? this.profitHeadersAll
+            : this.profitHeadersAllWithNoFakeDetail;
+        } else {
+          return this.profitHeadersHide;
+        }
+      }
     },
     canShowSumup() {
       if (this.loading) return false;
@@ -1229,23 +1332,49 @@ export default {
           style: { font },
         },
         {
-          header: "补单额",
-          key: "totalFakeAmount",
+          header: "总补单额",
+          key: "calculateTotalAllFakeAmount",
           width: 10,
           style: { font },
         },
+
         {
-          header: "团队补单",
+          header: "团队补单数",
           key: "totalFakeCount",
           width: 10,
           style: { font },
         },
         {
-          header: "个人补单",
+          header: "团队补单额",
+          key: "totalFakeAmount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "个人补单数",
           key: "totalPersonalFakeCount",
           width: 10,
           style: { font },
         },
+        {
+          header: "个人补单数",
+          key: "totalPersonalFakeAmount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "个人破零数",
+          key: "totalPersonalFakeEnablingCount",
+          width: 10,
+          style: { font },
+        },
+        {
+          header: "个人破零数",
+          key: "totalPersonalFakeEnablingAmount",
+          width: 10,
+          style: { font },
+        },
+
         {
           header: "真实金额",
           key: "calculatedActualAmount",
@@ -1308,7 +1437,7 @@ export default {
         },
         {
           header: "未发数",
-          key: "refundWithNoShipCount",
+          key: "totalRefundWithNoShipCount",
           width: 10,
           style: { font },
         },
@@ -1379,7 +1508,7 @@ export default {
           style: { font },
         },
       ];
-      sheetA.autoFilter = 'B1:AN1';
+      sheetA.autoFilter = "B1:AN1";
 
       var convert = (i) => {
         var row = {
@@ -1398,9 +1527,13 @@ export default {
           totalAmount: i.totalAmount,
           orderCount: i.orderCount,
           productCount: i.productCount,
-          totalFakeAmount: i.totalFakeAmount,
+          calculateTotalAllFakeAmount: i.calculateTotalAllFakeAmount,
           totalFakeCount: i.totalFakeCount,
+          totalFakeAmount: i.totalFakeAmount,
           totalPersonalFakeCount: i.totalPersonalFakeCount,
+          totalPersonalFakeAmount: i.totalPersonalFakeAmount,
+          totalPersonalFakeEnablingCount: i.totalPersonalFakeEnablingCount,
+          totalPersonalFakeEnablingAmount: i.totalPersonalFakeEnablingAmount,
           calculatedActualAmount: i.calculatedActualAmount,
           calculatedActualOrderCount: i.calculatedActualOrderCount,
           calculatedActualAverageAmount: i.calculatedActualAverageAmount,
@@ -1411,7 +1544,7 @@ export default {
           calculatedActualIncome: i.calculatedActualIncome,
           totalRefundWithNoShipAmount: i.totalRefundWithNoShipAmount,
           calculatedRefundWithNoShipAmount: i.calculatedRefundWithNoShipAmount,
-          refundWithNoShipCount: i.refundWithNoShipCount,
+          totalRefundWithNoShipCount: i.totalRefundWithNoShipCount,
           calculatedActualCost: i.calculatedActualCost,
           calculatedTmallTokeRatio: i.calculatedTmallTokeRatio,
           calculatedTotalFreight: i.calculatedTotalFreight,
@@ -1443,7 +1576,7 @@ export default {
       // sheetA.getCell("E1").fill = backgroundYellow;
       // sheetA.getCell("F1").fill = backgroundYellow;
 
-      for (let columnNum = 1; columnNum <= 40; columnNum++) {
+      for (let columnNum = 1; columnNum <= 44; columnNum++) {
         sheetA.getColumn(columnNum).alignment = centerAlignment;
         sheetA.getRow(1).getCell(columnNum).border = {
           bottom: { style: "medium", color: { argb: "FF000000" } },
@@ -1456,8 +1589,8 @@ export default {
           right: { style: "medium", color: { argb: "FF000000" } },
         };
 
-        for (let columnNum = 1; columnNum <= 40; columnNum++) {
-          if ([13, 19, 22, 26, 30, 35].indexOf(columnNum) > -1) {
+        for (let columnNum = 1; columnNum <= 44; columnNum++) {
+          if ([13, 23, 26, 30, 34, 39].indexOf(columnNum) > -1) {
             row.getCell(columnNum).fill = backgroundOrange;
           } else {
             row.getCell(columnNum).fill = backgroundNone;
@@ -1469,17 +1602,23 @@ export default {
 
       // var amountFormat = '_ ¥* #,##0.00_ ;_ ¥* -#,##0.00_ ;_ ¥* "-"??_ ;_ @_ ';
       sheetA.getColumn(9).numFmt = "0.0%";
-      sheetA.getColumn(23).numFmt = "0.00%";
-      sheetA.getColumn(24).numFmt = "0.00%";
-      sheetA.getColumn(36).numFmt = "0.00%";
-      sheetA.getColumn(38).numFmt = "0.00%";
+      sheetA.getColumn(27).numFmt = "0.00%";
+      sheetA.getColumn(28).numFmt = "0.00%";
+      sheetA.getColumn(40).numFmt = "0.00%";
+      sheetA.getColumn(42).numFmt = "0.00%";
 
-
-      sheetA.getColumn(21).numFmt = "0.00";
-      sheetA.getColumn(28).numFmt = "0.00";
-      sheetA.getColumn(30).numFmt = "0.00";
-      sheetA.getColumn(31).numFmt = "0.00";
+      sheetA.getColumn(25).numFmt = "0.00";
+      sheetA.getColumn(32).numFmt = "0.00";
+      sheetA.getColumn(34).numFmt = "0.00";
       sheetA.getColumn(35).numFmt = "0.00";
+      sheetA.getColumn(39).numFmt = "0.00";
+
+      sheetA.getColumn(17).outlineLevel = 1;
+      sheetA.getColumn(18).outlineLevel = 1;
+      sheetA.getColumn(19).outlineLevel = 1;
+      sheetA.getColumn(20).outlineLevel = 1;
+      sheetA.getColumn(21).outlineLevel = 1;
+      sheetA.getColumn(22).outlineLevel = 1;
 
       // var convert = (i, lite) => {
       //   return {
@@ -1828,9 +1967,18 @@ export default {
         item.deduction /= 100;
         item.freightToPayment /= 100;
 
-        item.calculatedActualAmount = item.totalAmount - item.totalFakeAmount;
+        item.calculateTotalAllFakeAmount =
+          item.totalFakeAmount +
+          item.totalPersonalFakeAmount +
+          item.totalPersonalFakeEnablingAmount;
+
+        item.calculatedActualAmount =
+          item.totalAmount - item.calculateTotalAllFakeAmount;
         item.calculatedActualOrderCount =
-          item.orderCount - item.totalFakeCount - item.totalPersonalFakeCount;
+          item.orderCount -
+          item.totalFakeCount -
+          item.totalPersonalFakeCount -
+          item.totalPersonalFakeEnablingCount;
 
         if (item.calculatedActualOrderCount == 0) {
           item.calculatedActualAverageAmount = 0;
@@ -1868,14 +2016,17 @@ export default {
           item.totalCost - item.calculatedRefundWithNoShipAmount;
 
         item.calculatedTmallTokeRatio =
-          item.deduction * (item.totalAmount - item.totalRefundAmount);
+          item.deduction *
+          (item.totalAmount -
+            item.totalRefundAmount -
+            item.totalPersonalFakeAmount);
 
         item.calculatedTotalFreight = item.freightToPayment
           ? item.freightToPayment * item.calculatedActualCost
           : item.freight *
-            (item.calculatedActualOrderCount - item.refundWithNoShipCount);
+            (item.calculatedActualOrderCount - item.totalRefundWithNoShipCount);
         item.calculatedTotalInsurance =
-          item.insurance * (item.orderCount - item.refundWithNoShipCount);
+          item.insurance * (item.orderCount - item.totalRefundWithNoShipCount);
         item.calculatedActualProfit =
           item.calculatedActualIncome -
           item.calculatedActualCost -
