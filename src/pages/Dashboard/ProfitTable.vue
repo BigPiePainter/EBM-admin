@@ -2005,22 +2005,18 @@ export default {
           item.calculatedActualAmount - item.totalRefundAmount;
         item.calculatedRefundWithNoShipAmount =
           item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
-
         //后加的
         if (isNaN(item.calculatedRefundWithNoShipAmount)) {
           item.calculatedRefundWithNoShipAmount = 0;
         }
         //
-
         item.calculatedActualCost =
           item.totalCost - item.calculatedRefundWithNoShipAmount;
-
         item.calculatedTmallTokeRatio =
           item.deduction *
           (item.totalAmount -
             item.totalRefundAmount -
             item.totalPersonalFakeAmount);
-
         item.calculatedTotalFreight = item.freightToPayment
           ? item.freightToPayment * item.calculatedActualCost
           : item.freight *

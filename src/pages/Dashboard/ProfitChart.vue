@@ -81,7 +81,7 @@
         <v-container fluid id="mainContainer">
           <v-row>
             <v-col cols="4">
-              <v-card class="ml-3 mx-1 mb-1">
+              <v-card class="ml-3 mx-1 mb-1" outlined :loading="loadingDialog">
                 <v-card-title>
                   <p class="caption">部门真实金额</p>
                   <!-- <v-spacer />
@@ -98,7 +98,11 @@
             </v-col>
 
             <v-col cols="8">
-              <v-card class="mr-3 mx-1 mb-1">
+              <v-card
+                class="mr-3 mx-1 mb-1"
+                outlined
+                :loading="loadingDialogDaily"
+              >
                 <v-card-title>
                   <p class="caption">总成交额/售后毛利润</p>
                   <!-- <v-spacer />
@@ -117,7 +121,11 @@
 
           <v-row>
             <v-col>
-              <v-card class="ml-3 mr-3 mx-1 mb-1">
+              <v-card
+                class="ml-3 mr-3 mx-1 mb-1"
+                outlined
+                :loading="loadingDialog"
+              >
                 <v-card-title>
                   <p class="ml-3 pt-3 caption">
                     店铺真实成交数汇总(已减去个人及团队补单)
@@ -135,7 +143,11 @@
 
           <v-row>
             <v-col>
-              <v-card class="ml-3 mr-3 mx-1 mb-1">
+              <v-card
+                class="ml-3 mr-3 mx-1 mb-1"
+                outlined
+                :loading="loadingDialog"
+              >
                 <v-card-title>
                   <p class="caption">小组成交额/小组真实金额</p>
                   <!-- <v-spacer />
@@ -154,7 +166,11 @@
 
           <v-row>
             <v-col>
-              <v-card class="ml-3 mr-3 mx-1 mb-1">
+              <v-card
+                class="ml-3 mr-3 mx-1 mb-1"
+                outlined
+                :loading="loadingDialog"
+              >
                 <v-card-title>
                   <p class="caption">小组售后毛利润</p>
                 </v-card-title>
@@ -167,9 +183,9 @@
             </v-col>
           </v-row>
 
-          <v-dialog width="100px" v-model="loadingDialog"
+          <!-- <v-dialog width="100px" v-model="loadingDialog"
             ><v-card class="pl-4">正在加载</v-card></v-dialog
-          >
+          > -->
         </v-container>
       </div>
     </div>
@@ -233,8 +249,7 @@ export default {
       chartTeamItems: {},
       profitItems: [],
       shopActualOrderCount: {},
-      argsDays: [],
-      daysProfitItems: [],
+
       daysProfitObj: {},
       dayProfitItem: [],
       dayAmountItem: [],
@@ -250,6 +265,7 @@ export default {
       showDepartmentChartDialog: false,
       showTeamChartDialog: false,
       loadingDialog: false,
+      loadingDialogDaily: false,
 
       isDateRange: false,
       dates: [],
@@ -336,10 +352,11 @@ export default {
         },
         legend: {},
         grid: {
-          left: "100",
+          top: "23",
+          left: "20",
           right: "30",
-          bottom: "40",
-          //containLabel: true,
+          bottom: "10",
+          containLabel: true,
         },
         toolbox: {
           // feature: {
@@ -348,6 +365,11 @@ export default {
         },
         xAxis: {
           type: "category",
+          axisLabel: {
+            show: true,
+            // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
+            rotate: 45, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
+          },
           data: this.departmentData,
         },
         yAxis: {
@@ -441,19 +463,19 @@ export default {
         },
         legend: {},
         grid: {
-          left: "50",
+          left: "20",
           right: "30",
-          bottom: "100",
-          top: "0",
-          //containLabel: true,
+          bottom: "10",
+          top: "20",
+          containLabel: true,
         },
         toolbox: {},
         yAxis: [
           {
             type: "value",
-            axisLabel: {
-              show: false,
-            },
+            // axisLabel: {
+            //   show: false,
+            // },
           },
         ],
         xAxis: [
@@ -547,13 +569,9 @@ export default {
       return Number(date.split("-")[2]);
     },
 
-    sortByDate(dayIndex) {
-      return (a, b) => {
-        var value1 = a[dayIndex];
-        var value2 = b[dayIndex];
-        return value1 - value2;
-      };
-    },
+    // sortByDate(dayIndex) {
+    //   return ;
+    // },
 
     changeDateRangeButton() {
       if (this.isDateRange) {
@@ -572,99 +590,91 @@ export default {
       }
     },
 
+    loadDailyData() {
+      console.log("loadDailyData");
+      this.daysProfitObj = {};
+
+      this.loadingDialogDaily = true;
+
+      var loadingFinished = [];
+
+      var totalDays = 31;
+      var currentDay = new Date(this.dates);
+
+      if (this.isDateRange) {
+        totalDays = Math.abs(
+          (new Date(this.dates[1]).getTime() -
+            new Date(this.dates[0]).getTime()) /
+            86400000
+        );
+        totalDays += 1;
+        currentDay = new Date(this.dates[1]);
+        console.log(totalDays);
+      } else {
+        currentDay = new Date(this.dates);
+      }
+
+      console.log(totalDays);
+      console.log("thisDates", this.dates);
+
+      var argsDays = [];
+
+      for (let i = 0; i < totalDays; i++) {
+        var daysDef = new Date(currentDay);
+
+        var argsDayDef = {
+          startDate: `${daysDef.getFullYear()}/${zeroPadding(
+            daysDef.getMonth() + 1
+          )}/${zeroPadding(daysDef.getDate())}`,
+          endDate: `${daysDef.getFullYear()}/${zeroPadding(
+            daysDef.getMonth() + 1
+          )}/${zeroPadding(daysDef.getDate())}`,
+        };
+        argsDays.push(argsDayDef);
+
+        currentDay.setDate(currentDay.getDate() - 1);
+      }
+
+      for (let i = 0; i < argsDays.length; i++) {
+        getProfitReport(argsDays[i])
+          .then((res) => {
+            loadingFinished.push("got");
+            if (loadingFinished.length == totalDays) {
+              this.loadingDialogDaily = false;
+            }
+
+            console.log("返回每日数据：");
+            console.log(res.data);
+            if (!res.data.profitReport) {
+              this.global.infoAlert("泼发EBC：" + res.data);
+              return;
+            }
+
+            //将所请求的日期传到daysProfitAnalyze方法中作为参数使用
+            for (let name in res.data) {
+              this.daysProfitAnalyze(argsDays[i].startDate, res.data[name]);
+              break;
+            }
+          })
+          .catch(() => {
+            this.loading = false;
+          });
+      }
+    },
+
     loadData() {
       var args;
-      this.daysProfitObj = {};
-      this.daysProfitItems = [];
-      this.argsDays = [];
+
       if (this.isDateRange) {
-        var dayStartUTC = Date.parse(this.dates[0]);
         args = { startDate: this.dates[0], endDate: this.dates[1] };
-        //计算日期，循环请求多天
-        for (
-          let i = 0;
-          i <=
-          (Date.parse(this.dates[1]) - Date.parse(this.dates[0])) / 86400000;
-          i++
-        ) {
-          var days = new Date(dayStartUTC + i * 86400000);
-          var argsDay = {
-            startDate: `${days.getFullYear()}/${zeroPadding(
-              days.getMonth() + 1
-            )}/${zeroPadding(days.getDate())}`,
-            endDate: `${days.getFullYear()}/${zeroPadding(
-              days.getMonth() + 1
-            )}/${zeroPadding(days.getDate())}`,
-          };
-          this.argsDays.push(argsDay);
-        }
-        console.log(this.argsDays);
-        for (let i = 0; i < this.argsDays.length; i++) {
-          getProfitReport(this.argsDays[i])
-            .then((res) => {
-              this.loadingDialog = false;
-              console.log("返回每日数据：");
-              console.log(res.data);
-              if (!res.data.profitReport) {
-                this.global.infoAlert("泼发EBC：" + res.data);
-                this.daysProfitItems = [];
-                return;
-              }
-              //将所请求的日期传到daysProfitAnalyze方法中作为参数使用
-              for (let name in res.data) {
-                this.daysProfitItems = res.data[name];
-                this.daysProfitAnalyze(this.argsDays[i].startDate);
-                break;
-              }
-              setTimeout(() => {}, 0);
-            })
-            .catch(() => {
-              this.loading = false;
-            });
-        }
       } else {
-        var dayStartUTCDef = Date.parse(this.dates);
         args = { startDate: this.dates, endDate: this.dates };
-        for (let i = 0; i <= 30; i++) {
-          var daysDef = new Date(dayStartUTCDef - i * 86400000);
-          var argsDayDef = {
-            startDate: `${daysDef.getFullYear()}/${zeroPadding(
-              daysDef.getMonth() + 1
-            )}/${zeroPadding(daysDef.getDate())}`,
-            endDate: `${daysDef.getFullYear()}/${zeroPadding(
-              daysDef.getMonth() + 1
-            )}/${zeroPadding(daysDef.getDate())}`,
-          };
-          this.argsDays.push(argsDayDef);
-        }
-        for (let i = 0; i < this.argsDays.length; i++) {
-          getProfitReport(this.argsDays[i])
-            .then((res) => {
-              this.loadingDialog = false;
-              console.log("返回每日数据：");
-              console.log(res.data);
-              if (!res.data.profitReport) {
-                this.global.infoAlert("泼发EBC：" + res.data);
-                this.daysProfitItems = [];
-                return;
-              }
-              //将所请求的日期传到daysProfitAnalyze方法中作为参数使用
-              for (let name in res.data) {
-                this.daysProfitItems = res.data[name];
-                this.daysProfitAnalyze(this.argsDays[i].startDate);
-                break;
-              }
-              setTimeout(() => {}, 0);
-            })
-            .catch(() => {
-              this.loading = false;
-            });
-        }
       }
       args.startDate = args.startDate.replaceAll("-", "/");
       args.endDate = args.endDate.replaceAll("-", "/");
       this.loadingDialog = true;
       console.log("接口调用", args);
+
       getProfitReport(args)
         .then((res) => {
           this.loadingDialog = false;
@@ -675,115 +685,67 @@ export default {
             this.profitItems = [];
             return;
           }
-          //取出res.data中的key,传到adtaAnalyze方法中作为参数使用
-          for (let name in res.data) {
-            this.profitItems = res.data[name];
-            this.dataAnalyze(name);
-            break;
-          }
+          console.log("load");
+          this.profitItems = res.data.profitReport;
+          console.log("load");
 
-          setTimeout(() => {}, 0);
+          this.dataAnalyze();
+
+          console.log("load");
+          this.loadDailyData();
         })
         .catch(() => {
           this.loading = false;
         });
     },
 
-    daysProfitAnalyze(date) {
-      var dayIndex = new Date(date);
+    daysProfitAnalyze(date, daysProfitItems) {
       this.daysProfitObj[date] = {
-        dayIndex: 0,
+        dayIndex: new Date(date).getTime(),
         daysTotalProfit: 0,
         daysTotalAmount: 0,
       };
-      this.daysProfitItems.forEach((item) => {
+
+      daysProfitItems.forEach((item) => {
         item.date = date;
-        item.deduction /= 100;
-        item.freightToPayment /= 100;
-        item.calculatedActualAmount = item.totalAmount - item.totalFakeAmount;
-        item.calculatedActualOrderCount =
-          item.orderCount - item.totalFakeCount - item.totalPersonalFakeCount;
-        item.calculatedActualAverageAmount =
-          item.calculatedActualAmount / item.calculatedActualOrderCount;
-        item.calculatedCostRatio = item.totalCost / item.calculatedActualAmount;
-        item.calculatedProfitRatio = item.freightToPayment
-          ? item.calculatedActualAmount -
-            item.totalCost -
-            item.deduction * item.calculatedActualAmount -
-            item.insurance * item.calculatedActualOrderCount -
-            item.freightToPayment * item.totalCost
-          : item.calculatedActualAmount -
-            item.totalCost -
-            item.deduction * item.calculatedActualAmount -
-            (item.insurance + item.freight) * item.calculatedActualOrderCount;
-        item.calculatedProfitRatio /= item.calculatedActualAmount;
-        item.calculatedActualIncome =
-          item.calculatedActualAmount - item.totalRefundAmount;
-        item.calculatedRefundWithNoShipAmount =
-          item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
-        if (isNaN(item.calculatedRefundWithNoShipAmount)) {
-          item.calculatedRefundWithNoShipAmount = 0;
-        }
-        item.calculatedActualCost =
-          item.totalCost - item.calculatedRefundWithNoShipAmount;
-        item.calculatedTmallTokeRatio =
-          item.deduction * (item.totalAmount - item.totalRefundAmount);
-        item.calculatedTotalFreight = item.freightToPayment
-          ? item.freightToPayment * item.calculatedActualCost
-          : item.freight *
-            (item.calculatedActualOrderCount - item.refundWithNoShipCount);
-        item.calculatedTotalInsurance =
-          item.insurance * (item.orderCount - item.refundWithNoShipCount);
-        item.calculatedActualProfit =
-          item.calculatedActualIncome -
-          item.calculatedActualCost -
-          item.calculatedTmallTokeRatio -
-          item.calculatedTotalInsurance -
-          item.calculatedTotalFreight -
-          item.totalBrokerage;
-        if (item.calculatedActualProfit !== item.calculatedActualProfit) {
-          item.calculatedActualProfit = 0;
-        }
-        this.daysProfitObj[date]["daysTotalProfit"] =
-          this.daysProfitObj[date]["daysTotalProfit"] +
-          item.calculatedActualProfit;
+        item.calculatedDepartment = this.departmentIdToName[item.department];
+        item.calculatedTeam = this.teamIdToName[item.team];
+        item.calculatedOwner = this.userIdToNick[item.owner];
+        item.calculatedFirstCategory =
+          this.categoryIdToName[item.firstCategory];
 
-        this.daysProfitObj[date]["daysTotalAmount"] =
-          this.daysProfitObj[date]["daysTotalAmount"] + item.totalAmount;
-      });
-      this.daysProfitObj[date]["dayIndex"] = Date.parse(dayIndex);
-      console.log("处理后的每日报表");
-      console.log(this.daysProfitObj);
-      // console.log(Object.keys(this.daysProfitObj).sort());
-      this.chartDateData = Object.keys(this.daysProfitObj).sort();
-      console.log(this.chartDateData);
-      console.log(
-        Object.values(this.daysProfitObj).sort(this.sortByDate("dayIndex"))
-      );
-      var chartArr = Object.values(this.daysProfitObj).sort(
-        this.sortByDate("dayIndex")
-      );
-      this.dayAmountItem = [];
-      this.dayProfitItem = [];
-      chartArr.forEach((item) => {
-        this.dayProfitItem.push(item.daysTotalProfit.toFixed());
-        this.dayAmountItem.push(item.daysTotalAmount.toFixed());
-      });
-      console.log(this.dayAmountItem);
-    },
+        if (item.orderCount == null) {
+          item.orderCount = 0;
+        }
+        if (item.productCount == null) {
+          item.productCount = 0;
+        }
+        if (item.totalAmount == null) {
+          item.totalAmount = 0;
+        }
 
-    dataAnalyze(name) {
-      this.profitItems.forEach((item) => {
-        item.name = name;
-        item.dates = this.dates;
         item.deduction /= 100;
         item.freightToPayment /= 100;
 
-        item.calculatedActualAmount = item.totalAmount - item.totalFakeAmount;
+        item.calculateTotalAllFakeAmount =
+          item.totalFakeAmount +
+          item.totalPersonalFakeAmount +
+          item.totalPersonalFakeEnablingAmount;
+
+        item.calculatedActualAmount =
+          item.totalAmount - item.calculateTotalAllFakeAmount;
         item.calculatedActualOrderCount =
-          item.orderCount - item.totalFakeCount - item.totalPersonalFakeCount;
-        item.calculatedActualAverageAmount =
-          item.calculatedActualAmount / item.calculatedActualOrderCount;
+          item.orderCount -
+          item.totalFakeCount -
+          item.totalPersonalFakeCount -
+          item.totalPersonalFakeEnablingCount;
+
+        if (item.calculatedActualOrderCount == 0) {
+          item.calculatedActualAverageAmount = 0;
+        } else {
+          item.calculatedActualAverageAmount =
+            item.calculatedActualAmount / item.calculatedActualOrderCount;
+        }
 
         item.calculatedCostRatio = item.totalCost / item.calculatedActualAmount;
 
@@ -803,25 +765,24 @@ export default {
           item.calculatedActualAmount - item.totalRefundAmount;
         item.calculatedRefundWithNoShipAmount =
           item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
-
         //后加的
         if (isNaN(item.calculatedRefundWithNoShipAmount)) {
           item.calculatedRefundWithNoShipAmount = 0;
         }
         //
-
         item.calculatedActualCost =
           item.totalCost - item.calculatedRefundWithNoShipAmount;
-
         item.calculatedTmallTokeRatio =
-          item.deduction * (item.totalAmount - item.totalRefundAmount);
-
+          item.deduction *
+          (item.totalAmount -
+            item.totalRefundAmount -
+            item.totalPersonalFakeAmount);
         item.calculatedTotalFreight = item.freightToPayment
           ? item.freightToPayment * item.calculatedActualCost
           : item.freight *
-            (item.calculatedActualOrderCount - item.refundWithNoShipCount);
+            (item.calculatedActualOrderCount - item.totalRefundWithNoShipCount);
         item.calculatedTotalInsurance =
-          item.insurance * (item.orderCount - item.refundWithNoShipCount);
+          item.insurance * (item.orderCount - item.totalRefundWithNoShipCount);
         item.calculatedActualProfit =
           item.calculatedActualIncome -
           item.calculatedActualCost -
@@ -832,6 +793,138 @@ export default {
 
         item.calculatedActualProfitRatio =
           item.calculatedActualProfit / item.calculatedActualIncome;
+
+        if (
+          item.calculatedActualProfit < 0 &&
+          item.calculatedActualProfitRatio > 0
+        ) {
+          item.calculatedActualProfitRatio *= -1;
+        }
+
+        item.calculatedDiscount = item.totalAmount / item.totalPrice;
+
+        if (item.calculatedActualProfit !== item.calculatedActualProfit) {
+          item.calculatedActualProfit = 0;
+        }
+
+        this.daysProfitObj[date].daysTotalProfit += item.calculatedActualProfit;
+        this.daysProfitObj[date].daysTotalAmount += item.totalAmount;
+      });
+
+      console.log("处理后的每日报表");
+      console.log(this.daysProfitObj);
+
+      // console.log(Object.keys(this.daysProfitObj).sort());
+      this.chartDateData = Object.keys(this.daysProfitObj).sort();
+      console.log(this.chartDateData);
+
+      var chartArr = Object.values(this.daysProfitObj).sort(
+        (a, b) => a.dayIndex - b.dayIndex
+      );
+
+      console.log(chartArr);
+
+      this.dayProfitItem = chartArr.map((i) => i.daysTotalProfit.toFixed(2));
+      this.dayAmountItem = chartArr.map((i) => i.daysTotalAmount.toFixed(2));
+
+      console.log(this.dayAmountItem);
+    },
+
+    dataAnalyze() {
+      this.profitItems.forEach((item) => {
+        item.dates = this.dates;
+        item.calculatedDepartment = this.departmentIdToName[item.department];
+        item.calculatedTeam = this.teamIdToName[item.team];
+        item.calculatedOwner = this.userIdToNick[item.owner];
+        item.calculatedFirstCategory =
+          this.categoryIdToName[item.firstCategory];
+
+        if (item.orderCount == null) {
+          item.orderCount = 0;
+        }
+        if (item.productCount == null) {
+          item.productCount = 0;
+        }
+        if (item.totalAmount == null) {
+          item.totalAmount = 0;
+        }
+
+        item.deduction /= 100;
+        item.freightToPayment /= 100;
+
+        item.calculateTotalAllFakeAmount =
+          item.totalFakeAmount +
+          item.totalPersonalFakeAmount +
+          item.totalPersonalFakeEnablingAmount;
+
+        item.calculatedActualAmount =
+          item.totalAmount - item.calculateTotalAllFakeAmount;
+        item.calculatedActualOrderCount =
+          item.orderCount -
+          item.totalFakeCount -
+          item.totalPersonalFakeCount -
+          item.totalPersonalFakeEnablingCount;
+
+        if (item.calculatedActualOrderCount == 0) {
+          item.calculatedActualAverageAmount = 0;
+        } else {
+          item.calculatedActualAverageAmount =
+            item.calculatedActualAmount / item.calculatedActualOrderCount;
+        }
+
+        item.calculatedCostRatio = item.totalCost / item.calculatedActualAmount;
+
+        item.calculatedProfitRatio = item.freightToPayment
+          ? item.calculatedActualAmount -
+            item.totalCost -
+            item.deduction * item.calculatedActualAmount -
+            item.insurance * item.calculatedActualOrderCount -
+            item.freightToPayment * item.totalCost
+          : item.calculatedActualAmount -
+            item.totalCost -
+            item.deduction * item.calculatedActualAmount -
+            (item.insurance + item.freight) * item.calculatedActualOrderCount;
+        item.calculatedProfitRatio /= item.calculatedActualAmount;
+
+        item.calculatedActualIncome =
+          item.calculatedActualAmount - item.totalRefundAmount;
+        item.calculatedRefundWithNoShipAmount =
+          item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
+        //后加的
+        if (isNaN(item.calculatedRefundWithNoShipAmount)) {
+          item.calculatedRefundWithNoShipAmount = 0;
+        }
+        //
+        item.calculatedActualCost =
+          item.totalCost - item.calculatedRefundWithNoShipAmount;
+        item.calculatedTmallTokeRatio =
+          item.deduction *
+          (item.totalAmount -
+            item.totalRefundAmount -
+            item.totalPersonalFakeAmount);
+        item.calculatedTotalFreight = item.freightToPayment
+          ? item.freightToPayment * item.calculatedActualCost
+          : item.freight *
+            (item.calculatedActualOrderCount - item.totalRefundWithNoShipCount);
+        item.calculatedTotalInsurance =
+          item.insurance * (item.orderCount - item.totalRefundWithNoShipCount);
+        item.calculatedActualProfit =
+          item.calculatedActualIncome -
+          item.calculatedActualCost -
+          item.calculatedTmallTokeRatio -
+          item.calculatedTotalInsurance -
+          item.calculatedTotalFreight -
+          item.totalBrokerage;
+
+        item.calculatedActualProfitRatio =
+          item.calculatedActualProfit / item.calculatedActualIncome;
+
+        if (
+          item.calculatedActualProfit < 0 &&
+          item.calculatedActualProfitRatio > 0
+        ) {
+          item.calculatedActualProfitRatio *= -1;
+        }
 
         item.calculatedDiscount = item.totalAmount / item.totalPrice;
       });
@@ -879,24 +972,18 @@ export default {
       });
 
       this.shopActualOrderCount = {};
-
-      for (let i = 0; i < this.profitItems.length; i++) {
-        if (
-          !Object.keys(this.shopActualOrderCount).includes(
-            this.profitItems[i].shopName
-          )
-        ) {
-          this.shopActualOrderCount[this.profitItems[i].shopName] =
-            this.profitItems[i].calculatedActualOrderCount;
-        } else {
-          this.shopActualOrderCount[this.profitItems[i].shopName] +=
-            this.profitItems[i].calculatedActualOrderCount;
+      this.profitItems.forEach((i) => {
+        if (!this.shopActualOrderCount[i.shopName]) {
+          this.shopActualOrderCount[i.shopName] = 0;
         }
-      }
+        this.shopActualOrderCount[i.shopName] += i.calculatedActualOrderCount;
+      });
+
       //console.log(this.shopActualOrderCount);
 
       this.departmentSeries = [
         {
+          barGap: 0,
           name: "成交额",
           type: "bar",
           data: [],
@@ -924,7 +1011,7 @@ export default {
           },
           name: "成交额",
           type: "bar",
-          barWidth: 13,
+          barWidth: 15,
           color: "#00bbff",
           data: [],
         },
@@ -937,7 +1024,7 @@ export default {
           realtimeSort: true,
           name: "真实金额",
           type: "bar",
-          barWidth: 13,
+          barWidth: 15,
           color: "#00AA11",
           data: [],
         },
@@ -957,48 +1044,85 @@ export default {
       ];
 
       this.departmentData = [];
-      var a = [
-        "chartTotalAmount",
-        "chartCalculatedActualAmount",
-        "chartCalculatedActualProfit",
-      ];
+
       // "chartCalculatedActualProfit",
-      var b = Object.keys(this.chartDepartmentItems);
 
-      // console.log(11111);
-      // console.log(this.chartDepartmentItems);
-      for (let i = 0; i < b.length; i++) {
-        this.departmentData[i] =
-          this.departmentIdToName[Object.keys(this.chartDepartmentItems)[i]];
-      }
+      console.log("chartDepartmentItems", this.chartDepartmentItems);
 
-      for (let i = 0; i < a.length; i++) {
-        // console.log(a[i]);
-        for (let j = 0; j < b.length; j++) {
-          // console.log(typeof a[i]);
-          // console.log(this.chartDepartmentItems[b[j]]);
-          this.departmentSeries[i].data.push(
-            Math.round(this.chartDepartmentItems[b[j]][a[i]])
-          );
-        }
-      }
+      this.departmentData = Object.keys(this.chartDepartmentItems).map(
+        (i) => this.departmentIdToName[i]
+      );
 
-      this.teamData = [];
-      var c = Object.keys(this.chartTeamItems);
+      console.log("departmentData", this.departmentData);
 
-      for (let i = 0; i < c.length; i++) {
-        this.teamData[i] =
-          this.teamIdToName[Object.keys(this.chartTeamItems)[i]];
-      }
-      console.log(this.teamData);
+      console.log("1", this.departmentSeries.toString());
 
-      for (let i = 0; i < a.length; i++) {
-        for (let j = 0; j < c.length; j++) {
-          this.teamSeries[i].data.push(
-            this.chartTeamItems[c[j]][a[i]].toFixed(2)
-          );
-        }
-      }
+      // var a = [
+      //   "chartTotalAmount",
+      //   "chartCalculatedActualAmount",
+      //   "chartCalculatedActualProfit",
+      // ];
+      // var chartDepartmentItemsKey = Object.keys(this.chartDepartmentItems);
+      // for (let i = 0; i < a.length; i++) {
+      //   // console.log(a[i]);
+      //   for (let j = 0; j < chartDepartmentItemsKey.length; j++) {
+      //     // console.log(typeof a[i]);
+      //     // console.log(this.chartDepartmentItems[b[j]]);
+      //     this.departmentSeries[i].data.push(
+      //       this.chartDepartmentItems[chartDepartmentItemsKey[j]][a[i]].toFixed(
+      //         2
+      //       )
+      //     );
+      //   }
+      // }
+
+      this.departmentSeries.find((i) => i.name == "成交额").data =
+        Object.values(this.chartDepartmentItems).map((i) =>
+          i.chartTotalAmount.toFixed(2)
+        );
+      this.departmentSeries.find((i) => i.name == "真实金额").data =
+        Object.values(this.chartDepartmentItems).map((i) =>
+          i.chartCalculatedActualAmount.toFixed(2)
+        );
+      this.departmentSeries.find((i) => i.name == "售后毛利润").data =
+        Object.values(this.chartDepartmentItems).map((i) =>
+          i.chartCalculatedActualProfit.toFixed(2)
+        );
+
+      console.log("2", this.departmentSeries);
+
+      //this.departmentSeries[i]
+
+      // this.teamData = [];
+      // var c = Object.keys(this.chartTeamItems);
+
+      // for (let i = 0; i < c.length; i++) {
+      //   this.teamData[i] =
+      //     this.teamIdToName[Object.keys(this.chartTeamItems)[i]];
+      // }
+      // console.log(this.teamData);
+
+      this.teamData = Object.keys(this.chartTeamItems).map(
+        (i) => this.teamIdToName[i]
+      );
+
+      // for (let i = 0; i < a.length; i++) {
+      //   for (let j = 0; j < c.length; j++) {
+      //     this.teamSeries[i].data.push(
+      //       this.chartTeamItems[c[j]][a[i]].toFixed(2)
+      //     );
+      //   }
+      // }
+
+      this.teamSeries.find((i) => i.name == "成交额").data = Object.values(
+        this.chartTeamItems
+      ).map((i) => i.chartTotalAmount.toFixed(2));
+      this.teamSeries.find((i) => i.name == "真实金额").data = Object.values(
+        this.chartTeamItems
+      ).map((i) => i.chartCalculatedActualAmount.toFixed(2));
+      // this.teamSeries.find((i) => i.name == "售后毛利润").data = Object.values(
+      //   this.chartTeamItems
+      // ).map((i) => i.chartCalculatedActualProfit.toFixed(2));
 
       // console.log(this.chartTeamItems);
       // console.log(this.departmentSeries);

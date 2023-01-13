@@ -226,6 +226,13 @@ export default {
           ],
         },
 
+        {
+          title: "财务",
+          icon: "mdi-cash",
+          link: "/economy",
+          show: true,
+        },
+
         //{ title: "系统信息", icon: "mdi-bell-outline", link: "/notifications" },
 
         { divider: true },
