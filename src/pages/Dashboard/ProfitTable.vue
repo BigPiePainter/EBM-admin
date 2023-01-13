@@ -1357,7 +1357,7 @@ export default {
           style: { font },
         },
         {
-          header: "个人补单数",
+          header: "个人补单额",
           key: "totalPersonalFakeAmount",
           width: 10,
           style: { font },
@@ -1369,7 +1369,7 @@ export default {
           style: { font },
         },
         {
-          header: "个人破零数",
+          header: "个人破零额",
           key: "totalPersonalFakeEnablingAmount",
           width: 10,
           style: { font },
