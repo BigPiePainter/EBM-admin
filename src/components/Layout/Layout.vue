@@ -3,7 +3,7 @@
     <Header />
     <Sidebar />
     <v-main class="content">
-      <keep-alive include="ProductCopy,ProfitTable">
+      <keep-alive include="ProductCopy,ProfitTable,ProfitChart">
         <router-view />
       </keep-alive>
     </v-main>
@@ -16,12 +16,7 @@
         </v-card-title>
 
         <div style="max-height: calc(100vh - 400px); overflow-y: auto">
-          <v-card-text
-            style="max-height: 500px"
-            class="py-0 px-8 text--secondary"
-            v-for="(value, key) in content.split('\n')"
-            :key="key"
-          >
+          <v-card-text style="max-height: 500px" class="py-0 px-8 text--secondary" v-for="(value, key) in content.split('\n')" :key="key">
             <!-- 取巧 -->
             {{ value.trim() == "" ? "ㅤ" : value }}
           </v-card-text>

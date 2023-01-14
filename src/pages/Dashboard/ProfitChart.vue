@@ -1,21 +1,21 @@
 <template>
   <Page>
     <PageHeader title="统计图">
-      <v-menu ref="menu" v-model="datePicker" :close-on-content-click="false" :return-value.sync="dates" offset-y>
+      <v-menu ref="menu" v-model="datePicker" :close-on-content-click="false" :return-value.sync="date" offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-btn class="ml-2" text v-bind="attrs" v-on="on" color="primary" :disabled="loading || datePicker">
             <v-icon size="20" style="padding-top: 2px">mdi-calendar-blank</v-icon>
             <span> 日期选择 </span>
           </v-btn>
         </template>
-        <v-date-picker v-model="dates" no-title scrollable locale="zh-cn" color="primary" first-day-of-week="1" :day-format="dayFormat" min="2021-01-01" :max="parseDate(new Date())">
+        <v-date-picker v-model="date" no-title scrollable locale="zh-cn" color="primary" first-day-of-week="1" :day-format="dayFormat" min="2021-01-01" :max="parseDate(new Date())">
           <v-spacer></v-spacer>
           <v-btn text color="primary" @click="datePicker = false"> 取消 </v-btn>
           <v-btn
             text
             color="primary"
             @click="
-              $refs.menu.save(dates);
+              $refs.menu.save(date);
               loadData();
             "
           >
@@ -27,74 +27,79 @@
     <PageBody>
       <div class="d-flex">
         <v-col id="profitChartMainContainer">
-          <v-row>
-            <v-col cols="4">
-              <v-card class="ml-3 mx-1 mb-1" outlined :loading="loadingDialog">
+          <v-row v-if="Object.keys(departmentChartOptions).length == 0">
+            <v-col>
+              <v-card class="mx-1 mb-1" outlined :loading="loadingDialogDaily">
                 <v-card-title>
-                  <p class="caption">部门真实金额</p>
+                  <p class="text-body-1">部门统计</p>
                   <!-- <v-spacer />
                 <v-btn small color="primary" @click="departmentChartButton"
                   ><span>完整图表</span></v-btn
                 > -->
                 </v-card-title>
-                <v-chart style="height: 300px" :option="departmentsOption" ref="echartH"></v-chart>
+                <div style="height: 600px"></div>
               </v-card>
             </v-col>
-
-            <v-col cols="8">
-              <v-card class="mr-3 mx-1 mb-1" outlined :loading="loadingDialogDaily">
+          </v-row>
+          <v-row v-else v-for="(item, i) in departmentChartOptions" :key="i">
+            <v-col>
+              <v-card class="mx-1 mb-1" outlined :loading="loadingDialogDaily">
                 <v-card-title>
-                  <p class="caption">总成交额/售后毛利润</p>
+                  <p class="text-body-1">{{ departmentIdToName[i] + " 的月度统计" }}</p>
                   <!-- <v-spacer />
                 <v-btn small color="primary" @click="departmentChartButton"
                   ><span>完整图表</span></v-btn
                 > -->
                 </v-card-title>
-                <v-chart style="height: 300px" :option="generateBigChartOption" ref="echartA"></v-chart>
+                <v-chart style="height: 600px" :option="item" ref="departmentCharts"></v-chart>
               </v-card>
             </v-col>
           </v-row>
 
           <v-row>
             <v-col>
-              <v-card class="ml-3 mr-3 mx-1 mb-1" outlined :loading="loadingDialog">
+              <v-card class="mx-1 mb-1" outlined :loading="!(teamChartOption.series?.length > 0)">
                 <v-card-title>
-                  <p class="ml-3 pt-3 caption">店铺真实成交数汇总(已减去个人及团队补单)</p>
-                </v-card-title>
-                <v-chart :style="{ height: echartShopHeight }" :option="shopsOption" ref="echartShop"> </v-chart>
-              </v-card>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col>
-              <v-card class="ml-3 mr-3 mx-1 mb-1" outlined :loading="loadingDialog">
-                <v-card-title>
-                  <p class="caption">小组成交额/小组真实金额</p>
+                  <p class="text-body-1">小组 的单日利润剖析与排名 {{ this.date }}</p>
                   <!-- <v-spacer />
                 <v-btn small color="primary" @click="departmentChartButton"
                   ><span>完整图表</span></v-btn
                 > -->
                 </v-card-title>
-                <v-chart :style="{ height: echartTeamAmountHeight }" :option="teamsAmountOption" ref="echartTeamAmount"></v-chart>
+                <v-chart :style="{ height: teamChartHeight }" :option="teamChartOption" ref="teamChart"></v-chart>
               </v-card>
             </v-col>
           </v-row>
 
           <v-row>
             <v-col>
-              <v-card class="ml-3 mr-3 mx-1 mb-1" outlined :loading="loadingDialog">
+              <v-card class="mx-1 mb-1" outlined :loading="!(ownerChartOption.series?.length > 0)">
                 <v-card-title>
-                  <p class="caption">小组售后毛利润</p>
+                  <p class="text-body-1">持品人 的单日利润剖析与排名 {{ this.date }}</p>
+                  <!-- <v-spacer />
+                <v-btn small color="primary" @click="departmentChartButton"
+                  ><span>完整图表</span></v-btn
+                > -->
                 </v-card-title>
-                <v-chart :style="{ height: echartTeamProfitHeight }" :option="teamsProfitOption" ref="echartTeamProfit"></v-chart>
+                <v-chart :style="{ height: ownerChartHeight }" :option="ownerChartOption" ref="ownerChart"></v-chart>
               </v-card>
             </v-col>
           </v-row>
 
-          <!-- <v-dialog width="100px" v-model="loadingDialog"
-            ><v-card class="pl-4">正在加载</v-card></v-dialog
-          > -->
+          <v-row>
+            <v-col>
+              <v-card class="mx-1 mb-1" outlined :loading="!(shopChartOption.series?.length > 0)">
+                <v-card-title>
+                  <p class="text-body-1">店铺 的单日利润剖析与排名 {{ this.date }}</p>
+                  <!-- <v-spacer />
+                <v-btn small color="primary" @click="departmentChartButton"
+                  ><span>完整图表</span></v-btn
+                > -->
+                </v-card-title>
+                <v-chart :style="{ height: shopChartHeight }" :option="shopChartOption" ref="shopChart"></v-chart>
+              </v-card>
+            </v-col>
+          </v-row>
         </v-col>
       </div>
     </PageBody>
@@ -122,12 +127,8 @@ import { javaUTCDateToString } from "@/libs/utils";
 
 use([TooltipComponent, GridComponent, LegendComponent, MarkLineComponent, BarChart, LineChart, CanvasRenderer, TitleComponent, ToolboxComponent]);
 
-export const zeroPadding = (num) => {
-  return (num + "").padStart(2, 0);
-};
-
 export default {
-  name: "HelloWorld",
+  name: "ProfitChart",
   components: {
     Page,
     PageHeader,
@@ -138,39 +139,14 @@ export default {
     return {
       observer: null,
 
-      profitItems: {},
-      profitItemsCluster: {},
-
-      a: [],
       menu: null,
       datePicker: false,
-      chartDepartmentItems: {},
-      chartTeamItems: {},
 
-      shopActualOrderCount: {},
-
-      daysProfitObj: {},
-      dayProfitItem: [],
-      dayAmountItem: [],
-
-      departmentData: [],
-      teamData: [],
-      departmentSeries: [],
-      departmentSeries2: [],
-      teamSeries: [],
-      teamSeries2: [],
-      sumProfitInLongTimeSeries: [],
-
-      showDepartmentChartDialog: false,
-      showTeamChartDialog: false,
       loadingDialog: false,
       loadingDialogDaily: false,
 
       date: "", //当前选择的date
       loading: false,
-      chartDateData: [],
-      pp: [],
-      aa: [],
 
       profitHeadersForSumup: [
         //进行简单求和的列
@@ -203,15 +179,42 @@ export default {
         //----------------------------------------------------------------------
       ],
 
+      profitItems: {},
+      profitItemsCluster: {},
+
       profitHeadersForGroupby: ["department", "team", "owner", "shopName", "firstCategory"],
+
+      departmentChartOptions: {},
+
+      teamChartOption: {},
+      teamChartHeight: "300px",
+
+      ownerChartOption: {},
+      ownerChartHeight: "300px",
+
+      shopChartOption: {},
+      shopChartHeight: "300px",
+
+      refreshTimeout: 0,
+      lastRefreshTime: 0,
     };
   },
   computed: {
-    echartTeamAmountHeight() {
-      var height;
-      height = this.teamData.length * 35 + 150 + "px";
-      return height;
-    },
+    ...mapState([
+      "user",
+      "allDepartments",
+      "allShops",
+      "allTeams",
+      "allUsers",
+      "allCategorys",
+      "allCategoryHistorys",
+      "allShops",
+      "userIdToNick",
+      "teamIdToName",
+      "departmentIdToName",
+      "categoryIdToName",
+      "categoryIdToInfo",
+    ]),
 
     echartTeamProfitHeight() {
       var height;
@@ -231,9 +234,6 @@ export default {
 
     shopsOption: function () {
       return {
-        tooltip: {
-          trigger: "axis",
-        },
         legend: {},
         grid: {
           left: "100",
@@ -248,7 +248,6 @@ export default {
           // },
         },
         yAxis: {
-          type: "category",
           data: Object.keys(this.shopActualOrderCount),
         },
         xAxis: {
@@ -302,166 +301,21 @@ export default {
       };
     },
 
-    teamsAmountOption: function () {
-      return {
-        // tooltip: {
-        //   trigger: "axis",
-        // },
-        legend: {},
-        grid: {
-          left: "100",
-          right: "30",
-          bottom: "50",
-          top: "50",
-          //containLabel: true,
-        },
-        toolbox: {
-          // feature: {
-          //   saveAsImage: {},
-          // },
-        },
-        xAxis: [
-          {
-            type: "value",
-            axisLabel: {
-              show: false,
-              // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
-              // rotate: -30, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
-            },
-          },
-        ],
-        yAxis: [
-          {
-            inverse: true,
-            type: "category",
-            data: this.teamData,
-          },
-        ],
-        series: [{ ...this.teamSeries[0] }, { ...this.teamSeries[1] }],
-      };
-    },
-
-    teamsProfitOption: function () {
-      return {
-        // tooltip: {
-        //   trigger: "axis",
-        // },
-        legend: {},
-        grid: {
-          left: "100",
-          right: "30",
-          bottom: "50",
-          top: "0",
-          //containLabel: true,
-        },
-        toolbox: {
-          // feature: {
-          //   saveAsImage: {},
-          // },
-        },
-        xAxis: [
-          {
-            type: "value",
-            axisLabel: {
-              show: false,
-            },
-          },
-        ],
-        yAxis: [
-          {
-            inverse: true,
-            type: "category",
-            data: this.teamData,
-          },
-        ],
-
-        series: [{ ...this.teamSeries[2] }],
-      };
-    },
-
-    generateBigChartOption: function () {
-      
-      return {
-        tooltip: {
-          trigger: "axis",
-        },
-        legend: {},
-        grid: {
-          left: "20",
-          right: "30",
-          bottom: "10",
-          top: "20",
-          containLabel: true,
-        },
-        toolbox: {},
-        yAxis: [
-          {
-            type: "value",
-            // axisLabel: {
-            //   show: false,
-            // },
-          },
-        ],
-        xAxis: [
-          {
-            type: "category",
-            axisLabel: {
-              show: true,
-              // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
-              rotate: 90, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
-            },
-            data: this.chartDateData,
-          },
-        ],
-
-        series: [
-          {
-            name: "成交额总和",
-            type: "line",
-            data: this.dayAmountItem,
-          },
-          {
-            name: "售后毛利润总和",
-            type: "line",
-            data: this.dayProfitItem,
-          },
-        ],
-      };
-    },
-
     getSize: function () {
       var size;
       size = "width:" + this.$refs.cardsize.clientWidth + ";" + "height:" + this.$refs.cardsize.clientHeight;
       return size;
     },
-
-    ...mapState([
-      "user",
-      "allDepartments",
-      "allShops",
-      "allTeams",
-      "allUsers",
-      "allCategorys",
-      "allCategoryHistorys",
-      "allShops",
-      "userIdToNick",
-      "teamIdToName",
-      "departmentIdToName",
-      "categoryIdToName",
-      "categoryIdToInfo",
-    ]),
   },
 
   mounted() {
     var observer = new ResizeObserver(() => {
-      this.$refs.echartA.resize();
-      this.$refs.echartShop.resize();
-      // this.$refs.echartC.resize();
-      this.$refs.echartTeamAmount.resize();
-      //this.$refs.echartE.resize();
-      this.$refs.echartTeamProfit.resize();
-      // this.$refs.echartG.resize();
-      this.$refs.echartH.resize();
+      console.log(this.$refs);
+
+      this.$refs.departmentCharts?.forEach((i) => i.resize());
+      this.$refs.teamChart.resize();
+      this.$refs.ownerChart.resize();
+      this.$refs.shopChart.resize();
     });
     observer.observe(document.querySelector("#profitChartMainContainer"));
   },
@@ -474,11 +328,557 @@ export default {
   },
 
   methods: {
-    teamChartButton() {
-      this.showTeamChartDialog = true;
+    zeroPadding(num) {
+      return (num + "").padStart(2, 0);
     },
-    departmentChartButton() {
-      this.showDepartmentChartDialog = true;
+    refreshSingleDayChartData() {
+      console.log(this.profitItemsCluster[this.date].team);
+
+      var teamDatas = Object.values(this.profitItemsCluster[this.date].team);
+      teamDatas.sort((a, b) => b.calculatedActualProfit - a.calculatedActualProfit);
+
+      var ownerDatas = Object.values(this.profitItemsCluster[this.date].owner);
+      ownerDatas.sort((a, b) => b.calculatedActualProfit - a.calculatedActualProfit);
+
+      var shopDatas = Object.values(this.profitItemsCluster[this.date].shopName);
+      shopDatas.sort((a, b) => b.calculatedActualProfit - a.calculatedActualProfit);
+
+      console.log(teamDatas);
+
+      this.teamChartHeight = teamDatas.length * 50 + 150 + "px";
+      this.ownerChartHeight = ownerDatas.length * 50 + 150 + "px";
+      this.shopChartHeight = shopDatas.length * 50 + 150 + "px";
+
+      this.$refs.teamChart.resize();
+      this.$refs.ownerChart.resize();
+      this.$refs.shopChart.resize();
+
+      this.teamChartOption = {
+        tooltip: {
+          trigger: "axis",
+        },
+        legend: {},
+        grid: {
+          left: "80",
+          right: "0",
+          bottom: "20",
+          top: "30",
+        },
+        toolbox: {
+          // feature: {
+          //   saveAsImage: {},
+          // },
+        },
+        yAxis: [
+          {
+            inverse: true,
+            type: "category",
+            data: [], //y轴坐标数据
+          },
+        ],
+        xAxis: [
+          {
+            type: "value",
+            axisLabel: {
+              show: false,
+              // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
+              // rotate: -30, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
+            },
+          },
+        ],
+        series: [],
+      };
+
+      this.ownerChartOption = {
+        tooltip: {
+          trigger: "axis",
+        },
+        legend: {},
+        grid: {
+          left: "80",
+          right: "0",
+          bottom: "20",
+          top: "30",
+        },
+        toolbox: {
+          // feature: {
+          //   saveAsImage: {},
+          // },
+        },
+        yAxis: [
+          {
+            inverse: true,
+            type: "category",
+            data: [], //y轴坐标数据
+          },
+        ],
+        xAxis: [
+          {
+            type: "value",
+            axisLabel: {
+              show: false,
+              // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
+              // rotate: -30, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
+            },
+          },
+        ],
+        series: [],
+      };
+
+      this.shopChartOption = {
+        tooltip: {
+          trigger: "axis",
+        },
+        legend: {},
+        grid: {
+          left: "80",
+          right: "0",
+          bottom: "20",
+          top: "30",
+        },
+        toolbox: {
+          // feature: {
+          //   saveAsImage: {},
+          // },
+        },
+        yAxis: [
+          {
+            inverse: true,
+            type: "category",
+            data: [], //y轴坐标数据
+          },
+        ],
+        xAxis: [
+          {
+            type: "value",
+            axisLabel: {
+              show: false,
+              // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
+              // rotate: -30, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
+            },
+          },
+        ],
+        series: [],
+      };
+
+      this.teamChartOption.yAxis[0].data = teamDatas.map((i) => this.teamIdToName[i.team]);
+      this.teamChartOption.series.push({
+        name: "总成交额",
+        type: "bar",
+        stack: "amount",
+        data: teamDatas.map((d) => d.totalAmount.toFixed(2)),
+        label: {
+          show: true,
+          position: "right",
+          formatter: "￥{c}",
+        },
+      });
+      this.teamChartOption.series.push({
+        name: "拿货成本",
+        type: "bar",
+        stack: "amount3",
+        data: teamDatas.map((d) => (d.calculatedActualCost < 0 ? 0 : d.calculatedActualCost.toFixed(2))),
+      });
+      this.teamChartOption.series.push({
+        name: "扣点",
+        type: "bar",
+        stack: "amount3",
+        data: teamDatas.map((d) => (d.calculatedTmallTokeRatio < 0 ? 0 : d.calculatedTmallTokeRatio.toFixed(2))),
+      });
+      this.teamChartOption.series.push({
+        name: "运费险",
+        type: "bar",
+        stack: "amount3",
+        data: teamDatas.map((d) => (d.calculatedTotalInsurance < 0 ? 0 : d.calculatedTotalInsurance.toFixed(2))),
+      });
+      this.teamChartOption.series.push({
+        name: "运费",
+        type: "bar",
+        stack: "amount3",
+        data: teamDatas.map((d) => (d.calculatedTotalFreight < 0 ? 0 : d.calculatedTotalFreight.toFixed(2))),
+      });
+      this.teamChartOption.series.push({
+        name: "刷单佣金",
+        type: "bar",
+        stack: "amount3",
+        data: teamDatas.map((d) => (d.totalBrokerage < 0 ? 0 : d.totalBrokerage.toFixed(2))),
+      });
+      this.teamChartOption.series.push({
+        name: "总退款",
+        type: "bar",
+        stack: "amount3",
+        data: teamDatas.map((d) => d.totalRefundAmount.toFixed(2)),
+      });
+      this.teamChartOption.series.push({
+        name: "补单额",
+        type: "bar",
+        stack: "amount3",
+        data: teamDatas.map((d) => d.calculateTotalAllFakeAmount.toFixed(2)),
+      });
+      this.teamChartOption.series.push({
+        name: "售后毛利润",
+        type: "bar",
+        stack: "amount3",
+        color: "#91cc75",
+        data: teamDatas.map((d) => (d.calculatedActualProfit < 0 ? 0 : d.calculatedActualProfit.toFixed(2))),
+        label: {
+          show: true,
+          position: "right",
+          formatter: "￥{c}",
+        },
+      });
+
+      this.ownerChartOption.yAxis[0].data = ownerDatas.map((i) => this.userIdToNick[i.owner]);
+      this.ownerChartOption.series.push({
+        name: "总成交额",
+        type: "bar",
+        stack: "amount",
+        data: ownerDatas.map((d) => d.totalAmount.toFixed(2)),
+        label: {
+          show: true,
+          position: "right",
+          formatter: "￥{c}",
+        },
+      });
+      this.ownerChartOption.series.push({
+        name: "拿货成本",
+        type: "bar",
+        stack: "amount3",
+        data: ownerDatas.map((d) => (d.calculatedActualCost < 0 ? 0 : d.calculatedActualCost.toFixed(2))),
+      });
+      this.ownerChartOption.series.push({
+        name: "扣点",
+        type: "bar",
+        stack: "amount3",
+        data: ownerDatas.map((d) => (d.calculatedTmallTokeRatio < 0 ? 0 : d.calculatedTmallTokeRatio.toFixed(2))),
+      });
+      this.ownerChartOption.series.push({
+        name: "运费险",
+        type: "bar",
+        stack: "amount3",
+        data: ownerDatas.map((d) => (d.calculatedTotalInsurance < 0 ? 0 : d.calculatedTotalInsurance.toFixed(2))),
+      });
+      this.ownerChartOption.series.push({
+        name: "运费",
+        type: "bar",
+        stack: "amount3",
+        data: ownerDatas.map((d) => (d.calculatedTotalFreight < 0 ? 0 : d.calculatedTotalFreight.toFixed(2))),
+      });
+      this.ownerChartOption.series.push({
+        name: "刷单佣金",
+        type: "bar",
+        stack: "amount3",
+        data: ownerDatas.map((d) => (d.totalBrokerage < 0 ? 0 : d.totalBrokerage.toFixed(2))),
+      });
+      this.ownerChartOption.series.push({
+        name: "总退款",
+        type: "bar",
+        stack: "amount3",
+        data: ownerDatas.map((d) => d.totalRefundAmount.toFixed(2)),
+      });
+      this.ownerChartOption.series.push({
+        name: "补单额",
+        type: "bar",
+        stack: "amount3",
+        data: ownerDatas.map((d) => d.calculateTotalAllFakeAmount.toFixed(2)),
+      });
+      this.ownerChartOption.series.push({
+        name: "售后毛利润",
+        type: "bar",
+        stack: "amount3",
+        color: "#91cc75",
+        data: ownerDatas.map((d) => (d.calculatedActualProfit < 0 ? 0 : d.calculatedActualProfit.toFixed(2))),
+        label: {
+          show: true,
+          position: "right",
+          formatter: "￥{c}",
+        },
+      });
+
+      this.shopChartOption.yAxis[0].data = shopDatas.map((i) => i.shopName);
+      this.shopChartOption.series.push({
+        name: "总成交额",
+        type: "bar",
+        stack: "amount",
+        data: shopDatas.map((d) => d.totalAmount.toFixed(2)),
+        label: {
+          show: true,
+          position: "right",
+          formatter: "￥{c}",
+        },
+      });
+      this.shopChartOption.series.push({
+        name: "拿货成本",
+        type: "bar",
+        stack: "amount3",
+        data: shopDatas.map((d) => (d.calculatedActualCost < 0 ? 0 : d.calculatedActualCost.toFixed(2))),
+      });
+      this.shopChartOption.series.push({
+        name: "扣点",
+        type: "bar",
+        stack: "amount3",
+        data: shopDatas.map((d) => (d.calculatedTmallTokeRatio < 0 ? 0 : d.calculatedTmallTokeRatio.toFixed(2))),
+      });
+      this.shopChartOption.series.push({
+        name: "运费险",
+        type: "bar",
+        stack: "amount3",
+        data: shopDatas.map((d) => (d.calculatedTotalInsurance < 0 ? 0 : d.calculatedTotalInsurance.toFixed(2))),
+      });
+      this.shopChartOption.series.push({
+        name: "运费",
+        type: "bar",
+        stack: "amount3",
+        data: shopDatas.map((d) => (d.calculatedTotalFreight < 0 ? 0 : d.calculatedTotalFreight.toFixed(2))),
+      });
+      this.shopChartOption.series.push({
+        name: "刷单佣金",
+        type: "bar",
+        stack: "amount3",
+        data: shopDatas.map((d) => (d.totalBrokerage < 0 ? 0 : d.totalBrokerage.toFixed(2))),
+      });
+      this.shopChartOption.series.push({
+        name: "总退款",
+        type: "bar",
+        stack: "amount3",
+        data: shopDatas.map((d) => d.totalRefundAmount.toFixed(2)),
+      });
+      this.shopChartOption.series.push({
+        name: "补单额",
+        type: "bar",
+        stack: "amount3",
+        data: shopDatas.map((d) => d.calculateTotalAllFakeAmount.toFixed(2)),
+      });
+      this.shopChartOption.series.push({
+        name: "售后毛利润",
+        type: "bar",
+        stack: "amount3",
+        color: "#91cc75",
+        data: shopDatas.map((d) => (d.calculatedActualProfit < 0 ? 0 : d.calculatedActualProfit.toFixed(2))),
+        label: {
+          show: true,
+          position: "right",
+          formatter: "￥{c}",
+        },
+      });
+
+      this.$refs.teamChart.resize();
+      this.$refs.ownerChart.resize();
+      this.$refs.shopChart.resize();
+    },
+    refreshBigChartData(force) {
+      var now = new Date();
+      if (!force && now.getTime() - this.lastRefreshTime < 2000) {
+        clearTimeout(this.refreshTimeout);
+        this.refreshTimeout = setTimeout(this.refreshBigChartData, 1000);
+        return;
+      }
+      clearTimeout(this.refreshTimeout);
+      this.lastRefreshTime = now.getTime();
+
+      var datas = Object.values(this.profitItemsCluster);
+
+      var endDay = new Date(this.date);
+      var startDate = new Date(this.date);
+      startDate.setDate(startDate.getDate() - 31);
+
+      var startTimeStemp = startDate.getTime();
+      var endTimeStemp = endDay.getTime();
+
+      datas = datas.filter((i) => i.timeStemp <= endTimeStemp && i.timeStemp > startTimeStemp);
+      datas.sort((a, b) => a.timeStemp - b.timeStemp);
+      //console.log(datas);
+
+      this.departmentChartOptions = {};
+
+      //var colors = ["#5470C6", "#91CC75", "#EE6666"];
+
+      datas.forEach((i) => {
+        for (let name in i.department) {
+          this.departmentChartOptions[name] = {
+            // color: colors,
+            tooltip: {
+              trigger: "axis",
+              axisPointer: {
+                type: "cross",
+              },
+            },
+            legend: {},
+            grid: {
+              left: "20",
+              right: "30",
+              bottom: "20",
+              top: "30",
+              containLabel: true,
+            },
+            toolbox: {},
+            yAxis: [
+              {
+                type: "value",
+                position: "left",
+                // name: "金额",
+                // axisLabel: {
+                //   show: false,
+                // },
+                axisLabel: {
+                  formatter: "￥{value}",
+                },
+                axisLine: {
+                  show: true,
+                  lineStyle: {
+                    //color: colors[0],
+                  },
+                },
+              },
+              {
+                type: "value",
+                position: "right",
+                name: "利润",
+                // axisLabel: {
+                //   show: false,
+                // },
+                axisLabel: {
+                  formatter: "￥{value}",
+                },
+                axisLine: {
+                  show: true,
+                  lineStyle: {
+                    //color: colors[1],
+                  },
+                },
+              },
+              {
+                type: "value",
+                position: "right",
+                name: "订单数",
+                // axisLabel: {
+                //   show: false,
+                // },
+                offset: 80,
+                axisLine: {
+                  show: true,
+                  lineStyle: {
+                    //color: colors[1],
+                  },
+                },
+              },
+            ],
+            xAxis: [
+              {
+                type: "category",
+                axisLabel: {
+                  show: true,
+                  // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
+                  rotate: 45, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
+                },
+                data: [], //x坐标轴数据
+              },
+            ],
+
+            series: [],
+          };
+        }
+      });
+
+      //console.log(this.departmentChartOptions);
+
+      for (let id in this.departmentChartOptions) {
+        this.departmentChartOptions[id].xAxis[0].data = datas.map((i) => i.date.split("-")[1] + "月" + i.date.split("-")[2]);
+
+        this.departmentChartOptions[id].series.push({
+          name: "真实成交额",
+          stack: "amount",
+          barWidth: "40%",
+          type: "bar",
+          data: datas.map((d) => (d.department[id] ? d.department[id].calculatedActualAmount.toFixed(2) : 0)),
+          label: {
+            show: true,
+            position: "inside",
+            rotate: 90,
+            fontSize: 12,
+            formatter: "￥{c}",
+          },
+        });
+        this.departmentChartOptions[id].series.push({
+          name: "售后毛利润",
+          type: "line",
+          yAxisIndex: 1,
+          data: datas.map((d) => (d.department[id] ? d.department[id].calculatedActualProfit.toFixed(2) : 0)),
+          label: {
+            show: true,
+            fontSize: 10,
+            formatter: "￥{c}",
+          },
+          symbolSize: 10,
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                width: 5,
+              },
+            },
+          },
+        });
+
+        this.departmentChartOptions[id].series.push({
+          name: "补单额",
+          stack: "amount",
+          type: "bar",
+          data: datas.map((d) => (d.department[id] ? d.department[id].calculateTotalAllFakeAmount.toFixed(2) : 0)),
+        });
+
+        this.departmentChartOptions[id].series.push({
+          name: "平台扣点",
+          type: "bar",
+          barWidth: "20%",
+          stack: "amount2",
+          data: datas.map((d) => (d.department[id] ? d.department[id].calculatedTmallTokeRatio.toFixed(2) : 0)),
+        });
+
+        this.departmentChartOptions[id].series.push({
+          name: "退款额",
+          type: "bar",
+          barWidth: "20%",
+          stack: "amount2",
+          data: datas.map((d) => (d.department[id] ? d.department[id].totalRefundAmount.toFixed(2) : 0)),
+        });
+
+        this.departmentChartOptions[id].series.push({
+          name: "真实订单数",
+          type: "line",
+          yAxisIndex: 2,
+          data: datas.map((d) => (d.department[id] ? d.department[id].calculatedActualOrderCount : 0)),
+          label: {
+            show: true,
+            fontSize: 8,
+          },
+        });
+        this.departmentChartOptions[id].series.push({
+          name: "补单数",
+          type: "line",
+          yAxisIndex: 2,
+          data: datas.map((d) => (d.department[id] ? d.department[id].totalFakeCount + d.department[id].totalPersonalFakeCount + d.department[id].totalPersonalFakeEnablingCount : 0)),
+          label: {
+            show: true,
+            fontSize: 8,
+          },
+        });
+
+        this.departmentChartOptions[id].series.push({
+          name: "拿货成本",
+          type: "bar",
+          barWidth: "20%",
+          stack: "amount2",
+          data: datas.map((d) => (d.department[id] ? d.department[id].calculatedActualCost.toFixed(2) : 0)),
+        });
+      }
+
+      // Object.keys(this.departmentChartOptions).map((i) => {
+      //     return {
+      //       name: this.departmentIdToName[i],
+      //       type: "bar",
+      //       data: datas.map((d) => (d.department[i] ? d.department[i].totalAmount : 0)),
+      //     };
+      //   });
     },
 
     parseDate(date) {
@@ -494,7 +894,8 @@ export default {
 
     loadData() {
       console.log("loadData");
-      this.daysProfitObj = {};
+
+      this.teamChartOption = {};
 
       this.loadingDialogDaily = true;
 
@@ -512,13 +913,17 @@ export default {
         var daysDef = new Date(currentDay);
 
         var argsDayDef = {
-          startDate: `${daysDef.getFullYear()}/${zeroPadding(daysDef.getMonth() + 1)}/${zeroPadding(daysDef.getDate())}`,
-          endDate: `${daysDef.getFullYear()}/${zeroPadding(daysDef.getMonth() + 1)}/${zeroPadding(daysDef.getDate())}`,
+          startDate: `${daysDef.getFullYear()}/${this.zeroPadding(daysDef.getMonth() + 1)}/${this.zeroPadding(daysDef.getDate())}`,
+          endDate: `${daysDef.getFullYear()}/${this.zeroPadding(daysDef.getMonth() + 1)}/${this.zeroPadding(daysDef.getDate())}`,
         };
         argsDays.push(argsDayDef);
 
+        //生成空数据
+        this.dataAnalyze(argsDayDef.startDate.replaceAll("/", "-"), []);
+
         currentDay.setDate(currentDay.getDate() - 1);
       }
+      this.refreshBigChartData();
 
       for (let i = 0; i < argsDays.length; i++) {
         getProfitReport(argsDays[i])
@@ -528,7 +933,11 @@ export default {
               this.loadingDialogDaily = false;
             }
 
-            this.dataAnalyze(argsDays[i].startDate, res.data.profitReport);
+            this.dataAnalyze(argsDays[i].startDate.replaceAll("/", "-"), res.data.profitReport);
+            this.refreshBigChartData(!this.loadingDialogDaily);
+            if (argsDays[i].startDate.replaceAll("/", "-") == this.date) {
+              this.refreshSingleDayChartData();
+            }
           })
           .catch(() => {
             this.loading = false;
@@ -536,97 +945,97 @@ export default {
       }
     },
 
-    daysProfitAnalyze(date, daysProfitItems) {
-      this.daysProfitObj[date] = {
-        dayIndex: new Date(date).getTime(),
-        daysTotalProfit: 0,
-        daysTotalAmount: 0,
-      };
+    // daysProfitAnalyze(date, daysProfitItems) {
+    //   this.daysProfitObj[date] = {
+    //     dayIndex: new Date(date).getTime(),
+    //     daysTotalProfit: 0,
+    //     daysTotalAmount: 0,
+    //   };
 
-      daysProfitItems.forEach((item) => {
-        item.date = date;
-        item.calculatedDepartment = this.departmentIdToName[item.department];
-        item.calculatedTeam = this.teamIdToName[item.team];
-        item.calculatedOwner = this.userIdToNick[item.owner];
-        item.calculatedFirstCategory = this.categoryIdToName[item.firstCategory];
+    //   daysProfitItems.forEach((item) => {
+    //     item.date = date;
+    //     item.calculatedDepartment = this.departmentIdToName[item.department];
+    //     item.calculatedTeam = this.teamIdToName[item.team];
+    //     item.calculatedOwner = this.userIdToNick[item.owner];
+    //     item.calculatedFirstCategory = this.categoryIdToName[item.firstCategory];
 
-        if (item.orderCount == null) {
-          item.orderCount = 0;
-        }
-        if (item.productCount == null) {
-          item.productCount = 0;
-        }
-        if (item.totalAmount == null) {
-          item.totalAmount = 0;
-        }
+    //     if (item.orderCount == null) {
+    //       item.orderCount = 0;
+    //     }
+    //     if (item.productCount == null) {
+    //       item.productCount = 0;
+    //     }
+    //     if (item.totalAmount == null) {
+    //       item.totalAmount = 0;
+    //     }
 
-        item.deduction /= 100;
-        item.freightToPayment /= 100;
+    //     item.deduction /= 100;
+    //     item.freightToPayment /= 100;
 
-        item.calculateTotalAllFakeAmount = item.totalFakeAmount + item.totalPersonalFakeAmount + item.totalPersonalFakeEnablingAmount;
+    //     item.calculateTotalAllFakeAmount = item.totalFakeAmount + item.totalPersonalFakeAmount + item.totalPersonalFakeEnablingAmount;
 
-        item.calculatedActualAmount = item.totalAmount - item.calculateTotalAllFakeAmount;
-        item.calculatedActualOrderCount = item.orderCount - item.totalFakeCount - item.totalPersonalFakeCount - item.totalPersonalFakeEnablingCount;
+    //     item.calculatedActualAmount = item.totalAmount - item.calculateTotalAllFakeAmount;
+    //     item.calculatedActualOrderCount = item.orderCount - item.totalFakeCount - item.totalPersonalFakeCount - item.totalPersonalFakeEnablingCount;
 
-        if (item.calculatedActualOrderCount == 0) {
-          item.calculatedActualAverageAmount = 0;
-        } else {
-          item.calculatedActualAverageAmount = item.calculatedActualAmount / item.calculatedActualOrderCount;
-        }
+    //     if (item.calculatedActualOrderCount == 0) {
+    //       item.calculatedActualAverageAmount = 0;
+    //     } else {
+    //       item.calculatedActualAverageAmount = item.calculatedActualAmount / item.calculatedActualOrderCount;
+    //     }
 
-        item.calculatedCostRatio = item.totalCost / item.calculatedActualAmount;
+    //     item.calculatedCostRatio = item.totalCost / item.calculatedActualAmount;
 
-        item.calculatedProfitRatio = item.freightToPayment
-          ? item.calculatedActualAmount - item.totalCost - item.deduction * item.calculatedActualAmount - item.insurance * item.calculatedActualOrderCount - item.freightToPayment * item.totalCost
-          : item.calculatedActualAmount - item.totalCost - item.deduction * item.calculatedActualAmount - (item.insurance + item.freight) * item.calculatedActualOrderCount;
-        item.calculatedProfitRatio /= item.calculatedActualAmount;
+    //     item.calculatedProfitRatio = item.freightToPayment
+    //       ? item.calculatedActualAmount - item.totalCost - item.deduction * item.calculatedActualAmount - item.insurance * item.calculatedActualOrderCount - item.freightToPayment * item.totalCost
+    //       : item.calculatedActualAmount - item.totalCost - item.deduction * item.calculatedActualAmount - (item.insurance + item.freight) * item.calculatedActualOrderCount;
+    //     item.calculatedProfitRatio /= item.calculatedActualAmount;
 
-        item.calculatedActualIncome = item.calculatedActualAmount - item.totalRefundAmount;
-        item.calculatedRefundWithNoShipAmount = item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
-        //后加的
-        if (isNaN(item.calculatedRefundWithNoShipAmount)) {
-          item.calculatedRefundWithNoShipAmount = 0;
-        }
-        //
-        item.calculatedActualCost = item.totalCost - item.calculatedRefundWithNoShipAmount;
-        item.calculatedTmallTokeRatio = item.deduction * (item.totalAmount - item.totalRefundAmount - item.totalPersonalFakeAmount);
-        item.calculatedTotalFreight = item.freightToPayment ? item.freightToPayment * item.calculatedActualCost : item.freight * (item.calculatedActualOrderCount - item.totalRefundWithNoShipCount);
-        item.calculatedTotalInsurance = item.insurance * (item.orderCount - item.totalRefundWithNoShipCount);
-        item.calculatedActualProfit =
-          item.calculatedActualIncome - item.calculatedActualCost - item.calculatedTmallTokeRatio - item.calculatedTotalInsurance - item.calculatedTotalFreight - item.totalBrokerage;
+    //     item.calculatedActualIncome = item.calculatedActualAmount - item.totalRefundAmount;
+    //     item.calculatedRefundWithNoShipAmount = item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
+    //     //后加的
+    //     if (isNaN(item.calculatedRefundWithNoShipAmount)) {
+    //       item.calculatedRefundWithNoShipAmount = 0;
+    //     }
+    //     //
+    //     item.calculatedActualCost = item.totalCost - item.calculatedRefundWithNoShipAmount;
+    //     item.calculatedTmallTokeRatio = item.deduction * (item.totalAmount - item.totalRefundAmount - item.totalPersonalFakeAmount);
+    //     item.calculatedTotalFreight = item.freightToPayment ? item.freightToPayment * item.calculatedActualCost : item.freight * (item.calculatedActualOrderCount - item.totalRefundWithNoShipCount);
+    //     item.calculatedTotalInsurance = item.insurance * (item.orderCount - item.totalRefundWithNoShipCount);
+    //     item.calculatedActualProfit =
+    //       item.calculatedActualIncome - item.calculatedActualCost - item.calculatedTmallTokeRatio - item.calculatedTotalInsurance - item.calculatedTotalFreight - item.totalBrokerage;
 
-        item.calculatedActualProfitRatio = item.calculatedActualProfit / item.calculatedActualIncome;
+    //     item.calculatedActualProfitRatio = item.calculatedActualProfit / item.calculatedActualIncome;
 
-        if (item.calculatedActualProfit < 0 && item.calculatedActualProfitRatio > 0) {
-          item.calculatedActualProfitRatio *= -1;
-        }
+    //     if (item.calculatedActualProfit < 0 && item.calculatedActualProfitRatio > 0) {
+    //       item.calculatedActualProfitRatio *= -1;
+    //     }
 
-        item.calculatedDiscount = item.totalAmount / item.totalPrice;
+    //     item.calculatedDiscount = item.totalAmount / item.totalPrice;
 
-        if (item.calculatedActualProfit !== item.calculatedActualProfit) {
-          item.calculatedActualProfit = 0;
-        }
+    //     if (item.calculatedActualProfit !== item.calculatedActualProfit) {
+    //       item.calculatedActualProfit = 0;
+    //     }
 
-        this.daysProfitObj[date].daysTotalProfit += item.calculatedActualProfit;
-        this.daysProfitObj[date].daysTotalAmount += item.totalAmount;
-      });
+    //     this.daysProfitObj[date].daysTotalProfit += item.calculatedActualProfit;
+    //     this.daysProfitObj[date].daysTotalAmount += item.totalAmount;
+    //   });
 
-      console.log("处理后的每日报表");
-      console.log(this.daysProfitObj);
+    //   console.log("处理后的每日报表");
+    //   //console.log(this.daysProfitObj);
 
-      // console.log(Object.keys(this.daysProfitObj).sort());
-      this.chartDateData = Object.keys(this.daysProfitObj).sort();
-      console.log(this.chartDateData);
+    //   // console.log(Object.keys(this.daysProfitObj).sort());
+    //   this.chartDateData = Object.keys(this.daysProfitObj).sort();
+    //   //console.log(this.chartDateData);
 
-      var chartArr = Object.values(this.daysProfitObj).sort((a, b) => a.dayIndex - b.dayIndex);
+    //   var chartArr = Object.values(this.daysProfitObj).sort((a, b) => a.dayIndex - b.dayIndex);
 
-      console.log(chartArr);
+    //   console.log(chartArr);
 
-      this.dayProfitItem = chartArr.map((i) => i.daysTotalProfit.toFixed(2));
-      this.dayAmountItem = chartArr.map((i) => i.daysTotalAmount.toFixed(2));
+    //   this.dayProfitItem = chartArr.map((i) => i.daysTotalProfit.toFixed(2));
+    //   this.dayAmountItem = chartArr.map((i) => i.daysTotalAmount.toFixed(2));
 
-      console.log(this.dayAmountItem);
-    },
+    //   console.log(this.dayAmountItem);
+    // },
 
     // dataAnalyze() {
     //   this.profitItems.forEach((item) => {
@@ -1012,7 +1421,10 @@ export default {
       });
 
       this.profitItems[date] = profitItems;
-      this.profitItemsCluster[date] = {};
+      this.profitItemsCluster[date] = {
+        date: date,
+        timeStemp: new Date(date).getTime(),
+      };
       this.profitHeadersForGroupby.forEach((headerForGroupby) => {
         this.profitItemsCluster[date][headerForGroupby] = {};
       });
@@ -1021,6 +1433,7 @@ export default {
         this.profitHeadersForGroupby.forEach((headerForGroupby) => {
           if (!this.profitItemsCluster[date][headerForGroupby][item[headerForGroupby]]) {
             this.profitItemsCluster[date][headerForGroupby][item[headerForGroupby]] = {};
+            this.profitItemsCluster[date][headerForGroupby][item[headerForGroupby]][headerForGroupby] = item[headerForGroupby];
             this.profitHeadersForSumup.forEach((headerForSumup) => {
               this.profitItemsCluster[date][headerForGroupby][item[headerForGroupby]][headerForSumup] = 0;
             });
@@ -1041,9 +1454,9 @@ export default {
         });
       });
 
-      console.log("数据：" + date);
-      console.log(this.profitItems);
-      console.log("统计数据", this.profitItemsCluster);
+      //console.log("数据：" + date);
+      //console.log(this.profitItems);
+      //console.log("统计数据", this.profitItemsCluster);
     },
   },
 

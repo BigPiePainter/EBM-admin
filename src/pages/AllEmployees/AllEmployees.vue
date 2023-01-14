@@ -382,7 +382,7 @@
                           v-model="selectedPermission.f.s"
                           hide-details
                           dense
-                          :disabled="!user.permission.f.s"
+                          :disabled="!user.permission.f?.s"
                         >
                           <template v-slot:label>
                             <span class="text-subtitle-2">显示商品ID与店铺</span>
