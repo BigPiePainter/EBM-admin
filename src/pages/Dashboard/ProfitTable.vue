@@ -1,38 +1,18 @@
 <template>
   <div class="page-content d-flex flex-column">
     <PageHeader title="利润报表">
-      <v-btn
-        class="ml-2"
-        text
-        color="primary"
-        @click="download"
-        :disabled="loading"
-      >
+      <v-btn class="ml-2" text color="primary" @click="download" :disabled="loading">
         <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
         导出
       </v-btn>
       <v-btn class="ml-2" text color="primary" @click="showDetailButton">
-        <v-icon v-if="isShowDetail" size="20" style="padding-top: 2px"
-          >mdi-arrow-collapse-horizontal</v-icon
-        >
-        <v-icon v-else size="20" style="padding-top: 2px"
-          >mdi-arrow-expand-horizontal</v-icon
-        >
+        <v-icon v-if="isShowDetail" size="20" style="padding-top: 2px">mdi-arrow-collapse-horizontal</v-icon>
+        <v-icon v-else size="20" style="padding-top: 2px">mdi-arrow-expand-horizontal</v-icon>
         <span> {{ isShowDetail ? "收起详细数据" : "展开详细数据" }} </span>
       </v-btn>
-      <v-btn
-        class="ml-2"
-        text
-        color="primary"
-        :disabled="loading || datePicker"
-        @click="changeDateRangeButton"
-      >
-        <v-icon v-if="isDateRange" size="20" style="padding-top: 2px"
-          >mdi-calendar-blank</v-icon
-        >
-        <v-icon v-else size="20" style="padding-top: 2px"
-          >mdi-calendar-blank-multiple</v-icon
-        >
+      <v-btn class="ml-2" text color="primary" :disabled="loading || datePicker" @click="changeDateRangeButton">
+        <v-icon v-if="isDateRange" size="20" style="padding-top: 2px">mdi-calendar-blank</v-icon>
+        <v-icon v-else size="20" style="padding-top: 2px">mdi-calendar-blank-multiple</v-icon>
         <span> {{ isDateRange ? "关闭时间段模式" : "开启时间段模式" }} </span>
       </v-btn>
     </PageHeader>
@@ -44,13 +24,7 @@
               <span class="group-title"> 日期选择 </span>
             </v-row>
             <v-row>
-              <v-menu
-                ref="menu"
-                v-model="datePicker"
-                :close-on-content-click="false"
-                :return-value.sync="dates"
-                offset-y
-              >
+              <v-menu ref="menu" v-model="datePicker" :close-on-content-click="false" :return-value.sync="dates" offset-y>
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     class="date-picker-textfield search-input"
@@ -79,9 +53,7 @@
                   :max="parseDate(new Date())"
                 >
                   <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="datePicker = false">
-                    取消
-                  </v-btn>
+                  <v-btn text color="primary" @click="datePicker = false"> 取消 </v-btn>
                   <v-btn
                     text
                     color="primary"
@@ -116,14 +88,7 @@
                 class="search-input search-input"
               >
                 <template v-slot:selection="option">
-                  <v-chip
-                    small
-                    close
-                    close-icon="mdi-close"
-                    color="primary"
-                    outlined
-                    @click:close="remove('department', option)"
-                  >
+                  <v-chip small close close-icon="mdi-close" color="primary" outlined @click:close="remove('department', option)">
                     {{ option.item.name }}
                   </v-chip>
                 </template>
@@ -141,28 +106,9 @@
               <span class="group-title"> 组别 </span>
             </v-row>
             <v-row>
-              <v-autocomplete
-                no-data-text="空"
-                color="primary"
-                :items="validTeam"
-                dense
-                outlined
-                item-text="name"
-                item-value="uid"
-                v-model="search.team"
-                multiple
-                hide-details
-                class="search-input"
-              >
+              <v-autocomplete no-data-text="空" color="primary" :items="validTeam" dense outlined item-text="name" item-value="uid" v-model="search.team" multiple hide-details class="search-input">
                 <template v-slot:selection="option">
-                  <v-chip
-                    small
-                    close
-                    close-icon="mdi-close"
-                    color="primary"
-                    outlined
-                    @click:close="remove('team', option)"
-                  >
+                  <v-chip small close close-icon="mdi-close" color="primary" outlined @click:close="remove('team', option)">
                     {{ option.item.name }}
                   </v-chip>
                 </template>
@@ -180,28 +126,9 @@
               <span class="group-title"> 持品人 </span>
             </v-row>
             <v-row>
-              <v-autocomplete
-                no-data-text="空"
-                color="primary"
-                :items="validOwner"
-                dense
-                outlined
-                item-text="nick"
-                item-value="uid"
-                v-model="search.owner"
-                multiple
-                hide-details
-                class="search-input"
-              >
+              <v-autocomplete no-data-text="空" color="primary" :items="validOwner" dense outlined item-text="nick" item-value="uid" v-model="search.owner" multiple hide-details class="search-input">
                 <template v-slot:selection="option">
-                  <v-chip
-                    small
-                    close
-                    close-icon="mdi-close"
-                    color="primary"
-                    outlined
-                    @click:close="remove('owner', option)"
-                  >
+                  <v-chip small close close-icon="mdi-close" color="primary" outlined @click:close="remove('owner', option)">
                     {{ option.item.nick }}
                   </v-chip>
                 </template>
@@ -233,14 +160,7 @@
                 class="search-input"
               >
                 <template v-slot:selection="option">
-                  <v-chip
-                    small
-                    close
-                    close-icon="mdi-close"
-                    color="primary"
-                    outlined
-                    @click:close="remove('categorys', option)"
-                  >
+                  <v-chip small close close-icon="mdi-close" color="primary" outlined @click:close="remove('categorys', option)">
                     {{ option.item.name }}
                   </v-chip>
                 </template>
@@ -258,17 +178,7 @@
               <span class="group-title"> 商品ID </span>
             </v-row>
             <v-row>
-              <v-text-field
-                color="primary"
-                style="max-width: 160px"
-                v-model="search.productId"
-                outlined
-                dense
-                clearable
-                hide-details
-                class="search-input"
-              >
-              </v-text-field>
+              <v-text-field color="primary" style="max-width: 160px" v-model="search.productId" outlined dense clearable hide-details class="search-input"> </v-text-field>
             </v-row>
           </v-col>
         </v-row>
@@ -331,15 +241,7 @@
         </v-data-table>
         <v-divider style="margin-top: 10px"></v-divider>
       </div>
-      <v-divider
-        v-show="!loading && isShowDetail"
-        vertical
-        style="
-          margin: 0px;
-          height: calc(100vh - 210px - 12px);
-          min-height: calc(100vh - 210px - 12px);
-        "
-      ></v-divider>
+      <v-divider v-show="!loading && isShowDetail" vertical style="margin: 0px; height: calc(100vh - 210px - 12px); min-height: calc(100vh - 210px - 12px)"></v-divider>
       <v-data-table
         mobile-breakpoint="0"
         @click:row="clickRow"
@@ -363,10 +265,7 @@
           <tr v-if="canShowSumup" class="sumup">
             <td v-for="i in profitHeadersShownPartB" :key="i.value">
               <v-divider></v-divider>
-              <div
-                v-if="profitHeadersForSumup.indexOf(i.value) >= 0"
-                style="margin-left: 12.8px"
-              >
+              <div v-if="profitHeadersForSumup.indexOf(i.value) >= 0" style="margin-left: 12.8px">
                 <div
                   v-if="
                     i.value == `orderCount` ||
@@ -377,15 +276,11 @@
                     i.value == `totalPersonalFakeEnablingCount`
                   "
                 >
-                  {{
-                    amountFormat(sumup(midVarOfProfitItems, i.value), null, 0)
-                  }}
+                  {{ amountFormat(sumup(midVarOfProfitItems, i.value), null, 0) }}
                 </div>
                 <div v-else>
                   <span>
-                    {{
-                      amountFormat(sumup(midVarOfProfitItems, i.value), "￥")
-                    }}
+                    {{ amountFormat(sumup(midVarOfProfitItems, i.value), "￥") }}
                   </span>
                 </div>
               </div>
@@ -401,15 +296,8 @@
         </template>
 
         <template v-slot:[`header.ArrowCollapse`]="{}">
-          <v-btn
-            icon
-            small
-            @click="isShowFakeDetail = !isShowFakeDetail"
-            style="margin-bottom: 1px"
-          >
-            <v-icon v-if="isShowFakeDetail" small>
-              mdi-arrow-collapse-left
-            </v-icon>
+          <v-btn icon small @click="isShowFakeDetail = !isShowFakeDetail" style="margin-bottom: 1px">
+            <v-icon v-if="isShowFakeDetail" small> mdi-arrow-collapse-left </v-icon>
             <v-icon v-else small> mdi-arrow-collapse-right </v-icon>
           </v-btn>
         </template>
@@ -425,11 +313,7 @@
         <template v-slot:[`item.deduction`]="{ item }">
           <div class="d-flex">
             <span>
-              {{
-                item.deduction
-                  ? (item.deduction * 100).toFixed(2) + " %"
-                  : "   " + "————"
-              }}
+              {{ item.deduction ? (item.deduction * 100).toFixed(2) + " %" : "   " + "————" }}
             </span>
           </div>
         </template>
@@ -490,13 +374,7 @@
         </template>
 
         <template v-slot:[`item.freight`]="{ item }">
-          {{
-            item.freightToPayment
-              ? (item.freightToPayment * 100).toFixed(2) + "%"
-              : item.freight
-              ? "￥" + item.freight
-              : ""
-          }}
+          {{ item.freightToPayment ? (item.freightToPayment * 100).toFixed(2) + "%" : item.freight ? "￥" + item.freight : "" }}
         </template>
 
         <template v-slot:[`item.totalCost`]="{ item }">
@@ -504,11 +382,7 @@
             <span>
               {{ amountFormat(item.totalCost, "￥", 2, "————") }}
             </span>
-            <Help
-              class="ml-1"
-              v-if="item.wrongCount > 0"
-              text="存在未匹配SKU，抓取该SKU的售卖价作为成本"
-            />
+            <Help class="ml-1" v-if="item.wrongCount > 0" text="存在未匹配SKU，抓取该SKU的售卖价作为成本" />
           </div>
         </template>
 
@@ -524,11 +398,7 @@
           <div class="d-flex">
             <span v-if="item.totalRefundWithNoShipAmount">{{ "￥  " }} </span>
             <span>
-              {{
-                item.totalRefundWithNoShipAmount
-                  ? item.totalRefundWithNoShipAmount.toFixed(2)
-                  : "————"
-              }}
+              {{ item.totalRefundWithNoShipAmount ? item.totalRefundWithNoShipAmount.toFixed(2) : "————" }}
             </span>
           </div>
         </template>
@@ -537,9 +407,7 @@
           <div class="d-flex">
             <span v-if="item.totalBrokerage">{{ "￥  " }} </span>
             <span>
-              {{
-                item.totalBrokerage ? item.totalBrokerage.toFixed(2) : "————"
-              }}
+              {{ item.totalBrokerage ? item.totalBrokerage.toFixed(2) : "————" }}
             </span>
           </div>
         </template>
@@ -589,19 +457,11 @@
         </template>
 
         <template v-slot:[`item.calculatedCostRatio`]="{ item }">
-          {{
-            item.calculatedCostRatio > 0
-              ? (item.calculatedCostRatio * 100).toFixed(2) + "%"
-              : ""
-          }}
+          {{ item.calculatedCostRatio > 0 ? (item.calculatedCostRatio * 100).toFixed(2) + "%" : "" }}
         </template>
 
         <template v-slot:[`item.calculatedProfitRatio`]="{ item }">
-          {{
-            item.calculatedCostRatio > 0
-              ? (item.calculatedProfitRatio * 100).toFixed(2) + "%"
-              : ""
-          }}
+          {{ item.calculatedCostRatio > 0 ? (item.calculatedProfitRatio * 100).toFixed(2) + "%" : "" }}
         </template>
 
         <template v-slot:[`item.calculatedActualIncome`]="{ item }">
@@ -615,11 +475,7 @@
         <template v-slot:[`item.calculatedRefundWithNoShipAmount`]="{ item }">
           <div class="d-flex">
             <span>
-              {{
-                !isNaN(item.calculatedRefundWithNoShipAmount)
-                  ? "￥  " + item.calculatedRefundWithNoShipAmount.toFixed(2)
-                  : ""
-              }}
+              {{ !isNaN(item.calculatedRefundWithNoShipAmount) ? "￥  " + item.calculatedRefundWithNoShipAmount.toFixed(2) : "" }}
             </span>
           </div>
         </template>
@@ -629,11 +485,7 @@
             <span>
               {{ amountFormat(item.calculatedActualCost, "￥", 2, "————") }}
             </span>
-            <Help
-              class="ml-1"
-              v-if="item.wrongCount > 0"
-              text="存在未匹配SKU，抓取该SKU的售卖价作为成本"
-            />
+            <Help class="ml-1" v-if="item.wrongCount > 0" text="存在未匹配SKU，抓取该SKU的售卖价作为成本" />
           </div>
         </template>
 
@@ -681,16 +533,7 @@
             <span :style="item.wrongCount > 0 ? `color:red` : ``">
               {{ item.wrongCount }}
             </span>
-            <v-btn
-              v-if="item.wrongCount > 0"
-              x-small
-              depressed
-              text
-              class="pa-0"
-              @click="showMismatchedSkus(item)"
-            >
-              啊？
-            </v-btn>
+            <v-btn v-if="item.wrongCount > 0" x-small depressed text class="pa-0" @click="showMismatchedSkus(item)"> 啊？ </v-btn>
           </div>
         </template>
 
@@ -699,22 +542,14 @@
             <span>
               {{ amountFormat(item.calculatedActualProfit, "￥", 2, "————") }}
             </span>
-            <Help
-              class="ml-1"
-              v-if="item.wrongCount > 0"
-              text="存在未匹配SKU，抓取该SKU的售卖价作为成本"
-            />
+            <Help class="ml-1" v-if="item.wrongCount > 0" text="存在未匹配SKU，抓取该SKU的售卖价作为成本" />
           </div>
         </template>
 
         <template v-slot:[`item.calculatedActualProfitRatio`]="{ item }">
           <div class="d-flex">
             <span>
-              {{
-                item.calculatedActualProfit > 0
-                  ? (item.calculatedActualProfitRatio * 100).toFixed(2) + " %"
-                  : ""
-              }}
+              {{ item.calculatedActualProfit > 0 ? (item.calculatedActualProfitRatio * 100).toFixed(2) + " %" : "" }}
               <!-- {{
                 
                 item.wrongCount == 0
@@ -730,19 +565,9 @@
         <template v-slot:[`item.calculatedDiscount`]="{ item }">
           <div class="d-flex">
             <span>
-              {{
-                item.calculatedDiscount == Infinity
-                  ? Infinity
-                  : item.calculatedDiscount > 0
-                  ? (item.calculatedDiscount * 100).toFixed(2) + " %"
-                  : ""
-              }}
+              {{ item.calculatedDiscount == Infinity ? Infinity : item.calculatedDiscount > 0 ? (item.calculatedDiscount * 100).toFixed(2) + " %" : "" }}
             </span>
-            <Help
-              class="ml-1"
-              v-if="item.wrongCount > 0"
-              text="存在未匹配SKU，抓取该SKU的售卖价作为成本"
-            />
+            <Help class="ml-1" v-if="item.wrongCount > 0" text="存在未匹配SKU，抓取该SKU的售卖价作为成本" />
           </div>
         </template>
       </v-data-table>
@@ -757,24 +582,13 @@
               <span class="pl-2">未匹配SKU</span>
               <span class="text--secondary pl-8">{{ this.dates }}</span>
               <v-spacer></v-spacer>
-              <v-btn small color="primary" @click="downloadMismatchedSkus">
-                导出未匹配SKU
-              </v-btn>
+              <v-btn small color="primary" @click="downloadMismatchedSkus"> 导出未匹配SKU </v-btn>
             </v-row>
           </v-col></v-card-title
         >
 
-        <v-card-text
-          class="mx-5 pt-4"
-          style="overflow-y: visible; width: fit-content"
-        >
-          {{
-            `事业部：${
-              departmentIdToName[selectedProduct.department]
-            }ㅤㅤㅤ组别：${teamIdToName[selectedProduct.team]}ㅤㅤㅤ持品人：${
-              userIdToNick[selectedProduct.owner]
-            }`
-          }}
+        <v-card-text class="mx-5 pt-4" style="overflow-y: visible; width: fit-content">
+          {{ `事业部：${departmentIdToName[selectedProduct.department]}ㅤㅤㅤ组别：${teamIdToName[selectedProduct.team]}ㅤㅤㅤ持品人：${userIdToNick[selectedProduct.owner]}` }}
         </v-card-text>
 
         <div class="mx-5">
@@ -1018,12 +832,8 @@ export default {
   },
 
   mounted() {
-    this.tablePartAWrapper = document.querySelector(
-      "#tablePartA .v-data-table__wrapper"
-    );
-    this.tablePartBWrapper = document.querySelector(
-      "#tablePartB .v-data-table__wrapper"
-    );
+    this.tablePartAWrapper = document.querySelector("#tablePartA .v-data-table__wrapper");
+    this.tablePartBWrapper = document.querySelector("#tablePartB .v-data-table__wrapper");
     //const box2 = document.querySelector(".box2");
 
     var left = true;
@@ -1097,23 +907,22 @@ export default {
       if (this.user.permission.f?.s) {
         return this.profitHeadersPartA;
       } else {
-        return this.profitHeadersPartA.filter(
-          (i) => i.value != "shopName" && i.value != "productId"
-        );
+        return this.profitHeadersPartA.filter((i) => i.value != "shopName" && i.value != "productId");
       }
     },
     profitHeadersShownPartB() {
+      var headers = [];
       if (!this.profitItems.length || this.loading) {
-        return [];
+        headers = [];
       } else {
         if (this.isShowDetail) {
-          return this.isShowFakeDetail
-            ? this.profitHeadersAll
-            : this.profitHeadersAllWithNoFakeDetail;
+          headers = this.isShowFakeDetail ? this.profitHeadersAll : this.profitHeadersAllWithNoFakeDetail;
         } else {
-          return this.profitHeadersHide;
+          headers = this.profitHeadersHide;
         }
       }
+      headers = headers.filter((i) => i.value != "shopName" && i.value != "productId");
+      return headers;
     },
     canShowSumup() {
       if (this.loading) return false;
@@ -1123,11 +932,7 @@ export default {
     },
     dateRangeText() {
       if (this.isDateRange) {
-        return new Date(this.dates[1]).getTime() -
-          new Date(this.dates[0]).getTime() <
-          0
-          ? this.dates[1] + "  ~  " + this.dates[0]
-          : this.dates.join("  ~  ");
+        return new Date(this.dates[1]).getTime() - new Date(this.dates[0]).getTime() < 0 ? this.dates[1] + "  ~  " + this.dates[0] : this.dates.join("  ~  ");
       } else {
         return this.dates;
       }
@@ -1179,14 +984,8 @@ export default {
       var tableB = document.getElementsByClassName("profit-table-b");
       console.log(tableB);
 
-      var rowA =
-        tableA[0].childNodes[0].childNodes[0].childNodes[2].childNodes[
-          event.index
-        ];
-      var rowB =
-        tableB[0].childNodes[0].childNodes[0].childNodes[2].childNodes[
-          event.index
-        ];
+      var rowA = tableA[0].childNodes[0].childNodes[0].childNodes[2].childNodes[event.index];
+      var rowB = tableB[0].childNodes[0].childNodes[0].childNodes[2].childNodes[event.index];
       console.log(rowB);
       window.test = rowB;
 
@@ -1515,10 +1314,10 @@ export default {
           date: i.date,
           calculatedDepartment: i.calculatedDepartment,
           calculatedTeam: i.calculatedTeam,
-          shopName: i.shopName,
+          shopName: this.user.permission.f?.s ? i.shopName : "",
           calculatedOwner: i.calculatedOwner,
           productName: i.productName,
-          productId: i.productId.toString(),
+          productId: this.user.permission.f?.s ? i.productId.toString() : "",
           calculatedFirstCategory: i.calculatedFirstCategory,
           deduction: i.deduction,
           insurance: i.insurance,
@@ -1635,8 +1434,7 @@ export default {
       console.log("生成完毕");
 
       const buffer = await workbook.xlsx.writeBuffer();
-      const fileType =
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+      const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
       const blob = new Blob([buffer], { type: fileType });
 
@@ -1677,40 +1475,29 @@ export default {
       if (this.search.team?.length > 0) {
         var team = {};
         this.search.team.forEach((i) => (team[i] = true));
-        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
-          (profitItem) => team[profitItem.team]
-        );
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter((profitItem) => team[profitItem.team]);
       }
 
       if (this.search.department?.length > 0) {
         var department = {};
         this.search.department.forEach((i) => (department[i] = true));
-        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
-          (profitItem) => department[profitItem.department]
-        );
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter((profitItem) => department[profitItem.department]);
       }
 
       if (this.search.owner?.length > 0) {
         var owner = {};
         this.search.owner.forEach((i) => (owner[i] = true));
-        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
-          (profitItem) => owner[profitItem.owner]
-        );
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter((profitItem) => owner[profitItem.owner]);
       }
 
       if (this.search.categorys?.length > 0) {
         var category = {};
         this.search.categorys.forEach((i) => (category[i] = true));
-        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
-          (profitItem) => category[profitItem.firstCategory]
-        );
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter((profitItem) => category[profitItem.firstCategory]);
       }
 
       if (this.search.productId?.length > 0) {
-        this.midVarOfProfitItems = this.midVarOfProfitItems.filter(
-          (profitItem) =>
-            profitItem.productId.toString().indexOf(this.search.productId) >= 0
-        );
+        this.midVarOfProfitItems = this.midVarOfProfitItems.filter((profitItem) => profitItem.productId.toString().indexOf(this.search.productId) >= 0);
 
         // var a = [];
         // for (let i = 0; i < this.midVarOfProfitItems.length; i++) {
@@ -1868,19 +1655,11 @@ export default {
       console.log("生成完毕");
 
       const buffer = await workbook.xlsx.writeBuffer();
-      const fileType =
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+      const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
       const blob = new Blob([buffer], { type: fileType });
 
-      saveAs(
-        blob,
-        this.selectedProduct.productName +
-          this.dates +
-          `未匹配SKU` +
-          this.selectedProduct.productId +
-          `.xlsx`
-      );
+      saveAs(blob, this.selectedProduct.productName + this.dates + `未匹配SKU` + this.selectedProduct.productId + `.xlsx`);
     },
 
     amountFormat() {
@@ -1935,12 +1714,9 @@ export default {
     dataAnalyze() {
       var dateString;
       if (this.isDateRange) {
-        var diff =
-          new Date(this.dates[1]).getTime() - new Date(this.dates[0]).getTime();
+        var diff = new Date(this.dates[1]).getTime() - new Date(this.dates[0]).getTime();
         console.log("差距", diff);
-        dateString = `${this.dates[diff < 0 ? 1 : 0]}  + ${
-          Math.abs(diff) / 86400000
-        }`;
+        dateString = `${this.dates[diff < 0 ? 1 : 0]}  + ${Math.abs(diff) / 86400000}`;
       } else {
         dateString = this.dates;
       }
@@ -1951,8 +1727,7 @@ export default {
         item.calculatedDepartment = this.departmentIdToName[item.department];
         item.calculatedTeam = this.teamIdToName[item.team];
         item.calculatedOwner = this.userIdToNick[item.owner];
-        item.calculatedFirstCategory =
-          this.categoryIdToName[item.firstCategory];
+        item.calculatedFirstCategory = this.categoryIdToName[item.firstCategory];
 
         if (item.orderCount == null) {
           item.orderCount = 0;
@@ -1967,77 +1742,41 @@ export default {
         item.deduction /= 100;
         item.freightToPayment /= 100;
 
-        item.calculateTotalAllFakeAmount =
-          item.totalFakeAmount +
-          item.totalPersonalFakeAmount +
-          item.totalPersonalFakeEnablingAmount;
+        item.calculateTotalAllFakeAmount = item.totalFakeAmount + item.totalPersonalFakeAmount + item.totalPersonalFakeEnablingAmount;
 
-        item.calculatedActualAmount =
-          item.totalAmount - item.calculateTotalAllFakeAmount;
-        item.calculatedActualOrderCount =
-          item.orderCount -
-          item.totalFakeCount -
-          item.totalPersonalFakeCount -
-          item.totalPersonalFakeEnablingCount;
+        item.calculatedActualAmount = item.totalAmount - item.calculateTotalAllFakeAmount;
+        item.calculatedActualOrderCount = item.orderCount - item.totalFakeCount - item.totalPersonalFakeCount - item.totalPersonalFakeEnablingCount;
 
         if (item.calculatedActualOrderCount == 0) {
           item.calculatedActualAverageAmount = 0;
         } else {
-          item.calculatedActualAverageAmount =
-            item.calculatedActualAmount / item.calculatedActualOrderCount;
+          item.calculatedActualAverageAmount = item.calculatedActualAmount / item.calculatedActualOrderCount;
         }
 
         item.calculatedCostRatio = item.totalCost / item.calculatedActualAmount;
 
         item.calculatedProfitRatio = item.freightToPayment
-          ? item.calculatedActualAmount -
-            item.totalCost -
-            item.deduction * item.calculatedActualAmount -
-            item.insurance * item.calculatedActualOrderCount -
-            item.freightToPayment * item.totalCost
-          : item.calculatedActualAmount -
-            item.totalCost -
-            item.deduction * item.calculatedActualAmount -
-            (item.insurance + item.freight) * item.calculatedActualOrderCount;
+          ? item.calculatedActualAmount - item.totalCost - item.deduction * item.calculatedActualAmount - item.insurance * item.calculatedActualOrderCount - item.freightToPayment * item.totalCost
+          : item.calculatedActualAmount - item.totalCost - item.deduction * item.calculatedActualAmount - (item.insurance + item.freight) * item.calculatedActualOrderCount;
         item.calculatedProfitRatio /= item.calculatedActualAmount;
 
-        item.calculatedActualIncome =
-          item.calculatedActualAmount - item.totalRefundAmount;
-        item.calculatedRefundWithNoShipAmount =
-          item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
+        item.calculatedActualIncome = item.calculatedActualAmount - item.totalRefundAmount;
+        item.calculatedRefundWithNoShipAmount = item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
         //后加的
         if (isNaN(item.calculatedRefundWithNoShipAmount)) {
           item.calculatedRefundWithNoShipAmount = 0;
         }
         //
-        item.calculatedActualCost =
-          item.totalCost - item.calculatedRefundWithNoShipAmount;
-        item.calculatedTmallTokeRatio =
-          item.deduction *
-          (item.totalAmount -
-            item.totalRefundAmount -
-            item.totalPersonalFakeAmount);
-        item.calculatedTotalFreight = item.freightToPayment
-          ? item.freightToPayment * item.calculatedActualCost
-          : item.freight *
-            (item.calculatedActualOrderCount - item.totalRefundWithNoShipCount);
-        item.calculatedTotalInsurance =
-          item.insurance * (item.orderCount - item.totalRefundWithNoShipCount);
+        item.calculatedActualCost = item.totalCost - item.calculatedRefundWithNoShipAmount;
+        item.calculatedTmallTokeRatio = item.deduction * (item.totalAmount - item.totalRefundAmount - item.totalPersonalFakeAmount);
+        item.calculatedTotalFreight = item.freightToPayment ? item.freightToPayment * item.calculatedActualCost : item.freight * (item.calculatedActualOrderCount - item.totalRefundWithNoShipCount);
+        item.calculatedTotalInsurance = item.insurance * (item.orderCount - item.totalRefundWithNoShipCount);
         item.calculatedActualProfit =
-          item.calculatedActualIncome -
-          item.calculatedActualCost -
-          item.calculatedTmallTokeRatio -
-          item.calculatedTotalInsurance -
-          item.calculatedTotalFreight -
-          item.totalBrokerage;
+          item.calculatedActualIncome - item.calculatedActualCost - item.calculatedTmallTokeRatio - item.calculatedTotalInsurance - item.calculatedTotalFreight - item.totalBrokerage;
 
-        item.calculatedActualProfitRatio =
-          item.calculatedActualProfit / item.calculatedActualIncome;
+        item.calculatedActualProfitRatio = item.calculatedActualProfit / item.calculatedActualIncome;
 
-        if (
-          item.calculatedActualProfit < 0 &&
-          item.calculatedActualProfitRatio > 0
-        ) {
+        if (item.calculatedActualProfit < 0 && item.calculatedActualProfitRatio > 0) {
           item.calculatedActualProfitRatio *= -1;
         }
 

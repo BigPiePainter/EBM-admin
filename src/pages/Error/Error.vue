@@ -1,37 +1,27 @@
 <template>
-  <v-app>
-    <v-container fluid class="error-page">
-      <v-row class="d-flex justify-center">
-        <v-col cols="8">
-          <div class="card">
-            <span class="error-logo">404</span>
-
-            <v-btn
-                class="text-capitalize"
-                dark
-                x-large
-                :color="config.light.primary"
-                to="/"
-            >
-              返回登录页面
-            </v-btn>
-          </div>
-        </v-col>
-      </v-row>
-  </v-container>
-  </v-app>
+  <div class="page-content d-flex flex-column">
+    <PageHeader title="诶呀！">
+    </PageHeader>
+    <div class="ma-6">
+      <span>404了！这是什么页面啊？</span>
+    </div>
+    
+  </div>
 </template>
 
 <script>
-import config from '@/config';
-
+import config from "@/config";
+import PageHeader from "@/components/PageHeader";
 export default {
-  name: 'Error',
-  data(){
-    return{
-      config
-    }
-  }
+  name: "Error",
+  components: {
+    PageHeader,
+  },
+  data() {
+    return {
+      config,
+    };
+  },
 };
 </script>
 

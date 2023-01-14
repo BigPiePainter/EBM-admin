@@ -198,12 +198,12 @@ var routerConfig = {
           name: 'Transport',
           component: Transport
         },
+        {
+          path: '*',
+          name: 'Error',
+          component: Error,
+        }
       ],
-    },
-    {
-      path: '*',
-      name: 'Error',
-      component: Error,
     }
   ],
 }

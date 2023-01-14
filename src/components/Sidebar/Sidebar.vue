@@ -231,6 +231,13 @@ export default {
           icon: "mdi-cash",
           link: "/economy",
           show: true,
+          children: [
+            {
+              title: "商品清单",
+              icon: "mdi-circle-small",
+              link: "/economy_all_product",
+            },
+          ],
         },
 
         //{ title: "系统信息", icon: "mdi-bell-outline", link: "/notifications" },

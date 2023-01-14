@@ -10,12 +10,7 @@
     </v-btn>
     <v-toolbar-title>浙江泼发进出口贸易有限公司EBC</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn
-      v-if="user.uid == 1"
-      class="mr-7"
-      small
-      color="blue accent-3"
-      @click="announcement()"
+    <v-btn v-if="user.uid == 1" class="mr-7" small text @click="announcement()"
       >发布公告</v-btn
     >
 
@@ -170,7 +165,11 @@
           <v-btn
             text
             color="primary"
-            @click.stop="showChangePassword ? confirmChangePassword() : (showChangePassword = true)"
+            @click.stop="
+              showChangePassword
+                ? confirmChangePassword()
+                : (showChangePassword = true)
+            "
             class="caption"
             small
           >
@@ -254,7 +253,7 @@
     <v-dialog v-model="announcementDialog" scrollable width="500px">
       <v-card>
         <v-card-title class="text-subtitle-1 pt-5 mb-3">
-          请输入公告内容：
+          公告内容：
         </v-card-title>
         <v-card-text class="pb-0 mb-3">
           <v-textarea
@@ -384,8 +383,8 @@ export default {
         .then((res) => {
           console.log(res);
           this.global.infoAlert("泼发EBC：" + res.data);
-          if (res.code == 1){
-            this.logOut()
+          if (res.code == 1) {
+            this.logOut();
           }
         })
         .catch(() => {});

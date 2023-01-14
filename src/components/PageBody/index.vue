@@ -1,12 +1,11 @@
 <template>
-  <div class="page-content d-flex flex-column">
+  <div class="page-body flex-grow-1">
     <slot />
   </div>
 </template>
 
 <script>
 export default {
-  props: {},
 
   data() {
     return {};
