@@ -96,3 +96,22 @@ export const productSynchronization = data => {
     }
     return http.request(args)
 }
+
+//用于财务获取商品清单
+export const economyGetAllProducts = data => {
+    const args = {
+        url: '/product/getAll',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}
+
+export const economyGetAllProductsDetails = data => {
+    const args = {
+        url: '/product/getAllDetails',
+        method: 'POST',
+        data
+    }
+    return http.request(args)
+}

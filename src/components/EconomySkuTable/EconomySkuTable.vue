@@ -383,18 +383,6 @@
         "categoryIdToInfo",
       ]),
   
-      // isEmpty: function () {
-      //   var check = ["manufacturerName", "startTime"];
-      //   var pass = true;
-      //   check.forEach((item) => {
-      //     if (!this.manufacturerEdit[item]) pass = false;
-      //   });
-  
-      //   console.log(pass);
-  
-      //   return !pass;
-      // },
-  
       calculatedManufacturerHeaders: function () {
         var headers = this.manufacturerHeaders;
         if (!this.showRecipientInfo) {
