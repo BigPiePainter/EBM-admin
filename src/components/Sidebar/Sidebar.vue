@@ -4,14 +4,7 @@
         <v-icon small> mdi-menu </v-icon>
       </v-btn>
     </div> -->
-  <v-navigation-drawer
-    app
-    clipped
-    v-model="drawerState"
-    :width="sidebarWidth"
-    :temporary="$vuetify.breakpoint.smAndDown"
-    :mini-variant-width="sidebarMinWidth"
-  >
+  <v-navigation-drawer app clipped v-model="drawerState" :width="sidebarWidth" :temporary="$vuetify.breakpoint.smAndDown" :mini-variant-width="sidebarMinWidth">
     <div class="navigation-content d-flex flex-column">
       <v-btn tile depressed color="white" class="sider-block">
         <span class="text-body-1">泼发 EBC</span>
@@ -22,30 +15,16 @@
           <div :key="item.heading">
             <v-row v-if="item.heading" align="center">
               <v-col cols="6" class="py-5">
-                <span
-                  class="pl-8 text-body-1 subheader"
-                  :class="item.heading ? 'show ' : 'hide'"
-                >
+                <span class="pl-8 text-body-1 subheader" :class="item.heading ? 'show ' : 'hide'">
                   {{ item.heading }}
                 </span>
               </v-col>
               <v-col cols="6" class="text-center"> </v-col>
             </v-row>
 
-            <v-divider
-              v-else-if="item.divider"
-              :key="i"
-              dark
-              class="my-4"
-            ></v-divider>
+            <v-divider v-else-if="item.divider" :key="i" dark class="my-4"></v-divider>
 
-            <v-list-group
-              v-else-if="item.children"
-              color="primary"
-              :key="item.title"
-              v-model="item.model"
-              append-icon=""
-            >
+            <v-list-group v-else-if="item.children" color="primary" :key="item.title" v-model="item.model" append-icon="">
               <template v-slot:activator>
                 <v-list-item-action>
                   <v-icon dense>{{ item.icon }}</v-icon>
@@ -57,13 +36,7 @@
                 </v-list-item-content>
               </template>
 
-              <v-list-item
-                v-for="(child, i) in item.children"
-                :key="i"
-                :disabled="!item.show"
-                :to="child.link"
-                link
-              >
+              <v-list-item v-for="(child, i) in item.children" :key="i" :disabled="!item.show" :to="child.link" link>
                 <v-list-item-action>
                   <v-icon dense>{{ child.icon }}</v-icon>
                 </v-list-item-action>
@@ -75,15 +48,7 @@
               </v-list-item>
             </v-list-group>
 
-            <v-list-item
-              color="primary"
-              v-else
-              :disabled="!item.show"
-              :key="item.text"
-              :href="item.href ? item.href : null"
-              :to="item.link === '#' ? null : item.link"
-              link
-            >
+            <v-list-item color="primary" v-else :disabled="!item.show" :key="item.text" :href="item.href ? item.href : null" :to="item.link === '#' ? null : item.link" link>
               <v-list-item-action>
                 <v-icon dense>{{ item.icon }}</v-icon>
               </v-list-item-action>
@@ -97,13 +62,7 @@
         </template>
       </v-list>
       <v-divider></v-divider>
-      <v-btn
-        depressed
-        tile
-        class="sider-block d-flex align-center"
-        color="white"
-        @click.stop=!sideBarRight
-      >
+      <v-btn depressed tile class="sider-block d-flex align-center" color="white" @click.stop="!sideBarRight">
         <span class="text-body-2 grey--text"> 更新日志 </span>
       </v-btn>
       <v-divider></v-divider>
@@ -230,7 +189,7 @@ export default {
           title: "财务",
           icon: "mdi-cash",
           link: "/economy_all_product",
-          show: true,
+          show: this.$store.state.user.permission.g?.a,
           children: [
             {
               title: "商品清单",
@@ -264,9 +223,7 @@ export default {
           icon: "mdi-domain",
           link: "/department",
           show: this.$store.state.user.permission.d.a,
-          children: [
-            { title: "部门", icon: "mdi-circle-small", link: "/department" },
-          ],
+          children: [{ title: "部门", icon: "mdi-circle-small", link: "/department" }],
         },
 
         {
@@ -289,7 +246,7 @@ export default {
         },
 
         { divider: true },
-        
+
         {
           title: "实用工具",
           icon: "mdi-tools",

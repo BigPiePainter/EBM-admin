@@ -5,7 +5,7 @@
         <template v-slot:activator="{ on, attrs }">
           <v-btn class="ml-2" text v-bind="attrs" v-on="on" color="primary">
             <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
-            <span> 导出明细 </span>
+            <span> 导出全部明细 </span>
           </v-btn>
         </template>
         <v-date-picker v-model="date" no-title scrollable locale="zh-cn" color="primary" first-day-of-week="1" :day-format="dayFormat" min="2021-01-01" :max="parseDate(new Date())">
@@ -201,7 +201,7 @@
     <div class="flex-grow-1">
       <v-data-table
         single-select
-        show-expand
+        :show-expand="user.permission.g?.d"
         fixed-header
         disable-sort
         loading-text="加载中... 请稍后"
@@ -467,6 +467,7 @@ export default {
     },
 
     clickRow(item, event) {
+      if (!this.user.permission.g?.d) return;
       // console.log(this.departmentList);
       if (event.isExpanded) {
         const index = this.expanded.findIndex((i) => i === item);
@@ -480,27 +481,14 @@ export default {
       economyGetAllProductsDetails({ date: this.date.replaceAll("-", "/") })
         .then((res) => {
           console.log(res.data);
-          var originalProductsDetails = res.data;
-          this.productDetailsDataAnalyze(originalProductsDetails);
-
-          
+          this.downloadEconomyProductsList(res.data.productDetails);
           //this.global.infoAlert("泼发EBC：" + res.data);
         })
         .catch(() => {});
     },
 
-    // productDetailsDataAnalyze(data) {
-    //   for (let i = 0; i < data.length; i++) {
-    //     data[i].id = this.departmentIdToName[data[i].department];
-    //     data[i].department = this.departmentIdToName[data[i].department];
-    //     data[i].team = this.teamIdToName[data[i].team];
-    //     data[i].owner = this.userIdToNick[data[i].owner];
-    //     data[i].categoryId = this.categoryIdToName[data[i].categoryId];
-    //   }
-    //   console.log(data);
-    // },
-
-    async downloadEconomyProductsList() {
+    async downloadEconomyProductsList(datas) {
+      console.log(datas);
       const ExcelJS = require("exceljs");
       const workbook = new ExcelJS.Workbook();
       workbook.creator = "泼发EBC";
@@ -511,100 +499,305 @@ export default {
       workbook.created = new Date();
       workbook.modified = new Date();
 
-      const sheetA = workbook.addWorksheet("商品清单");
+      const sheetA = workbook.addWorksheet("商品清单", {
+        views: [{ state: "frozen", ySplit: 1, xSplit: 6, zoomScale: 80 }],
+      });
 
       var font = {
         name: "微软雅黑",
         size: 10,
       };
-      var font2 = {
+      var headerFont = {
         name: "微软雅黑",
         size: 10,
-        color: { argb: "FFAAAAAA" },
+        bold: true,
       };
 
       var centerAlignment = {
         vertical: "center",
         horizontal: "center",
       };
-      var rtAlignment = {
-        vertical: "top",
-        horizontal: "right",
-      };
-      var backgroundYellow = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "FFFFFF00" },
-      };
 
       console.log(sheetA);
-      sheetA.columns = [
-        {
-          header: "商品ID",
-          key: "productId",
-          width: 15,
-          style: { font },
-        },
-        {
-          header: "SKUID",
-          key: "skuId",
-          width: 16,
-          style: { font },
-        },
-        {
-          header: "SKU名称",
-          key: "skuName",
-          width: 70,
-          style: { font },
-        },
-        {
-          header: "售卖价",
-          key: "skuPrice",
-          width: 13,
-          style: { font },
-        },
-        {
-          header: "成本",
-          key: "skuCost",
-          width: 13,
-          style: { font },
-        },
-        {
-          header: "价格开始时间",
-          key: "startTime",
-          width: 15,
-          style: { font },
-        },
-        {
-          header: "销售数量",
-          key: "productCount",
-          width: 10,
-          style: { font: font2 },
-        },
-        {
-          header: "销售金额",
-          key: "totalAmount",
-          width: 10,
-          style: { font: font2 },
-        },
-      ];
-      //sheetA.autoFilter = 'B1:AM1';
-      var analyzedData = this.productsDetails;
-      for (let i = 0; i < analyzedData.length; i++) {
-        analyzedData[i].productId = this.selectedProduct.productId.toString();
-      }
-      console.log(analyzedData);
-      sheetA.addRows(analyzedData);
 
-      sheetA.getColumn(6).alignment = rtAlignment;
-      sheetA.getColumn(7).alignment = rtAlignment;
+      if (this.user.permission.g?.d) {
+        sheetA.columns = [
+          {
+            header: "商品ID",
+            key: "id",
+            width: 15,
+            style: { font },
+          },
+          {
+            header: "部门",
+            key: "department",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "组别",
+            key: "team",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "持品人",
+            key: "owner",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "店铺",
+            key: "shopName",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "产品名称",
+            key: "productName",
+            width: 20,
+            style: { font },
+          },
+          {
+            header: "一级类目",
+            key: "categoryId",
+            width: 20,
+            style: { font },
+          },
+          {
+            header: "品类扣点",
+            key: "deduction",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "品类运费险",
+            key: "insurance",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "发货方式",
+            key: "transportWay",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "聚水潭仓库",
+            key: "storehouse",
+            width: 30,
+            style: { font },
+          },
+          {
+            header: "EBC商品备注",
+            key: "productNote",
+            width: 30,
+            style: { font },
+          },
+          {
+            header: "是否下架",
+            key: "deprecated",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "厂家名",
+            key: "manufacturerName",
+            width: 30,
+            style: { font },
+          },
+          {
+            header: "厂家群名",
+            key: "manufacturerGroup",
+            width: 30,
+            style: { font },
+          },
+          {
+            header: "收款-收款方式",
+            key: "manufacturerPaymentMethod",
+            width: 13,
+            style: { font },
+          },
+          {
+            header: "收款-收款人",
+            key: "manufacturerPaymentName",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "收款-收款账户",
+            key: "manufacturerPaymentId",
+            width: 20,
+            style: { font },
+          },
+          {
+            header: "退货-收件人",
+            key: "manufacturerRecipient",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "退货-收件手机号",
+            key: "manufacturerPhone",
+            width: 20,
+            style: { font },
+          },
+          {
+            header: "退货-收件地址",
+            key: "manufacturerAddress",
+            width: 30,
+            style: { font },
+          },
+          {
+            header: "每单运费",
+            key: "freight",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "子/主订单附带比",
+            key: "extraRatio",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "运费/总货款",
+            key: "freightToPayment",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "EBC厂家备注",
+            key: "manufacturerNote",
+            width: 30,
+            style: { font },
+          },
+        ];
+      } else {
+        sheetA.columns = [
+          {
+            header: "商品ID",
+            key: "id",
+            width: 15,
+            style: { font },
+          },
+          {
+            header: "部门",
+            key: "department",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "组别",
+            key: "team",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "持品人",
+            key: "owner",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "店铺",
+            key: "shopName",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "产品名称",
+            key: "productName",
+            width: 20,
+            style: { font },
+          },
+          {
+            header: "一级类目",
+            key: "categoryId",
+            width: 20,
+            style: { font },
+          },
+          {
+            header: "品类扣点",
+            key: "deduction",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "品类运费险",
+            key: "insurance",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "发货方式",
+            key: "transportWay",
+            width: 10,
+            style: { font },
+          },
+          {
+            header: "聚水潭仓库",
+            key: "storehouse",
+            width: 30,
+            style: { font },
+          },
+          {
+            header: "EBC商品备注",
+            key: "productNote",
+            width: 30,
+            style: { font },
+          },
+          {
+            header: "是否下架",
+            key: "deprecated",
+            width: 10,
+            style: { font },
+          },
+        ];
+      }
+
+      //sheetA.autoFilter = 'B1:AM1';
+
+      var convert = (row) => {
+        return {
+          id: row.id.toString(),
+          department: this.departmentIdToName[row.department],
+          team: this.teamIdToName[row.team],
+          owner: this.userIdToNick[row.owner],
+          shopName: row.shopName,
+          categoryId: this.categoryIdToName[row.categoryId],
+          deduction: row.deduction,
+          insurance: row.insurance,
+          productName: row.productName,
+          transportWay: row.transportWay,
+          storehouse: row.storehouse,
+          productNote: row.productNote,
+          deprecated: row.deprecated ? "是" : "否",
+          manufacturerName: row.manufacturerName,
+          manufacturerGroup: row.manufacturerGroup,
+          manufacturerPaymentMethod: row.manufacturerPaymentMethod,
+          manufacturerPaymentName: row.manufacturerPaymentName,
+          manufacturerPaymentId: row.manufacturerPaymentId,
+          manufacturerRecipient: row.manufacturerRecipient,
+          manufacturerPhone: row.manufacturerPhone,
+          manufacturerAddress: row.manufacturerAddress,
+          freight: row.freight,
+          extraRatio: row.extraRatio,
+          freightToPayment: row.freightToPayment,
+          manufacturerNote: row.manufacturerNote,
+        };
+      };
+
+      sheetA.addRows(datas.map((i) => convert(i)));
+
       sheetA.getRow(1).alignment = centerAlignment;
-      sheetA.getCell("A1").fill = backgroundYellow;
-      sheetA.getCell("B1").fill = backgroundYellow;
-      sheetA.getCell("C1").fill = backgroundYellow;
-      sheetA.getCell("D1").fill = backgroundYellow;
-      sheetA.getCell("E1").fill = backgroundYellow;
-      sheetA.getCell("F1").fill = backgroundYellow;
+      sheetA.getRow(1).font = headerFont;
+      for (let columnNum = 1; columnNum <= sheetA.columns.length; columnNum++) {
+        sheetA.getColumn(columnNum).alignment = centerAlignment;
+        sheetA.getRow(1).getCell(columnNum).border = {
+          bottom: { style: "medium", color: { argb: "FF000000" } },
+        };
+      }
 
       console.log("生成完毕");
 
@@ -613,7 +806,7 @@ export default {
 
       const blob = new Blob([buffer], { type: fileType });
 
-      saveAs(blob, `用于财务的商品清单.xlsx`);
+      saveAs(blob, `商品明细.xlsx`);
     },
 
     loadData() {

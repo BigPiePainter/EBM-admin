@@ -3,7 +3,7 @@
     <Header />
     <Sidebar />
     <v-main class="content">
-      <keep-alive include="ProductCopy,ProfitTable,ProfitChart">
+      <keep-alive include="ProductCopy,ProfitTable,ProfitChart,MainPage">
         <router-view />
       </keep-alive>
     </v-main>
