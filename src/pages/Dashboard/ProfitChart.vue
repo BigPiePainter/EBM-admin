@@ -41,17 +41,114 @@
               </v-card>
             </v-col>
           </v-row>
-          <v-row v-else v-for="(item, i) in departmentChartOptions" :key="i">
+          <!-- <v-row v-else v-for="(item, i) in departmentChartOptions" :key="i">
             <v-col>
               <v-card class="mx-1 mb-1" outlined :loading="loadingDialogDaily">
                 <v-card-title>
                   <p class="text-body-1">{{ departmentIdToName[i] + " 的月度统计" }}</p>
+                </v-card-title>
+                <v-chart style="height: 600px" :option="item" ref="departmentMonthlyChart"></v-chart>
+              </v-card>
+            </v-col>
+          </v-row> -->
+
+          <v-row v-else>
+            <v-col>
+              <v-card class="mx-1 mb-1" outlined :loading="loadingDialogDaily">
+                <div class="d-flex">
+                  <v-autocomplete
+                    color="primary"
+                    outlined
+                    dense
+                    style="width: 200px; max-width: 200px; font-size: 15px"
+                    hide-details
+                    no-data-text="空！！"
+                    class="search-input mt-4 ml-4"
+                    :items="departmentSelectItems"
+                    item-text="text"
+                    item-value="uid"
+                    v-model="selectedDepartment"
+                  ></v-autocomplete>
+                  <p class="text-body-1 text--secondary mt-5 ml-4">月度统计</p>
+                </div>
+
+                <v-chart style="height: 600px" :option="departmentChartOptions[selectedDepartment]" ref="departmentMonthlyChart"></v-chart>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="teamSelectItems.length == 0">
+            <v-col>
+              <v-card class="mx-1 mb-1" outlined :loading="loadingDialogDaily">
+                <v-card-title>
+                  <p class="text-body-1">组别统计</p>
                   <!-- <v-spacer />
-                <v-btn small color="primary" @click="departmentChartButton"
+                <v-btn small color="primary" @click="teamChartButton"
                   ><span>完整图表</span></v-btn
                 > -->
                 </v-card-title>
-                <v-chart style="height: 600px" :option="item" ref="departmentCharts"></v-chart>
+                <div style="height: 600px"></div>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row v-else>
+            <v-col>
+              <v-card class="mx-1 mb-1" outlined :loading="loadingDialogDaily">
+                <div class="d-flex">
+                  <v-autocomplete
+                    color="primary"
+                    outlined
+                    dense
+                    style="width: 200px; max-width: 200px; font-size: 15px"
+                    hide-details
+                    no-data-text="空！！"
+                    class="search-input mt-4 ml-4"
+                    :items="teamSelectItems"
+                    item-text="text"
+                    item-value="uid"
+                    v-model="selectedTeam"
+                  ></v-autocomplete>
+                  <p class="text-body-1 text--secondary mt-5 ml-4">月度统计</p>
+                </div>
+                <v-chart style="height: 600px" :option="teamChartOptions[selectedTeam]" ref="teamMonthlyChart"></v-chart>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="ownerSelectItems.length == 0">
+            <v-col>
+              <v-card class="mx-1 mb-1" outlined :loading="loadingDialogDaily">
+                <v-card-title>
+                  <p class="text-body-1">持品人统计</p>
+                  <!-- <v-spacer />
+                <v-btn small color="primary" @click="ownerChartButton"
+                  ><span>完整图表</span></v-btn
+                > -->
+                </v-card-title>
+                <div style="height: 600px"></div>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row v-else>
+            <v-col>
+              <v-card class="mx-1 mb-1" outlined :loading="loadingDialogDaily">
+                <div class="d-flex">
+                  <v-autocomplete
+                    color="primary"
+                    outlined
+                    dense
+                    style="width: 200px; max-width: 200px; font-size: 15px"
+                    hide-details
+                    no-data-text="空！！"
+                    class="search-input mt-4 ml-4"
+                    :items="ownerSelectItems"
+                    item-text="text"
+                    item-value="uid"
+                    v-model="selectedOwner"
+                  ></v-autocomplete>
+                  <p class="text-body-1 text--secondary mt-5 ml-4">月度统计</p>
+                </div>
+                <v-chart style="height: 600px" :option="ownerChartOptions[selectedOwner]" ref="ownerMonthlyChart"></v-chart>
               </v-card>
             </v-col>
           </v-row>
@@ -185,6 +282,16 @@ export default {
       profitHeadersForGroupby: ["department", "team", "owner", "shopName", "firstCategory"],
 
       departmentChartOptions: {},
+      departmentSelectItems: [],
+      selectedDepartment: null,
+
+      teamChartOptions: {},
+      teamSelectItems: [],
+      selectedTeam: null,
+
+      ownerChartOptions: {},
+      ownerSelectItems: [],
+      selectedOwner: null,
 
       teamChartOption: {},
       teamChartHeight: "300px",
@@ -198,6 +305,23 @@ export default {
       refreshTimeout: 0,
       lastRefreshTime: 0,
     };
+  },
+  watch: {
+    departmentChartOptions() {
+      this.departmentSelectItems = Object.keys(this.departmentChartOptions).map((i) => {
+        return { text: this.departmentIdToName[i], uid: i };
+      });
+    },
+    teamChartOptions() {
+      this.teamSelectItems = Object.keys(this.teamChartOptions).map((i) => {
+        return { text: this.teamIdToName[i], uid: i };
+      });
+    },
+    ownerChartOptions() {
+      this.ownerSelectItems = Object.keys(this.ownerChartOptions).map((i) => {
+        return { text: this.userIdToNick[i], uid: i };
+      });
+    },
   },
   computed: {
     ...mapState([
@@ -232,75 +356,6 @@ export default {
       return this.date;
     },
 
-    shopsOption: function () {
-      return {
-        legend: {},
-        grid: {
-          left: "100",
-          right: "30",
-          bottom: "50",
-          top: "0",
-          //containLabel: true,
-        },
-        toolbox: {
-          // feature: {
-          //   saveAsImage: {},
-          // },
-        },
-        yAxis: {
-          data: Object.keys(this.shopActualOrderCount),
-        },
-        xAxis: {
-          type: "value",
-        },
-        series: {
-          label: {
-            show: true,
-            position: "right",
-            valueAnimation: true,
-          },
-          //name: "店铺成交数汇总",
-          type: "bar",
-          barWidth: 15,
-          data: Object.values(this.shopActualOrderCount),
-        },
-      };
-    },
-
-    departmentsOption: function () {
-      return {
-        tooltip: {
-          trigger: "axis",
-        },
-        legend: {},
-        grid: {
-          top: "23",
-          left: "20",
-          right: "30",
-          bottom: "10",
-          containLabel: true,
-        },
-        toolbox: {
-          // feature: {
-          //   saveAsImage: {},
-          // },
-        },
-        xAxis: {
-          type: "category",
-          axisLabel: {
-            show: true,
-            // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
-            rotate: 45, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
-          },
-          data: this.departmentData,
-        },
-        yAxis: {
-          type: "value",
-        },
-        series: this.departmentSeries,
-      };
-    },
-
     getSize: function () {
       var size;
       size = "width:" + this.$refs.cardsize.clientWidth + ";" + "height:" + this.$refs.cardsize.clientHeight;
@@ -312,10 +367,12 @@ export default {
     var observer = new ResizeObserver(() => {
       console.log(this.$refs);
 
-      this.$refs.departmentCharts?.forEach((i) => i.resize());
-      this.$refs.teamChart.resize();
-      this.$refs.ownerChart.resize();
-      this.$refs.shopChart.resize();
+      this.$refs.departmentMonthlyChart?.resize();
+      this.$refs.teamMonthlyChart?.resize();
+      this.$refs.ownerMonthlyChart?.resize();
+      this.$refs.teamChart?.resize();
+      this.$refs.ownerChart?.resize();
+      this.$refs.shopChart?.resize();
     });
     observer.observe(document.querySelector("#profitChartMainContainer"));
   },
@@ -695,6 +752,7 @@ export default {
 
       datas.forEach((i) => {
         for (let name in i.department) {
+          if (this.departmentChartOptions[name]) continue;
           this.departmentChartOptions[name] = {
             // color: colors,
             tooltip: {
@@ -872,13 +930,385 @@ export default {
         });
       }
 
-      // Object.keys(this.departmentChartOptions).map((i) => {
-      //     return {
-      //       name: this.departmentIdToName[i],
-      //       type: "bar",
-      //       data: datas.map((d) => (d.department[i] ? d.department[i].totalAmount : 0)),
-      //     };
-      //   });
+      //小组
+      this.teamChartOptions = {};
+
+      //var colors = ["#5470C6", "#91CC75", "#EE6666"];
+
+      datas.forEach((i) => {
+        for (let name in i.team) {
+          if (this.teamChartOptions[name]) continue;
+          this.teamChartOptions[name] = {
+            // color: colors,
+            tooltip: {
+              trigger: "axis",
+              axisPointer: {
+                type: "cross",
+              },
+            },
+            legend: {},
+            grid: {
+              left: "20",
+              right: "30",
+              bottom: "20",
+              top: "30",
+              containLabel: true,
+            },
+            toolbox: {},
+            yAxis: [
+              {
+                type: "value",
+                position: "left",
+                // name: "金额",
+                // axisLabel: {
+                //   show: false,
+                // },
+                axisLabel: {
+                  formatter: "￥{value}",
+                },
+                axisLine: {
+                  show: true,
+                  lineStyle: {
+                    //color: colors[0],
+                  },
+                },
+              },
+              {
+                type: "value",
+                position: "right",
+                name: "利润",
+                // axisLabel: {
+                //   show: false,
+                // },
+                axisLabel: {
+                  formatter: "￥{value}",
+                },
+                axisLine: {
+                  show: true,
+                  lineStyle: {
+                    //color: colors[1],
+                  },
+                },
+              },
+              {
+                type: "value",
+                position: "right",
+                name: "订单数",
+                // axisLabel: {
+                //   show: false,
+                // },
+                offset: 80,
+                axisLine: {
+                  show: true,
+                  lineStyle: {
+                    //color: colors[1],
+                  },
+                },
+              },
+            ],
+            xAxis: [
+              {
+                type: "category",
+                axisLabel: {
+                  show: true,
+                  // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
+                  rotate: 45, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
+                },
+                data: [], //x坐标轴数据
+              },
+            ],
+
+            series: [],
+          };
+        }
+      });
+
+      //console.log(this.departmentChartOptions);
+
+      for (let id in this.teamChartOptions) {
+        this.teamChartOptions[id].xAxis[0].data = datas.map((i) => i.date.split("-")[1] + "月" + i.date.split("-")[2]);
+
+        this.teamChartOptions[id].series.push({
+          name: "真实成交额",
+          stack: "amount",
+          barWidth: "40%",
+          type: "bar",
+          data: datas.map((d) => (d.team[id] ? d.team[id].calculatedActualAmount.toFixed(2) : 0)),
+          label: {
+            show: true,
+            position: "inside",
+            rotate: 90,
+            fontSize: 12,
+            formatter: "￥{c}",
+          },
+        });
+        this.teamChartOptions[id].series.push({
+          name: "售后毛利润",
+          type: "line",
+          yAxisIndex: 1,
+          data: datas.map((d) => (d.team[id] ? d.team[id].calculatedActualProfit.toFixed(2) : 0)),
+          label: {
+            show: true,
+            fontSize: 10,
+            formatter: "￥{c}",
+          },
+          symbolSize: 10,
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                width: 5,
+              },
+            },
+          },
+        });
+
+        this.teamChartOptions[id].series.push({
+          name: "补单额",
+          stack: "amount",
+          type: "bar",
+          data: datas.map((d) => (d.team[id] ? d.team[id].calculateTotalAllFakeAmount.toFixed(2) : 0)),
+        });
+
+        this.teamChartOptions[id].series.push({
+          name: "平台扣点",
+          type: "bar",
+          barWidth: "20%",
+          stack: "amount2",
+          data: datas.map((d) => (d.team[id] ? d.team[id].calculatedTmallTokeRatio.toFixed(2) : 0)),
+        });
+
+        this.teamChartOptions[id].series.push({
+          name: "退款额",
+          type: "bar",
+          barWidth: "20%",
+          stack: "amount2",
+          data: datas.map((d) => (d.team[id] ? d.team[id].totalRefundAmount.toFixed(2) : 0)),
+        });
+
+        this.teamChartOptions[id].series.push({
+          name: "真实订单数",
+          type: "line",
+          yAxisIndex: 2,
+          data: datas.map((d) => (d.team[id] ? d.team[id].calculatedActualOrderCount : 0)),
+          label: {
+            show: true,
+            fontSize: 8,
+          },
+        });
+        this.teamChartOptions[id].series.push({
+          name: "补单数",
+          type: "line",
+          yAxisIndex: 2,
+          data: datas.map((d) => (d.team[id] ? d.team[id].totalFakeCount + d.team[id].totalPersonalFakeCount + d.team[id].totalPersonalFakeEnablingCount : 0)),
+          label: {
+            show: true,
+            fontSize: 8,
+          },
+        });
+
+        this.teamChartOptions[id].series.push({
+          name: "拿货成本",
+          type: "bar",
+          barWidth: "20%",
+          stack: "amount2",
+          data: datas.map((d) => (d.team[id] ? d.team[id].calculatedActualCost.toFixed(2) : 0)),
+        });
+      }
+
+      //持品人
+      this.ownerChartOptions = {};
+
+      //var colors = ["#5470C6", "#91CC75", "#EE6666"];
+
+      datas.forEach((i) => {
+        for (let name in i.owner) {
+          if (this.ownerChartOptions[name]) continue;
+          this.ownerChartOptions[name] = {
+            // color: colors,
+            tooltip: {
+              trigger: "axis",
+              axisPointer: {
+                type: "cross",
+              },
+            },
+            legend: {},
+            grid: {
+              left: "20",
+              right: "30",
+              bottom: "20",
+              top: "30",
+              containLabel: true,
+            },
+            toolbox: {},
+            yAxis: [
+              {
+                type: "value",
+                position: "left",
+                // name: "金额",
+                // axisLabel: {
+                //   show: false,
+                // },
+                axisLabel: {
+                  formatter: "￥{value}",
+                },
+                axisLine: {
+                  show: true,
+                  lineStyle: {
+                    //color: colors[0],
+                  },
+                },
+              },
+              {
+                type: "value",
+                position: "right",
+                name: "利润",
+                // axisLabel: {
+                //   show: false,
+                // },
+                axisLabel: {
+                  formatter: "￥{value}",
+                },
+                axisLine: {
+                  show: true,
+                  lineStyle: {
+                    //color: colors[1],
+                  },
+                },
+              },
+              {
+                type: "value",
+                position: "right",
+                name: "订单数",
+                // axisLabel: {
+                //   show: false,
+                // },
+                offset: 80,
+                axisLine: {
+                  show: true,
+                  lineStyle: {
+                    //color: colors[1],
+                  },
+                },
+              },
+            ],
+            xAxis: [
+              {
+                type: "category",
+                axisLabel: {
+                  show: true,
+                  // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
+                  rotate: 45, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
+                },
+                data: [], //x坐标轴数据
+              },
+            ],
+
+            series: [],
+          };
+        }
+      });
+
+      //console.log(this.departmentChartOptions);
+
+      for (let id in this.ownerChartOptions) {
+        this.ownerChartOptions[id].xAxis[0].data = datas.map((i) => i.date.split("-")[1] + "月" + i.date.split("-")[2]);
+
+        this.ownerChartOptions[id].series.push({
+          name: "真实成交额",
+          stack: "amount",
+          barWidth: "40%",
+          type: "bar",
+          data: datas.map((d) => (d.owner[id] ? d.owner[id].calculatedActualAmount.toFixed(2) : 0)),
+          label: {
+            show: true,
+            position: "inside",
+            rotate: 90,
+            fontSize: 12,
+            formatter: "￥{c}",
+          },
+        });
+        this.ownerChartOptions[id].series.push({
+          name: "售后毛利润",
+          type: "line",
+          yAxisIndex: 1,
+          data: datas.map((d) => (d.owner[id] ? d.owner[id].calculatedActualProfit.toFixed(2) : 0)),
+          label: {
+            show: true,
+            fontSize: 10,
+            formatter: "￥{c}",
+          },
+          symbolSize: 10,
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                width: 5,
+              },
+            },
+          },
+        });
+
+        this.ownerChartOptions[id].series.push({
+          name: "补单额",
+          stack: "amount",
+          type: "bar",
+          data: datas.map((d) => (d.owner[id] ? d.owner[id].calculateTotalAllFakeAmount.toFixed(2) : 0)),
+        });
+
+        this.ownerChartOptions[id].series.push({
+          name: "平台扣点",
+          type: "bar",
+          barWidth: "20%",
+          stack: "amount2",
+          data: datas.map((d) => (d.owner[id] ? d.owner[id].calculatedTmallTokeRatio.toFixed(2) : 0)),
+        });
+
+        this.ownerChartOptions[id].series.push({
+          name: "退款额",
+          type: "bar",
+          barWidth: "20%",
+          stack: "amount2",
+          data: datas.map((d) => (d.owner[id] ? d.owner[id].totalRefundAmount.toFixed(2) : 0)),
+        });
+
+        this.ownerChartOptions[id].series.push({
+          name: "真实订单数",
+          type: "line",
+          yAxisIndex: 2,
+          data: datas.map((d) => (d.owner[id] ? d.owner[id].calculatedActualOrderCount : 0)),
+          label: {
+            show: true,
+            fontSize: 8,
+          },
+        });
+        this.ownerChartOptions[id].series.push({
+          name: "补单数",
+          type: "line",
+          yAxisIndex: 2,
+          data: datas.map((d) => (d.owner[id] ? d.owner[id].totalFakeCount + d.owner[id].totalPersonalFakeCount + d.owner[id].totalPersonalFakeEnablingCount : 0)),
+          label: {
+            show: true,
+            fontSize: 8,
+          },
+        });
+
+        this.ownerChartOptions[id].series.push({
+          name: "拿货成本",
+          type: "bar",
+          barWidth: "20%",
+          stack: "amount2",
+          data: datas.map((d) => (d.owner[id] ? d.owner[id].calculatedActualCost.toFixed(2) : 0)),
+        });
+      }
+
+      if (!this.selectedDepartment && this.departmentSelectItems.length > 0) {
+        this.selectedDepartment = this.departmentSelectItems[0].uid;
+      }
+      if (!this.selectedTeam && this.teamSelectItems.length > 0) {
+        this.selectedTeam = this.teamSelectItems[0].uid;
+      }
+      if (!this.selectedOwner && this.ownerSelectItems.length > 0) {
+        this.selectedOwner = this.ownerSelectItems[0].uid;
+      }
     },
 
     parseDate(date) {
