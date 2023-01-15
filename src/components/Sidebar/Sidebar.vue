@@ -229,13 +229,13 @@ export default {
         {
           title: "财务",
           icon: "mdi-cash",
-          link: "/economy",
+          link: "/economy_all_product",
           show: true,
           children: [
             {
               title: "商品清单",
               icon: "mdi-circle-small",
-              link: "/economy_all_product",
+              link: "/economyAllProduct",
             },
           ],
         },

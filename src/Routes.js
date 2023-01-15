@@ -37,7 +37,7 @@ import Employee from "@/pages/Employee/Employee";
 
 import SkuHaker from "@/pages/Tools/SkuHaker";
 import ProductCopy from "@/pages/Tools/ProductCopy";
-import Economy from "@/pages/Economy/Economy";
+import EconomyAllProduct from "@/pages/Economy/EconomyAllProduct";
 
 
 import { isLogin } from "@/settings/user"
@@ -109,9 +109,9 @@ var routerConfig = {
           component: Category,
         },
         {
-          path: 'economy',
-          name: 'Economy',
-          component: Economy,
+          path: 'economyAllProduct',
+          name: 'EconomyAllProduct',
+          component: EconomyAllProduct,
         },
         {
           path: 'order',
