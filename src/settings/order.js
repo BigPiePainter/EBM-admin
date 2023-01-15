@@ -131,6 +131,15 @@ export const deletePersonalFakeOrders = data => {
     return http.request(args)
 }
 
+export const getOrders = data => {
+    const args = {
+        url: '/order/getOrders',
+        method: 'POST',
+        data,
+    }
+    return http.request(args)
+}
+
 
 
 

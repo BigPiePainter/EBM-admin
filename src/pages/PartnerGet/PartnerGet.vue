@@ -1372,14 +1372,14 @@ export default {
       console.log(this.search);
     },
 
-    refreshData(a) {
-      if (a.select) {
-        this.search.select[a.select.key] = a.select.value;
-      } else {
-        console.log("未知");
-      }
-      this.loadData();
-    },
+    // refreshData(a) {
+    //   if (a.select) {
+    //     this.search.select[a.select.key] = a.select.value;
+    //   } else {
+    //     console.log("未知");
+    //   }
+    //   this.loadData();
+    // },
 
     clickRow(item, event) {
       // console.log(this.departmentList);
