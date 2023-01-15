@@ -46,6 +46,7 @@
                 c: "员工管理",
                 d: "部门管理",
                 e: "组别管理",
+                g: "财务",
               }[key] + ","
             }}
           </span>
@@ -77,16 +78,7 @@
       <template v-slot:[`item.actions`]="{ item }">
         <div class="d-flex">
           <v-spacer />
-          <v-btn
-            small
-            depressed
-            outlined
-            color="green"
-            @click="editButton(item)"
-            class="ml-1"
-          >
-            修改
-          </v-btn>
+          <v-btn small depressed outlined color="green" @click="editButton(item)" class="ml-1"> 修改 </v-btn>
           <!-- <v-btn
             small
             depressed
@@ -120,14 +112,7 @@
               <v-row>
                 <v-col cols="3">
                   <span class="text-body-2 text--secondary">姓名*</span>
-                  <v-text-field
-                    color="primary"
-                    outlined
-                    dense
-                    hide-details
-                    v-model="userInfoEdit.nick"
-                  >
-                  </v-text-field>
+                  <v-text-field color="primary" outlined dense hide-details v-model="userInfoEdit.nick"> </v-text-field>
                 </v-col>
                 <v-col cols="3" class="pr-8">
                   <span class="text-body-2 text--secondary">性别</span>
@@ -148,39 +133,18 @@
                 </v-col>
                 <v-col>
                   <span class="text-body-2 text--secondary">联系方式</span>
-                  <v-text-field
-                    outlined
-                    color="primary"
-                    dense
-                    hide-details
-                    v-model="userInfoEdit.contact"
-                  >
-                  </v-text-field>
+                  <v-text-field outlined color="primary" dense hide-details v-model="userInfoEdit.contact"> </v-text-field>
                 </v-col>
               </v-row>
               <v-divider class="my-8" />
               <v-row>
                 <v-col>
                   <span class="text-body-2 text--secondary">登录账号*</span>
-                  <v-text-field
-                    color="primary"
-                    outlined
-                    dense
-                    hide-details
-                    v-model="userInfoEdit.username"
-                  >
-                  </v-text-field>
+                  <v-text-field color="primary" outlined dense hide-details v-model="userInfoEdit.username"> </v-text-field>
                 </v-col>
                 <v-col>
                   <span class="text-body-2 text--secondary">登录密码*</span>
-                  <v-text-field
-                    color="primary"
-                    outlined
-                    dense
-                    hide-details
-                    v-model="userInfoEdit.password"
-                  >
-                  </v-text-field>
+                  <v-text-field color="primary" outlined dense hide-details v-model="userInfoEdit.password"> </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -193,9 +157,7 @@
                     dense
                     hide-details
                     no-data-text="空！！"
-                    :items="
-                      user.permission.c.d.map((i) => departmentIdToInfo[i])
-                    "
+                    :items="user.permission.c.d.map((i) => departmentIdToInfo[i])"
                     item-text="name"
                     item-value="uid"
                     v-model="userInfoEdit.department"
@@ -205,59 +167,20 @@
               <v-row>
                 <v-col cols="4">
                   <span class="text-body-2 text--secondary">入职日期*</span>
-                  <v-menu
-                    ref="menu"
-                    v-model="datePicker"
-                    :close-on-content-click="false"
-                    :return-value.sync="userInfoEdit.onboardingTime"
-                    offset-y
-                    min-width="auto"
-                  >
+                  <v-menu ref="menu" v-model="datePicker" :close-on-content-click="false" :return-value.sync="userInfoEdit.onboardingTime" offset-y min-width="auto">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="userInfoEdit.onboardingTime"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                        outlined
-                        dense
-                        hide-details
-                      ></v-text-field>
+                      <v-text-field v-model="userInfoEdit.onboardingTime" readonly v-bind="attrs" v-on="on" outlined dense hide-details></v-text-field>
                     </template>
-                    <v-date-picker
-                      v-model="userInfoEdit.onboardingTime"
-                      no-title
-                      scrollable
-                      locale="zh-cn"
-                      first-day-of-week="1"
-                      :day-format="dayFormat"
-                      min="2021-01-01"
-                      :max="parseDate(new Date())"
-                    >
+                    <v-date-picker v-model="userInfoEdit.onboardingTime" no-title scrollable locale="zh-cn" first-day-of-week="1" :day-format="dayFormat" min="2021-01-01" :max="parseDate(new Date())">
                       <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="datePicker = false">
-                        取消
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="$refs.menu.save(userInfoEdit.onboardingTime)"
-                      >
-                        确定
-                      </v-btn>
+                      <v-btn text color="primary" @click="datePicker = false"> 取消 </v-btn>
+                      <v-btn text color="primary" @click="$refs.menu.save(userInfoEdit.onboardingTime)"> 确定 </v-btn>
                     </v-date-picker>
                   </v-menu>
                 </v-col>
                 <v-col>
                   <span class="text-body-2 text--secondary">备注</span>
-                  <v-text-field
-                    color="primary"
-                    outlined
-                    dense
-                    hide-details
-                    v-model="userInfoEdit.note"
-                  >
-                  </v-text-field>
+                  <v-text-field color="primary" outlined dense hide-details v-model="userInfoEdit.note"> </v-text-field>
                 </v-col>
               </v-row>
             </v-col>
@@ -267,28 +190,17 @@
               <v-col class="px-10 py-10">
                 <v-row v-if="user.permission.a.a">
                   <span class="text-subtitle-1">商品管理模块</span>
-                  <v-checkbox
-                    v-model="selectedPermission.a.a"
-                    label="授权"
-                    hide-details
-                    class="ml-10 mt-0 pt-0"
-                  />
+                  <v-checkbox v-model="selectedPermission.a.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
                 </v-row>
 
                 <v-expand-transition>
                   <v-container v-if="selectedPermission.a.a">
                     <v-row class="mt-5">
                       <v-col cols="10">
-                        <span class="text-body-2 text--secondary">
-                          部门录入权限
-                        </span>
+                        <span class="text-body-2 text--secondary"> 部门录入权限 </span>
                         <v-autocomplete
                           v-model="selectedPermission.a.d"
-                          :items="
-                            allDepartments.filter((d) =>
-                              user.permission.a.d.find((i) => i == d.uid)
-                            )
-                          "
+                          :items="allDepartments.filter((d) => user.permission.a.d.find((i) => i == d.uid))"
                           no-data-text="无"
                           outlined
                           dense
@@ -303,16 +215,10 @@
                     </v-row>
                     <v-row>
                       <v-col cols="10">
-                        <span class="text-body-2 text--secondary"
-                          >组别录入权限</span
-                        >
+                        <span class="text-body-2 text--secondary">组别录入权限</span>
                         <v-autocomplete
                           v-model="selectedPermission.a.g"
-                          :items="
-                            allTeams.filter((g) =>
-                              user.permission.a.g.find((i) => i == g.uid)
-                            )
-                          "
+                          :items="allTeams.filter((g) => user.permission.a.g.find((i) => i == g.uid))"
                           no-data-text="无"
                           outlined
                           dense
@@ -327,26 +233,14 @@
                     </v-row>
                     <v-row>
                       <v-col>
-                        <v-checkbox
-                          v-model="selectedPermission.a.da"
-                          hide-details
-                          dense
-                          :disabled="!user.permission.a.da"
-                        >
+                        <v-checkbox v-model="selectedPermission.a.da" hide-details dense :disabled="!user.permission.a.da">
                           <template v-slot:label>
-                            <span class="text-subtitle-2"
-                              >删除商品归属变更记录</span
-                            >
+                            <span class="text-subtitle-2">删除商品归属变更记录</span>
                           </template>
                         </v-checkbox>
                       </v-col>
                       <v-col>
-                        <v-checkbox
-                          v-model="selectedPermission.a.fc"
-                          hide-details
-                          dense
-                          :disabled="!user.permission.a.fc"
-                        >
+                        <v-checkbox v-model="selectedPermission.a.fc" hide-details dense :disabled="!user.permission.a.fc">
                           <template v-slot:label>
                             <span class="text-subtitle-2">管理一级类目</span>
                           </template>
@@ -355,12 +249,7 @@
                     </v-row>
                     <v-row>
                       <v-col>
-                        <v-checkbox
-                          v-model="selectedPermission.a.dp"
-                          hide-details
-                          dense
-                          :disabled="!user.permission.a.dp"
-                        >
+                        <v-checkbox v-model="selectedPermission.a.dp" hide-details dense :disabled="!user.permission.a.dp">
                           <template v-slot:label>
                             <span class="text-subtitle-2">彻底删除商品</span>
                           </template>
@@ -378,12 +267,7 @@
                   <v-container>
                     <v-row class="mt-5">
                       <v-col>
-                        <v-checkbox
-                          v-model="selectedPermission.f.s"
-                          hide-details
-                          dense
-                          :disabled="!user.permission.f?.s"
-                        >
+                        <v-checkbox v-model="selectedPermission.f.s" hide-details dense :disabled="!user.permission.f?.s">
                           <template v-slot:label>
                             <span class="text-subtitle-2">显示商品ID与店铺</span>
                           </template>
@@ -396,43 +280,28 @@
                 <v-divider class="my-8" v-if="user.permission.b.a" />
                 <v-row v-if="user.permission.b.a">
                   <span class="text-subtitle-1">订单管理模块</span>
-                  <v-checkbox
-                    v-model="selectedPermission.b.a"
-                    label="授权"
-                    hide-details
-                    class="ml-10 mt-0 pt-0"
-                  >
+                  <v-checkbox v-model="selectedPermission.b.a" label="授权" hide-details class="ml-10 mt-0 pt-0">
                     <template v-slot:label>
                       <span class="text-subtitle-1">授权</span>
                     </template>
                   </v-checkbox>
                 </v-row>
+
                 <v-divider class="my-8" v-if="user.permission.c.a" />
                 <v-row v-if="user.permission.c.a">
                   <span class="text-subtitle-1">员工管理模块</span>
-                  <v-checkbox
-                    v-model="selectedPermission.c.a"
-                    label="授权"
-                    hide-details
-                    class="ml-10 mt-0 pt-0"
-                  />
+                  <v-checkbox v-model="selectedPermission.c.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
                 </v-row>
 
                 <v-expand-transition>
                   <v-container v-if="selectedPermission.c.a">
                     <v-row class="mt-5">
                       <v-col cols="10">
-                        <span class="text-body-2 text--secondary">
-                          部门管理权限
-                        </span>
+                        <span class="text-body-2 text--secondary"> 部门管理权限 </span>
                         <Help text="可以创建并管理哪个部门的员工" />
                         <v-autocomplete
                           v-model="selectedPermission.c.d"
-                          :items="
-                            allDepartments.filter((d) =>
-                              user.permission.c.d.find((i) => i == d.uid)
-                            )
-                          "
+                          :items="allDepartments.filter((d) => user.permission.c.d.find((i) => i == d.uid))"
                           no-data-text="无"
                           outlined
                           dense
@@ -447,12 +316,7 @@
                     </v-row>
                     <v-row class="mt-5">
                       <v-col>
-                        <v-checkbox
-                          v-model="selectedPermission.c.b"
-                          hide-details
-                          dense
-                          :disabled="!user.permission.c.b"
-                        >
+                        <v-checkbox v-model="selectedPermission.c.b" hide-details dense :disabled="!user.permission.c.b">
                           <template v-slot:label>
                             <span class="text-subtitle-2">查看员工密码</span>
                           </template>
@@ -466,24 +330,35 @@
                 <v-divider class="my-8" v-if="user.permission.d.a" />
                 <v-row v-if="user.permission.d.a">
                   <span class="text-subtitle-1">部门管理模块</span>
-                  <v-checkbox
-                    v-model="selectedPermission.d.a"
-                    label="授权"
-                    hide-details
-                    class="ml-10 mt-0 pt-0"
-                  />
+                  <v-checkbox v-model="selectedPermission.d.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
                 </v-row>
 
                 <v-divider class="my-8" v-if="user.permission.e.a" />
                 <v-row v-if="user.permission.e.a">
                   <span class="text-subtitle-1">组别管理模块</span>
-                  <v-checkbox
-                    v-model="selectedPermission.e.a"
-                    label="授权"
-                    hide-details
-                    class="ml-10 mt-0 pt-0"
-                  />
+                  <v-checkbox v-model="selectedPermission.e.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
                 </v-row>
+
+                <v-divider class="my-8" v-if="user.permission.g?.a" />
+                <v-row v-if="user.permission.g?.a">
+                  <span class="text-subtitle-1">财务</span>
+
+                  <v-checkbox v-model="selectedPermission.g.a" label="授权" hide-details class="ml-10 mt-0 pt-0" />
+                </v-row>
+                <v-expand-transition>
+                  <v-container v-if="selectedPermission.g.a">
+                    <v-row class="mt-5">
+                      <v-col>
+                        <v-checkbox v-model="selectedPermission.g.d" hide-details dense :disabled="!user.permission.g?.d">
+                          <template v-slot:label>
+                            <span class="text-subtitle-2">查看或导出SKU/厂家明细</span>
+                          </template>
+                        </v-checkbox>
+                      </v-col>
+                      <v-col> </v-col>
+                    </v-row>
+                  </v-container>
+                </v-expand-transition>
               </v-col>
             </div>
           </v-tab-item>
@@ -492,12 +367,8 @@
         <v-card-actions>
           <p class="caption font-italic font-weight-thin">带*为必填项目</p>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="userInfoDialog = false"
-            >取消</v-btn
-          >
-          <v-btn color="blue darken-1" text @click="save" :disabled="isEmpty"
-            >保存</v-btn
-          >
+          <v-btn color="blue darken-1" text @click="userInfoDialog = false">取消</v-btn>
+          <v-btn color="blue darken-1" text @click="save" :disabled="isEmpty">保存</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -568,6 +439,7 @@ export default {
       d: {},
       e: {},
       f: {},
+      g: {},
     },
   }),
 
@@ -625,6 +497,7 @@ export default {
         d: {},
         e: {},
         f: {},
+        g: {},
       };
       this.mode = 0; // 0-添加模式   1-修改模式
       this.userInfoDialog = true;
@@ -634,18 +507,17 @@ export default {
 
     editButton(item) {
       this.userInfoEdit = { ...item };
-      this.selectedPermission = JSON.parse(
-        this.userInfos.find((i) => i.uid == item.uid).permission
-      );
-
+      this.selectedPermission = JSON.parse(this.userInfos.find((i) => i.uid == item.uid).permission);
       if (!this.selectedPermission.f) {
-        this.selectedPermission.f = {};
+        this.$set(this.selectedPermission, "f", {});
       }
+      if (!this.selectedPermission.g) {
+        this.$set(this.selectedPermission, "g", {});
+      }
+      console.log(this.selectedPermission);
       console.log(this.userInfoEdit);
 
-      this.userInfoEdit.onboardingTime = this.parseDate(
-        this.userInfoEdit.onboardingTime
-      );
+      this.userInfoEdit.onboardingTime = this.parseDate(this.userInfoEdit.onboardingTime);
       this.mode = 1;
       this.userInfoDialog = true;
     },
@@ -712,9 +584,7 @@ export default {
           this.userInfos = res.data.userInfos;
           this.userAnalyze();
 
-          this.userInfosWithoutSelf = this.userInfos.filter(
-            (i) => i.uid != this.user.uid
-          );
+          this.userInfosWithoutSelf = this.userInfos.filter((i) => i.uid != this.user.uid);
           //this.infoAlert("泼发EBC：" + res.data);
         })
         .catch(() => {
