@@ -121,11 +121,12 @@
         item-key="subOrderNumber"
         disable-sort
         class=""
-        height="calc(100vh - 197px)"
+        height="calc(100vh - 300px)"
         mobile-breakpoint="0"
-        :headers="Headers"
+        :headers="headers"
         :items="allItems"
         :options.sync="options"
+        :server-items-length="total"
         :items-per-page="50"
         :footer-props="{
           'items-per-page-options': [10, 20, 50, 100],
@@ -149,8 +150,7 @@
 
 
 <script>
-import { getOrders } from "@/settings/profitReport";
-import { getShop } from "@/settings/shop";
+import { getOrders } from "@/settings/order";
 import PageHeader from "@/components/PageHeader";
 import { javaUTCDateToString } from "@/libs/utils";
 import { mapState } from "vuex";
@@ -169,6 +169,9 @@ export default {
       returnItems: [],
       options: {},
       orderItems: [],
+      total: 0,
+
+      categorys: {},
 
       search: {
         //选中项
@@ -180,34 +183,31 @@ export default {
         },
       },
 
-      Headers: [
-        { text: "店铺名称", value: "shop" }, //订单1
-        { text: "商品ID", value: "productId" }, //订单1
-        { text: "子订单编号", value: "subOrderNumber" }, //订单
-        { text: "主订单编号", value: "mainOrderNumber" }, //订单
-        { text: "物流公司", value: "postCompany" }, //订单
-        { text: "运单号", value: "postId" }, //订单
-        { text: "订单创建时间", value: "orderCreateTime" }, //订单
-        { text: "订单付款时间", value: "orderPayTime" }, //订单
-        { text: "成交金额", value: "subActualPayment" }, //子单实际支付金额//订单
-        { text: "付款状态", value: "paymentStatu" },
-        { text: "订单状态", value: "orderStatu" }, //订单
-        { text: "是否刷单", value: "ifBrush" },
-        // { text: "是否刷大车", value: "ifBrushDache" },
-        { text: "本单佣金", value: "salary" },
-        { text: "订单sku名称", value: "skuName" }, //颜色/尺码//订单
-        { text: "sku成本", value: "skuCost" },
-        { text: "购买数量", value: "goodsAmount" }, //订单宝贝数量
-        { text: "实购数量", value: "paymentStatu" },
-        { text: "总成本", value: "paymentStatu" },
-        { text: "售价有误", value: "paymentStatu" },
-        { text: "原售价", value: "paymentStatu" },
-        { text: "退款申请日期", value: "paymentStatu" },
-        { text: "退款完结日期", value: "paymentStatu" },
-        { text: "发货状态", value: "paymentStatu" },
-        { text: "退款类型", value: "paymentStatu" },
-        { text: "退款金额", value: "paymentStatu" },
-        { text: "退款状态", value: "paymentStatu" },
+      headers: [
+        { text: "子单实际支付金额", value: "actualAmount" },
+        { text: "买家实际支付金额", value: "actualTotalAmount" },
+        { text: "买家应付货款", value: "amount" },
+        { text: "物流公司", value: "expressCompany" },
+        { text: "物流单号", value: "expressNumber" },
+        { text: "子订单编号", value: "id" },
+        { text: "主订单编号", value: "orderId" },
+        { text: "订单付款时间", value: "orderPaymentTime" },
+        { text: "订单创建时间", value: "orderSetupTime" },
+        { text: "订单状态", value: "orderStatus" },
+        { text: "支付单号", value: "paymentId" },
+        { text: "买家应付邮费", value: "postage" },
+        { text: "宝贝数量 ", value: "productCount" },
+        { text: "商品ID", value: "productId" },
+        { text: "宝贝标题", value: "productTitle" },
+        { text: "退款金额", value: "refundAmount" },
+        { text: "商家编码", value: "sellerCode" },
+        { text: "店铺ID", value: "shopId" },
+        { text: "店铺名称", value: "shopName" },
+        { text: "颜色/尺码(SKU)", value: "skuName" },
+        { text: "仓发类型", value: "storehouseType" },
+        { text: "供应商ID", value: "supplierId" },
+        { text: "供应商名称", value: "supplierName" },
+        { text: "总金额", value: "totalAmount" },
       ],
     };
   },
@@ -230,8 +230,9 @@ export default {
   },
 
   created() {
-    this.loadData();
-    this.getSearchItems();
+    var date = new Date();
+    date.setDate(date.getDate() - 3);
+    this.date = javaUTCDateToString(date);
   },
 
   watch: {
@@ -261,22 +262,16 @@ export default {
       return Number(date.split("-")[2]);
     },
     loadData() {
+      console.log(this.date);
       const { page, itemsPerPage } = this.options;
-      getOrders({ date: this.date.replaceAll(" - ", " / "), itemsPerPage, match: JSON.stringify(this.search), page })
+      var args = { date: this.date.replaceAll("-", "/"), itemsPerPage, match: JSON.stringify(this.search), page };
+      console.log(args);
+      getOrders(args)
         .then((res) => {
+          this.categorys = res.data.category;
+          this.allItems = res.data.orders;
+          this.total = res.data.total;
           console.log(res.data);
-        })
-        .catch(() => {});
-    },
-
-    getSearchItems() {
-      getShop()
-        .then((res) => {
-          console.log(res.data);
-          res.data.shops.forEach((item)=>{
-            this.shops.push(item.name);
-          })
-          console.log(this.shops)
         })
         .catch(() => {});
     },
