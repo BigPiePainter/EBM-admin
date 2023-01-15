@@ -4,7 +4,7 @@
     <div>
       <v-col class="px-8 pt-4 pb-6">
         <v-row>
-          <v-col md="auto" class="mx-2">
+          <v-col md="auto" class="mx-1">
             <v-row>
               <span class="group-title"> 日期选择 </span>
             </v-row>
@@ -41,13 +41,13 @@
               </v-menu>
             </v-row>
           </v-col>
-          <v-col class="mx-2" md="auto">
+          <v-col class="mx-1" md="auto">
             <v-row>
               <!-- 筛选店铺 -->
               <span class="group-title"> 店铺 </span>
             </v-row>
             <v-row>
-              <v-autocomplete no-data-text="空" color="primary" :items="shops" dense outlined v-model="search.search.shopName" multiple hide-details class="search-input">
+              <v-autocomplete no-data-text="空" color="primary" :items="categorys.shopName" dense outlined v-model="search.search.shopName" multiple hide-details class="search-input">
                 <template v-slot:selection="option">
                   <v-chip small close close-icon="mdi-close" color="primary" outlined @click:close="remove('shopName', option)">
                     {{ option.item }}
@@ -61,16 +61,15 @@
               </v-autocomplete>
             </v-row>
           </v-col>
-          <v-col class="mx-2" md="auto">
+          <v-col class="mx-1" md="auto">
             <v-row>
-              <!-- 筛选商品ID -->
               <span class="group-title"> 商品ID </span>
             </v-row>
             <v-row>
               <v-text-field color="primary" style="max-width: 160px" v-model="search.search.productId" outlined dense clearable hide-details class="search-input"> </v-text-field>
             </v-row>
           </v-col>
-          <v-col class="mx-2" md="auto">
+          <v-col class="mx-1" md="auto">
             <v-row>
               <span class="group-title"> 子订单编号 </span>
             </v-row>
@@ -78,7 +77,7 @@
               <v-text-field color="primary" style="max-width: 160px" v-model="search.search.id" outlined dense clearable hide-details class="search-input"> </v-text-field>
             </v-row>
           </v-col>
-          <v-col class="mx-2" md="auto">
+          <v-col class="mx-1" md="auto">
             <v-row>
               <span class="group-title"> 主订单编号 </span>
             </v-row>
@@ -86,7 +85,7 @@
               <v-text-field color="primary" style="max-width: 160px" v-model="search.search.orderId" outlined dense clearable hide-details class="search-input"> </v-text-field>
             </v-row>
           </v-col>
-          <v-col class="mx-2" md="auto">
+          <v-col class="mx-1" md="auto">
             <v-row>
               <span class="group-title"> 订单sku名称 </span>
             </v-row>
@@ -94,7 +93,7 @@
               <v-text-field color="primary" style="max-width: 160px" v-model="search.search.skuName" outlined dense clearable hide-details class="search-input"> </v-text-field>
             </v-row>
           </v-col>
-          <v-col class="mx-2" md="auto">
+          <v-col class="mx-1" md="auto">
             <v-row>
               <span class="group-title"> 运单号 </span>
             </v-row>
@@ -102,12 +101,51 @@
               <v-text-field color="primary" style="max-width: 160px" v-model="search.search.expressNumber" outlined dense clearable hide-details class="search-input"> </v-text-field>
             </v-row>
           </v-col>
-          <v-col class="mx-2" md="auto">
+          <v-col class="mx-1" md="auto">
             <v-row>
               <span class="group-title"> 物流公司 </span>
             </v-row>
             <v-row>
               <v-text-field color="primary" style="max-width: 160px" v-model="search.search.expressCompany" outlined dense clearable hide-details class="search-input"> </v-text-field>
+            </v-row>
+          </v-col>
+          <v-col class="mx-1" md="auto">
+            <v-row>
+              <!-- 筛选店铺 -->
+              <span class="group-title"> 订单状态 </span>
+            </v-row>
+            <v-row>
+              <v-autocomplete no-data-text="空" color="primary" :items="categorys.orderStatus" dense outlined v-model="search.search.orderStatus" multiple hide-details class="search-input">
+                <template v-slot:selection="option">
+                  <v-chip small close close-icon="mdi-close" color="primary" outlined @click:close="remove('orderStatus', option)">
+                    {{ orderStatus(option.item) }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <span style="font-size: 13px">
+                    {{ orderStatus(data.item) }}
+                  </span>
+                </template>
+              </v-autocomplete>
+            </v-row>
+          </v-col>
+          <v-col class="mx-1" md="auto">
+            <v-row>
+              <span class="group-title"> 仓发类型 </span>
+            </v-row>
+            <v-row>
+              <v-autocomplete no-data-text="空" color="primary" :items="categorys.storehouseType" dense outlined v-model="search.search.storehouseType" multiple hide-details class="search-input">
+                <template v-slot:selection="option">
+                  <v-chip small close close-icon="mdi-close" color="primary" outlined @click:close="remove('storehouseType', option)">
+                    {{ storeHouse(option.item) }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <span style="font-size: 13px">
+                    {{ storeHouse(data.item) }}
+                  </span>
+                </template>
+              </v-autocomplete>
             </v-row>
           </v-col>
         </v-row>
@@ -121,7 +159,7 @@
         item-key="subOrderNumber"
         disable-sort
         class=""
-        height="calc(100vh - 300px)"
+        height="calc(100vh - 273px)"
         mobile-breakpoint="0"
         :headers="headers"
         :items="allItems"
@@ -142,6 +180,26 @@
             <!-- <v-switch class="mt-5" label="展开更多信息" v-model="moreInfo">
               </v-switch> -->
           </v-toolbar>
+        </template>
+        <template v-slot:[`item.orderSetupTime`]="props">
+          <span>
+            {{ parseDate(props.item.orderSetupTime) }}
+          </span>
+        </template>
+        <template v-slot:[`item.orderPaymentTime`]="props">
+          <span>
+            {{ parseDate(props.item.orderPaymentTime) }}
+          </span>
+        </template>
+        <template v-slot:[`item.storehouseType`]="props">
+          <span>
+            {{ storeHouse(props.item.storehouseType) }}
+          </span>
+        </template>
+        <template v-slot:[`item.orderStatus`]="props">
+          <span>
+            {{ orderStatus(props.item.orderStatus) }}
+          </span>
         </template>
       </v-data-table>
     </div>
@@ -184,21 +242,21 @@ export default {
       },
 
       headers: [
+        { text: "商品ID", value: "productId" },
+        { text: "宝贝标题", value: "productTitle" },
+        { text: "子订单编号", value: "id" },
+        { text: "主订单编号", value: "orderId" },
         { text: "子单实际支付金额", value: "actualAmount" },
         { text: "买家实际支付金额", value: "actualTotalAmount" },
         { text: "买家应付货款", value: "amount" },
         { text: "物流公司", value: "expressCompany" },
         { text: "物流单号", value: "expressNumber" },
-        { text: "子订单编号", value: "id" },
-        { text: "主订单编号", value: "orderId" },
         { text: "订单付款时间", value: "orderPaymentTime" },
         { text: "订单创建时间", value: "orderSetupTime" },
         { text: "订单状态", value: "orderStatus" },
         { text: "支付单号", value: "paymentId" },
         { text: "买家应付邮费", value: "postage" },
         { text: "宝贝数量 ", value: "productCount" },
-        { text: "商品ID", value: "productId" },
-        { text: "宝贝标题", value: "productTitle" },
         { text: "退款金额", value: "refundAmount" },
         { text: "商家编码", value: "sellerCode" },
         { text: "店铺ID", value: "shopId" },
@@ -252,6 +310,31 @@ export default {
   },
 
   methods: {
+    storeHouse(index) {
+      var house;
+      if (index == 1) {
+        house = "菜鸟仓";
+      } else if (index == 2) {
+        house = "商家仓";
+      }
+      return house;
+    },
+    orderStatus(index) {
+      var status;
+      if (index == 1) {
+        status = "部分发货中";
+      } else if (index == 2) {
+        status = "待买家收货";
+      } else if (index == 3) {
+        status = "待卖家发货";
+      } else if (index == 4) {
+        status = "交易成功";
+      } else if (index == 5) {
+        status = "交易关闭";
+      }
+      return status;
+    },
+
     remove(key, option) {
       this.search.search[key].splice(option.index, 1);
     },

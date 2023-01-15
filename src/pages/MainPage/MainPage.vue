@@ -1,9 +1,60 @@
 <template>
   <div class="page-content d-flex flex-column">
     <PageHeader title="主页"> </PageHeader>
+    <div>
+      <v-col class="ml-6" cols="1">
+        <v-row>
+          <span class="group-title"> 日期选择 </span>
+        </v-row>
+        <v-row>
+          <v-menu ref="menu" v-model="datePicker" :close-on-content-click="false" :return-value.sync="dates" offset-y>
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                class="date-picker-textfield search-input"
+                style="width: 120px"
+                v-model="dates"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+                outlined
+                dense
+                hide-details
+                :disabled="loading"
+                color="primary"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="dates"
+              no-title
+              scrollable
+              locale="zh-cn"
+              color="primary"
+              first-day-of-week="1"
+              :day-format="dayFormat"
+              min="2021-01-01"
+              :max="parseDate(new Date())"
+            >
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="datePicker = false"> 取消 </v-btn>
+              <v-btn
+                text
+                color="primary"
+                @click="
+                  $refs.menu.save(dates);
+                  loadData();
+                "
+              >
+                确定
+              </v-btn>
+            </v-date-picker>
+          </v-menu>
+        </v-row>
+      </v-col>
+    </div>
+
     <v-container fluid id="mainContainer">
       <div class="dashboard-page mt-2 pt-2">
-        <span class="ml-6 text--secondary">{{ dates }}</span>
+        <!-- <span class="ml-6 text--secondary">{{ dates }}</span> -->
 
         <v-row class="mt-1">
           <v-col cols="4">
@@ -121,7 +172,7 @@ export default {
       totalProfit: 0,
       profitItems: [],
       observer: null,
-      dates: [],
+      dates: "",
       loading: false,
 
       realTotalAmount: 0,
@@ -302,55 +353,6 @@ export default {
       "categoryIdToInfo",
     ]),
 
-    // chartOption: function () {
-    //   return {
-    //     tooltip: {
-    //       trigger: "axis",
-    //     },
-    //     legend: {},
-    //     grid: {
-    //       left: "20",
-    //       right: "30",
-    //       bottom: "10",
-    //       top: "20",
-    //       containLabel: true,
-    //     },
-    //     toolbox: {},
-    //     yAxis: [
-    //       {
-    //         type: "value",
-    //         // axisLabel: {
-    //         //   show: false,
-    //         // },
-    //       },
-    //     ],
-    //     xAxis: [
-    //       {
-    //         type: "category",
-    //         axisLabel: {
-    //           show: true,
-    //           // interval: 0, //0：全部显示，1：间隔为1显示对应类目，2：依次类推，
-    //           rotate: 90, //倾斜显示，-：顺时针旋转，+或不写：逆时针旋转
-    //         },
-    //         data: this.chartDateData,
-    //       },
-    //     ],
-
-    //     series: [
-    //       {
-    //         name: "成交额总和",
-    //         type: "line",
-    //         data: this.dayAmountItem,
-    //       },
-    //       {
-    //         name: "售后毛利润总和",
-    //         type: "line",
-    //         data: this.dayProfitItem,
-    //       },
-    //     ],
-    //   };
-    // },
-
     getSize: function () {
       var size;
       size = "width:" + this.$refs.cardsize.clientWidth + ";" + "height:" + this.$refs.cardsize.clientHeight;
@@ -388,6 +390,11 @@ export default {
 
     loadData() {
       var args;
+      this.realTotalAmount = 0;
+      this.totalAmount = 0;
+      this.mainPageCardOrderCount = 0;
+      this.mainPageCardActualOrderCount =0;
+      this.totalProfit = 0;
       args = { startDate: this.dates, endDate: this.dates };
       args.startDate = args.startDate.replaceAll("-", "/");
       args.endDate = args.endDate.replaceAll("-", "/");
