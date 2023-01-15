@@ -237,11 +237,6 @@ export default {
               icon: "mdi-circle-small",
               link: "/all_employees",
             },
-            {
-              title: "员工结构",
-              icon: "mdi-circle-small",
-              link: "/employee",
-            },
           ],
         },
 
