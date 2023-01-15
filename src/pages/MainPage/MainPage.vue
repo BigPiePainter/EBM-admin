@@ -12,7 +12,7 @@
                 <p class="text-body-2">当日订单总成交额</p>
               </v-card-title>
               <v-card-text>
-                <p class="text-h3 text-center">33333333.3</p>
+                <p class="text-h3 text-center">{{ amountFormat(realTotalAmount) }}</p>
               </v-card-text>
             </v-card>
           </v-col>
@@ -32,7 +32,7 @@
                 <p class="text-body-2">EBC未收录成交额</p>
               </v-card-title>
               <v-card-text>
-                <p class="text-h3 text-center">33333333.3</p>
+                <p class="text-h3 text-center">{{ amountFormat(realTotalAmount - totalAmount) }}</p>
               </v-card-text>
             </v-card>
           </v-col>
@@ -99,6 +99,8 @@ import { CanvasRenderer } from "echarts/renderers";
 
 import PageHeader from "@/components/PageHeader";
 import { getProfitReport } from "@/settings/profitReport";
+import { getRealTotalAmount } from "@/settings/order";
+
 import { javaUTCDateToString } from "@/libs/utils";
 import { amountBeautify } from "@/libs/utils";
 
@@ -121,6 +123,8 @@ export default {
       observer: null,
       dates: [],
       loading: false,
+
+      realTotalAmount: 0,
 
       quotes: [
         "言语本来应当是思想的仆人，但却往往变成思想的主人。——克鲁劳",
@@ -276,7 +280,7 @@ export default {
 
   created() {
     var date = new Date();
-    date.setDate(date.getDate() - 3);
+    date.setDate(date.getDate() - 2);
     this.dates = javaUTCDateToString(date);
     this.loadData();
   },
@@ -401,6 +405,16 @@ export default {
           console.log("load");
           this.profitItems = res.data.profitReport;
           this.dataAnalyze();
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+
+      getRealTotalAmount({ date: args.startDate })
+        .then((res) => {
+          this.loadingDialog = false;
+          this.realTotalAmount = res.data.amount;
+          console.log(res.data);
         })
         .catch(() => {
           this.loading = false;
