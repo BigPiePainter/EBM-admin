@@ -87,13 +87,9 @@
         <div class="mx-5 pt-4">
           <span>
             {{
-              this.selectedBrushItems[0] && this.selectedBrushItems[0].skuName
+              `是否确认删除 ` + selectedBrushItems.length + ` 条未匹配个人补单 ?`
             }}
           </span>
-        </div>
-
-        <div class="mt-2">
-          <TableKV :items="deleteBrushItemsPrase" />
         </div>
 
         <v-card-actions>
@@ -134,21 +130,19 @@
   
 <script>
 import { getMismatchPersonalFakeOrders } from "@/settings/order";
-import TableKV from "@/components/TableKV/TableKV";
+import { deletePersonalFakeOrders } from "@/settings/order";
 import { javaUTCDateToString } from "@/libs/utils";
 import PageHeader from "@/components/PageHeader";
 
 export default {
   components: {
     PageHeader,
-    TableKV,
   },
   data() {
     return {
       ifAction: false,
       selectedBrushItems: [],
-      deleteBrushItemsUid: [],
-      deleteBrushItemsPrase: [],
+      deleteBrushItemsId: [],
       deleteBrushItemsDialog: false,
       mutipleDeleteDialog: false,
 
@@ -160,9 +154,6 @@ export default {
       brushHeader: [
         { text: "主订单编号", value: "id" },
         { text: "支付时间", value: "orderPaymentTime" },
-        // { text: "品数/子订单数", value: "productCount" },
-        // { text: "子订单佣金", value: "brokerage" },
-        // { text: "团队", value: "team" },
       ],
     };
   },
@@ -208,50 +199,22 @@ export default {
     },
 
     delectBrushItems() {
-      this.deleteBrushItemsPrase = [];
       console.log(this.selectedBrushItems);
-      this.deleteBrushItemsUid = this.selectedBrushItems.map((i) => i.uid);
+      this.deleteBrushItemsId = this.selectedBrushItems.map((i) => i.id);
       this.deleteBrushItemsDialog = true;
-      // if (this.deleteSkuUid.length == 1) {
-      //   this.deleteSkuItemParse = [
-      //     {
-      //       key: "SKUID",
-      //       value: this.skuSelected[0].skuId,
-      //     },
-      //     {
-      //       key: "售卖价",
-      //       value: this.skuSelected[0].skuPrice,
-      //     },
-      //     {
-      //       key: "单个成本",
-      //       value: this.skuSelected[0].skuCost,
-      //     },
-      //     {
-      //       key: "价格开始时间",
-      //       value: this.parseDate(this.skuSelected[0].startTime),
-      //     },
-      //     {
-      //       key: "创建时间",
-      //       value: this.parseDateTime(this.skuSelected[0].createTime),
-      //     },
-      //   ];
-      //   console.log(this.deleteSkuItemParse);
-      //   this.deleteSkuDialog = true;
-      // } else {
-      //   this.mutipleDeleteDialog = true;
-      // }
     },
 
     sureDeleteBrushItemsButton() {
       this.deleteBrushItemsDialog = false;
-      // deleteFakeOrders({ uids: this.deleteBrushItemsUid.join() })
-      //   .then((res) => {
-      //     console.log(res);
-      //     this.global.infoAlert(res.data);
-      //     this.init();
-      //   })
-      //   .catch(() => {});
-      // this.selectedBrushItems = [];
+      deletePersonalFakeOrders({ ids: this.deleteBrushItemsId.join() })
+        .then((res) => {
+          console.log(res);
+          this.global.infoAlert(res.data);
+          this.loadData();
+        })
+        .catch(() => {});
+      this.selectedBrushItems = [];
+      this.ifAction = false;
     },
   },
 };

@@ -122,6 +122,15 @@ export const deleteFakeOrders = data => {
     return http.request(args)
 }
 
+export const deletePersonalFakeOrders = data => {
+    const args = {
+        url: '/order/deletePersonalFakeOrder',
+        method: 'POST',
+        data,
+    }
+    return http.request(args)
+}
+
 
 
 

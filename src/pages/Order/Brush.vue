@@ -143,7 +143,6 @@ export default {
       ifAction: false,
       selectedBrushItems: [],
       deleteBrushItemsId: [],
-      deleteBrushItemsPrase: [],
       deleteBrushItemsDialog: false,
       mutipleDeleteDialog: false,
 
@@ -203,38 +202,9 @@ export default {
     },
 
     delectBrushItems() {
-      this.deleteBrushItemsPrase = [];
       console.log(this.selectedBrushItems);
       this.deleteBrushItemsId = this.selectedBrushItems.map((i) => i.id);
       this.deleteBrushItemsDialog = true;
-      // if (this.deleteSkuUid.length == 1) {
-      //   this.deleteSkuItemParse = [
-      //     {
-      //       key: "SKUID",
-      //       value: this.skuSelected[0].skuId,
-      //     },
-      //     {
-      //       key: "售卖价",
-      //       value: this.skuSelected[0].skuPrice,
-      //     },
-      //     {
-      //       key: "单个成本",
-      //       value: this.skuSelected[0].skuCost,
-      //     },
-      //     {
-      //       key: "价格开始时间",
-      //       value: this.parseDate(this.skuSelected[0].startTime),
-      //     },
-      //     {
-      //       key: "创建时间",
-      //       value: this.parseDateTime(this.skuSelected[0].createTime),
-      //     },
-      //   ];
-      //   console.log(this.deleteSkuItemParse);
-      //   this.deleteSkuDialog = true;
-      // } else {
-      //   this.mutipleDeleteDialog = true;
-      // }
     },
 
     sureDeleteBrushItemsButton() {
@@ -244,7 +214,6 @@ export default {
           console.log(res);
           this.global.infoAlert(res.data);
           this.loadData();
-          this.init();
         })
         .catch(() => {});
       this.selectedBrushItems = [];
