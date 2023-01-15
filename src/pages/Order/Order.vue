@@ -41,7 +41,7 @@
               </v-menu>
             </v-row>
           </v-col>
-          <v-col class="mx-1" md="auto">
+          <v-col class="mx-1">
             <v-row>
               <!-- 筛选店铺 -->
               <span class="group-title"> 店铺 </span>
@@ -109,7 +109,7 @@
               <v-text-field color="primary" style="max-width: 160px" v-model="search.search.expressCompany" outlined dense clearable hide-details class="search-input"> </v-text-field>
             </v-row>
           </v-col>
-          <v-col class="mx-1" md="auto">
+          <v-col class="mx-1">
             <v-row>
               <!-- 筛选店铺 -->
               <span class="group-title"> 订单状态 </span>
@@ -129,7 +129,7 @@
               </v-autocomplete>
             </v-row>
           </v-col>
-          <v-col class="mx-1" md="auto">
+          <v-col class="mx-1">
             <v-row>
               <span class="group-title"> 仓发类型 </span>
             </v-row>
