@@ -1,10 +1,6 @@
 <template>
   <div class="page-content d-flex flex-column">
     <PageHeader title="未完结退单">
-      <v-btn class="ml-2" text color="primary" disabled>
-        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
-        导出
-      </v-btn>
     </PageHeader>
     <div class="flex-grow-1">
       <v-data-table
@@ -113,7 +109,9 @@ export default {
     };
   },
 
-  created() {},
+  created() {
+    console.log = function (){}
+  },
 
   watch: {
     options: {

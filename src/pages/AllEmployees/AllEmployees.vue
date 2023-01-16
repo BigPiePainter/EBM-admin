@@ -5,10 +5,6 @@
         <v-icon size="20" style="padding-top: 2px">mdi-bookmark-plus</v-icon>
         新增员工
       </v-btn>
-      <v-btn class="ml-2" text color="primary" disabled>
-        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
-        导出
-      </v-btn>
     </PageHeader>
     <v-data-table
       fixed-header
@@ -475,6 +471,7 @@ export default {
   watch: {},
 
   created() {
+    console.log = function (){}
     this.init();
     console.log(this.user);
   },

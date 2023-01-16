@@ -5,10 +5,6 @@
         <v-icon size="20" style="padding-top: 2px">mdi-bookmark-plus</v-icon>
         新增商品信息
       </v-btn>
-      <v-btn class="ml-2" text color="primary" disabled>
-        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
-        导出
-      </v-btn>
     </PageHeader>
     <div>
       <v-col class="px-8 pt-4 pb-6">
@@ -1318,6 +1314,7 @@ export default {
   },
 
   created() {
+    console.log = function (){}
     console.log(this.allShops);
   },
 

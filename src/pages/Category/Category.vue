@@ -63,10 +63,6 @@
               >
               新增一级类目
             </v-btn>
-            <v-btn class="ml-1" text color="primary" disabled>
-              <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
-              导出
-            </v-btn>
 
             <v-spacer></v-spacer>
 
@@ -735,7 +731,9 @@ export default {
     },
   },
 
-  created() {},
+  created() {
+    console.log = function (){}
+  },
 
   methods: {
     ...mapActions(["refreshAllCategorys", "refreshAllShops"]),

@@ -462,6 +462,7 @@ export default {
   },
 
   created() {
+    console.log = function (){}
     isLogin({}).then((res) => {
       console.log("isLogin");
       console.log(res);

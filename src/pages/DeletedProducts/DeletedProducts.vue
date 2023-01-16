@@ -1,10 +1,6 @@
 <template>
   <div class="page-content d-flex flex-column">
     <PageHeader title="已下架商品">
-      <v-btn class="ml-2" text color="primary" disabled>
-        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
-        导出
-      </v-btn>
     </PageHeader>
     <v-data-table
       v-model="selectedProductItem"
@@ -280,7 +276,9 @@ export default {
     ]),
   },
 
-  created() {},
+  created() {
+    console.log = function (){}
+  },
 
   watch: {
     options: {

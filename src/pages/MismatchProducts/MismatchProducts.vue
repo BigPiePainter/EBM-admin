@@ -1,10 +1,6 @@
 <template>
   <div class="page-content d-flex flex-column">
     <PageHeader title="认领大厅">
-      <v-btn class="ml-2" text color="primary" disabled>
-        <v-icon size="20" style="padding-top: 2px">mdi-export</v-icon>
-        导出
-      </v-btn>
     </PageHeader>
     <v-data-table
       fixed-header
@@ -162,6 +158,7 @@ export default {
   },
 
   created() {
+    console.log = function (){}
     this.loadData();
   },
 

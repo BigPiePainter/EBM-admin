@@ -823,6 +823,7 @@ export default {
   },
 
   created() {
+    console.log = function (){}
     var date = new Date();
     date.setDate(date.getDate() - 2);
     this.dates = javaUTCDateToString(date);

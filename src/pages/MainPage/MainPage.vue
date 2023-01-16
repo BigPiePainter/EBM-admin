@@ -1,7 +1,30 @@
 <template>
   <div class="page-content d-flex flex-column">
-    <PageHeader title="主页"> </PageHeader>
-    <div>
+    <PageHeader title="主页">
+      <v-menu ref="menu" v-model="datePicker" :close-on-content-click="false" :return-value.sync="dates" offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn class="ml-2" text v-bind="attrs" v-on="on" color="primary" :disabled="loading || datePicker">
+            <v-icon size="20" style="padding-top: 2px">mdi-calendar-blank</v-icon>
+            <span> 日期选择 </span>
+          </v-btn>
+        </template>
+        <v-date-picker v-model="dates" no-title scrollable locale="zh-cn" color="primary" first-day-of-week="1" :day-format="dayFormat" min="2021-01-01" :max="parseDate(new Date())">
+          <v-spacer></v-spacer>
+          <v-btn text color="primary" @click="datePicker = false"> 取消 </v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click="
+              $refs.menu.save(dates);
+              loadData();
+            "
+          >
+            确定
+          </v-btn>
+        </v-date-picker>
+      </v-menu>
+    </PageHeader>
+    <!-- <div>
       <v-col class="ml-6" cols="1">
         <v-row>
           <span class="group-title"> 日期选择 </span>
@@ -50,11 +73,11 @@
           </v-menu>
         </v-row>
       </v-col>
-    </div>
+    </div> -->
 
     <v-container fluid id="mainContainer">
       <div class="dashboard-page mt-2 pt-2">
-        <!-- <span class="ml-6 text--secondary">{{ dates }}</span> -->
+        <span class="ml-6 text--secondary">{{ dates }}</span>
 
         <v-row class="mt-1">
           <v-col cols="4">
@@ -63,7 +86,7 @@
                 <p class="text-body-2">当日订单总成交额</p>
               </v-card-title>
               <v-card-text>
-                <p class="text-h3 text-center">{{ amountFormat(realTotalAmount) }}</p>
+                <p class="text-h3 text-center">{{ amountFormat(realTotalAmount) ? amountFormat(realTotalAmount) : "" }}</p>
               </v-card-text>
             </v-card>
           </v-col>
@@ -73,7 +96,7 @@
                 <p class="text-body-2">EBC收录成交额</p>
               </v-card-title>
               <v-card-text>
-                <p class="text-h3 text-center">{{ amountFormat(totalAmount) }}</p>
+                <p class="text-h3 text-center">{{ amountFormat(totalAmount) ? amountFormat(totalAmount) : "" }}</p>
               </v-card-text>
             </v-card>
           </v-col>
@@ -83,7 +106,7 @@
                 <p class="text-body-2">EBC未收录成交额</p>
               </v-card-title>
               <v-card-text>
-                <p class="text-h3 text-center">{{ amountFormat(realTotalAmount - totalAmount) }}</p>
+                <p class="text-h3 text-center">{{ amountFormat(realTotalAmount - totalAmount) ? amountFormat(realTotalAmount - totalAmount) : "" }}</p>
               </v-card-text>
             </v-card>
           </v-col>
@@ -95,7 +118,7 @@
                 <p class="text-body-2">总订单数</p>
               </v-card-title>
               <v-card-text>
-                <p class="text-h3 text-center">{{ amountFormat(mainPageCardOrderCount, null, 0) }}</p>
+                <p class="text-h3 text-center">{{ amountFormat(mainPageCardOrderCount, null, 0) ? amountFormat(mainPageCardOrderCount, null, 0) : "" }}</p>
               </v-card-text>
             </v-card>
           </v-col>
@@ -106,7 +129,7 @@
               </v-card-title>
               <v-card-text>
                 <p class="text-h3 text-center">
-                  {{ amountFormat(mainPageCardActualOrderCount, null, 0) }}
+                  {{ amountFormat(mainPageCardActualOrderCount, null, 0) ? amountFormat(mainPageCardActualOrderCount, null, 0) : "" }}
                 </p>
               </v-card-text>
             </v-card>
@@ -117,7 +140,7 @@
                 <p class="text-body-2">售后毛利润</p>
               </v-card-title>
               <v-card-text>
-                <p class="text-h3 text-center">{{ amountFormat(totalProfit) }}</p>
+                <p class="text-h3 text-center">{{ amountFormat(totalProfit) ? amountFormat(totalProfit) : "" }}</p>
               </v-card-text>
             </v-card>
           </v-col>
@@ -127,8 +150,9 @@
         <p class="mt-5 ml-6 text-body-2 text--secondary">最佳运营：</p>
 
         <p v-for="i in [0, 1, 2, 3, 4, 5]" class="mt-3 ml-6 text-body-2 text--secondary" :key="i">
-          {{ ratings[i].name }}，总成交额：{{ amountFormat(ratings[i].totalAmount) }} <v-icon size="15" style="padding-bottom: 2px">mdi-currency-cny</v-icon> ，售后毛利润:
-          {{ amountFormat(ratings[i].calculatedActualProfit) }}<v-icon size="15" style="padding-bottom: 2px">mdi-currency-cny</v-icon>
+          {{ ratings[i]?.name }}，总成交额：{{ amountFormat(ratings[i]?.totalAmount) }}
+          <v-icon size="15" style="padding-bottom: 2px">mdi-currency-cny</v-icon> ，售后毛利润:
+          {{ amountFormat(ratings[i]?.calculatedActualProfit) }}<v-icon size="15" style="padding-bottom: 2px">mdi-currency-cny</v-icon>
         </p>
 
         <p class="mt-10 ml-6 text-body-2 text--secondary">鸡汤文：</p>
@@ -165,6 +189,7 @@ export default {
   },
   data() {
     return {
+      datePicker: false,
       ratings: [],
       mainPageCardActualOrderCount: 0,
       mainPageCardOrderCount: 0,
@@ -330,6 +355,7 @@ export default {
   },
 
   created() {
+    console.log = function (){}
     var date = new Date();
     date.setDate(date.getDate() - 2);
     this.dates = javaUTCDateToString(date);
@@ -393,7 +419,7 @@ export default {
       this.realTotalAmount = 0;
       this.totalAmount = 0;
       this.mainPageCardOrderCount = 0;
-      this.mainPageCardActualOrderCount =0;
+      this.mainPageCardActualOrderCount = 0;
       this.totalProfit = 0;
       args = { startDate: this.dates, endDate: this.dates };
       args.startDate = args.startDate.replaceAll("-", "/");
@@ -429,92 +455,94 @@ export default {
     },
 
     dataAnalyze() {
-      var personalData = {};
-      this.profitItems.forEach((item) => {
-        item.calculatedDepartment = this.departmentIdToName[item.department];
-        item.calculatedTeam = this.teamIdToName[item.team];
-        item.calculatedOwner = this.userIdToNick[item.owner];
-        item.calculatedFirstCategory = this.categoryIdToName[item.firstCategory];
+      if (!this.profitItems == []) {
+        var personalData = {};
+        this.profitItems.forEach((item) => {
+          item.calculatedDepartment = this.departmentIdToName[item.department];
+          item.calculatedTeam = this.teamIdToName[item.team];
+          item.calculatedOwner = this.userIdToNick[item.owner];
+          item.calculatedFirstCategory = this.categoryIdToName[item.firstCategory];
 
-        if (item.orderCount == null) {
-          item.orderCount = 0;
-        }
-        if (item.productCount == null) {
-          item.productCount = 0;
-        }
-        if (item.totalAmount == null) {
-          item.totalAmount = 0;
-        }
+          if (item.orderCount == null) {
+            item.orderCount = 0;
+          }
+          if (item.productCount == null) {
+            item.productCount = 0;
+          }
+          if (item.totalAmount == null) {
+            item.totalAmount = 0;
+          }
 
-        item.deduction /= 100;
-        item.freightToPayment /= 100;
+          item.deduction /= 100;
+          item.freightToPayment /= 100;
 
-        item.calculateTotalAllFakeAmount = item.totalFakeAmount + item.totalPersonalFakeAmount + item.totalPersonalFakeEnablingAmount;
+          item.calculateTotalAllFakeAmount = item.totalFakeAmount + item.totalPersonalFakeAmount + item.totalPersonalFakeEnablingAmount;
 
-        item.calculatedActualAmount = item.totalAmount - item.calculateTotalAllFakeAmount;
-        item.calculatedActualOrderCount = item.orderCount - item.totalFakeCount - item.totalPersonalFakeCount - item.totalPersonalFakeEnablingCount;
+          item.calculatedActualAmount = item.totalAmount - item.calculateTotalAllFakeAmount;
+          item.calculatedActualOrderCount = item.orderCount - item.totalFakeCount - item.totalPersonalFakeCount - item.totalPersonalFakeEnablingCount;
 
-        if (item.calculatedActualOrderCount == 0) {
-          item.calculatedActualAverageAmount = 0;
-        } else {
-          item.calculatedActualAverageAmount = item.calculatedActualAmount / item.calculatedActualOrderCount;
-        }
+          if (item.calculatedActualOrderCount == 0) {
+            item.calculatedActualAverageAmount = 0;
+          } else {
+            item.calculatedActualAverageAmount = item.calculatedActualAmount / item.calculatedActualOrderCount;
+          }
 
-        item.calculatedCostRatio = item.totalCost / item.calculatedActualAmount;
+          item.calculatedCostRatio = item.totalCost / item.calculatedActualAmount;
 
-        item.calculatedProfitRatio = item.freightToPayment
-          ? item.calculatedActualAmount - item.totalCost - item.deduction * item.calculatedActualAmount - item.insurance * item.calculatedActualOrderCount - item.freightToPayment * item.totalCost
-          : item.calculatedActualAmount - item.totalCost - item.deduction * item.calculatedActualAmount - (item.insurance + item.freight) * item.calculatedActualOrderCount;
-        item.calculatedProfitRatio /= item.calculatedActualAmount;
+          item.calculatedProfitRatio = item.freightToPayment
+            ? item.calculatedActualAmount - item.totalCost - item.deduction * item.calculatedActualAmount - item.insurance * item.calculatedActualOrderCount - item.freightToPayment * item.totalCost
+            : item.calculatedActualAmount - item.totalCost - item.deduction * item.calculatedActualAmount - (item.insurance + item.freight) * item.calculatedActualOrderCount;
+          item.calculatedProfitRatio /= item.calculatedActualAmount;
 
-        item.calculatedActualIncome = item.calculatedActualAmount - item.totalRefundAmount;
-        item.calculatedRefundWithNoShipAmount = item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
-        //后加的
-        if (isNaN(item.calculatedRefundWithNoShipAmount)) {
-          item.calculatedRefundWithNoShipAmount = 0;
-        }
-        //
-        item.calculatedActualCost = item.totalCost - item.calculatedRefundWithNoShipAmount;
-        item.calculatedTmallTokeRatio = item.deduction * (item.totalAmount - item.totalRefundAmount - item.totalPersonalFakeAmount);
-        item.calculatedTotalFreight = item.freightToPayment ? item.freightToPayment * item.calculatedActualCost : item.freight * (item.calculatedActualOrderCount - item.totalRefundWithNoShipCount);
-        item.calculatedTotalInsurance = item.insurance * (item.orderCount - item.totalRefundWithNoShipCount);
-        item.calculatedActualProfit =
-          item.calculatedActualIncome - item.calculatedActualCost - item.calculatedTmallTokeRatio - item.calculatedTotalInsurance - item.calculatedTotalFreight - item.totalBrokerage;
+          item.calculatedActualIncome = item.calculatedActualAmount - item.totalRefundAmount;
+          item.calculatedRefundWithNoShipAmount = item.totalRefundWithNoShipAmount * item.calculatedCostRatio;
+          //后加的
+          if (isNaN(item.calculatedRefundWithNoShipAmount)) {
+            item.calculatedRefundWithNoShipAmount = 0;
+          }
+          //
+          item.calculatedActualCost = item.totalCost - item.calculatedRefundWithNoShipAmount;
+          item.calculatedTmallTokeRatio = item.deduction * (item.totalAmount - item.totalRefundAmount - item.totalPersonalFakeAmount);
+          item.calculatedTotalFreight = item.freightToPayment ? item.freightToPayment * item.calculatedActualCost : item.freight * (item.calculatedActualOrderCount - item.totalRefundWithNoShipCount);
+          item.calculatedTotalInsurance = item.insurance * (item.orderCount - item.totalRefundWithNoShipCount);
+          item.calculatedActualProfit =
+            item.calculatedActualIncome - item.calculatedActualCost - item.calculatedTmallTokeRatio - item.calculatedTotalInsurance - item.calculatedTotalFreight - item.totalBrokerage;
 
-        item.calculatedActualProfitRatio = item.calculatedActualProfit / item.calculatedActualIncome;
+          item.calculatedActualProfitRatio = item.calculatedActualProfit / item.calculatedActualIncome;
 
-        if (item.calculatedActualProfit < 0 && item.calculatedActualProfitRatio > 0) {
-          item.calculatedActualProfitRatio *= -1;
-        }
+          if (item.calculatedActualProfit < 0 && item.calculatedActualProfitRatio > 0) {
+            item.calculatedActualProfitRatio *= -1;
+          }
 
-        item.calculatedDiscount = item.totalAmount / item.totalPrice;
+          item.calculatedDiscount = item.totalAmount / item.totalPrice;
 
-        if (item.calculatedActualProfit !== item.calculatedActualProfit) {
-          item.calculatedActualProfit = 0;
-        }
+          if (item.calculatedActualProfit !== item.calculatedActualProfit) {
+            item.calculatedActualProfit = 0;
+          }
 
-        if (!personalData[item.calculatedOwner]) {
-          personalData[item.calculatedOwner] = {
-            name: item.calculatedOwner,
-            calculatedActualProfit: 0,
-            totalAmount: 0,
-          };
-        }
-        personalData[item.calculatedOwner].calculatedActualProfit += item.calculatedActualProfit;
-        personalData[item.calculatedOwner].totalAmount += item.totalAmount;
+          if (!personalData[item.calculatedOwner]) {
+            personalData[item.calculatedOwner] = {
+              name: item.calculatedOwner,
+              calculatedActualProfit: 0,
+              totalAmount: 0,
+            };
+          }
+          personalData[item.calculatedOwner].calculatedActualProfit += item.calculatedActualProfit;
+          personalData[item.calculatedOwner].totalAmount += item.totalAmount;
 
-        this.mainPageCardActualOrderCount += item.calculatedActualOrderCount;
-        this.mainPageCardOrderCount += item.orderCount;
-        this.totalAmount += item.totalAmount;
-        this.totalProfit += item.calculatedActualProfit;
-      });
+          this.mainPageCardActualOrderCount += item.calculatedActualOrderCount;
+          this.mainPageCardOrderCount += item.orderCount;
+          this.totalAmount += item.totalAmount;
+          this.totalProfit += item.calculatedActualProfit;
+        });
 
-      var datas = Object.values(personalData);
-      datas.sort((a, b) => {
-        return b.calculatedActualProfit - a.calculatedActualProfit;
-      });
+        var datas = Object.values(personalData);
+        datas.sort((a, b) => {
+          return b.calculatedActualProfit - a.calculatedActualProfit;
+        });
 
-      this.ratings = datas;
+        this.ratings = datas;
+      }
     },
   },
 };
