@@ -548,7 +548,7 @@
                     'text-decoration-line-through'
                   "
                 >
-                  每单运费</span
+                  每单运费*</span
                 >
                 <v-text-field
                   outlined
@@ -558,6 +558,7 @@
                   :disabled="manufacturerEdit.freightToPayment > 0"
                   type="number"
                   suffix="￥"
+                  :rules="[(v) => !!v || '请填写此栏目']"
                 ></v-text-field>
               </v-col>
               <!-- <v-col cols="4">
