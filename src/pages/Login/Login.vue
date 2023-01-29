@@ -4,15 +4,8 @@
       <v-chart :option="bgOption" ref="barChart"></v-chart>
     </div>
 
-    <div
-      class="d-flex flex-column justify-space-around align-center"
-      style="height: 100vh"
-    >
-      <v-chart
-        style="margin: 0 auto; width: 500px; height: 80px; z-index: 0"
-        ref="title"
-        :option="option"
-      ></v-chart>
+    <div class="d-flex flex-column justify-space-around align-center" style="height: 100vh">
+      <v-chart style="margin: 0 auto; width: 500px; height: 80px; z-index: 0" ref="title" :option="option"></v-chart>
       <div class="login-part">
         <v-tabs grow>
           <v-tabs-slider></v-tabs-slider>
@@ -23,39 +16,12 @@
                 <v-row class="flex-column">
                   <v-form>
                     <v-col class="mt-8">
-                      <v-text-field
-                        v-model="email"
-                        :rules="emailRules"
-                        value=""
-                        required
-                        outlined
-                        :loading="loading"
-                      ></v-text-field>
-                      <v-text-field
-                        outlined
-                        v-model="password"
-                        :rules="passRules"
-                        type="password"
-                        hint="6-30个字符"
-                        required
-                        :loading="loading"
-                        class="mt-6"
-                      ></v-text-field>
+                      <v-text-field v-model="email" :rules="emailRules" value="" required outlined :loading="loading"></v-text-field>
+                      <v-text-field outlined v-model="password" :rules="passRules" type="password" hint="6-30个字符" required :loading="loading" class="mt-6"></v-text-field>
                     </v-col>
                     <v-col class="d-flex justify-space-between">
-                      <v-btn
-                        class="text-capitalize"
-                        large
-                        :disabled="password.length === 0 || email.length === 0"
-                        color="primary"
-                        @click="login"
-                        :loading="loading"
-                      >
-                        登录</v-btn
-                      >
-                      <v-btn large text class="text-capitalize primary--text"
-                        >忘记密码</v-btn
-                      >
+                      <v-btn class="text-capitalize" large :disabled="password.length === 0 || email.length === 0" color="primary" @click="login" :loading="loading"> 登录</v-btn>
+                      <v-btn large text class="text-capitalize primary--text">忘记密码</v-btn>
                     </v-col>
                   </v-form>
                 </v-row>
@@ -66,9 +32,7 @@
       </div>
       <div class="d-flex">
         <v-spacer></v-spacer>
-        <span class="primary--text pb-2 pr-5" style="z-index: 999"
-          >© 浙江泼发进出口贸易有限公司</span
-        >
+        <span class="primary--text pb-2 pr-5" style="z-index: 999">© 浙江泼发进出口贸易有限公司</span>
       </div>
     </div>
   </v-app>
@@ -271,19 +235,7 @@ export default {
         visualMap: {
           max: 30,
           inRange: {
-            color: [
-              "#313695",
-              "#4575b4",
-              "#74add1",
-              "#abd9e9",
-              "#e0f3f8",
-              "#ffffbf",
-              "#fee090",
-              "#fdae61",
-              "#f46d43",
-              "#d73027",
-              "#a50026",
-            ],
+            color: ["#313695", "#4575b4", "#74add1", "#abd9e9", "#e0f3f8", "#ffffbf", "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026"],
           },
         },
         xAxis3D: {
@@ -305,7 +257,7 @@ export default {
               intensity: 1.2,
             },
             ambient: {
-              intensity:0.3,
+              intensity: 0.3,
             },
           },
           viewControl: {
@@ -400,11 +352,7 @@ export default {
         (v) => /^[0-9a-zA-Z]+$/.test(v) || "账号不能包含特殊符号",
       ],
       password: "",
-      passRules: [
-        (v) => !!v || "密码不能为空",
-        (v) => v.length >= 6 || "密码不能少于6个字符",
-        (v) => v.length <= 30 || "密码不能多于30个字符",
-      ],
+      passRules: [(v) => !!v || "密码不能为空", (v) => v.length >= 6 || "密码不能少于6个字符", (v) => v.length <= 30 || "密码不能多于30个字符"],
       loading: false,
 
       done: [false, false, false, false, true], //全部请求状态
@@ -412,13 +360,7 @@ export default {
   },
   methods: {
     ...mapMutations(["setToken", "setUser"]),
-    ...mapActions([
-      "refreshAllDepartments",
-      "refreshAllTeams",
-      "refreshAllUsers",
-      "refreshAllCategorys",
-      "refreshAllShops",
-    ]),
+    ...mapActions(["refreshAllDepartments", "refreshAllTeams", "refreshAllUsers", "refreshAllCategorys", "refreshAllShops"]),
     login() {
       this.loading = true;
       userLogin({ username: this.email, password: this.password })
@@ -462,7 +404,14 @@ export default {
   },
 
   created() {
-    console.log = function (){}
+    console.log = (function (oriLogFunc) {
+      return function () {
+        if (process.env.NODE_ENV == "development") {
+          oriLogFunc.apply(this, arguments);
+        }
+      };
+    })(console.log);
+
     isLogin({}).then((res) => {
       console.log("isLogin");
       console.log(res);

@@ -471,7 +471,6 @@ export default {
   watch: {},
 
   created() {
-    console.log = function (){}
     this.init();
     console.log(this.user);
   },

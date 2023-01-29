@@ -1314,7 +1314,6 @@ export default {
   },
 
   created() {
-    console.log = function (){}
     console.log(this.allShops);
   },
 

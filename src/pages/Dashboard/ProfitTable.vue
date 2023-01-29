@@ -823,7 +823,6 @@ export default {
   },
 
   created() {
-    console.log = function (){}
     var date = new Date();
     date.setDate(date.getDate() - 2);
     this.dates = javaUTCDateToString(date);
@@ -920,7 +919,10 @@ export default {
           headers = this.profitHeadersHide;
         }
       }
-      headers = headers.filter((i) => i.value != "shopName" && i.value != "productId");
+      if (!this.user.permission.f?.s) {
+        headers = headers.filter((i) => i.value != "shopName" && i.value != "productId");
+      }
+
       return headers;
     },
     canShowSumup() {
