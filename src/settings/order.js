@@ -149,16 +149,3 @@ export const getRealTotalAmount = data => {
     }
     return http.request(args)
 }
-
-export const getRealTotalAmount111 = data => {
-    const args = {
-        url: '/order/getRealTotalAmount111',
-        method: 'POST',
-        data,
-    }
-    return http.request(args)
-}
-
-
-
-
