@@ -17,12 +17,6 @@ import Category from '@/pages/Category/Category'
 import ProductsGet from '@/pages/ProductsGet/ProductsGet'
 import ProductsPut from '@/pages/ProductsPut/ProductsPut'
 
-// import Tables from '@/pages/Tables/Basic'
-// import Transport from '@/pages/Transport/Transport'
-// import Notifications from '@/pages/Notifications/Notifications'
-// import Icons from '@/pages/Icons/Icons'
-// import Charts from '@/pages/Charts/Charts'
-// import Maps from '@/pages/Maps/Google'
 import Error from "@/pages/Error/Error";
 
 import Login from "@/pages/Login/Login";
@@ -188,36 +182,6 @@ var routerConfig = {
           name: 'RequirementsGround',
           component: RequirementsGround,
         },
-        // {
-        //   path: 'tables',
-        //   name: 'Tables',
-        //   component: Tables
-        // },
-        // {
-        //   path: 'notifications',
-        //   name: 'Notifications',
-        //   component: Notifications
-        // },
-        // {
-        //   path: 'icons',
-        //   name: 'Icons',
-        //   component: Icons
-        // },
-        // {
-        //   path: 'charts',
-        //   name: 'Charts',
-        //   component: Charts
-        // },
-        // {
-        //   path: 'maps',
-        //   name: 'Maps',
-        //   component: Maps
-        // },
-        // {
-        //   path: 'transport',
-        //   name: 'Transport',
-        //   component: Transport
-        // },
         {
           path: '*',
           name: 'Error',

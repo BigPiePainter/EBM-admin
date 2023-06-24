@@ -642,14 +642,6 @@
           <div class="d-flex">
             <span>
               {{ item.calculatedActualProfit > 0 ? (item.calculatedActualProfitRatio * 100).toFixed(2) + " %" : "" }}
-              <!-- {{
-                
-                item.wrongCount == 0
-                  ? item.calculatedActualProfitRatio >= 0
-                    ? (item.calculatedActualProfitRatio * 100).toFixed(2) + " %"
-                    : "————"
-                  : "0.00 %"
-              }} -->
             </span>
           </div>
         </template>
@@ -700,17 +692,6 @@
             }"
           />
         </div>
-
-        <!-- <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click.stop="mismatchedSkuDialog = false"
-          >
-            关闭
-          </v-btn>
-        </v-card-actions> -->
       </v-card>
     </v-dialog>
   </div>
