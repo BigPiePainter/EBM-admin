@@ -296,9 +296,7 @@
           <span>
             {{ header.text }}
           </span>
-          <v-icon title="注释说明待填写" small style="margin-bottom: 1px;">
-            mdi-help-circle-outline
-          </v-icon>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 真实单数 -->
@@ -306,9 +304,7 @@
           <span>
             {{ header.text }}
           </span>
-          <v-icon title="注释说明待填写" small style="margin-bottom: 1px;">
-            mdi-help-circle-outline
-          </v-icon>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 退款金额 -->
@@ -316,9 +312,7 @@
           <span>
             {{ header.text }}
           </span>
-          <v-icon title="注释说明待填写" small style="margin-bottom: 1px;">
-            mdi-help-circle-outline
-          </v-icon>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 净收入额 -->
@@ -326,9 +320,7 @@
           <span>
             {{ header.text }}
           </span>
-          <v-icon title="注释说明待填写" small style="margin-bottom: 1px;">
-            mdi-help-circle-outline
-          </v-icon>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 未发仅退 -->
@@ -336,9 +328,7 @@
           <span>
             {{ header.text }}
           </span>
-          <v-icon title="注释说明待填写" small style="margin-bottom: 1px;">
-            mdi-help-circle-outline
-          </v-icon>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 未发退本 -->
@@ -346,9 +336,7 @@
           <span>
             {{ header.text }}
           </span>
-          <v-icon title="注释说明待填写" small style="margin-bottom: 1px;">
-            mdi-help-circle-outline
-          </v-icon>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 未发数 -->
@@ -356,9 +344,7 @@
           <span>
             {{ header.text }}
           </span>
-          <v-icon title="注释说明待填写" small style="margin-bottom: 1px;">
-            mdi-help-circle-outline
-          </v-icon>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 拿货成本（售后） -->
@@ -366,9 +352,7 @@
           <span>
             {{ header.text }}
           </span>
-          <v-icon title="注释说明待填写" small style="margin-bottom: 1px;">
-            mdi-help-circle-outline
-          </v-icon>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 售后毛利润 -->
@@ -376,9 +360,7 @@
           <span>
             {{ header.text }}
           </span>
-          <v-icon title="注释说明待填写" small style="margin-bottom: 1px;">
-            mdi-help-circle-outline
-          </v-icon>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 售后利润率 -->
@@ -386,9 +368,7 @@
           <span>
             {{ header.text }}
           </span>
-          <v-icon title="注释说明待填写" small style="margin-bottom: 1px;">
-            mdi-help-circle-outline
-          </v-icon>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- SKU未匹配 -->
@@ -396,9 +376,7 @@
           <span>
             {{ header.text }}
           </span>
-          <v-icon title="注释说明待填写" small style="margin-bottom: 1px;">
-            mdi-help-circle-outline
-          </v-icon>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
 <!---------------------------------- 列注释 ----------------------------------->
