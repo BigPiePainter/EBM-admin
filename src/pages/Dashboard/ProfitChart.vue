@@ -219,7 +219,7 @@ import { BarChart, LineChart } from "echarts/charts";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 
-import { getProfitReport } from "@/settings/profitReport";
+import { getProfitReportByUser } from "@/settings/profitReport";
 import { javaUTCDateToString } from "@/libs/utils";
 
 use([TooltipComponent, GridComponent, LegendComponent, MarkLineComponent, BarChart, LineChart, CanvasRenderer, TitleComponent, ToolboxComponent]);
@@ -1356,7 +1356,7 @@ export default {
       this.refreshBigChartData();
 
       for (let i = 0; i < argsDays.length; i++) {
-        getProfitReport(argsDays[i])
+        getProfitReportByUser(argsDays[i])
           .then((res) => {
             loadingFinished.push("got");
             if (loadingFinished.length == totalDays) {

@@ -594,7 +594,7 @@
         <div class="mx-5">
           <v-data-table
             loading-text="加载中... 请稍后"
-            no-data-text="好奇怪！没有未匹配的SKU！注意淘特链接和主链要分开获取SKUID，不然无法准确匹配订单来源，可能会导致此问题。"
+            no-data-text="好奇怪！这一天没有未匹配的SKU！间段模式获取的利润报表可能会导致此问题。"
             height="422px"
             fixed-header
             :headers="mismatchedSkuheaders"
@@ -631,7 +631,7 @@ import { saveAs } from "file-saver";
 import { amountBeautify } from "@/libs/utils";
 import Help from "@/components/Help";
 import { javaUTCDateToString } from "@/libs/utils";
-import { getProfitReport } from "@/settings/profitReport";
+import { getProfitReportByUser } from "@/settings/profitReport";
 import { getMismatchedSkus } from "@/settings/profitReport";
 
 import { mapState } from "vuex";
@@ -1687,7 +1687,7 @@ export default {
       args.endDate = args.endDate.replaceAll("-", "/");
       this.loading = true;
       console.log("接口调用", args);
-      getProfitReport(args)
+      getProfitReportByUser(args)
         .then((res) => {
           this.loading = false;
           console.log(res.data);
