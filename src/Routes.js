@@ -16,13 +16,9 @@ import DeletedProducts from '@/pages/DeletedProducts/DeletedProducts'
 import Category from '@/pages/Category/Category'
 import ProductsGet from '@/pages/ProductsGet/ProductsGet'
 import ProductsPut from '@/pages/ProductsPut/ProductsPut'
-import Tables from '@/pages/Tables/Basic'
-import Transport from '@/pages/Transport/Transport'
-import Notifications from '@/pages/Notifications/Notifications'
-import Icons from '@/pages/Icons/Icons'
-import Charts from '@/pages/Charts/Charts'
-import Maps from '@/pages/Maps/Google'
+
 import Error from "@/pages/Error/Error";
+
 import Login from "@/pages/Login/Login";
 
 import Order from "@/pages/Order/Order";
@@ -39,6 +35,9 @@ import SkuHaker from "@/pages/Tools/SkuHaker";
 import ProductCopy from "@/pages/Tools/ProductCopy";
 import EconomyAllProduct from "@/pages/Economy/EconomyAllProduct";
 
+import MyRequirements from "@/pages/Middleground/MyRequirements";
+import ProductsDB from "@/pages/Middleground/ProductsDB";
+import RequirementsGround from "@/pages/Middleground/RequirementsGround";
 
 import { isLogin } from "@/settings/user"
 
@@ -169,34 +168,19 @@ var routerConfig = {
           component: ProductsPut,
         },
         {
-          path: 'tables',
-          name: 'Tables',
-          component: Tables
+          path: 'myrequirements',
+          name: 'MyRequirements',
+          component: MyRequirements,
         },
         {
-          path: 'notifications',
-          name: 'Notifications',
-          component: Notifications
+          path: 'productsdb',
+          name: 'ProductsDB',
+          component: ProductsDB,
         },
         {
-          path: 'icons',
-          name: 'Icons',
-          component: Icons
-        },
-        {
-          path: 'charts',
-          name: 'Charts',
-          component: Charts
-        },
-        {
-          path: 'maps',
-          name: 'Maps',
-          component: Maps
-        },
-        {
-          path: 'transport',
-          name: 'Transport',
-          component: Transport
+          path: 'requirementsground',
+          name: 'RequirementsGround',
+          component: RequirementsGround,
         },
         {
           path: '*',

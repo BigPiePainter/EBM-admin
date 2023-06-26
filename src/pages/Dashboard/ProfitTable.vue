@@ -289,6 +289,98 @@
           </tr>
         </template>
 
+<!---------------------------------- 列注释 ----------------------------------->
+
+        <!-- 真实金额 -->
+        <template v-slot:[`header.calculatedActualAmount`]="{ header }">
+          <span>
+            {{ header.text }}
+          </span>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+        </template>
+
+        <!-- 真实单数 -->
+        <template v-slot:[`header.calculatedActualOrderCount`]="{ header }">
+          <span>
+            {{ header.text }}
+          </span>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+        </template>
+
+        <!-- 退款金额 -->
+        <template v-slot:[`header.totalRefundAmount`]="{ header }">
+          <span>
+            {{ header.text }}
+          </span>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+        </template>
+
+        <!-- 净收入额 -->
+        <template v-slot:[`header.calculatedActualIncome`]="{ header }">
+          <span>
+            {{ header.text }}
+          </span>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+        </template>
+
+        <!-- 未发仅退 -->
+        <template v-slot:[`header.totalRefundWithNoShipAmount`]="{ header }">
+          <span>
+            {{ header.text }}
+          </span>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+        </template>
+
+        <!-- 未发退本 -->
+        <template v-slot:[`header.calculatedRefundWithNoShipAmount`]="{ header }">
+          <span>
+            {{ header.text }}
+          </span>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+        </template>
+
+        <!-- 未发数 -->
+        <template v-slot:[`header.totalRefundWithNoShipCount`]="{ header }">
+          <span>
+            {{ header.text }}
+          </span>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+        </template>
+
+        <!-- 拿货成本（售后） -->
+        <template v-slot:[`header.calculatedActualCost`]="{ header }">
+          <span>
+            {{ header.text }}
+          </span>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+        </template>
+
+        <!-- 售后毛利润 -->
+        <template v-slot:[`header.calculatedActualProfit`]="{ header }">
+          <span>
+            {{ header.text }}
+          </span>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+        </template>
+
+        <!-- 售后利润率 -->
+        <template v-slot:[`header.calculatedActualProfitRatio`]="{ header }">
+          <span>
+            {{ header.text }}
+          </span>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+        </template>
+
+        <!-- SKU未匹配 -->
+        <template v-slot:[`header.wrongCount`]="{ header }">
+          <span>
+            {{ header.text }}
+          </span>
+          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+        </template>
+
+<!---------------------------------- 列注释 ----------------------------------->
+
         <template v-slot:[`item.date`]="{ item }">
           <span>
             {{ item.date }}
@@ -550,14 +642,6 @@
           <div class="d-flex">
             <span>
               {{ item.calculatedActualProfit > 0 ? (item.calculatedActualProfitRatio * 100).toFixed(2) + " %" : "" }}
-              <!-- {{
-                
-                item.wrongCount == 0
-                  ? item.calculatedActualProfitRatio >= 0
-                    ? (item.calculatedActualProfitRatio * 100).toFixed(2) + " %"
-                    : "————"
-                  : "0.00 %"
-              }} -->
             </span>
           </div>
         </template>
@@ -608,17 +692,6 @@
             }"
           />
         </div>
-
-        <!-- <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click.stop="mismatchedSkuDialog = false"
-          >
-            关闭
-          </v-btn>
-        </v-card-actions> -->
       </v-card>
     </v-dialog>
   </div>
@@ -707,7 +780,7 @@ export default {
         { text: "未发仅退", value: "totalRefundWithNoShipAmount" }, //1
         { text: "未发退本", value: "calculatedRefundWithNoShipAmount" }, //未发仅退*成本率1
         { text: "未发数", value: "totalRefundWithNoShipCount" }, //1
-        { text: "拿货成本（售后）", value: "calculatedActualCost" }, //拿货成本-未发退本1
+        { text: "拿货成本(售后)", value: "calculatedActualCost" }, //拿货成本-未发退本1
         { text: "平台扣点", value: "calculatedTmallTokeRatio" }, //扣点*（成交额-退款金额）1
         { text: "快递费", value: "calculatedTotalFreight" }, //每单运费：运费*（真实单数-未发数）；运费/货品成本：运费*拿货成本（售后）1
         { text: "运费险", value: "calculatedTotalInsurance" }, //运费险1*（订单数-未发数）1
@@ -910,15 +983,23 @@ export default {
     },
     profitHeadersShownPartB() {
       var headers = [];
-      if (!this.profitItems.length || this.loading) {
-        headers = [];
-      } else {
+      // if (!this.profitItems.length || this.loading) {
+      //   headers = [];
+      // } else {
+      //   if (this.isShowDetail) {
+      //     headers = this.isShowFakeDetail ? this.profitHeadersAll : this.profitHeadersAllWithNoFakeDetail;
+      //   } else {
+      //     headers = this.profitHeadersHide;
+      //   }
+      // }
+
+
         if (this.isShowDetail) {
           headers = this.isShowFakeDetail ? this.profitHeadersAll : this.profitHeadersAllWithNoFakeDetail;
         } else {
           headers = this.profitHeadersHide;
         }
-      }
+
       if (!this.user.permission.f?.s) {
         headers = headers.filter((i) => i.value != "shopName" && i.value != "productId");
       }

@@ -5,11 +5,15 @@
       </v-btn>
     </div> -->
   <v-navigation-drawer app clipped v-model="drawerState" :width="sidebarWidth" :temporary="$vuetify.breakpoint.smAndDown" :mini-variant-width="sidebarMinWidth">
+
     <div class="navigation-content d-flex flex-column">
+
       <v-btn tile depressed color="white" class="sider-block">
         <span class="text-body-1">泼发 EBC</span>
       </v-btn>
+
       <v-divider></v-divider>
+
       <v-list class="flex-grow-1 overflow-y-auto overflow-x-hidden" dense>
         <template v-for="(item, i) in items">
           <div :key="item.heading">
@@ -25,6 +29,7 @@
             <v-divider v-else-if="item.divider" :key="i" dark class="my-4"></v-divider>
 
             <v-list-group v-else-if="item.children" color="primary" :key="item.title" v-model="item.model" append-icon="">
+
               <template v-slot:activator>
                 <v-list-item-action>
                   <v-icon dense>{{ item.icon }}</v-icon>
@@ -46,6 +51,7 @@
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
+
             </v-list-group>
 
             <v-list-item color="primary" v-else :disabled="!item.show" :key="item.text" :href="item.href ? item.href : null" :to="item.link === '#' ? null : item.link" link>
@@ -58,13 +64,17 @@
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
+
           </div>
         </template>
       </v-list>
+
       <v-divider></v-divider>
+
       <v-btn depressed tile class="sider-block d-flex align-center" color="white" @click.stop="!sideBarRight">
         <span class="text-body-2 grey--text"> 更新日志 </span>
       </v-btn>
+
       <v-divider></v-divider>
 
       <div class="sider-block d-flex align-center pl-4">
@@ -72,6 +82,7 @@
           <v-icon small> mdi-arrow-collapse-left </v-icon>
         </v-btn>
       </div>
+
     </div>
   </v-navigation-drawer>
 </template>
@@ -259,6 +270,32 @@ export default {
             },
           ],
         },
+
+        { divider: true },
+
+        {
+          title: "选品中台",
+          icon: "mdi-database",
+          show: true,
+          children: [
+            {
+              title: "我的需求",
+              icon: "mdi-circle-small",
+              link: "/myrequirements",
+            },
+            {
+              title: "产品池",
+              icon: "mdi-circle-small",
+              link: "/productsdb",
+            },
+            {
+              title: "需求大厅",
+              icon: "mdi-circle-small",
+              link: "/requirementsground",
+            },
+          ],
+        },
+
       ],
       sidebarWidth: 170,
       sidebarMinWidth: 50,
