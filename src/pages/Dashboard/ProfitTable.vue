@@ -293,90 +293,79 @@
 
         <!-- 真实金额 -->
         <template v-slot:[`header.calculatedActualAmount`]="{ header }">
-          <span>
+          <span title="注释说明待填写">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 真实单数 -->
         <template v-slot:[`header.calculatedActualOrderCount`]="{ header }">
-          <span>
+          <span title="注释说明待填写">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 退款金额 -->
         <template v-slot:[`header.totalRefundAmount`]="{ header }">
-          <span>
+          <span title="注释说明待填写">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 净收入额 -->
         <template v-slot:[`header.calculatedActualIncome`]="{ header }">
-          <span>
+          <span title="营业额-刷单额-所有类型退款">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="营业额-刷单额-所有类型退款" />
         </template>
 
         <!-- 未发仅退 -->
         <template v-slot:[`header.totalRefundWithNoShipAmount`]="{ header }">
-          <span>
+          <span title="未发货仅退款金额">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="未发货仅退款金额" />
         </template>
 
         <!-- 未发退本 -->
         <template v-slot:[`header.calculatedRefundWithNoShipAmount`]="{ header }">
-          <span>
+          <span title="未发货仅退款金额中退回的成本部分">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="未发货仅退款金额中退回的成本部分" />
         </template>
 
         <!-- 未发数 -->
         <template v-slot:[`header.totalRefundWithNoShipCount`]="{ header }">
-          <span>
+          <span title="未发仅退数">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 拿货成本（售后） -->
         <template v-slot:[`header.calculatedActualCost`]="{ header }">
-          <span>
+          <span title="拿货成本-未发退本">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="拿货成本-未发退本" />
         </template>
 
         <!-- 售后毛利润 -->
         <template v-slot:[`header.calculatedActualProfit`]="{ header }">
-          <span>
+          <span title="净收入额-拿货成本（售后）-平台扣点-运费险-快递费-刷单佣金">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 售后利润率 -->
         <template v-slot:[`header.calculatedActualProfitRatio`]="{ header }">
-          <span>
+          <span title="售后毛利润/净收入额(为负时显示'-')">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- SKU未匹配 -->
         <template v-slot:[`header.wrongCount`]="{ header }">
-          <span>
+          <span title="找不到sku的持品人">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
 <!---------------------------------- 列注释 ----------------------------------->

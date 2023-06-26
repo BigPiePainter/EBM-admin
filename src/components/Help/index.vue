@@ -1,5 +1,5 @@
 <template>
-  <v-icon :title="text" small>mdi-information-variant</v-icon>
+  <v-icon :title="text" small>mdi-help-circle-outline</v-icon>
 </template>
 
 <script>

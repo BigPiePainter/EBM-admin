@@ -5,9 +5,7 @@
       </v-btn>
     </div> -->
   <v-navigation-drawer app clipped v-model="drawerState" :width="sidebarWidth" :temporary="$vuetify.breakpoint.smAndDown" :mini-variant-width="sidebarMinWidth">
-
     <div class="navigation-content d-flex flex-column">
-
       <v-btn tile depressed color="white" class="sider-block">
         <span class="text-body-1">泼发 EBC</span>
       </v-btn>
@@ -29,7 +27,6 @@
             <v-divider v-else-if="item.divider" :key="i" dark class="my-4"></v-divider>
 
             <v-list-group v-else-if="item.children" color="primary" :key="item.title" v-model="item.model" append-icon="">
-
               <template v-slot:activator>
                 <v-list-item-action>
                   <v-icon dense>{{ item.icon }}</v-icon>
@@ -51,7 +48,6 @@
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-
             </v-list-group>
 
             <v-list-item color="primary" v-else :disabled="!item.show" :key="item.text" :href="item.href ? item.href : null" :to="item.link === '#' ? null : item.link" link>
@@ -64,7 +60,6 @@
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-
           </div>
         </template>
       </v-list>
@@ -82,7 +77,6 @@
           <v-icon small> mdi-arrow-collapse-left </v-icon>
         </v-btn>
       </div>
-
     </div>
   </v-navigation-drawer>
 </template>
@@ -236,23 +230,6 @@ export default {
           ],
         },
 
-        { divider: true },
-        // { heading: "POFA2" },
-
-        {
-          title: "组别管理",
-          icon: "mdi-account-group",
-          link: "/team",
-          show: this.$store.state.user.permission.e.a,
-          children: [
-            {
-              title: "组别",
-              icon: "mdi-circle-small",
-              link: "/team",
-            },
-          ],
-        },
-
         {
           title: "部门管理",
           icon: "mdi-domain",
@@ -271,6 +248,23 @@ export default {
               title: "从属员工",
               icon: "mdi-circle-small",
               link: "/all_employees",
+            },
+          ],
+        },
+
+        { divider: true },
+        // { heading: "POFA2" },
+
+        {
+          title: "组别管理",
+          icon: "mdi-account-group",
+          link: "/team",
+          show: this.$store.state.user.permission.e.a,
+          children: [
+            {
+              title: "组别",
+              icon: "mdi-circle-small",
+              link: "/team",
             },
           ],
         },
