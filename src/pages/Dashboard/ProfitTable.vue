@@ -320,7 +320,7 @@
           <span>
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+          <Help style="margin-bottom: 1px;" text="营业额-刷单额-所有类型退款" />
         </template>
 
         <!-- 未发仅退 -->
@@ -328,7 +328,7 @@
           <span>
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+          <Help style="margin-bottom: 1px;" text="未发货仅退款金额" />
         </template>
 
         <!-- 未发退本 -->
@@ -336,7 +336,7 @@
           <span>
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+          <Help style="margin-bottom: 1px;" text="未发货仅退款金额中退回的成本部分" />
         </template>
 
         <!-- 未发数 -->
@@ -352,7 +352,7 @@
           <span>
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
+          <Help style="margin-bottom: 1px;" text="拿货成本-未发退本" />
         </template>
 
         <!-- 售后毛利润 -->
