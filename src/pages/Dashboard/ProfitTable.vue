@@ -293,21 +293,21 @@
 
         <!-- 真实金额 -->
         <template v-slot:[`header.calculatedActualAmount`]="{ header }">
-          <span title="注释说明待填写">
+          <span title="成交额-刷单额(暂时不包括未上报的刷单)">
             {{ header.text }}
           </span>
         </template>
 
         <!-- 真实单数 -->
         <template v-slot:[`header.calculatedActualOrderCount`]="{ header }">
-          <span title="注释说明待填写">
+          <span title="总订单数-刷单数(暂时不包括未上报的刷单)">
             {{ header.text }}
           </span>
         </template>
 
         <!-- 退款金额 -->
         <template v-slot:[`header.totalRefundAmount`]="{ header }">
-          <span title="注释说明待填写">
+          <span title="一切已发生的退款，包括未发仅退">
             {{ header.text }}
           </span>
         </template>
