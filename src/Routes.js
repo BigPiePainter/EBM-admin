@@ -198,10 +198,7 @@ router.beforeEach((to, from, next) => {
   console.log("to", to);
   console.log("from", from);
 
-  if (to.name == "Login") {
-    next();
-    return;
-  }
+  if (to.name == "Login") return void next();
 
   console.log("检测登陆状态");
   isLogin({})
