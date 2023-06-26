@@ -1,21 +1,21 @@
-import Vue from 'vue';
+import Vue from "vue";
 
-import Router from 'vue-router';
+import Router from "vue-router";
 
-import Layout from '@/components/Layout/Layout';
+import Layout from "@/components/Layout/Layout";
 
 // Pages
-import MainPage from '@/pages/MainPage/MainPage';
-import Dashboard from '@/pages/Dashboard/Dashboard';
-import ProfitChart from '@/pages/Dashboard/ProfitChart';
-import ProfitTable from '@/pages/Dashboard/ProfitTable';
-import PartnerGet from '@/pages/PartnerGet/PartnerGet'
-import MismatchProducts from '@/pages/MismatchProducts/MismatchProducts'
-import DeletedProducts from '@/pages/DeletedProducts/DeletedProducts'
+import MainPage from "@/pages/MainPage/MainPage";
+import Dashboard from "@/pages/Dashboard/Dashboard";
+import ProfitChart from "@/pages/Dashboard/ProfitChart";
+import ProfitTable from "@/pages/Dashboard/ProfitTable";
+import PartnerGet from "@/pages/PartnerGet/PartnerGet";
+import MismatchProducts from "@/pages/MismatchProducts/MismatchProducts";
+import DeletedProducts from "@/pages/DeletedProducts/DeletedProducts";
 
-import Category from '@/pages/Category/Category'
-import ProductsGet from '@/pages/ProductsGet/ProductsGet'
-import ProductsPut from '@/pages/ProductsPut/ProductsPut'
+import Category from "@/pages/Category/Category";
+import ProductsGet from "@/pages/ProductsGet/ProductsGet";
+import ProductsPut from "@/pages/ProductsPut/ProductsPut";
 
 import Error from "@/pages/Error/Error";
 
@@ -39,189 +39,189 @@ import MyRequirements from "@/pages/Middleground/MyRequirements";
 import ProductsDB from "@/pages/Middleground/ProductsDB";
 import RequirementsGround from "@/pages/Middleground/RequirementsGround";
 
-import { isLogin } from "@/settings/user"
+import { isLogin } from "@/settings/user";
 
 Vue.use(Router);
-
 
 var routerConfig = {
   routes: [
     {
-      path: '/login',
-      name: 'Login',
-      component: Login
+      path: "/login",
+      name: "Login",
+      component: Login,
     },
     {
-      path: '/',
-      redirect: 'login',
-      name: 'Layout',
+      path: "/",
+      redirect: "login",
+      name: "Layout",
       component: Layout,
       children: [
         {
-          path: 'productcopy',
-          name: 'ProductCopy',
+          path: "productcopy",
+          name: "ProductCopy",
           component: ProductCopy,
         },
         {
-          path: 'skuhaker',
-          name: 'SkuHaker',
+          path: "skuhaker",
+          name: "SkuHaker",
           component: SkuHaker,
         },
         {
-          path: 'mainpage',
-          name: 'MainPage',
+          path: "mainpage",
+          name: "MainPage",
           component: MainPage,
         },
         {
-          path: 'dashboard',
-          name: 'Dashboard',
+          path: "dashboard",
+          name: "Dashboard",
           component: Dashboard,
         },
         {
-          path: 'profitChart',
-          name: 'ProfitChart',
+          path: "profitChart",
+          name: "ProfitChart",
           component: ProfitChart,
         },
         {
-          path: 'profitTable',
-          name: 'ProfitTable',
+          path: "profitTable",
+          name: "ProfitTable",
           component: ProfitTable,
         },
         {
-          path: 'partnerget',
-          name: 'PartnerGet',
+          path: "partnerget",
+          name: "PartnerGet",
           component: PartnerGet,
         },
         {
-          path: 'mismatchProducts',
-          name: 'MismatchProducts',
+          path: "mismatchProducts",
+          name: "MismatchProducts",
           component: MismatchProducts,
         },
         {
-          path: 'deletedProducts',
-          name: 'DeletedProducts',
+          path: "deletedProducts",
+          name: "DeletedProducts",
           component: DeletedProducts,
         },
         {
-          path: 'category',
-          name: 'Category',
+          path: "category",
+          name: "Category",
           component: Category,
         },
         {
-          path: 'economyAllProduct',
-          name: 'EconomyAllProduct',
+          path: "economyAllProduct",
+          name: "EconomyAllProduct",
           component: EconomyAllProduct,
         },
         {
-          path: 'order',
-          name: 'Order',
+          path: "order",
+          name: "Order",
           component: Order,
         },
         {
-          path: 'return',
-          name: 'Return',
+          path: "return",
+          name: "Return",
           component: Return,
         },
         {
-          path: 'input',
-          name: 'Input',
+          path: "input",
+          name: "Input",
           component: Input,
         },
         {
-          path: 'brush',
-          name: 'Brush',
+          path: "brush",
+          name: "Brush",
           component: Brush,
         },
         {
-          path: 'individualbrush',
-          name: 'IndividualBrush',
+          path: "individualbrush",
+          name: "IndividualBrush",
           component: IndividualBrush,
         },
         {
-          path: 'all_employees',
-          name: 'AllEmployees',
+          path: "all_employees",
+          name: "AllEmployees",
           component: AllEmployees,
         },
         {
-          path: 'employee',
-          name: 'Employee',
+          path: "employee",
+          name: "Employee",
           component: Employee,
         },
         {
-          path: 'department',
-          name: 'Department',
+          path: "department",
+          name: "Department",
           component: Department,
         },
         {
-          path: 'team',
-          name: 'Team',
+          path: "team",
+          name: "Team",
           component: Team,
         },
         {
-          path: 'productsget',
-          name: 'ProductsGet',
+          path: "productsget",
+          name: "ProductsGet",
           component: ProductsGet,
         },
         {
-          path: 'productsput',
-          name: 'ProductsPut',
+          path: "productsput",
+          name: "ProductsPut",
           component: ProductsPut,
         },
         {
-          path: 'myrequirements',
-          name: 'MyRequirements',
+          path: "myrequirements",
+          name: "MyRequirements",
           component: MyRequirements,
         },
         {
-          path: 'productsdb',
-          name: 'ProductsDB',
+          path: "productsdb",
+          name: "ProductsDB",
           component: ProductsDB,
         },
         {
-          path: 'requirementsground',
-          name: 'RequirementsGround',
+          path: "requirementsground",
+          name: "RequirementsGround",
           component: RequirementsGround,
         },
         {
-          path: '*',
-          name: 'Error',
+          path: "*",
+          name: "Error",
           component: Error,
-        }
+        },
       ],
-    }
+    },
   ],
-}
+};
 
-var router = new Router(routerConfig)
+var router = new Router(routerConfig);
 
 router.beforeEach((to, from, next) => {
-  console.log("检测到路由行为")
-  console.log("to", to)
-  console.log("from", from)
+  console.log("路由行为");
+  console.log("to", to);
+  console.log("from", from);
 
+  if (to.name == "Login") return void next();
 
-  if (to.name == "Login") { next(); return; }
-
-  console.log("检测登陆状态")
-  isLogin({}).then((res) => {
-    console.log("登陆状态", res)
-    if (res.data.isLogin) {
-      if (!Vue.prototype.store.state.user.uid) {
+  console.log("检测登陆状态");
+  isLogin({})
+    .then((res) => {
+      console.log("登陆状态", res);
+      if (res.data.isLogin) {
+        if (!Vue.prototype.store.state.user.uid) {
+          router.push("/login");
+          return;
+        }
+        next();
+      } else {
+        Vue.prototype.global.errorAlert("泼发EBC：请先登录");
         router.push("/login");
-        return
       }
-      next();
-    } else {
-      Vue.prototype.global.errorAlert("泼发EBC：请先登录")
+    })
+    .catch((err) => {
+      console.log(err);
       router.push("/login");
-    }
-  })
-
-
-
+      Vue.prototype.global.infoAlert("泼发EBC：服务器未连接");
+    });
 });
 
-console.log(router)
-
+console.log(router);
 
 export default router;
