@@ -205,30 +205,8 @@ export default {
         },
 
         //{ title: "系统信息", icon: "mdi-bell-outline", link: "/notifications" },
-        { divider: true },
 
-        {
-          title: "选品中台",
-          icon: "mdi-database",
-          show: true,
-          children: [
-            {
-              title: "我的需求",
-              icon: "mdi-circle-small",
-              link: "/myrequirements",
-            },
-            {
-              title: "产品池",
-              icon: "mdi-circle-small",
-              link: "/productsdb",
-            },
-            {
-              title: "需求大厅",
-              icon: "mdi-circle-small",
-              link: "/requirementsground",
-            },
-          ],
-        },
+        { divider: true },
 
         {
           title: "部门管理",
@@ -251,8 +229,6 @@ export default {
             },
           ],
         },
-
-        { divider: true },
         // { heading: "POFA2" },
 
         {
@@ -265,6 +241,31 @@ export default {
               title: "组别",
               icon: "mdi-circle-small",
               link: "/team",
+            },
+          ],
+        },
+        
+        { divider: true },
+
+        {
+          title: "选品中台",
+          icon: "mdi-database",
+          show: true,
+          children: [
+            {
+              title: "我的需求",
+              icon: "mdi-circle-small",
+              link: "/myrequirements",
+            },
+            {
+              title: "产品池",
+              icon: "mdi-circle-small",
+              link: "/productsdb",
+            },
+            {
+              title: "需求大厅",
+              icon: "mdi-circle-small",
+              link: "/requirementsground",
             },
           ],
         },

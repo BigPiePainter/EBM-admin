@@ -1,24 +1,21 @@
 <template>
   <div class="page-content d-flex flex-column">
     <PageHeader title="主页">
-      <v-menu ref="menu" v-model="datePicker" :close-on-content-click="false" :return-value.sync="dates" offset-y>
+      <v-menu v-if="this.$store.state.user.uid == 1" ref="menu" v-model="datePicker" :close-on-content-click="false" :return-value.sync="dates" offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-btn class="ml-2" text v-bind="attrs" v-on="on" color="primary" :disabled="loading || datePicker">
             <v-icon size="20" style="padding-top: 2px">mdi-calendar-blank</v-icon>
             <span> 日期选择 </span>
           </v-btn>
         </template>
-        <v-date-picker v-model="dates" no-title scrollable locale="zh-cn" color="primary" first-day-of-week="1" :day-format="dayFormat" min="2021-01-01" :max="parseDate(new Date())">
+        <v-date-picker v-model="dates" no-title scrollable locale="zh-cn" color="primary" first-day-of-week="1"
+          :day-format="dayFormat" min="2021-01-01" :max="parseDate(new Date())">
           <v-spacer></v-spacer>
           <v-btn text color="primary" @click="datePicker = false"> 取消 </v-btn>
-          <v-btn
-            text
-            color="primary"
-            @click="
-              $refs.menu.save(dates);
-              loadData();
-            "
-          >
+          <v-btn text color="primary" @click="
+            $refs.menu.save(dates);
+          loadData();
+          ">
             确定
           </v-btn>
         </v-date-picker>
@@ -75,18 +72,19 @@
       </v-col>
     </div> -->
 
-    <v-container fluid id="mainContainer">
+    <v-container fluid id="mainContainer" v-if="this.$store.state.user.uid == 1">
       <div class="dashboard-page mt-2 pt-2">
         <span class="ml-6 text--secondary">{{ dates }}</span>
 
         <v-row class="mt-1">
           <v-col cols="4">
-            <v-card outlined class="ml-6 mx-1 mb-1">
+            <v-card outlined class="ml-6 mx-1 mb-1" @click="test()">
               <v-card-title>
                 <p class="text-body-2">当日订单总成交额</p>
               </v-card-title>
               <v-card-text>
-                <p class="text-h3 text-center">{{ amountFormat(realTotalAmount) ? amountFormat(realTotalAmount) : "" }}</p>
+                <p class="text-h3 text-center">{{ amountFormat(realTotalAmount) ? amountFormat(realTotalAmount) : "" }}
+                </p>
               </v-card-text>
             </v-card>
           </v-col>
@@ -106,7 +104,8 @@
                 <p class="text-body-2">EBC未收录成交额</p>
               </v-card-title>
               <v-card-text>
-                <p class="text-h3 text-center">{{ amountFormat(realTotalAmount - totalAmount) ? amountFormat(realTotalAmount - totalAmount) : "" }}</p>
+                <p class="text-h3 text-center">{{ amountFormat(realTotalAmount - totalAmount) ?
+                  amountFormat(realTotalAmount - totalAmount) : "" }}</p>
               </v-card-text>
             </v-card>
           </v-col>
@@ -118,7 +117,8 @@
                 <p class="text-body-2">总订单数</p>
               </v-card-title>
               <v-card-text>
-                <p class="text-h3 text-center">{{ amountFormat(mainPageCardOrderCount, null, 0) ? amountFormat(mainPageCardOrderCount, null, 0) : "" }}</p>
+                <p class="text-h3 text-center">{{ amountFormat(mainPageCardOrderCount, null, 0) ?
+                  amountFormat(mainPageCardOrderCount, null, 0) : "" }}</p>
               </v-card-text>
             </v-card>
           </v-col>
@@ -129,7 +129,8 @@
               </v-card-title>
               <v-card-text>
                 <p class="text-h3 text-center">
-                  {{ amountFormat(mainPageCardActualOrderCount, null, 0) ? amountFormat(mainPageCardActualOrderCount, null, 0) : "" }}
+                  {{ amountFormat(mainPageCardActualOrderCount, null, 0) ? amountFormat(mainPageCardActualOrderCount,
+                    null, 0) : "" }}
                 </p>
               </v-card-text>
             </v-card>
@@ -152,13 +153,18 @@
         <p v-for="i in [0, 1, 2, 3, 4, 5]" class="mt-3 ml-6 text-body-2 text--secondary" :key="i">
           {{ ratings[i]?.name }}，总成交额：{{ amountFormat(ratings[i]?.totalAmount) }}
           <v-icon size="15" style="padding-bottom: 2px">mdi-currency-cny</v-icon> ，售后毛利润:
-          {{ amountFormat(ratings[i]?.calculatedActualProfit) }}<v-icon size="15" style="padding-bottom: 2px">mdi-currency-cny</v-icon>
+          {{ amountFormat(ratings[i]?.calculatedActualProfit) }}<v-icon size="15"
+            style="padding-bottom: 2px">mdi-currency-cny</v-icon>
         </p>
 
         <p class="mt-10 ml-6 text-body-2 text--secondary">鸡汤文：</p>
         <p class="ml-6 text-body-2 text--secondary">{{ quotes[Math.floor(Math.random() * quotes.length)] }}</p>
       </div>
     </v-container>
+
+    <div v-if="this.$store.state.user.uid != 1" style="text-align: center;">
+      <img src="../../../public/ebc.png" style="margin-top: 30vh;" />
+    </div>
   </div>
 </template>
 
@@ -402,6 +408,10 @@ export default {
   },
 
   methods: {
+    test() {
+      console.log(this.$store.state.user)
+    },
+
     parseDate(date) {
       return javaUTCDateToString(date);
     },
@@ -547,5 +557,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

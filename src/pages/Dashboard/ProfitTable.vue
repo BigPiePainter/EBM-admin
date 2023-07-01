@@ -989,9 +989,10 @@ export default {
           headers = this.profitHeadersHide;
         }
 
-      if (!this.user.permission.f?.s) {
-        headers = headers.filter((i) => i.value != "shopName" && i.value != "productId");
-      }
+//------------------------------------------------------取消对商品id查看的限制----------------------------------------------------------------
+      // if (!this.user.permission.f?.s) {
+      //   headers = headers.filter((i) => i.value != "shopName" && i.value != "productId");
+      // }
 
       return headers;
     },
