@@ -72,7 +72,7 @@
       </v-col>
     </div> -->
 
-    <v-container fluid id="mainContainer" v-if="this.$store.state.user.uid == 1">
+    <v-container fluid id="mainContainer" v-if="this.$store.state.user.permission.f.s">
       <div class="dashboard-page mt-2 pt-2">
         <span class="ml-6 text--secondary">{{ dates }}</span>
 
