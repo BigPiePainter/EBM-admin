@@ -66,7 +66,7 @@ const store = new Vuex.Store({
       },
       f: {
         //利润报表
-        s: true, //查看商品ID和店铺的权限 -show
+        s: true, //显示完整利润报表 -show
       },
       g: {
         //财务模块

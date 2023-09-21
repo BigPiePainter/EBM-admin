@@ -424,6 +424,9 @@ export default {
       this.setToken(res.data.token.tokenValue);
 
       this.globalInitAndJump();
+    }).catch((err) => {
+      console.log(err)
+      this.global.infoAlert("泼发EBC：服务器未连接");
     });
 
     //if (window.localStorage.getItem("authenticated") === "true") {

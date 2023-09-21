@@ -293,90 +293,79 @@
 
         <!-- 真实金额 -->
         <template v-slot:[`header.calculatedActualAmount`]="{ header }">
-          <span>
+          <span title="成交额-刷单额(暂时不包括未上报的刷单)">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 真实单数 -->
         <template v-slot:[`header.calculatedActualOrderCount`]="{ header }">
-          <span>
+          <span title="总订单数-刷单数(暂时不包括未上报的刷单)">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 退款金额 -->
         <template v-slot:[`header.totalRefundAmount`]="{ header }">
-          <span>
+          <span title="一切已发生的退款，包括未发仅退">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 净收入额 -->
         <template v-slot:[`header.calculatedActualIncome`]="{ header }">
-          <span>
+          <span title="营业额-刷单额-所有类型退款">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 未发仅退 -->
         <template v-slot:[`header.totalRefundWithNoShipAmount`]="{ header }">
-          <span>
+          <span title="未发货仅退款金额">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 未发退本 -->
         <template v-slot:[`header.calculatedRefundWithNoShipAmount`]="{ header }">
-          <span>
+          <span title="未发货仅退款金额中退回的成本部分">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 未发数 -->
         <template v-slot:[`header.totalRefundWithNoShipCount`]="{ header }">
-          <span>
+          <span title="未发仅退数">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 拿货成本（售后） -->
         <template v-slot:[`header.calculatedActualCost`]="{ header }">
-          <span>
+          <span title="拿货成本-未发退本">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 售后毛利润 -->
         <template v-slot:[`header.calculatedActualProfit`]="{ header }">
-          <span>
+          <span title="净收入额-拿货成本（售后）-平台扣点-运费险-快递费-刷单佣金">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- 售后利润率 -->
         <template v-slot:[`header.calculatedActualProfitRatio`]="{ header }">
-          <span>
+          <span title="售后毛利润/净收入额(为负时显示'-')">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
         <!-- SKU未匹配 -->
         <template v-slot:[`header.wrongCount`]="{ header }">
-          <span>
+          <span title="找不到sku的持品人">
             {{ header.text }}
           </span>
-          <Help style="margin-bottom: 1px;" text="注释说明待填写" />
         </template>
 
 <!---------------------------------- 列注释 ----------------------------------->
@@ -678,7 +667,7 @@
         <div class="mx-5">
           <v-data-table
             loading-text="加载中... 请稍后"
-            no-data-text="好奇怪！没有未匹配的SKU！注意淘特链接和主链要分开获取SKUID，不然无法准确匹配订单来源，可能会导致此问题。"
+            no-data-text="好奇怪！这一天没有未匹配的SKU！间段模式获取的利润报表可能会导致此问题。"
             height="422px"
             fixed-header
             :headers="mismatchedSkuheaders"
@@ -704,7 +693,7 @@ import { saveAs } from "file-saver";
 import { amountBeautify } from "@/libs/utils";
 import Help from "@/components/Help";
 import { javaUTCDateToString } from "@/libs/utils";
-import { getProfitReport } from "@/settings/profitReport";
+import { getProfitReportByUser } from "@/settings/profitReport";
 import { getMismatchedSkus } from "@/settings/profitReport";
 
 import { mapState } from "vuex";
@@ -1000,9 +989,10 @@ export default {
           headers = this.profitHeadersHide;
         }
 
-      if (!this.user.permission.f?.s) {
-        headers = headers.filter((i) => i.value != "shopName" && i.value != "productId");
-      }
+//------------------------------------------------------取消对商品id查看的限制----------------------------------------------------------------
+      // if (!this.user.permission.f?.s) {
+      //   headers = headers.filter((i) => i.value != "shopName" && i.value != "productId");
+      // }
 
       return headers;
     },
@@ -1768,7 +1758,7 @@ export default {
       args.endDate = args.endDate.replaceAll("-", "/");
       this.loading = true;
       console.log("接口调用", args);
-      getProfitReport(args)
+      getProfitReportByUser(args)
         .then((res) => {
           this.loading = false;
           console.log(res.data);
