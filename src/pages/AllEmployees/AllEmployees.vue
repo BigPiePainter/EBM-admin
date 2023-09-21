@@ -6,28 +6,26 @@
         新增员工
       </v-btn>
     </PageHeader>
-    <v-data-table
-      fixed-header
-      show-select
-      disable-sort
-      loading-text="加载中... 请稍后"
-      no-data-text="空"
-      item-key="uid"
-      class=""
-      height="calc(100vh - 197px)"
-      :loading="loading"
-      :headers="headers"
-      :items="userInfosWithoutSelf"
-      :items-per-page="50"
-      :footer-props="{
+    <v-data-table fixed-header show-select disable-sort loading-text="加载中... 请稍后" no-data-text="空" item-key="uid" class=""
+      height="calc(100vh - 197px)" :loading="loading" :headers="headers" :items="userInfosWithoutSelf"
+      :items-per-page="50" :footer-props="{
         'items-per-page-options': [20, 50, 100, 500, 1000],
         'items-per-page-text': '每页显示条数',
-      }"
-    >
+      }">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>员工信息</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
+          <v-btn small depressed class="ml-2" @click="deprecatedFilter">
+            <v-icon small class="mr-1">
+              {{
+                withoutDeprecated
+                ? "mdi-checkbox-marked-outline"
+                : "mdi-checkbox-blank-outline"
+              }}
+            </v-icon>
+            <span> 过滤离职员工 </span>
+          </v-btn>
           <v-spacer />
         </v-toolbar>
       </template>
@@ -63,6 +61,15 @@
 
       <template v-slot:[`item.password`]="{ item }">
         {{ user.permission.c.b ? item.password : "隐藏" }}
+      </template>
+
+      <template v-slot:[`item.deprecated`]="{ item }">
+        <div class="d-flex">
+          <v-btn @click="changeDeprecated(item)" small depressed outlined
+            :color="item.deprecated == true ? 'red' : 'green'" class="ml-1">
+            {{ item.deprecated == true ? '离职' : '在职' }}
+          </v-btn>
+        </div>
       </template>
 
       <template v-slot:[`header.actions`]="{ header }">
@@ -112,62 +119,51 @@
                 </v-col>
                 <v-col cols="3" class="pr-8">
                   <span class="text-body-2 text--secondary">性别</span>
-                  <v-select
-                    color="primary"
-                    outlined
-                    dense
-                    hide-details
-                    :items="[
-                      { k: '男', v: 1 },
-                      { k: '女', v: 2 },
-                    ]"
-                    item-text="k"
-                    item-value="v"
-                    v-model="userInfoEdit.gender"
-                  >
+                  <v-select color="primary" outlined dense hide-details :items="[
+                    { k: '男', v: 1 },
+                    { k: '女', v: 2 },
+                  ]" item-text="k" item-value="v" v-model="userInfoEdit.gender">
                   </v-select>
                 </v-col>
                 <v-col>
                   <span class="text-body-2 text--secondary">联系方式</span>
-                  <v-text-field outlined color="primary" dense hide-details v-model="userInfoEdit.contact"> </v-text-field>
+                  <v-text-field outlined color="primary" dense hide-details v-model="userInfoEdit.contact">
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-divider class="my-8" />
               <v-row>
                 <v-col>
                   <span class="text-body-2 text--secondary">登录账号*</span>
-                  <v-text-field color="primary" outlined dense hide-details v-model="userInfoEdit.username"> </v-text-field>
+                  <v-text-field color="primary" outlined dense hide-details v-model="userInfoEdit.username">
+                  </v-text-field>
                 </v-col>
                 <v-col>
                   <span class="text-body-2 text--secondary">登录密码*</span>
-                  <v-text-field color="primary" outlined dense hide-details v-model="userInfoEdit.password"> </v-text-field>
+                  <v-text-field color="primary" outlined dense hide-details v-model="userInfoEdit.password">
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col>
                   <span class="text-body-2 text--secondary">所属部门*</span>
                   {{ global.log(user.permission.c.d) }}
-                  <v-autocomplete
-                    color="primary"
-                    outlined
-                    dense
-                    hide-details
-                    no-data-text="空！！"
-                    :items="user.permission.c.d.map((i) => departmentIdToInfo[i])"
-                    item-text="name"
-                    item-value="uid"
-                    v-model="userInfoEdit.department"
-                  ></v-autocomplete>
+                  <v-autocomplete color="primary" outlined dense hide-details no-data-text="空！！"
+                    :items="user.permission.c.d.map((i) => departmentIdToInfo[i])" item-text="name" item-value="uid"
+                    v-model="userInfoEdit.department"></v-autocomplete>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="4">
                   <span class="text-body-2 text--secondary">入职日期*</span>
-                  <v-menu ref="menu" v-model="datePicker" :close-on-content-click="false" :return-value.sync="userInfoEdit.onboardingTime" offset-y min-width="auto">
+                  <v-menu ref="menu" v-model="datePicker" :close-on-content-click="false"
+                    :return-value.sync="userInfoEdit.onboardingTime" offset-y min-width="auto">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field v-model="userInfoEdit.onboardingTime" readonly v-bind="attrs" v-on="on" outlined dense hide-details></v-text-field>
+                      <v-text-field v-model="userInfoEdit.onboardingTime" readonly v-bind="attrs" v-on="on" outlined dense
+                        hide-details></v-text-field>
                     </template>
-                    <v-date-picker v-model="userInfoEdit.onboardingTime" no-title scrollable locale="zh-cn" first-day-of-week="1" :day-format="dayFormat" min="2021-01-01" :max="parseDate(new Date())">
+                    <v-date-picker v-model="userInfoEdit.onboardingTime" no-title scrollable locale="zh-cn"
+                      first-day-of-week="1" :day-format="dayFormat" min="2021-01-01" :max="parseDate(new Date())">
                       <v-spacer></v-spacer>
                       <v-btn text color="primary" @click="datePicker = false"> 取消 </v-btn>
                       <v-btn text color="primary" @click="$refs.menu.save(userInfoEdit.onboardingTime)"> 确定 </v-btn>
@@ -194,49 +190,34 @@
                     <v-row class="mt-5">
                       <v-col cols="10">
                         <span class="text-body-2 text--secondary"> 部门录入权限 </span>
-                        <v-autocomplete
-                          v-model="selectedPermission.a.d"
+                        <v-autocomplete v-model="selectedPermission.a.d"
                           :items="allDepartments.filter((d) => user.permission.a.d.find((i) => i == d.uid))"
-                          no-data-text="无"
-                          outlined
-                          dense
-                          hide-details
-                          color="primary"
-                          item-text="name"
-                          item-value="uid"
-                          multiple
-                        >
+                          no-data-text="无" outlined dense hide-details color="primary" item-text="name" item-value="uid"
+                          multiple>
                         </v-autocomplete>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="10">
                         <span class="text-body-2 text--secondary">组别录入权限</span>
-                        <v-autocomplete
-                          v-model="selectedPermission.a.g"
-                          :items="allTeams.filter((g) => user.permission.a.g.find((i) => i == g.uid))"
-                          no-data-text="无"
-                          outlined
-                          dense
-                          hide-details
-                          color="primary"
-                          item-text="name"
-                          item-value="uid"
-                          multiple
-                        >
+                        <v-autocomplete v-model="selectedPermission.a.g"
+                          :items="allTeams.filter((g) => user.permission.a.g.find((i) => i == g.uid))" no-data-text="无"
+                          outlined dense hide-details color="primary" item-text="name" item-value="uid" multiple>
                         </v-autocomplete>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col>
-                        <v-checkbox v-model="selectedPermission.a.da" hide-details dense :disabled="!user.permission.a.da">
+                        <v-checkbox v-model="selectedPermission.a.da" hide-details dense
+                          :disabled="!user.permission.a.da">
                           <template v-slot:label>
                             <span class="text-subtitle-2">删除商品归属变更记录</span>
                           </template>
                         </v-checkbox>
                       </v-col>
                       <v-col>
-                        <v-checkbox v-model="selectedPermission.a.fc" hide-details dense :disabled="!user.permission.a.fc">
+                        <v-checkbox v-model="selectedPermission.a.fc" hide-details dense
+                          :disabled="!user.permission.a.fc">
                           <template v-slot:label>
                             <span class="text-subtitle-2">管理一级类目</span>
                           </template>
@@ -245,7 +226,8 @@
                     </v-row>
                     <v-row>
                       <v-col>
-                        <v-checkbox v-model="selectedPermission.a.dp" hide-details dense :disabled="!user.permission.a.dp">
+                        <v-checkbox v-model="selectedPermission.a.dp" hide-details dense
+                          :disabled="!user.permission.a.dp">
                           <template v-slot:label>
                             <span class="text-subtitle-2">彻底删除商品</span>
                           </template>
@@ -295,18 +277,10 @@
                       <v-col cols="10">
                         <span class="text-body-2 text--secondary"> 部门管理权限 </span>
                         <Help text="可以创建并管理哪个部门的员工" />
-                        <v-autocomplete
-                          v-model="selectedPermission.c.d"
+                        <v-autocomplete v-model="selectedPermission.c.d"
                           :items="allDepartments.filter((d) => user.permission.c.d.find((i) => i == d.uid))"
-                          no-data-text="无"
-                          outlined
-                          dense
-                          hide-details
-                          color="primary"
-                          item-text="name"
-                          item-value="uid"
-                          multiple
-                        >
+                          no-data-text="无" outlined dense hide-details color="primary" item-text="name" item-value="uid"
+                          multiple>
                         </v-autocomplete>
                       </v-col>
                     </v-row>
@@ -371,12 +345,6 @@
   </div>
 </template>
 
-
-
-
-
-
-
 <script>
 import { mapState } from "vuex";
 import { javaUTCDateToString } from "@/libs/utils";
@@ -396,18 +364,15 @@ export default {
     headers: [
       { text: "员工ID", value: "uid" },
       { text: "姓名", value: "nick" },
-
       { text: "性别", value: "gender" },
       { text: "所属部门", value: "department" },
       { text: "联系方式", value: "contact" },
       { text: "入职日期", value: "onboardingTime" },
       { text: "权限", value: "calculatedPermission" },
-
       { text: "登录账号", value: "username" },
       { text: "登录密码", value: "password" },
-
+      { text: "是否离职", value: "deprecated" },
       { text: "备注", value: "note" },
-
       { text: "操作", value: "actions" },
     ],
 
@@ -437,6 +402,8 @@ export default {
       f: {},
       g: {},
     },
+
+    withoutDeprecated: true
   }),
 
   computed: {
@@ -499,7 +466,7 @@ export default {
       this.userInfoDialog = true;
     },
 
-    deleteButton() {},
+    deleteButton() { },
 
     editButton(item) {
       this.userInfoEdit = { ...item };
@@ -510,8 +477,8 @@ export default {
       if (!this.selectedPermission.g) {
         this.$set(this.selectedPermission, "g", {});
       }
-      console.log(this.selectedPermission);
-      console.log(this.userInfoEdit);
+      console.log('selectedPermission', this.selectedPermission);
+      console.log('userInfoEdit', this.userInfoEdit);
 
       this.userInfoEdit.onboardingTime = this.parseDate(this.userInfoEdit.onboardingTime);
       this.mode = 1;
@@ -520,9 +487,7 @@ export default {
 
     editEmployee() {
       this.userInfoDialog = false;
-
       var args = { ...this.userInfoEdit };
-
       console.log(this.selectedPermission.a.a);
       args.permission = JSON.stringify(this.selectedPermission);
       args.note == null && delete args.note;
@@ -530,15 +495,29 @@ export default {
       args.gender == null && (args.gender = 3);
       args.onboardingTime = args.onboardingTime.replaceAll("-", "/");
 
-      console.log(args);
+      console.log('modifyUserArgs', args);
       modifyUser(args)
         .then((res) => {
           console.log(res);
           this.global.infoAlert("泼发EBC：" + res.data);
           this.init();
         })
-        .catch(() => {});
+        .catch(() => { });
       this.mode = 0;
+    },
+
+    changeDeprecated(item) {
+      var args = {
+        uid: item.uid,
+        deprecated: !item.deprecated
+      }
+      console.log('changeDeprecatedArgs', args);
+      modifyUser(args)
+        .then((res) => {
+          this.global.infoAlert("泼发EBC：" + res.data);
+          this.init();
+        })
+        .catch(() => { });
     },
 
     newEmployee() {
@@ -559,7 +538,7 @@ export default {
           this.global.infoAlert("泼发EBC：" + res.data);
           this.init();
         })
-        .catch(() => {});
+        .catch(() => { });
       this.mode = 0;
     },
 
@@ -571,6 +550,11 @@ export default {
       }
     },
 
+    deprecatedFilter() {
+      this.withoutDeprecated = !this.withoutDeprecated;
+      this.init()
+    },
+
     init() {
       this.loading = true;
 
@@ -579,8 +563,11 @@ export default {
           this.loading = false;
           this.userInfos = res.data.userInfos;
           this.userAnalyze();
-
           this.userInfosWithoutSelf = this.userInfos.filter((i) => i.uid != this.user.uid);
+          if (this.withoutDeprecated == true) {
+            this.userInfosWithoutSelf = this.userInfos.filter((user) => user.deprecated == false && user.uid != this.user.uid);
+          }
+          console.log('userInfosWithoutSelf', this.userInfosWithoutSelf)
           //this.infoAlert("泼发EBC：" + res.data);
         })
         .catch(() => {
@@ -598,5 +585,4 @@ export default {
 };
 </script>
 
-<style src="./AllEmployees.scss" lang="scss">
-</style>
+<style src="./AllEmployees.scss" lang="scss"></style>

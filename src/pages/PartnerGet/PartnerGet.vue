@@ -342,199 +342,6 @@
           </v-hover>
         </template>
 
-        <!-- 商品清单表头搜索功能 -->
-        <!-- 查找备注 -->
-        <!-- <template v-slot:[`header.note`]="props">
-          <v-edit-dialog @close="loadData">
-            {{ props.header.text }}
-            <template v-slot:input>
-              <div class="d-flex align-center">
-                <span> {{ props.header.text }} </span>
-                <v-text-field
-                  color="primary"
-                  v-model="search.search[props.header.value]"
-                  single-line
-                  class="ml-3"
-                >
-                </v-text-field>
-              </div>
-            </template>
-          </v-edit-dialog>
-        </template> -->
-
-        <!-- 查找聚水潭仓库 -->
-        <!-- <template v-slot:[`header.storehouse`]="props">
-          <v-edit-dialog @close="loadData">
-            {{ props.header.text }}
-            <template v-slot:input>
-              <div class="d-flex align-center">
-                <span> {{ props.header.text }} </span>
-                <v-text-field
-                  color="primary"
-                  v-model="search.search[props.header.value]"
-                  single-line
-                  class="ml-3"
-                >
-                </v-text-field>
-              </div>
-            </template>
-          </v-edit-dialog>
-        </template> -->
-
-        <!-- 查找发货方式 -->
-        <!-- <template v-slot:[`header.transportWay`]="props">
-          <v-edit-dialog @close="loadData">
-            {{ props.header.text }}
-            <template v-slot:input>
-              <div class="d-flex align-center">
-                <span> {{ props.header.text }} </span>
-                <v-text-field
-                  color="primary"
-                  v-model="search.search[props.header.value]"
-                  single-line
-                  class="ml-3"
-                >
-                </v-text-field>
-              </div>
-            </template>
-          </v-edit-dialog>
-        </template> -->
-
-        <!-- 查找店铺 -->
-        <!-- <template v-slot:[`header.shopName`]="props">
-          <v-edit-dialog @close="loadData">
-            {{ props.header.text }}
-            <template v-slot:input>
-              <div class="d-flex align-center">
-                <span> {{ props.header.text }} </span>
-                <v-text-field
-                  color="primary"
-                  v-model="search.search[props.header.value]"
-                  single-line
-                  class="ml-3"
-                >
-                </v-text-field>
-              </div>
-            </template>
-          </v-edit-dialog>
-        </template> -->
-
-        <!-- 查找部门 -->
-        <!-- <template v-slot:[`header.department`]="props">
-          <v-edit-dialog @close="loadData">
-            {{ props.header.text }}
-            <template v-slot:input>
-              <div class="d-flex align-center">
-                <span> {{ props.header.text }} </span>
-                <v-autocomplete
-                  color="primary"
-                  :items="allDepartments"
-                  item-text="name"
-                  item-value="uid"
-                  v-model="search.search[props.header.value]"
-                  single-line
-                  multiple
-                  label="选择"
-                  class="ml-3"
-                >
-                  <template v-slot:selection="option">
-                    <v-chip close @click:close="remove(props, option)">
-                      {{ option.item.name }}
-                    </v-chip>
-                  </template>
-                </v-autocomplete>
-              </div>
-            </template>
-          </v-edit-dialog>
-        </template> -->
-
-        <!-- 查找组别 -->
-        <!-- <template v-slot:[`header.team`]="props">
-          <v-edit-dialog @close="loadData">
-            {{ props.header.text }}
-            <template v-slot:input>
-              <div class="d-flex align-center">
-                <span> {{ props.header.text }} </span>
-                <v-autocomplete
-                  color="primary"
-                  :items="allTeams"
-                  item-text="name"
-                  item-value="uid"
-                  v-model="search.search[props.header.value]"
-                  single-line
-                  class="ml-3"
-                  multiple
-                  label="选择"
-                >
-                  <template v-slot:selection="option">
-                    <v-chip close @click:close="remove(props, option)">
-                      {{ option.item.name }}
-                    </v-chip>
-                  </template>
-                </v-autocomplete>
-              </div>
-            </template>
-          </v-edit-dialog>
-        </template> -->
-
-        <!-- 查找持品人 -->
-        <!-- <template v-slot:[`header.owner`]="props">
-          <v-edit-dialog @close="loadData">
-            {{ props.header.text }}
-            <template v-slot:input>
-              <div class="d-flex align-center">
-                <span> {{ props.header.text }} </span>
-                <v-autocomplete
-                  color="primary"
-                  :items="allUsers"
-                  item-text="nick"
-                  item-value="uid"
-                  v-model="search.search[props.header.value]"
-                  single-line
-                  class="ml-3"
-                  multiple
-                  label="选择"
-                >
-                  <template v-slot:selection="option">
-                    <v-chip close @click:close="remove(props, option)">
-                      {{ option.item.nick }}
-                    </v-chip>
-                  </template>
-                </v-autocomplete>
-              </div>
-            </template>
-          </v-edit-dialog>
-        </template> -->
-
-        <!-- 查找一级类目 -->
-        <!-- <template v-slot:[`header.firstCategory`]="props">
-          <v-edit-dialog @close="loadData">
-            {{ props.header.text }}
-            <template v-slot:input>
-              <div class="d-flex align-center">
-                <span> {{ props.header.text }} </span>
-                <v-autocomplete
-                  color="primary"
-                  :items="allCategorys"
-                  item-text="name"
-                  item-value="uid"
-                  v-model="search.search[props.header.value]"
-                  single-line
-                  class="ml-3"
-                  multiple
-                  label="选择"
-                >
-                  <template v-slot:selection="option">
-                    <v-chip close @click:close="remove(props, option)">
-                      {{ option.item.name }}
-                    </v-chip>
-                  </template>
-                </v-autocomplete>
-              </div>
-            </template>
-          </v-edit-dialog>
-        </template> -->
-
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length" class="pa-0">
             <SkuTable :productInfo="item" />
@@ -579,10 +386,7 @@
               </v-icon>
               <span> 操作 </span>
             </v-btn>
-            <!-- <v-spacer></v-spacer>
-            <span class="grey--text body-2 overflow-y-auto mr-3">{{
-              searchPreview
-            }}</span> -->
+
             <v-spacer></v-spacer>
             <v-btn
               v-if="ifAction"
@@ -617,32 +421,6 @@
             {{ header.text }}
           </div>
         </template>
-        <!-- <template v-slot:[`item.actions`]="{ item }">
-          <div class="d-flex">
-            <v-spacer />
-            <v-btn
-              small
-              depressed
-              outlined
-              color="green"
-              @click.stop="editProductButton(item)"
-              class="ml-1"
-            >
-              修改
-            </v-btn>
-
-            <v-btn
-              small
-              depressed
-              outlined
-              color="red lighten-2"
-              @click.stop="deleteProductItem(item)"
-              class="ml-1"
-            >
-              删除
-            </v-btn>
-          </div>
-        </template> -->
       </v-data-table>
     </div>
 
@@ -1512,7 +1290,7 @@ export default {
         return;
       }
       this.loading = true;
-      // console.log(this.editedItem);
+      console.log('editedItem',this.editedItem);
       addProducts(this.editedItem)
         .then((res) => {
           this.loading = false;
