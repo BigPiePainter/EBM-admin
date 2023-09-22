@@ -18,9 +18,6 @@ export const loadDeletedProducts = data => {
     return http.request(args)
 }
 
-
-
-
 export const addProducts = data => {
     const args = {
         url: '/product/add',
@@ -36,6 +33,17 @@ export const editProduct = data => {
         url: '/product/modify',
         method: 'POST',
         data
+    }
+    return http.request(args)
+}
+
+//批量更换持品人
+export const changeOwners = data => {
+    const args = {
+        url: 'product/change-owners',
+        method: 'POST',
+        data,
+        json: true
     }
     return http.request(args)
 }
@@ -67,8 +75,6 @@ export const restoreProduct = data => {
     return http.request(args)
 }
 
-
-
 export const getClass = data => {
     const args = {
         url: '/product/getCategory',
@@ -77,7 +83,6 @@ export const getClass = data => {
     }
     return http.request(args)
 }
-
 
 export const getMismatchProducts = data => {
     const args = {

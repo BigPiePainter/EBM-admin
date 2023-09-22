@@ -257,8 +257,8 @@
       </v-col>
     </div>
     <div class="flex-grow-1">
+        <!-- single-select -->
       <v-data-table
-        single-select
         show-expand
         fixed-header
         disable-sort
@@ -388,6 +388,18 @@
             </v-btn>
 
             <v-spacer></v-spacer>
+            <v-btn
+              v-if="ifAction"
+              :disabled="selectedProductItem.length == 0"
+              small
+              depressed
+              outlined
+              color="green"
+              class="ml-1"
+              @click.stop="multipleChangeOwnerButton"
+            >
+              批量修改持品人
+            </v-btn>
             <v-btn
               v-if="ifAction"
               :disabled="selectedProductItem.length != 1"
@@ -700,6 +712,145 @@
       </v-card>
     </v-dialog>
 
+    <!-- 批量更改持品人Dialog -->
+    <v-dialog v-model="multipleChangeOwnerDialog" max-width="550px" persistent>
+      <v-card>
+        <v-container class="px-10 py-10 product-dialog">
+          <v-row>
+            <span class="text-subtitle-1">内部归属</span>
+          </v-row>
+          <v-row>
+            <v-col cols="5">
+              <span class="text-body-2 text--secondary">部门*</span>
+              <v-autocomplete
+                color="primary"
+                outlined
+                dense
+                :items="
+                  allDepartments.filter((d) =>
+                    user.permission.a.d.find((i) => i == d.uid)
+                  )
+                "
+                no-data-text="无"
+                v-model="ownersItem.department"
+                menu-props="auto"
+                hide-details
+                single-line
+                item-text="name"
+                item-value="uid"
+              ></v-autocomplete>
+            </v-col>
+
+            <v-col cols="4">
+              <span class="text-body-2 text--secondary">组别*</span>
+              <v-autocomplete
+                color="primary"
+                outlined
+                dense
+                v-model="ownersItem.team"
+                :items="
+                  allTeams.filter((g) =>
+                    user.permission.a.g.find((i) => i == g.uid)
+                  )
+                "
+                no-data-text="无"
+                menu-props="auto"
+                hide-details
+                item-text="name"
+                item-value="uid"
+                single-line
+              ></v-autocomplete>
+            </v-col>
+
+            <v-col cols="3">
+              <span class="text-body-2 text--secondary">持品人*</span>
+              <v-autocomplete
+                outlined
+                dense
+                color="primary"
+                v-model="ownersItem.owner"
+                :items="
+                  allUsers.filter(
+                    (i) =>
+                      JSON.parse(i.permission).a &&
+                      JSON.parse(i.permission).a.g &&
+                      JSON.parse(i.permission).a.g.find(
+                        (id) => id == ownersItem.team
+                      )
+                  )
+                "
+                no-data-text="无"
+                menu-props="auto"
+                hide-details
+                single-line
+                item-text="nick"
+                item-value="uid"
+              ></v-autocomplete>
+            </v-col>
+          </v-row>
+          <v-divider class="my-8" />
+          <v-row>
+            <v-col>
+              <span class="text-body-2 text--secondary"> 选择变化日期* </span>
+              <v-menu
+                ref="menuA"
+                v-model="datePicker"
+                :close-on-content-click="false"
+                :return-value.sync="ownersItem.startTime"
+                offset-y
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="ownersItem.startTime"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    dense
+                    hide-details
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="ownersItem.startTime"
+                  no-title
+                  scrollable
+                  locale="zh-cn"
+                  first-day-of-week="1"
+                  :day-format="dayFormat"
+                  min="2021-01-01"
+                  :max="parseDate(new Date())"
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="datePicker = false">
+                    取消
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.menuA.save(ownersItem.startTime)"
+                  >
+                    确定
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+        </v-container>
+
+        <v-card-actions>
+          <p class="caption font-italic font-weight-thin">带*为必填项目</p>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="multipleChangeOwnerDialog = false">
+            取消
+          </v-btn>
+          <v-btn color="blue darken-1" text @click="multipleChangeOwner" :disabled="isOwnersInfoEmp">
+            保存
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <!-- 归属变化Dialog -->
     <v-dialog v-model="ascriptionChangeDialog" max-width="370px">
       <v-card>
@@ -921,6 +1072,7 @@ import { addProducts } from "@/settings/product";
 import { editProduct } from "@/settings/product";
 import { deleteProduct } from "@/settings/product";
 import { loadProducts } from "@/settings/product";
+import { changeOwners } from "@/settings/product";
 //import { getClass } from "@/settings/product";
 
 import { javaUTCDateToString } from "@/libs/utils";
@@ -972,6 +1124,7 @@ export default {
     options: {},
 
     productInfoDialog: false,
+    multipleChangeOwnerDialog: false,
 
     deleteDialog: false, //删除弹框
     deleteItem: {},
@@ -1003,6 +1156,8 @@ export default {
 
     oldItem: {},
     editedItem: {},
+    ownersItem: {},
+    changeOwnerProductsItem: [],
 
     ascriptionChangeDialog: false,
     datePicker: false,
@@ -1040,6 +1195,21 @@ export default {
       var pass = true;
       check.forEach((item) => {
         if (!this.editedItem[item]) pass = false;
+      });
+      return !pass;
+    },
+
+    isOwnersInfoEmp: function () {
+      var check = [
+        "department",
+        "team",
+        "owner",
+        "startTime",
+      ];
+
+      var pass = true;
+      check.forEach((item) => {
+        if (!this.ownersItem[item]) pass = false;
       });
       return !pass;
     },
@@ -1219,6 +1389,15 @@ export default {
       this.productInfoDialog = true;
     },
 
+    multipleChangeOwnerButton() {
+      this.changeOwnerProductsItem = this.selectedProductItem;
+      console.log(this.changeOwnerProductsItem)
+      this.multipleChangeOwnerDialog = true;
+      // this.oldItem = { ...this.selectedProductItem[0] };
+      // this.editedItem = { ...this.selectedProductItem[0] };
+      // this.productInfoDialog = true;
+    },
+
     deleteProductItem() {
       // console.log(this.selectedProductItem);
       this.deleteItem = this.selectedProductItem[0];
@@ -1319,7 +1498,7 @@ export default {
       if (args.storehouse == null) delete args.storehouse;
       if (args.startTime) args.startTime = args.startTime.replaceAll("-", "/");
 
-      // console.log(args);
+      console.log('edit args',args);
       this.loading = true;
       editProduct(args)
         .then((res) => {
@@ -1336,6 +1515,33 @@ export default {
         });
       this.selectedProductItem = [];
     },
+
+    multipleChangeOwner() {
+      this.loading = true;
+      this.changeOwnerProductsItem.forEach((item)=>{
+        item.department = this.ownersItem.department;
+        item.team = this.ownersItem.team;
+        item.owner = this.ownersItem.owner;
+        item.startTime = this.ownersItem.startTime;
+      })
+      console.log('批量修改持品人args',this.changeOwnerProductsItem)
+      changeOwners(this.changeOwnerProductsItem)
+      .then((res)=>{
+          this.loading = false;
+          this.global.infoAlert("泼发EBC：" + res.data);
+          //刷新页面数据
+          this.multipleChangeOwnerDialog = false;
+          this.loadData();
+      })
+      .catch(() => {
+          this.loading = false;
+          this.multipleChangeOwnerDialog = false;
+          setTimeout(() => {
+            this.global.infoAlert("泼发EBC：更新失败");
+          }, 100);
+        });
+    },
+
   },
 };
 </script>
