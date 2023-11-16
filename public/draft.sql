@@ -26,3 +26,20 @@ CREATE TABLE `departments` (
    `deprecated` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否弃用',
    PRIMARY KEY (`uid`)
  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='部门'
+
+CREATE TABLE `ascriptions` (
+   `uid` bigint unsigned NOT NULL AUTO_INCREMENT,
+   `product` bigint NOT NULL COMMENT '商品ID',
+   `owner` bigint DEFAULT NULL COMMENT '持品人',
+   `department` bigint DEFAULT NULL COMMENT '事业部',
+   `team` bigint DEFAULT NULL COMMENT '组别',
+   `start_time` date NOT NULL COMMENT '生效时间',
+   `note` varchar(5000) DEFAULT NULL COMMENT '备注',
+   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+   `deprecated` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否弃用',
+   PRIMARY KEY (`uid`),
+   KEY `index_product` (`product`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商品内部归属表'
+
+ ALTER TABLE ascriptions CHANGE product product_id bigint DEFAULT NULL COMMENT '持品人';

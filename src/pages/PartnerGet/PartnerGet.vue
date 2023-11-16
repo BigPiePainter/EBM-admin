@@ -388,7 +388,7 @@
             </v-btn>
 
             <v-spacer></v-spacer>
-            <v-btn
+            <!-- <v-btn
               v-if="ifAction"
               :disabled="selectedProductItem.length == 0"
               small
@@ -399,7 +399,7 @@
               @click.stop="multipleChangeOwnerButton"
             >
               批量修改持品人
-            </v-btn>
+            </v-btn> -->
             <v-btn
               v-if="ifAction"
               :disabled="selectedProductItem.length != 1"
